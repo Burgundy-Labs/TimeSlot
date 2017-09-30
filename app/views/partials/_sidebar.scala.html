@@ -2,12 +2,12 @@
     <div class="sidebar">
         <span class="mdl-layout-title">Burgundy</span>
         <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="/Account"><i class="material-icons">account_circle</i> Account</a>
-            <a class="mdl-navigation__link" href="/Dashboard"><i class="material-icons">dashboard</i> Dashboard</a>
-            <a class="mdl-navigation__link" href="/Coaches"><i class="material-icons">people</i> Coaches</a>
-            <a class="mdl-navigation__link" href="/Center"><i class="material-icons">school</i> Center</a>
+            <a class="mdl-navigation__link" href="/Account"><i class="material-icons">account_circle</i> <span class="buttonDesc">Account</span></a>
+            <a class="mdl-navigation__link" href="/Dashboard"><i class="material-icons">dashboard</i> <span class="buttonDesc">Dashboard</span></a>
+            <a class="mdl-navigation__link" href="/Coaches"><i class="material-icons">people</i> <span class="buttonDesc">Coaches</span></a>
+            <a class="mdl-navigation__link" href="/Center"><i class="material-icons">school</i> <span class="buttonDesc">Center</span></a>
         </nav>
+        <label id="slide-sidebar" for="slide-sidebar"><i class="material-icons">first_page</i></label>
     </div>
+    <script src="@routes.Assets.at("javascripts/sidebar.js")"></script>
 </div>
-<input id="slide-sidebar" type="checkbox" role="button" />
-<label for="slide-sidebar"><span>close</span></label>
