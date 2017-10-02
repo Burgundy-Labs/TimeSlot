@@ -1,11 +1,11 @@
 @(currentPage: String)
-<div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
+<div>
     <div class="sidebar">
-        <nav class="mdl-navigation">
-            <div @if(currentPage.equals("Account")){class="currentPage"}>@partials.components._tooltipIconLink("accountIcon", "Account", "account_circle", "right", "Account", true)</div>
-            <div @if(currentPage.equals("Appointments")){class="currentPage"}>@partials.components._tooltipIconLink("appointmentIcon", "Appointments", "schedule", "right", "Appointments", true)</div>
-            <div @if(currentPage.equals("Coaches")){class="currentPage"}>@partials.components._tooltipIconLink("coachesIcon", "Coaches", "recent_actors", "right", "Coaches", true)</div>
-            <div @if(currentPage.equals("Center")){class="currentPage"}>@partials.components._tooltipIconLink("centerIcon", "Center", "school", "right", "Center", true)</div>
+        <nav class="sidebar-navigation">
+            <div @if(currentPage.equals("Account")){class="currentPage"}>@partials.components._tooltipIconLink("Account", "account_circle", "right", "Account")</div>
+            <div @if(currentPage.equals("Appointments")){class="currentPage"}>@partials.components._tooltipIconLink("Appointments", "schedule", "right", "Appointments")</div>
+            <div @if(currentPage.equals("Coaches")){class="currentPage"}>@partials.components._tooltipIconLink("Coaches", "recent_actors", "right", "Coaches")</div>
+            <div @if(currentPage.equals("Center")){class="currentPage"}>@partials.components._tooltipIconLink("Center", "school", "right", "Center")</div>
         </nav>
     </div>
 </div>

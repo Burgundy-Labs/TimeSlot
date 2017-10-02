@@ -7,21 +7,15 @@
     </head>
     <body>
         @partials._sidebar(title)
-        <main class="mdl-layout__content">
-            <div class="page-content">
-                <div class="page-title"><h1>@pageHead</h1></div>
+        <main>
+            <div class="page-content container-fluid">
+                <div class="page-title"><h3>@pageHead</h3></div>
                     <hr/>
                     <div class="content">
                         @content
                     </div>
             </div>
         </main>
-    <footer>
-        <div class="mdl-logo">Title</div>
-        <ul>
-            <li><a href="#">Help</a></li>
-            <li><a href="#">Privacy & Terms</a></li>
-        </ul>
-    </footer>
+        @partials._footer()
     </body>
 </html>
