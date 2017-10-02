@@ -1,13 +1,10 @@
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
     <div class="sidebar">
-        <span class="mdl-layout-title">Burgundy</span>
         <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="/Account"><i class="material-icons">account_circle</i> <span class="buttonDesc">Account</span></a>
-            <a class="mdl-navigation__link" href="/Dashboard"><i class="material-icons">dashboard</i> <span class="buttonDesc">Dashboard</span></a>
-            <a class="mdl-navigation__link" href="/Coaches"><i class="material-icons">people</i> <span class="buttonDesc">Coaches</span></a>
-            <a class="mdl-navigation__link" href="/Center"><i class="material-icons">school</i> <span class="buttonDesc">Center</span></a>
+            @partials.components._tooltipIconLink("accountIcon", "Account", "account_circle", "right", "Account", true)
+            @partials.components._tooltipIconLink("appointmentIcon", "Appointments", "schedule", "right", "Appointments", true)
+            @partials.components._tooltipIconLink("coachesIcon", "Coaches", "people", "right", "Coaches", true)
+            @partials.components._tooltipIconLink("centerIcon", "Center", "school", "right", "Center", true)
         </nav>
-        <label id="slide-sidebar" for="slide-sidebar"><i class="material-icons">first_page</i></label>
     </div>
-    <script src="@routes.Assets.at("javascripts/sidebar.js")"></script>
 </div>

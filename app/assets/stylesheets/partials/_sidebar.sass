@@ -2,13 +2,15 @@
 
 //Sidebar
 .sidebar
+  z-index: 99
   transition: 0.2s linear all
   text-align: center
-  background-color: $secondary-color
-  color: $primary-color
+  background-color: $primary-color
+  border-right: 2px solid lighten($primary-color, 5%)
+  color: $secondary-color
   float: left
   height: 100%
-  width: 100px
+  width: 64px
   display: -webkit-flex
   display: -ms-flexbox
   display: flex
@@ -21,7 +23,7 @@
   position: absolute
   top: 0
   left: 0
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12)
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)
   box-sizing: border-box
   input[type=checkbox]
     display: none
@@ -44,22 +46,15 @@
       margin: 0
       padding: 15px
       @if(lightness($secondary-color) > 50)
-        color: black
-      @else
         color: white
+      @else
+        color: black
       &:hover
-        @if (lightness($primary-color) > 50)
-          .material-icons
-            color: $primary-color
-        @else
-          .material-icons
-            color: $primary-color
+            color: darken($primary-color, 35%)
 
 .miniSidebar
   .mdl-navigation__link
     padding: 10px 0 10px 0 !important
-  .buttonDesc, .mdl-layout-title
-    display: none
   width: 64px
   padding-left: 0
 
