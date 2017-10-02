@@ -1,10 +1,11 @@
+@(currentPage: String)
 <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
     <div class="sidebar">
         <nav class="mdl-navigation">
-            @partials.components._tooltipIconLink("accountIcon", "Account", "account_circle", "right", "Account", true)
-            @partials.components._tooltipIconLink("appointmentIcon", "Appointments", "schedule", "right", "Appointments", true)
-            @partials.components._tooltipIconLink("coachesIcon", "Coaches", "people", "right", "Coaches", true)
-            @partials.components._tooltipIconLink("centerIcon", "Center", "school", "right", "Center", true)
+            <div @if(currentPage.equals("Account")){class="currentPage"}>@partials.components._tooltipIconLink("accountIcon", "Account", "account_circle", "right", "Account", true)</div>
+            <div @if(currentPage.equals("Appointments")){class="currentPage"}>@partials.components._tooltipIconLink("appointmentIcon", "Appointments", "schedule", "right", "Appointments", true)</div>
+            <div @if(currentPage.equals("Coaches")){class="currentPage"}>@partials.components._tooltipIconLink("coachesIcon", "Coaches", "people", "right", "Coaches", true)</div>
+            <div @if(currentPage.equals("Center")){class="currentPage"}>@partials.components._tooltipIconLink("centerIcon", "Center", "school", "right", "Center", true)</div>
         </nav>
     </div>
 </div>
