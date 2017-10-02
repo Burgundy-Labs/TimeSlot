@@ -1,4 +1,6 @@
 # Project_Burgundy
+![https://travis-ci.org/MTUHIDE/Project_Burgundy.svg?branch=master](https://travis-ci.org/MTUHIDE/Project_Burgundy.svg?branch=master)
+
 A web application to allow learning centers to schedule + manage appointments, view schedules, and gather statistics about the center itself.
 
 #Set-up Burgundy
