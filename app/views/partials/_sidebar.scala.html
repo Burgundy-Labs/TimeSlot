@@ -1,0 +1,11 @@
+@(currentPage: String)
+<div>
+    <div class="sidebar">
+        <nav class="sidebar-navigation">
+            <div @if(currentPage.equals("Account")){class="currentPage"}>@partials.components._tooltipIconLink("Account", "account_circle", "right", "Account")</div>
+            <div @if(currentPage.equals("Appointments")){class="currentPage"}>@partials.components._tooltipIconLink("Appointments", "schedule", "right", "Appointments")</div>
+            <div @if(currentPage.equals("Coaches")){class="currentPage"}>@partials.components._tooltipIconLink("Coaches", "recent_actors", "right", "Coaches")</div>
+            <div @if(currentPage.equals("Center")){class="currentPage"}>@partials.components._tooltipIconLink("Center", "school", "right", "Center")</div>
+        </nav>
+    </div>
+</div>
