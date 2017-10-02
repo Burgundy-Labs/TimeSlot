@@ -8,7 +8,8 @@ resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 
 scalaVersion := "2.12.2"
 
-libraryDependencies ++= Seq( javaJdbc , ehcache , javaWs, guice )
+libraryDependencies ++= Seq( javaJdbc , ehcache , javaWs, guice,
+  "org.webjars" % "jquery" % "3.2.1")
 
 //unmanagedResourceDirectories in Test += baseDirectory ( _ /"target/web/public/test" )
 
