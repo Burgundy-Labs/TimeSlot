@@ -25,6 +25,11 @@
   left: 0
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)
   box-sizing: border-box
+  .currentPage
+    border-right: 5px solid darken($primary-color, 5%)
+    border-radius: 5px
+  a i.material-icons:hover
+    color: darken($secondary-color, 15%)
   input[type=checkbox]
     display: none
   .mdl-layout-title
@@ -46,20 +51,8 @@
       margin: 0
       padding: 15px
       @if(lightness($secondary-color) > 50)
-        color: white
+        color: $secondary-color
       @else
-        color: black
+        color: $secondary-color
       &:hover
-            color: darken($primary-color, 35%)
-
-.miniSidebar
-  .mdl-navigation__link
-    padding: 10px 0 10px 0 !important
-  width: 64px
-  padding-left: 0
-
-#slide-sidebar
-  position: absolute
-  bottom: 0
-  text-align: center
-  width: 100%
+        color: darken($secondary-color, 15%)
