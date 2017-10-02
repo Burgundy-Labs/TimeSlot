@@ -7,7 +7,6 @@
   text-align: center
   background-color: $primary-color
   border-right: 2px solid lighten($primary-color, 5%)
-  color: $secondary-color
   float: left
   height: 100%
   width: 64px
@@ -25,11 +24,16 @@
   left: 0
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)
   box-sizing: border-box
+  .sidebar-navigation
+    div
+      padding: 10px 0 10px 0
+    a
+      color: $secondary-color
+      &:hover
+          color: darken($secondary-color, 15%)
   .currentPage
     border-right: 5px solid darken($primary-color, 5%)
     border-radius: 5px
-  a i.material-icons:hover
-    color: darken($secondary-color, 15%)
   input[type=checkbox]
     display: none
   .mdl-layout-title
