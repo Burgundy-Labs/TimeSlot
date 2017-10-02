@@ -1,22 +1,38 @@
 @(model: List[AppointmentsModel])
 
 @main("Appointments", "Your Appointments") {
-    <ul class="appointmentList mdl-list">
-        @for(appointment <- model) {
-        <li class="mdl-list__item mdl-list__item--three-line">
-            <span class="mdl-list__item-primary-content">
-                <i class="material-icons mdl-list__item-avatar">person</i>
-                <span>@appointment.getStudentName()</span>
-                <span class="mdl-list__item-text-body">
-                    @appointment.getAppointmentNotes()
-                </span>
-            </span>
-            <span class="mdl-list__item-secondary-content">
-                @partials.components._tooltipIconLink("noteIconFor" + appointment.getStudentName(), "","assignment","bottom","Notes", false)
-                @partials.components._tooltipIconLink("editIconFor" + appointment.getStudentName(), "","insert_invitation","bottom","Reschedule", false)
-                @partials.components._tooltipIconLink("cancelIconFor" + appointment.getStudentName(), "","close","bottom","Cancel", false)
-            </span>
-        </li>
+    <table class="mdl-data-table mdl-js-data-table appointmentList mdl-animation--linear-out-slow-in">
+        <thead>
+            <tr>
+                <th> </th>
+                <th>Student</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Notes</th>
+                <th>Manage</th>
+            </tr>
+        </thead>
+        <tbody>
+       @for(appointment <- model) {
+           <tr>
+               <td>
+                   <i class="material-icons mdl-list__item-avatar">person</i>
+               </td>
+               <td>
+                    @appointment.getStudentName()
+               </td>
+               <td>@appointment.getStartDate()</td>
+               <td>@appointment.getEndDate()</td>
+               <td>@appointment.getAppointmentNotes()</td>
+               <td>
+                   <span class="mdl-list__item-secondary-content">
+                   @partials.components._tooltipIconLink("noteIconFor" + appointment.getStudentName(), "","assignment","bottom","Notes", false)
+                   @partials.components._tooltipIconLink("editIconFor" + appointment.getStudentName(), "","insert_invitation","bottom","Reschedule", false)
+                   @partials.components._tooltipIconLink("cancelIconFor" + appointment.getStudentName(), "","close","bottom","Cancel", false)
+               </span>
+               </td>
+           </tr>
     }
-    </ul>
+        </tbody>
+    </table>
 }

@@ -13,6 +13,8 @@ public class AppointmentsController extends Controller {
             AppointmentsModel appointment = new AppointmentsModel();
             appointment.setStudentName("John Doe " + i);
             appointment.setAppointmentNotes("Notes for appointment # " + i);
+            appointment.setStartDate(new Date());
+            appointment.setEndDate(new Date());
             appointments.add(appointment);
         }
         return ok(views.html.appointments.render(appointments));
