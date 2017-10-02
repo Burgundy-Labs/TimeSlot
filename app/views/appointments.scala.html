@@ -1,6 +1,6 @@
 @(model: List[AppointmentsModel])
 
-@main("Appointments") {
+@main("Appointments", "Your Appointments") {
     <ul class="appointmentList mdl-list">
         @for(appointment <- model) {
         <li class="mdl-list__item mdl-list__item--three-line">

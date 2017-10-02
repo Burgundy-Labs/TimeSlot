@@ -1,4 +1,4 @@
-@(title: String)(content: Html)
+@(title: String, pageHead: String)(content: Html)
 <!DOCTYPE html>
 <html>
     <head>
@@ -6,10 +6,10 @@
     @partials._head()
     </head>
     <body>
-        @partials._sidebar()
+        @partials._sidebar(title)
         <main class="mdl-layout__content">
             <div class="page-content">
-                <div class="page-title"><h1>@title</h1></div>
+                <div class="page-title"><h1>@pageHead</h1></div>
                     <hr/>
                     <div class="content">
                         @content
