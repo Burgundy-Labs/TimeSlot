@@ -1,0 +1,38 @@
+@(model: List[AppointmentsModel])
+
+@main("Appointments", "Your Appointments") {
+    <table class="table appointmentList">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Student Name</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Notes</th>
+                <th>Manage</th>
+            </tr>
+        </thead>
+        <tbody>
+       @for(appointment <- model) {
+           <tr>
+               <td>
+                   <i class="material-icons mdl-list__item-avatar">person</i>
+               </td>
+               <td>
+                    @appointment.getStudentName()
+               </td>
+               <td>@appointment.getStartDate()</td>
+               <td>@appointment.getEndDate()</td>
+               <td>@appointment.getAppointmentNotes()</td>
+               <td>
+                   <span class="mdl-list__item-secondary-content">
+                   @partials.components._tooltipIconLink("", "assignment","bottom","Notes")
+                   @partials.components._tooltipIconLink("","insert_invitation","bottom","Reschedule")
+                   @partials.components._tooltipIconLink("","close","bottom","Cancel")
+               </span>
+               </td>
+           </tr>
+    }
+        </tbody>
+    </table>
+}

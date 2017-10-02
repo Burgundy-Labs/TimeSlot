@@ -1,4 +1,61 @@
-$primary-color: aliceblue
+@import "global_variables"
 
 body
-  background-color: $primary-color
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3e%3crect width='56' height='100' fill='%23ffffff'/%3e%3cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='%23F2F2F2' stroke-width='2'/%3e%3cpath d='M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34' fill='none' stroke='%23F5F7F7' stroke-width='2'/%3e%3c/svg%3e")
+
+@for $index from 1 through 6
+  h#{$index}
+    font-family: 'Encode Sans Expanded', sans-serif
+
+p
+  font-family: 'Montserrat', sans-serif
+
+a
+  color: $primary-color
+
+.page-title
+  color: #535353
+  padding-top: 5px
+
+main
+  margin-left: 125px
+  width: 90vw
+  height: 95vh
+  overflow: hidden
+  padding: 15px
+
+.page-content
+  background-color: white
+  border-radius: 4px
+  padding-left: 15px
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1)
+
+.content
+  overflow-y: scroll
+  height: 85vh
+
+.appointmentList
+  width: 100%
+
+a i.material-icons
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1)
+  &:hover
+    color: black
+
+// Custom Scrollbar
+::-webkit-scrollbar
+  width: 8px
+
+::-webkit-scrollbar-track
+  -webkit-box-shadow: inset 0 0 4px rgba(0,0,0,0.3)
+
+  border-radius: 8px
+
+::-webkit-scrollbar-thumb
+  border-radius: 10px
+  background-color: rgba(0,0,0,0.3)
+
+// Partials
+@import "partials/_sidebar"
+@import "partials/_footer"

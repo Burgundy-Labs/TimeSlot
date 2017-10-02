@@ -1,0 +1,62 @@
+@import "../global_variables"
+
+//Sidebar
+.sidebar
+  z-index: 99
+  transition: 0.2s linear all
+  text-align: center
+  background-color: $primary-color
+  border-right: 2px solid lighten($primary-color, 5%)
+  float: left
+  height: 100%
+  width: 64px
+  display: -webkit-flex
+  display: -ms-flexbox
+  display: flex
+  -webkit-flex-direction: column
+  -ms-flex-direction: column
+  flex-direction: column
+  -webkit-flex-wrap: nowrap
+  -ms-flex-wrap: nowrap
+  flex-wrap: nowrap
+  position: absolute
+  top: 0
+  left: 0
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)
+  box-sizing: border-box
+  .sidebar-navigation
+    div
+      padding: 10px 0 10px 0
+    a
+      color: $secondary-color
+      &:hover
+          color: darken($secondary-color, 15%)
+  .currentPage
+    border-right: 5px solid darken($primary-color, 5%)
+    border-radius: 5px
+  input[type=checkbox]
+    display: none
+  .mdl-layout-title
+    line-height: 64px
+  .mdl-navigation
+    -webkit-flex-direction: column
+    -ms-flex-direction: column
+    flex-direction: column
+    -webkit-align-items: stretch
+    -ms-flex-align: stretch
+    align-items: stretch
+    .mdl-navigation__link
+      display: block
+      transition: 0.2s linear all
+      -webkit-flex-shrink: 0
+      -ms-flex-negative: 0
+      flex-shrink: 0
+      text-align: center
+      margin: 0
+      padding: 15px
+      @if(lightness($secondary-color) > 50)
+        color: $secondary-color
+      @else
+        color: $secondary-color
+      &:hover
+        color: darken($secondary-color, 15%)
