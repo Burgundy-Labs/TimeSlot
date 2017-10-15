@@ -20,7 +20,11 @@ initApp = function () {
 window.addEventListener('load', function () {
     initApp();
     document.getElementById('sign-out').addEventListener('click', function () {
-        firebase.auth().signOut();
+        firebase.auth().signOut().then(function() {
+            localStorage.removeItem('firebaseui::rememberedAccounts');
+        }).catch(function(error) {
+            console.log(error);
+        });
     });
 });
 
