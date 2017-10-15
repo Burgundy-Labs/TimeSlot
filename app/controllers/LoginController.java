@@ -13,7 +13,7 @@ public class LoginController extends Controller {
         return ok(views.html.index.render("Dashboard"));
     }
 
-    public static void LogOut(){
+    public static void LogOut() {
         session().remove("userId");
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 public class DashboardController extends Controller {
 
     public Result index() {
-             return ok(views.html.dashboard.render());
+        return ok(views.html.dashboard.render());
     }
 
 }

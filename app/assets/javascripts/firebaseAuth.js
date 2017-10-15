@@ -1,24 +1,24 @@
-initApp = function() {
-    firebase.auth().onAuthStateChanged(function(user) {
+initApp = function () {
+    firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
             // User is signed in.
             document.getElementById('sign-out').textContent = 'Sign out';
         } else {
             // User is signed out.
             disableLinks();
-            if(window.location.pathname !== "/Login"){
+            if (window.location.pathname !== "/Login") {
                 console.log("Redirect");
-                window.location='/Login';
+                window.location = '/Login';
             }
         }
-    }, function(error) {
+    }, function (error) {
         console.log(error);
     });
 };
 
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
     initApp();
-    document.getElementById('sign-out').addEventListener('click', function() {
+    document.getElementById('sign-out').addEventListener('click', function () {
         firebase.auth().signOut();
     });
 });
