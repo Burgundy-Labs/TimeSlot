@@ -2,20 +2,20 @@
 <!DOCTYPE html>
 <html>
     <head>
-    <title>@title</title>
-    @partials._head()
+        <title>@title</title>
+        @partials._head()
     </head>
     <body>
         @partials._sidebar(title)
-        <main>
-            <div class="page-content container-fluid">
-                <div class="page-title"><h3>@pageHead</h3></div>
-                    <hr/>
-                    <div class="content">
-                        @content
-                    </div>
+    <main>
+        <div class="page-content container-fluid">
+            <div class="page-title"><h3>@pageHead</h3></div>
+            <hr/>
+            <div class="content">
+            @content
             </div>
-        </main>
+        </div>
+    </main>
         @partials._footer()
     </body>
 </html>
