@@ -1,22 +1,24 @@
 @()
 
 @main("Login", "Login to Project Burgundy") {
-    <form>
-        <div class="form-group">
-            <label for="exampleInputEmail1">Email address</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-        </div>
-        <div class="form-group">
-            <label for="exampleInputPassword1">Password</label>
-            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-        </div>
-        <div class="form-check">
-            <label class="form-check-label">
-                <input type="checkbox" class="form-check-input">
-                Remember Me
-            </label>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+    <script type="text/javascript">
+            // FirebaseUI config.
+            var uiConfig = {
+                signInSuccessUrl: '/Dashboard',
+                signInOptions: [
+                    // Leave the lines as is for the providers you want to offer your users.
+                    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+                ],
+                // Terms of service url.
+                tosUrl: '/TOS'
+            };
+
+            // Initialize the FirebaseUI Widget using Firebase.
+            firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+            var ui = new firebaseui.auth.AuthUI(firebase.auth());
+            // The start method will wait until the DOM is loaded.
+            ui.start('#firebaseui-auth-container', uiConfig);
+    </script>
+    <div id="firebaseui-auth-container"></div>
+
 }
