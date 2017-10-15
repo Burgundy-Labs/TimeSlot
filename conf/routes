@@ -3,7 +3,7 @@
 # ~~~~
 
 # Home page
-GET        /                    controllers.DashboardController.index
+GET        /                    controllers.LoginController.index
 GET        /Dashboard           controllers.DashboardController.index
 GET        /Login               controllers.LoginController.index
 GET        /Account             controllers.AccountController.index

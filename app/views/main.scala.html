@@ -6,16 +6,20 @@
         @partials._head()
     </head>
     <body>
-        @partials._sidebar(title)
-    <main>
-        <div class="page-content container-fluid">
-            <div class="page-title"><h3>@pageHead</h3></div>
-            <hr/>
-            <div class="content">
-            @content
+        <main>
+            @partials._sidebar(title)
+        <div class="container-fluid">
+            <div class="row">
+                <div class="page-content">
+                    <div class="page-title"><h3>@pageHead</h3></div>
+                    <hr/>
+                    <div class="content">
+                    @content
+                    </div>
+                </div>
             </div>
         </div>
-    </main>
+        </main>
         @partials._footer()
     </body>
 </html>
