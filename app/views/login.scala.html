@@ -1,25 +1,45 @@
 @()
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Login</title>
+        @partials._head()
+        </head>
+    <body>
+        <script type="text/javascript">
+                // FirebaseUI config.
+                var uiConfig = {
+                    signInSuccessUrl: '/Dashboard',
+                    signInOptions: [
+                        // Leave the lines as is for the providers you want to offer your users.
+                        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+                    ],
+                    credentialHelper: firebaseui.auth.CredentialHelper.NONE,
+                    // Terms of service url.
+                    tosUrl: '/TOS'
+                };
 
-@main("Login", "Login to Project Burgundy") {
-    <script type="text/javascript">
-            // FirebaseUI config.
-            var uiConfig = {
-                signInSuccessUrl: '/Dashboard',
-                signInOptions: [
-                    // Leave the lines as is for the providers you want to offer your users.
-                    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-                ],
-                credentialHelper: firebaseui.auth.CredentialHelper.NONE,
-                // Terms of service url.
-                tosUrl: '/TOS'
-            };
+                // Initialize the FirebaseUI Widget using Firebase.
+                firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+                var ui = new firebaseui.auth.AuthUI(firebase.auth());
+                // The start method will wait until the DOM is loaded.
+                ui.start('#firebaseui-auth-container', uiConfig);
+        </script>
 
-            // Initialize the FirebaseUI Widget using Firebase.
-            firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
-            var ui = new firebaseui.auth.AuthUI(firebase.auth());
-            // The start method will wait until the DOM is loaded.
-            ui.start('#firebaseui-auth-container', uiConfig);
-    </script>
-    <div id="firebaseui-auth-container"></div>
-
-}
+        <div class="loginJumbotron">
+                <div class="jumbotron d-flex align-items-center">
+                    <div class="container">
+                        <h1>Multiliteracies Center</h1>
+                        <br/>
+                        <p><b>Welcome to Project Burgundy</b>
+                            <br/>
+                            Please sign in below to view, schedule, and manage appointments at the Multiliteracies Center.
+                        </p>
+                        <div id="firebaseui-auth-container" class="btn"></div>
+                        <div id="sign-out"></div>
+                    </div>
+                </div>
+        </div>
+        @partials._footer()
+    </body>
+</html>
