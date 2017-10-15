@@ -1,19 +1,21 @@
 @()
 
 @main("Dashboard", "Dashboard") {
-    <div class="container">
     <div class="row">
-        @for(menuLink <- Application.menuLinks){
-            <div class="col-lg-6 d-flex align-items-stretch">
-                <div class="card">
-                    <div class="card-block">
-                        <h3 class="card-title">@menuLink.menuText</h3>
-                        <p class="card-text">@menuLink.desc</p>
-                        <a href="@menuLink.href" class="btn btn-primary">Go to @menuLink.menuText</a>
-                    </div>
-                </div>
-            </div>
-        }
+    <div class="col-md-3">
+            <div class="list-group">
+            @for(menuLink <- Application.menuLinks) {
+                <a href="@menuLink.href" class="list-group-item">
+                    <li class="material-icons">@menuLink.mdlIcon</li>
+                    <h4 class="list-group-item-heading">@menuLink.menuText</h4>
+                    <p class="list-group-item-text">@menuLink.desc</p>
+                </a>
+            }
+        </div>
+    </div>
+
+    <div class="col-md-9">
+        <h2>Other Content</h2>
     </div>
     </div>
 }
