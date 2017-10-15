@@ -1,0 +1,19 @@
+@()
+
+@main("Dashboard", "Dashboard") {
+    <div class="container">
+    <div class="row">
+        @for(menuLink <- Application.menuLinks){
+            <div class="col-lg-6 d-flex align-items-stretch">
+                <div class="card">
+                    <div class="card-block">
+                        <h3 class="card-title">@menuLink.menuText</h3>
+                        <p class="card-text">@menuLink.desc</p>
+                        <a href="@menuLink.href" class="btn btn-primary">Go to @menuLink.menuText</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    </div>
+}
