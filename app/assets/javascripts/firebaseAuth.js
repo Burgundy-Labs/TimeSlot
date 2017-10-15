@@ -2,9 +2,10 @@ initApp = function () {
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
             // User is signed in.
-            document.getElementById('sign-out').textContent = 'Sign out';
+            document.getElementById('sign-out').show();
         } else {
             // User is signed out.
+            document.getElementById('sign-out').hide();
             disableLinks();
             if (window.location.pathname !== "/Login") {
                 console.log("Redirect");

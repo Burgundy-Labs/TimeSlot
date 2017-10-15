@@ -14,6 +14,7 @@
             };
 
             // Initialize the FirebaseUI Widget using Firebase.
+            firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
             var ui = new firebaseui.auth.AuthUI(firebase.auth());
             // The start method will wait until the DOM is loaded.
             ui.start('#firebaseui-auth-container', uiConfig);
