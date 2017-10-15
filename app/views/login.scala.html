@@ -1,23 +1,24 @@
 @()
 
 @main("Login", "Login to Project Burgundy") {
-    <div class="g-signin2" data-onsuccess="onSignIn"></div>
-
     <script type="text/javascript">
-            function onSignIn(googleUser) {
-                var id_token = googleUser.getAuthResponse().id_token;
-                var profile = googleUser.getBasicProfile();
-                var myUserEntity = {};
-                myUserEntity.Id = profile.getId();
-                myUserEntity.Name = profile.getName();
+            // FirebaseUI config.
+            var uiConfig = {
+                signInSuccessUrl: '/Dashboard',
+                signInOptions: [
+                    // Leave the lines as is for the providers you want to offer your users.
+                    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+                ],
+                signInFlow: 'popup',
+                // Terms of service url.
+                tosUrl: '/TOS'
+            };
 
-
-                console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-                console.log('Name: ' + profile.getName());
-                console.log('Image URL: ' + profile.getImageUrl());
-                console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-                window.location = "/SignIn/"+ id_token;
-
-            }
+            // Initialize the FirebaseUI Widget using Firebase.
+            var ui = new firebaseui.auth.AuthUI(firebase.auth());
+            // The start method will wait until the DOM is loaded.
+            ui.start('#firebaseui-auth-container', uiConfig);
     </script>
+    <div id="firebaseui-auth-container"></div>
+
 }
