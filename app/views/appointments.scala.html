@@ -1,38 +1,21 @@
-@(model: List[AppointmentsModel])
 
-    @main("Appointments", "Your Appointments") {
-        <table class="table appointmentList">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Student Name</th>
-                    <th>Start</th>
-                    <th>End</th>
-                    <th>Notes</th>
-                    <th>Manage</th>
-                </tr>
-            </thead>
-            <tbody>
-            @for(appointment <- model) {
-                <tr>
-                    <td>
-                        <i class="material-icons mdl-list__item-avatar">person</i>
-                    </td>
-                    <td>
-                    @appointment.getStudentName()
-                    </td>
-                    <td>@appointment.getStartDate()</td>
-                    <td>@appointment.getEndDate()</td>
-                    <td>@appointment.getAppointmentNotes()</td>
-                    <td>
-                        <span class="mdl-list__item-secondary-content">
-                            @partials.components._tooltipIconLink("", "assignment", "bottom", "Notes")
-                            @partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Reschedule")
-                            @partials.components._tooltipIconLink("", "close", "bottom", "Cancel")
-                        </span>
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
-    }
+@main("Appointments", "Your Appointments") {
+    <div class="container-fluid">
+    <ul class="nav nav-pills mb-3" id="appointment-view-tab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="appointment-list-tab" data-toggle="pill" href="#appointment-list" role="tab" aria-controls="appointment-list" aria-expanded="true">List View</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="appointment-calendar-tab" data-toggle="pill" href="#appointment-calendar" role="tab" aria-controls="appointment-calendar" aria-expanded="true">Calendar View</a>
+        </li>
+         </ul>
+    <div class="tab-content" id="appointment-view-tabContent">
+        <div class="tab-pane fade show active" id="appointment-list" role="tabpanel" aria-labelledby="appointment-list-tab">
+        @partials.components._appointmentListForUser()
+        </div>
+        <div class="tab-pane fade" id="appointment-calendar" role="tabpanel" aria-labelledby="appointment-calendar-tab">
+        @partials.components._appointmentCalendarForUser()
+        </div>
+    </div>
+    </div>
+}

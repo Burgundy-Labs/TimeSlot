@@ -9,6 +9,10 @@ import java.util.*;
 public class AppointmentsController extends Controller {
 
     public Result index() {
+        return ok(views.html.appointments.render());
+    }
+
+    public List<AppointmentsModel> getAppointments(String userId){
         List<AppointmentsModel> appointments = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             AppointmentsModel appointment = new AppointmentsModel();
@@ -18,7 +22,7 @@ public class AppointmentsController extends Controller {
             appointment.setEndDate(new Date());
             appointments.add(appointment);
         }
-        return ok(views.html.appointments.render(appointments));
+        return appointments;
     }
 
 }
