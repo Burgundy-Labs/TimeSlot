@@ -3,14 +3,10 @@ initApp = function () {
         if (user) {
             // User is signed in.
                 $('#sign-out').show();
-                firebase.database().ref('users/' + user.uid).set({
-                    username: user.displayName,
-                    email: user.email,
-                    profile_picture : user.photoURL
-                });
+                sessionStorage.setItem("signedInUser", user.uid);
         } else {
             // User is signed out.
-                $('#sign-out').hide();
+            $('#sign-out').hide();
             disableLinks();
             if (window.location.pathname !== "/Login") {
                 console.log("Redirect");
@@ -26,6 +22,7 @@ window.addEventListener('load', function () {
     initApp();
     document.getElementById('sign-out').addEventListener('click', function () {
         firebase.auth().signOut().then(function() {
+            sessionStorage.clear();
             localStorage.removeItem('firebaseui::rememberedAccounts');
         }).catch(function(error) {
             console.log(error);
