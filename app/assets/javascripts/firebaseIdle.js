@@ -11,7 +11,7 @@ $(document).ready(function () {
 
 function timerIncrement() {
     idleTime = idleTime + 1;
-    if (idleTime === 1) { // 20 minutes
+    if (idleTime === 2) { // 20 minutes
         if (window.location.pathname !== "/Login") {
             alert('You have been signed out due to inactivity.');
             $('#sign-out').click();

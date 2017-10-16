@@ -1,21 +1,6 @@
 @()
 
 @main("Dashboard", "Dashboard") {
-    <div class="row">
-    <div class="col-md-3">
-            <div class="list-group">
-            @for(menuLink <- Application.menuLinks) {
-                <a href="@menuLink.href" class="list-group-item">
-                    <li class="material-icons">@menuLink.mdlIcon</li>
-                    <h4 class="list-group-item-heading">@menuLink.menuText</h4>
-                    <p class="list-group-item-text">@menuLink.desc</p>
-                </a>
-            }
-        </div>
-    </div>
 
-    <div class="col-md-9">
-        <h2>Other Content</h2>
-    </div>
-    </div>
 }
+
