@@ -3,6 +3,11 @@ initApp = function () {
         if (user) {
             // User is signed in.
                 $('#sign-out').show();
+                firebase.database().ref('users/' + user.uid).set({
+                    username: user.displayName,
+                    email: user.email,
+                    profile_picture : user.photoURL
+                });
         } else {
             // User is signed out.
                 $('#sign-out').hide();
