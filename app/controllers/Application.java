@@ -1,6 +1,8 @@
 package controllers;
 
 import controllers.ApplicationComponents.MenuLink;
+
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,6 +14,7 @@ public class Application {
             new MenuLink("/Coaches", "Coaches", "recent_actors", "View all coaches working at the center."),
             new MenuLink("/Center", "Center", "school", "View all coaches' appointments at the center.")
     );
+
 }
 
 

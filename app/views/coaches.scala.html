@@ -2,4 +2,25 @@
 @* TOOD pull "MTMC" from DB *@
 @main("Coaches", "MTMC Coaches") {
 
+    <h4>Users</h4>
+    <div class="row">
+        @for(user <- new UserDB().getUserList) {
+            <div class="card">
+                <img class="card-img-top" src="@user.getProfile_picture" alt="Card image cap">
+                <div class="card-block">
+                    <h4 class="card-title">@user.getUsername()</h4>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">@user.getEmail()</li>
+                    <li class="list-group-item">@user.getRole</li>
+                </ul>
+                <div class="card-block">
+                    <a href="#" class="card-link">Delete User</a>
+                    <a href="#" class="btn btn-primary">Do something</a>
+                </div>
+            </div>
+        }
+
+    </div>
+
 }
