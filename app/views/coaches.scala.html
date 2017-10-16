@@ -3,24 +3,42 @@
 @main("Coaches", "MTMC Coaches") {
 
     <h4>Users</h4>
-    <div class="row">
-        @for(user <- new UserDB().getUserList) {
-            <div class="card">
-                <img class="card-img-top" src="@user.getProfile_picture" alt="Card image cap">
-                <div class="card-block">
-                    <h4 class="card-title">@user.getUsername()</h4>
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">@user.getEmail()</li>
-                    <li class="list-group-item">@user.getRole</li>
-                </ul>
-                <div class="card-block">
-                    <a href="#" class="card-link">Delete User</a>
-                    <a href="#" class="btn btn-primary">Do something</a>
-                </div>
-            </div>
-        }
+    <div class="container-fluid">
+        <div class="panel panel-default">
+            <div class="panel-heading">Coaches</div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Profile Picture</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Manage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @for(user <- new UserDB().getUserList) {
+                    <tr>
+                        <td>
+                            <img class="mdl-list__item-avatar" src="@user.getProfile_picture" alt="Card image cap">
+                        </td>
+                        <td>
+                        @user.getUsername()
+                        </td>
+                        <td>@user.getEmail()</td>
+                        <td>@user.getRole</td>
+                        <td>
+                            <span class="mdl-list__item-secondary-content">
+                                @partials.components._tooltipIconLink("", "assignment", "bottom", "Notes")
+                                @partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Reschedule")
+                                @partials.components._tooltipIconLink("", "close", "bottom", "Cancel")
+                            </span>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
 
     </div>
-
 }
