@@ -1,15 +1,22 @@
 package models;
 
-import com.google.firebase.database.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class UsersModel {
+
+    private String userId;
     private String email;
     private String profile_picture;
-    private String role;
+    private List<String> roles;
     private String username;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public String getEmail() {
         return email;
@@ -27,12 +34,12 @@ public class UsersModel {
         this.profile_picture = profile_picture;
     }
 
-    public String getRole() {
-        return role;
+    public List<String> getRoles() {
+        return roles;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 
     public String getUsername() {

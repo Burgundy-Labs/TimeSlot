@@ -4,6 +4,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.*;
 import models.UsersModel;
+import play.api.Play;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -14,7 +15,7 @@ public class Firebase {
         FileInputStream serviceAccount =
                 null;
         try {
-            serviceAccount = new FileInputStream("../conf/project-burgundy-firebase-adminsdk-938fc-ccc54ba17f.json");
+            serviceAccount = new FileInputStream(Play.current().resource("project-burgundy-firebase-adminsdk-938fc-ccc54ba17f.json").get().getFile());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -23,8 +24,9 @@ public class Firebase {
                 .setServiceAccount(serviceAccount)
                 .setDatabaseUrl("https://project-burgundy.firebaseio.com")
                 .build();
-
-        FirebaseApp.initializeApp(options);
+        if(FirebaseApp.getApps().size() == 0) {
+            FirebaseApp.initializeApp(options);
+        }
     }
 
 }

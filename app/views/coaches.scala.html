@@ -17,21 +17,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                @for(user <- new UserDB().getUserList) {
+                @for(user <- new UserDB().getCoachList) {
                     <tr>
                         <td>
-                            <img class="mdl-list__item-avatar" src="@user.getProfile_picture" alt="Card image cap">
+                            <img class="userAvatar" src="@user.getProfile_picture" alt="Card image cap">
                         </td>
                         <td>
                         @user.getUsername()
                         </td>
                         <td>@user.getEmail()</td>
-                        <td>@user.getRole</td>
+                        <td>@user.getRoles</td>
                         <td>
                             <span class="mdl-list__item-secondary-content">
-                                @partials.components._tooltipIconLink("", "assignment", "bottom", "Notes")
-                                @partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Reschedule")
-                                @partials.components._tooltipIconLink("", "close", "bottom", "Cancel")
+                                <span class="action-primary"> @partials.components._tooltipIconLink("", "assignment", "bottom", "Notes")</span>
+                                <span class="action-secondary">@partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Reschedule")</span>
+                                <span class="action-delete">@partials.components._tooltipIconLink("", "close", "bottom", "Cancel")</span>
                             </span>
                         </td>
                     </tr>
