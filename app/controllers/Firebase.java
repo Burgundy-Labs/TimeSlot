@@ -39,17 +39,26 @@ public class Firebase {
     private void loadListeners() {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference userDB = database.getReference("users");
-        userDB.addValueEventListener(new ValueEventListener() {
+        userDB.addChildEventListener(new ChildEventListener() {
+
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot data : dataSnapshot.getChildren()){
-                    UserDB.coachList.add(data.getValue(UsersModel.class));
-                }
+            public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
+                    UserDB.coachList.add(dataSnapshot.getValue(UsersModel.class));
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onChildChanged(DataSnapshot dataSnapshot, String prevChildKey) {}
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    UserDB.coachList.remove(dataSnapshot.getValue(UsersModel.class));
             }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String prevChildKey) {}
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
         });
     }
 }
