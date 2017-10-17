@@ -3,13 +3,15 @@ initApp = function () {
         if (user) {
             // User is signed in.
                 $('#sign-out').show();
-                sessionStorage.setItem("signedInUser", user.uid);
+            if (window.location.pathname === "/Login") {
+                window.location = '/Dashboard';
+            }
+            sessionStorage.setItem("signedInUser", user.uid);
         } else {
             // User is signed out.
             $('#sign-out').hide();
             disableLinks();
             if (window.location.pathname !== "/Login") {
-                console.log("Redirect");
                 window.location = '/Login';
             }
         }

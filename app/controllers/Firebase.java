@@ -3,23 +3,29 @@ package controllers;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.*;
+import com.google.inject.Inject;
 import models.UsersModel;
+import play.Environment;
 import play.api.Play;
 
+import javax.inject.Singleton;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class Firebase {
 
+    @Inject
+    @Singleton
     public Firebase() {
         FileInputStream serviceAccount =
                 null;
         try {
-            serviceAccount = new FileInputStream(Play.current().resource("project-burgundy-firebase-adminsdk-938fc-ccc54ba17f.json").get().getFile());
+            serviceAccount = new FileInputStream(Environment.simple().resource("project-burgundy-firebase-adminsdk-938fc-ccc54ba17f.json").getFile());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
+        assert serviceAccount != null;
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setServiceAccount(serviceAccount)
                 .setDatabaseUrl("https://project-burgundy.firebaseio.com")
@@ -27,6 +33,23 @@ public class Firebase {
         if(FirebaseApp.getApps().size() == 0) {
             FirebaseApp.initializeApp(options);
         }
+        loadListeners();
     }
 
+    private void loadListeners() {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference userDB = database.getReference("users");
+        userDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot data : dataSnapshot.getChildren()){
+                    UserDB.coachList.add(data.getValue(UsersModel.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
 }
