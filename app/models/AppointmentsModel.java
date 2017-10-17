@@ -1,16 +1,19 @@
 package models;
-
+import java.util.Date;
 //should setters pass info back to database (or however that works)
 
 public class AppointmentsModel {
     private String appointmentName;
     private String appointmentId;
-    // want to use Calendar instead of Date
-    private String startDate;
-    private String endDate;
+    private Date startDate;
+    private Date endDate;
     private String studentName;
     private String coachName;
     private String appointmentNotes;
+
+    public String getAppointmentName() { return appointmentName; }
+
+    public void setAppointmentName(String appointmentName) { this.appointmentName = appointmentName; }
 
     public String getAppointmentId() {
         return appointmentId;
@@ -62,18 +65,17 @@ public class AppointmentsModel {
 
     //should this just be what the constructor does?
     public void loadData(JSON data) {
-//      Data should be in the form: { "appointmentId":String, "startDate":String, "endDate":String, "studentName":String, "coachName":String, "appointmentNotes":String }
 
-        appointmentName = (String) data.get("appointmentName");
-        appointmentId = (String) data.get("appointmentId");
-        studentName = (String) data.get("studentName");
-        coachName = (String) data.get("coachName");
-        appointmentNotes = (String) data.get("appointmentNotes");
-        startDate = (String) data.get("startDate");
-        endDate = (String) data.get("endDate");
+        appointmentName = data.getString("appointmentName");
+        appointmentId = data.getString("appointmentId");
+        studentName = data.getString("studentName");
+        coachName = data.getString("coachName");
+        appointmentNotes = data.getString("appointmentNotes");
 
-        //How will date data be passed with JSON???
-
+        String startDateStr = data.getString("startDate");
+        String endDateStr = data.getString("endDate");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        startDate = sdf.parse(startDateStr);
+        endDate = sdf.parse(endDateStr);
     }
-
 }
