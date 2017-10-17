@@ -1,5 +1,6 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UsersModel {
@@ -7,7 +8,7 @@ public class UsersModel {
     private String userId;
     private String email;
     private String profile_picture;
-    private List<String> roles;
+    private ArrayList<String> roles;
     private String username;
 
     public String getUserId() {
@@ -34,11 +35,11 @@ public class UsersModel {
         this.profile_picture = profile_picture;
     }
 
-    public List<String> getRoles() {
+    public ArrayList<String> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<String> roles) {
+    public void setRoles(ArrayList<String> roles) {
         this.roles = roles;
     }
 
