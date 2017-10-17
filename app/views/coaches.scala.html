@@ -1,8 +1,6 @@
 @()
 @* TOOD pull "MTMC" from DB *@
 @main("Coaches", "MTMC Coaches") {
-
-    <h4>Users</h4>
     <div class="container-fluid">
         <div class="panel panel-default">
             <div class="panel-heading">Coaches</div>
@@ -12,20 +10,18 @@
                         <th>Profile Picture</th>
                         <th>Name</th>
                         <th>Email</th>
-                        <th>Role</th>
+                        <th>Roles</th>
                         <th>Manage</th>
                     </tr>
                 </thead>
                 <tbody>
-                @for(user <- new UserDB().getCoachList) {
+                @for(user <- UserDB.coachList) {
                     <tr>
                         <td>
                             <img class="userAvatar" src="@user.getProfile_picture" alt="Card image cap">
                         </td>
-                        <td>
-                        @user.getUsername()
-                        </td>
-                        <td>@user.getEmail()</td>
+                        <td>@user.getUsername</td>
+                        <td>@user.getEmail</td>
                         <td>@user.getRoles</td>
                         <td>
                             <span class="mdl-list__item-secondary-content">
