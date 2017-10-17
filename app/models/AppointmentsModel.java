@@ -1,11 +1,13 @@
 package models;
 
-import java.util.Date;
+//should setters pass info back to database (or however that works)
 
 public class AppointmentsModel {
+    private String appointmentName;
     private String appointmentId;
-    private Date startDate;
-    private Date endDate;
+    // want to use Calendar instead of Date
+    private String startDate;
+    private String endDate;
     private String studentName;
     private String coachName;
     private String appointmentNotes;
@@ -56,6 +58,22 @@ public class AppointmentsModel {
 
     public void setAppointmentNotes(String appointmentNotes) {
         this.appointmentNotes = appointmentNotes;
+    }
+
+    //should this just be what the constructor does?
+    public void loadData(JSON data) {
+//      Data should be in the form: { "appointmentId":String, "startDate":String, "endDate":String, "studentName":String, "coachName":String, "appointmentNotes":String }
+
+        appointmentName = (String) data.get("appointmentName");
+        appointmentId = (String) data.get("appointmentId");
+        studentName = (String) data.get("studentName");
+        coachName = (String) data.get("coachName");
+        appointmentNotes = (String) data.get("appointmentNotes");
+        startDate = (String) data.get("startDate");
+        endDate = (String) data.get("endDate");
+
+        //How will date data be passed with JSON???
+
     }
 
 }
