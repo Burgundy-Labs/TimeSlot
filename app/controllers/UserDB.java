@@ -9,10 +9,11 @@ import java.util.List;
 import java.util.Set;
 
 public class UserDB {
-    private static Set<UsersModel> userList = new HashSet<>();
+    private static Set<UsersModel> coachList = new HashSet<>();
 
-    public Set<UsersModel> getUserList() {
+    public Set<UsersModel> getCoachList() {
         /* Listeners */
+        Firebase fb = new Firebase();
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference("users");
         ref.addValueEventListener(new ValueEventListener() {
@@ -20,7 +21,7 @@ public class UserDB {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 for(DataSnapshot data : dataSnapshot.getChildren()){
-                    userList.add(data.getValue(UsersModel.class));
+                    coachList.add(data.getValue(UsersModel.class));
                 }
             }
 
@@ -28,6 +29,6 @@ public class UserDB {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-        return userList;
+        return coachList;
     }
 }

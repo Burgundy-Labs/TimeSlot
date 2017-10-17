@@ -24,9 +24,9 @@
         <td>@appointment.getAppointmentNotes()</td>
         <td>
                         <span class="mdl-list__item-secondary-content">
-                            @partials.components._tooltipIconLink("", "assignment", "bottom", "Notes")
-                            @partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Reschedule")
-                            @partials.components._tooltipIconLink("", "close", "bottom", "Cancel")
+                            <span class="action-primary">@partials.components._tooltipIconLink("", "assignment", "bottom", "Notes")</span>
+                            <span class="action-secondary">@partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Reschedule")</span>
+                            <span class="action-delete">@partials.components._tooltipIconLink("", "close", "bottom", "Cancel")</span>
                         </span>
         </td>
     </tr>
