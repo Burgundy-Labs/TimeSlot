@@ -14,8 +14,6 @@ import java.io.FileNotFoundException;
 
 public class Firebase {
 
-    @Inject
-    @Singleton
     public Firebase() {
         FileInputStream serviceAccount =
                 null;
@@ -30,9 +28,7 @@ public class Firebase {
                 .setServiceAccount(serviceAccount)
                 .setDatabaseUrl("https://project-burgundy.firebaseio.com")
                 .build();
-        if(FirebaseApp.getApps().size() == 0) {
             FirebaseApp.initializeApp(options);
-        }
         loadListeners();
     }
 
@@ -43,7 +39,7 @@ public class Firebase {
 
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String prevChildKey) {
-                    UserDB.coachList.add(dataSnapshot.getValue(UsersModel.class));
+                new UserDB().getCoachList().add(dataSnapshot.getValue(UsersModel.class));
             }
 
             @Override
@@ -51,7 +47,7 @@ public class Firebase {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                    UserDB.coachList.remove(dataSnapshot.getValue(UsersModel.class));
+                    new UserDB().getCoachList().remove(dataSnapshot.getValue(UsersModel.class));
             }
 
             @Override
