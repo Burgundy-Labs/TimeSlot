@@ -1,14 +1,13 @@
 package models;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 public class UsersModel {
 
     private String userId;
     private String email;
     private String profile_picture;
-    private ArrayList<String> roles;
+    private Map<String,Boolean> roles;
     private String username;
 
     public String getUserId() {
@@ -35,11 +34,11 @@ public class UsersModel {
         this.profile_picture = profile_picture;
     }
 
-    public ArrayList<String> getRoles() {
+    public Map<String,Boolean>getRoles() {
         return roles;
     }
 
-    public void setRoles(ArrayList<String> roles) {
+    public void setRoles(Map<String,Boolean> roles) {
         this.roles = roles;
     }
 

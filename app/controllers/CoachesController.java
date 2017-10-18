@@ -7,6 +7,7 @@ import play.mvc.Result;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CoachesController extends Controller {
     public Result index() {
@@ -14,9 +15,9 @@ public class CoachesController extends Controller {
         testUser.setEmail("test" + Math.random()+ "@test.com");
         testUser.setUserId((""+ (int)(Math.random() * 10)));
         testUser.setUsername("TESTER TEST");
-        ArrayList<String> roles = new ArrayList<>();
-        roles.add("admin");
-        roles.add("coach");
+        Map<String,Boolean> roles = new HashMap<>();
+        roles.put("admin", true);
+        roles.put("coach", true);
         testUser.setRoles(roles);
 
         new UserDB().addUser(testUser);

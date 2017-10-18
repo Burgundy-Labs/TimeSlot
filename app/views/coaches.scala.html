@@ -16,7 +16,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                @for(user <- UserDB.coachList) {
+                @for(user <- new UserDB().getCoachList){
                     <tr>
                         <td>
                             <img class="userAvatar" src="@user.getProfile_picture" alt="Card image cap">

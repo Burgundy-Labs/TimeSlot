@@ -11,7 +11,7 @@ initApp = function () {
             // User is signed out.
             $('#sign-out').hide();
             disableLinks();
-            if (window.location.pathname !== "/Login") {
+            if (window.location.pathname !== "/Login"  ) {
                 window.location = '/Login';
             }
         }
