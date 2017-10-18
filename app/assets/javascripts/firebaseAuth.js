@@ -2,13 +2,20 @@ initApp = function () {
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
             // User is signed in.
-                $('#sign-out').show();
+            $('#sign-out').show();
+            switch(window.location.pathname){
+                case "/Login":
+                case "/Terms":
+                case "/Help":
+                default:
+                    window.location = '/Dashboard';
+            }
+            sessionStorage.setItem("signedInUser", user.uid);
         } else {
             // User is signed out.
-                $('#sign-out').hide();
+            $('#sign-out').hide();
             disableLinks();
-            if (window.location.pathname !== "/Login") {
-                console.log("Redirect");
+            if (window.location.pathname !== "/Login"  ) {
                 window.location = '/Login';
             }
         }
@@ -21,6 +28,7 @@ window.addEventListener('load', function () {
     initApp();
     document.getElementById('sign-out').addEventListener('click', function () {
         firebase.auth().signOut().then(function() {
+            sessionStorage.clear();
             localStorage.removeItem('firebaseui::rememberedAccounts');
         }).catch(function(error) {
             console.log(error);
