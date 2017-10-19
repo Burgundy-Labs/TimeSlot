@@ -3,20 +3,18 @@ initApp = function () {
         if (user) {
             // User is signed in.
             $('#sign-out').show();
-            switch(window.location.pathname){
-                case "/Login":
-                case "/Terms":
-                case "/Help":
-                default:
-                    window.location = '/Dashboard';
-            }
             sessionStorage.setItem("signedInUser", user.uid);
         } else {
             // User is signed out.
             $('#sign-out').hide();
             disableLinks();
-            if (window.location.pathname !== "/Login"  ) {
-                window.location = '/Login';
+            switch(window.location.pathname){
+                case "/Login":
+                case "/Terms":
+                case "/Help":
+                    break;
+                default:
+                    window.location = '/Login';
             }
         }
     }, function (error) {
