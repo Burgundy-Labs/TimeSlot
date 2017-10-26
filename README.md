@@ -4,7 +4,6 @@
 A web application to allow learning centers to schedule + manage appointments, view schedules, and gather statistics about the center itself.
 
 # Set-up Burgundy
-
 In order to build and run Project Burgundy you will need multiple things.
 * SBT - [Download SBT here](http://www.scala-sbt.org/)
 * IntelliJ (Or another IDE)
