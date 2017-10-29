@@ -10,6 +10,8 @@ public class AppointmentsModel {
     private String studentName;
     private String coachName;
     private String appointmentNotes;
+    private boolean present;
+    private String appointmentType;
 
     public String getAppointmentName() { return appointmentName; }
 
@@ -63,6 +65,14 @@ public class AppointmentsModel {
         this.appointmentNotes = appointmentNotes;
     }
 
+    public boolean getPresent() { return present; }
+
+    public void setPresent(boolean present) { this.present = present; }
+
+    public String getAppointmentType() { return appointmentType; }
+
+    public void setAppointmentType( String appointmentType ) { this.appointmentType = appointmentType; }
+
     //should this just be what the constructor does?
     public void loadData(JSON data) {
 
@@ -72,10 +82,8 @@ public class AppointmentsModel {
         coachName = data.getString("coachName");
         appointmentNotes = data.getString("appointmentNotes");
 
-        String startDateStr = data.getString("startDate");
-        String endDateStr = data.getString("endDate");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        startDate = sdf.parse(startDateStr);
-        endDate = sdf.parse(endDateStr);
+        startDate = sdf.parse(data.getString("startDate"));
+        endDate = sdf.parse(data.getString("endDate"));
     }
 }
