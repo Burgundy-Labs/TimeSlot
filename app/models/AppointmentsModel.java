@@ -72,18 +72,4 @@ public class AppointmentsModel {
     public String getAppointmentType() { return appointmentType; }
 
     public void setAppointmentType( String appointmentType ) { this.appointmentType = appointmentType; }
-
-    //should this just be what the constructor does?
-    public void loadData(JSON data) {
-
-        appointmentName = data.getString("appointmentName");
-        appointmentId = data.getString("appointmentId");
-        studentName = data.getString("studentName");
-        coachName = data.getString("coachName");
-        appointmentNotes = data.getString("appointmentNotes");
-
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        startDate = sdf.parse(data.getString("startDate"));
-        endDate = sdf.parse(data.getString("endDate"));
-    }
 }
