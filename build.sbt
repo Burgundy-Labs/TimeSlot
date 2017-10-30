@@ -10,8 +10,7 @@ scalaVersion := "2.12.2"
 
 libraryDependencies ++= Seq(javaJdbc, ehcache, javaWs, guice,
   "org.webjars" % "bootstrap" % "4.0.0-beta",
-  "org.webjars" % "jquery" % "3.2.1")
+  "org.webjars" % "jquery" % "3.2.1",
+  "org.mockito" % "mockito-core" % "1.10.19" % "test")
 
 //unmanagedResourceDirectories in Test += baseDirectory ( _ /"target/web/public/test" )
-
-      
