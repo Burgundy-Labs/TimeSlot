@@ -2,17 +2,22 @@ initApp = function () {
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
             // User is signed in.
-                $('#sign-out').show();
             if (window.location.pathname === "/Login") {
                 window.location = '/Dashboard';
             }
-            sessionStorage.setItem("signedInUser", user.uid);
+            $('#sign-out').show();
+
         } else {
             // User is signed out.
             $('#sign-out').hide();
             disableLinks();
-            if (window.location.pathname !== "/Login"  ) {
-                window.location = '/Login';
+            switch(window.location.pathname){
+                case "/Login":
+                case "/Terms":
+                case "/Help":
+                    break;
+                default:
+                    window.location = '/Login';
             }
         }
     }, function (error) {

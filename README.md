@@ -1,11 +1,9 @@
 # Project_Burgundy
-![Travis CI](https://travis-ci.org/MTUHIDE/Project_Burgundy.svg?branch=master) ![Heroku](https://heroku-badge.herokuapp.com/?app=project-burgundy&style=flat)
-
+[![Travis CI](https://travis-ci.org/MTUHIDE/Project_Burgundy.svg?branch=master)](https://travis-ci.org/MTUHIDE/Project_Burgundy) [![Heroku App](https://heroku-badge.herokuapp.com/?app=project-burgundy&style=flat)](http://project-burgundy.herokuapp.com)
 
 A web application to allow learning centers to schedule + manage appointments, view schedules, and gather statistics about the center itself.
 
-#Set-up Burgundy
-
+# Set-up Burgundy
 In order to build and run Project Burgundy you will need multiple things.
 * SBT - [Download SBT here](http://www.scala-sbt.org/)
 * IntelliJ (Or another IDE)
