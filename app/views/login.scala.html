@@ -9,18 +9,47 @@
         <script type="text/javascript">
                 // FirebaseUI config.
                 var uiConfig = {
+                    callbacks: {
+                        signInSuccess: function (user, credential, redirectUrl) {
+                            var signedInUser = {
+                                displayName: user.displayName,
+                                email: user.email,
+                                emailVerified: user.emailVerified,
+                                photoURL: user.photoURL,
+                                uid: user.uid,
+                                phoneNumber: user.phoneNumber,
+                            };
+                            sessionStorage.setItem("signedInUser", JSON.stringify(signedInUser));
+                            console.log(sessionStorage.getItem("signedInUser"));
+                            /* POST signed in user to Login Controller*/
+                            var csrfToken = $('input[name="csrfToken"]').attr('value');
+                            $.ajaxSetup({
+                                beforeSend: function(xhr) {
+                                    xhr.setRequestHeader('Csrf-Token', csrfToken);
+                                }
+                            });
+                            $.ajax({
+                               url: '/signedIn',
+                               type: 'POST',
+                               data: JSON.stringify(signedInUser),
+                               contentType: 'application/json',
+                               error: function(err) {
+                                   console.log(err);
+                               }
+                            });
+
+                            return true;
+                        }
+                    },
                     signInSuccessUrl: '/Dashboard',
                     signInOptions: [
-                        // Leave the lines as is for the providers you want to offer your users.
                         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
                     ],
-                    credentialHelper: firebaseui.auth.CredentialHelper.NONE,
                     // Terms of service url.
-                    tosUrl: '/TOS'
+                    tosUrl: '/Terms'
                 };
 
                 // Initialize the FirebaseUI Widget using Firebase.
-                firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
                 var ui = new firebaseui.auth.AuthUI(firebase.auth());
                 // The start method will wait until the DOM is loaded.
                 ui.start('#firebaseui-auth-container', uiConfig);
@@ -33,6 +62,7 @@
                         <br/>
                         <p><b>Welcome to Project Burgundy</b>
                             <br/>
+                            @helper.CSRF.formField
                             Please sign in below to view, schedule, and manage appointments at the Multiliteracies Center.
                         </p>
                         <div id="firebaseui-auth-container" class="btn"></div>
