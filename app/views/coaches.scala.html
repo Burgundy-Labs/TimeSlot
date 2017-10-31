@@ -11,19 +11,19 @@
                         <th>Profile Picture</th>
                         <th>Name</th>
                         <th>Email</th>
-                        <th>Roles</th>
+                        <th>Role</th>
                         <th>Manage</th>
                     </tr>
                 </thead>
                 <tbody>
-                @for(user <- new UserDB().getCoachList){
+                @for(user <- UserDB.getUsers){
                     <tr>
                         <td>
-                            <img class="userAvatar" src="@user.getProfile_picture" alt="Card image cap">
+                            <img class="userAvatar" src="@user.getPhotoURL" alt="Card image cap">
                         </td>
-                        <td>@user.getUsername</td>
+                        <td>@user.getDisplayName</td>
                         <td>@user.getEmail</td>
-                        <td>@user.getRoles</td>
+                        <td>@user.getRole</td>
                         <td>
                             <span class="mdl-list__item-secondary-content">
                                 <span class="action-primary"> @partials.components._tooltipIconLink("", "assignment", "bottom", "Notes")</span>
