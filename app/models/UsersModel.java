@@ -1,21 +1,20 @@
 package models;
 
-import java.util.Map;
-
 public class UsersModel {
-
-    private String userId;
+    private String displayName;
     private String email;
-    private String profile_picture;
-    private Map<String,Boolean> roles;
-    private String username;
+    private boolean emailVerified;
+    private String photoURL;
+    private String uid;
+    private String phoneNumber;
+    private String role;
 
-    public String getUserId() {
-        return userId;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public String getEmail() {
@@ -26,27 +25,43 @@ public class UsersModel {
         this.email = email;
     }
 
-    public String getProfile_picture() {
-        return profile_picture;
+    public boolean isEmailVerified() {
+        return emailVerified;
     }
 
-    public void setProfile_picture(String profile_picture) {
-        this.profile_picture = profile_picture;
+    public void setEmailVerified(boolean emailVerified) {
+        this.emailVerified = emailVerified;
     }
 
-    public Map<String,Boolean>getRoles() {
-        return roles;
+    public String getPhotoURL() {
+        return photoURL;
     }
 
-    public void setRoles(Map<String,Boolean> roles) {
-        this.roles = roles;
+    public void setPhotoURL(String photoURL) {
+        this.photoURL = photoURL;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUid() {
+        return uid;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
