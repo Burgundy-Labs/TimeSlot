@@ -3,7 +3,6 @@ initApp = function () {
         if (user) {
             // User is signed in.
             $('#sign-out').show();
-            sessionStorage.setItem("signedInUser", user.uid);
         } else {
             // User is signed out.
             $('#sign-out').hide();

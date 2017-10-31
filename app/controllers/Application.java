@@ -15,12 +15,6 @@ public class Application {
             new MenuLink("/Center", "Center", "school", "View all coaches' appointments at the center."),
             new MenuLink("/Settings","Site Settings", "settings","Manage settings related to the center")
     );
-    /* Returns whether or not a signed-in user is an administrator */
-    public static boolean isAdmin() {
-        /* Get user by userID */
-        String userId = session("signedInUser");
-        return userId != null && userId.equals("akAvM1RfLMgjezbC6Z9pGCJ7nCr1");
-    }
 }
 
 
