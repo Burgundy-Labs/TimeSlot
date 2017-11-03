@@ -22,12 +22,10 @@ public class LoginController extends Controller {
         /* Store UID in Session */
         session("signedInUser", user.getUid());
         /* Check if user is in DB */
-        new UserDB();
-        if(UserDB.getUser(user.getUid()) != null) {/* Don't upload existing users */}
-        else {
-            /* Add user with default role of student  */
+        UsersModel u = UserDB.getUser(user.getUid());
+        if (u == null) {
             user.setRole("student");
-            new UserDB().addUser(user);
+            UserDB.addUser(user);
         }
         /* Add user to DB with 'student' role (default) */
         return ok();

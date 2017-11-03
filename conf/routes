@@ -2,17 +2,19 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET     /                           controllers.LoginController.index
-GET     /Dashboard                  controllers.DashboardController.index
-GET     /Account                    controllers.AccountController.index
-GET     /Settings                   controllers.SettingsController.index
-GET     /Appointments               controllers.AppointmentsController.index
-GET     /Coaches                    controllers.CoachesController.index
-GET     /Center                     controllers.CenterController.index
-GET     /Login                      controllers.LoginController.index
-POST    /signedIn                   controllers.LoginController.signedIn
-GET     /Help                       controllers.StaticController.help
-GET     /Terms                      controllers.StaticController.terms
+GET     /                    controllers.LoginController.index
+GET     /Dashboard           controllers.DashboardController.index
+GET     /Account             controllers.AccountController.index
+GET     /Settings            controllers.SettingsController.index
+GET     /Appointments        controllers.AppointmentsController.index
+GET     /Coaches             controllers.CoachesController.index
+GET     /Center              controllers.CenterController.index
+GET     /Login               controllers.LoginController.index
+GET     /Help                controllers.StaticController.help
+GET     /Terms               controllers.StaticController.terms
+
+POST    /signedIn            controllers.LoginController.signedIn
+POST    /deleteUser          controllers.CoachesController.removeUser
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET     /assets/*file        controllers.Assets.at(path="/public", file)
