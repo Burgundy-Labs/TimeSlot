@@ -1,6 +1,7 @@
 @()
 @* TOOD pull "MTMC" from DB *@
 @main("Coaches", "MTMC Coaches") {
+    @helper.CSRF.formField
     <div class="container-fluid">
         <div class="panel panel-default">
             <div class="panel-heading">Coaches</div>
@@ -16,7 +17,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                @for(user <- UserDB.getUsers){
+                    @for(user <- UserDB.getUsers){
                     <tr>
                         <td>
                             <img class="userAvatar" src="@user.getPhotoURL" alt="Card image cap">
@@ -26,9 +27,9 @@
                         <td>@user.getRole</td>
                         <td>
                             <span class="mdl-list__item-secondary-content">
-                                <span class="action-primary"> @partials.components._tooltipIconLink("", "assignment", "bottom", "Notes")</span>
+                                <span class="action-primary">@partials.components._tooltipIconLink("", "assignment", "bottom", "Notes")</span>
                                 <span class="action-secondary">@partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Reschedule")</span>
-                                <span class="action-delete">@partials.components._tooltipIconLink("", "close", "bottom", "Cancel")</span>
+                                <span class="action-delete"><span id="@user.getUid" onclick="deleteUser(this)">@partials.components._tooltipIconLink("", "close", "bottom", "Remove User")</span></span>
                             </span>
                         </td>
                     </tr>
@@ -36,6 +37,28 @@
                 </tbody>
             </table>
         </div>
-
+<script type="text/javascript">
+    function deleteUser(user){
+        if(confirm("Are you sure you want to remove this user?")) {
+            var userId = $(user).attr('id');
+            console.log(userId);
+            var csrfToken = $('input[name="csrfToken"]').attr('value');
+            $.ajaxSetup({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Csrf-Token', csrfToken);
+                }
+            });
+            $.ajax({
+                url: '/deleteUser',
+                type: 'POST',
+                data: JSON.stringify({userId: userId}),
+                contentType: 'application/json',
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        }
+    }
+</script>
     </div>
 }

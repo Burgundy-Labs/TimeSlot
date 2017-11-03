@@ -12,9 +12,8 @@ import java.util.List;
 
 public class Firebase {
 
-    private static boolean hasBeenInitialized = false;
+    /* Initializes the Firebase DB for use in other areas within the project. */
     public Firebase() {
-        if(!hasBeenInitialized) {
             FileInputStream serviceAccount =
                     null;
             try {
@@ -28,12 +27,14 @@ public class Firebase {
                     .setServiceAccount(serviceAccount)
                     .setDatabaseUrl("https://project-burgundy.firebaseio.com")
                     .build();
-            FirebaseApp.initializeApp(options);
-            hasBeenInitialized = true;
+            /* Only initialize it once */
+            if(FirebaseApp.getApps().size() == 0 ) {
+                FirebaseApp.initializeApp(options);
+            }
             addListeners();
-        }
     }
 
+    /* Adds listeners to commonly accessed data structures and maintains their content with Firebase */
     public void addListeners() {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference userDB = database.getReference("users");
@@ -49,7 +50,15 @@ public class Firebase {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                UserDB.getUsers().remove(dataSnapshot.getValue(UsersModel.class));
+                UsersModel user = dataSnapshot.getValue(UsersModel.class);
+                /* For some reason it wouldn't allow removal by the model
+                * itself, instead iterate and remove matching uids.
+                * TODO look into removal without iteration */
+                for(UsersModel u : UserDB.getUsers()){
+                    if(user.getUid().equals(u.getUid())){
+                        UserDB.getUsers().remove(u);
+                    }
+                }
             }
 
             @Override
