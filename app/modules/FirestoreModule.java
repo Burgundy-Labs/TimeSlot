@@ -3,13 +3,13 @@ package modules;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import controllers.Firebase;
+import controllers.FirestoreDB;
 
 @Singleton
-public class FirebaseModule extends AbstractModule {
+public class FirestoreModule extends AbstractModule {
 
     @Inject
     protected void configure() {
-        Firebase.initialize();
+        FirestoreDB.initialize();
     }
 }
