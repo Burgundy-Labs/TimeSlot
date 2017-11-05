@@ -10,6 +10,6 @@ public class FirebaseModule extends AbstractModule {
 
     @Inject
     protected void configure() {
-        new Firebase();
+        Firebase.initialize();
     }
 }

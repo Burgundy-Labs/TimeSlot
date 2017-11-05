@@ -9,6 +9,20 @@ public class UsersModel {
     private String phoneNumber;
     private String role;
 
+    public UsersModel() {
+
+    }
+
+    public UsersModel(String displayName, String email, boolean emailVerified, String photoURL, String uid, String phoneNumber, String role) {
+        this.displayName = displayName;
+        this.email = email;
+        this.emailVerified = emailVerified;
+        this.photoURL = photoURL;
+        this.uid = uid;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+    }
+
     public String getDisplayName() {
         return displayName;
     }
@@ -64,4 +78,5 @@ public class UsersModel {
     public void setRole(String role) {
         this.role = role;
     }
+
 }
