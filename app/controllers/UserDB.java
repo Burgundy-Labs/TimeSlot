@@ -13,13 +13,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+/* DB classes contain the methods necessary to manage their corresponding models.
+* UserDB works with UsersModel to retrieve and remove users in the Firestore DB.*/
 public class UserDB {
+
     static UsersModel getUser(String userId) {
-      UsersModel userFound = null;
-        DocumentReference docRef = Firebase.getFirestoreDB().collection("users").document(userId);
+        /* Return null user if none found */
+        UsersModel userFound = null;
+        /* Get the specific user reference from the DB*/
+        DocumentReference docRef = FirestoreDB.getFirestoreDB().collection("users").document(userId);
         ApiFuture<DocumentSnapshot> future = docRef.get();
         DocumentSnapshot document = null;
         try {
+            /* Attempt to get the reference - blocking */
             document = future.get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
@@ -45,17 +51,17 @@ public class UserDB {
     public static synchronized List<UsersModel> getUsers() {
         List<UsersModel> userList = new ArrayList<>();
         /* Asynchronously retrieve all users */
-        ApiFuture<QuerySnapshot> query = Firebase.getFirestoreDB().collection("users").get();
-
+        ApiFuture<QuerySnapshot> query = FirestoreDB.getFirestoreDB().collection("users").get();
         QuerySnapshot querySnapshot = null;
         try {
+            /* Attempt to get a list of all users - blocking */
             querySnapshot = query.get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
         assert querySnapshot != null;
         List<DocumentSnapshot> documents = querySnapshot.getDocuments();
-
+        /* Iterate users and add them to a list for return */
         for (DocumentSnapshot document : documents) {
             UsersModel user = new UsersModel(
                     document.getString("display_name"),
@@ -73,9 +79,8 @@ public class UserDB {
 
     static synchronized void addUser(UsersModel model) {
         /* Get DB instance */
-        DocumentReference docRef = Firebase.getFirestoreDB().collection("users").document(model.getUid());
+        DocumentReference docRef = FirestoreDB.getFirestoreDB().collection("users").document(model.getUid());
         Map<String, Object> data = new HashMap<>();
-
         /* Create user model for DB insert */
         data.put("display_name", model.getDisplayName());
         data.put("email",model.getEmail());
@@ -85,12 +90,13 @@ public class UserDB {
         data.put("email_verified",model.isEmailVerified());
         /* Asynchronously write user into DB */
         ApiFuture<WriteResult> result = docRef.set(data);
-        result.isDone();
     }
 
     static boolean removeUser(String userId){
-        ApiFuture<WriteResult> writeResult = Firebase.getFirestoreDB().collection("users").document(userId).delete();
+        /* Asynchronously remove user from DB */
+        ApiFuture<WriteResult> writeResult = FirestoreDB.getFirestoreDB().collection("users").document(userId).delete();
         try {
+            /* Verify that action is complete */
             writeResult.get();
             return writeResult.isDone();
         } catch (InterruptedException | ExecutionException e) {

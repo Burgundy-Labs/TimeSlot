@@ -13,7 +13,6 @@ import java.util.Map;
 
 public class CoachesController extends Controller {
     public Result index() {
-
         return ok(views.html.coaches.render());
     }
 
