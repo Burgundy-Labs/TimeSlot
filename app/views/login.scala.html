@@ -17,7 +17,7 @@
                                 emailVerified: user.emailVerified,
                                 photoURL: user.photoURL,
                                 uid: user.uid,
-                                phoneNumber: user.phoneNumber,
+                                phoneNumber: user.phoneNumber
                             };
                             sessionStorage.setItem("signedInUser", JSON.stringify(signedInUser));
                             console.log(sessionStorage.getItem("signedInUser"));
@@ -49,7 +49,7 @@
                     tosUrl: '/Terms'
                 };
 
-                // Initialize the FirebaseUI Widget using Firebase.
+                // Initialize the FirebaseUI Widget using FirestoreDB.
                 var ui = new firebaseui.auth.AuthUI(firebase.auth());
                 // The start method will wait until the DOM is loaded.
                 ui.start('#firebaseui-auth-container', uiConfig);
