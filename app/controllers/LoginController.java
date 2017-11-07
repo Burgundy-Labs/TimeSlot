@@ -21,7 +21,7 @@ public class LoginController extends Controller {
         /* Get user from json request */
         UsersModel user = Json.fromJson(json, UsersModel.class);
         /* Store UID in Session */
-        session("signedInUser", user.getUid());
+        session().put("currentUser", user.getUid());
         /* Check if user is in DB */
         UsersModel u = UserDB.getUser(user.getUid());
         if (u == null) {

@@ -42,4 +42,9 @@ public class UserController extends Controller {
             return internalServerError();
         }
     }
+
+    public static UsersModel getCurrentUser() {
+        return UserDB.getUser(session().get("currentUser"));
+    }
+
 }
