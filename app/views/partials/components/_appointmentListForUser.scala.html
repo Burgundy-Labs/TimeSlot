@@ -1,35 +1,34 @@
-
 <table class="table appointmentList">
     <thead>
-    <tr>
-        <th></th>
-        <th>Student Name</th>
-        <th>Start</th>
-        <th>End</th>
-        <th>Notes</th>
-        <th>Manage</th>
-    </tr>
+        <tr>
+            <th></th>
+            <th>Student Name</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Notes</th>
+            <th>Manage</th>
+        </tr>
     </thead>
     <tbody>
     @for(appointment <- new AppointmentsController().getAppointments("")) {
-    <tr>
-        <td>
-            <i class="material-icons mdl-list__item-avatar">person</i>
-        </td>
-        <td>
+        <tr>
+            <td>
+                <i class="material-icons mdl-list__item-avatar">person</i>
+            </td>
+            <td>
             @appointment.getStudentName()
-        </td>
-        <td>@appointment.getStartDate()</td>
-        <td>@appointment.getEndDate()</td>
-        <td>@appointment.getAppointmentNotes()</td>
-        <td>
-                        <span class="mdl-list__item-secondary-content">
-                            <span class="action-primary">@partials.components._tooltipIconLink("", "assignment", "bottom", "Notes")</span>
-                            <span class="action-secondary">@partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Reschedule")</span>
-                            <span class="action-delete">@partials.components._tooltipIconLink("", "close", "bottom", "Cancel")</span>
-                        </span>
-        </td>
-    </tr>
+            </td>
+            <td>@appointment.getStartDate()</td>
+            <td>@appointment.getEndDate()</td>
+            <td>@appointment.getAppointmentNotes()</td>
+            <td>
+                <span class="mdl-list__item-secondary-content">
+                    <span class="action-primary">@partials.components._tooltipIconLink("", "assignment", "bottom", "Notes")</span>
+                    <span class="action-secondary">@partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Reschedule")</span>
+                    <span class="action-delete">@partials.components._tooltipIconLink("", "close", "bottom", "Cancel")</span>
+                </span>
+            </td>
+        </tr>
     }
     </tbody>
 </table>

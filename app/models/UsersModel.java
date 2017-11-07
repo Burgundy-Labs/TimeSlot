@@ -1,5 +1,7 @@
 package models;
 
+import controllers.ApplicationComponents.Role;
+
 public class UsersModel {
     private String displayName;
     private String email;
@@ -7,13 +9,13 @@ public class UsersModel {
     private String photoURL;
     private String uid;
     private String phoneNumber;
-    private String role;
+    private Role role;
 
     public UsersModel() {
 
     }
 
-    public UsersModel(String displayName, String email, boolean emailVerified, String photoURL, String uid, String phoneNumber, String role) {
+    public UsersModel(String displayName, String email, boolean emailVerified, String photoURL, String uid, String phoneNumber, Role role) {
         this.displayName = displayName;
         this.email = email;
         this.emailVerified = emailVerified;
@@ -72,10 +74,10 @@ public class UsersModel {
     }
 
     public String getRole() {
-        return role;
+        return role.role();
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 

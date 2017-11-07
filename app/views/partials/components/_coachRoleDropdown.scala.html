@@ -1,0 +1,47 @@
+@import controllers.ApplicationComponents.Role
+@(userId: String)
+@user = @{UserDB.getUser(userId)}
+<label>
+    <select id='select-@userId' class="custom-select">
+        <option selected>@user.getRole</option>
+        @for(role <- Role.values) {
+            @if(!Role.getRole(user.getRole).equals(role) && role != Role.DEFAULT){
+                <option value="@role.role()">@role.role()</option>
+            }
+         }
+    </select>
+</label>
+<script type="text/javascript">
+        $(document).on('change','#select-@userId', function() {
+            /* Create user object with altered role + content from userDB */
+            var newRole = $(this).find("option:selected").attr('value').toString();
+            var user = {
+                displayName: '@user.getDisplayName',
+                email: '@user.getEmail',
+                emailVerified: '@user.isEmailVerified',
+                photoURL: '@user.getPhotoURL',
+                uid: '@user.getUid',
+                phoneNumber: '@user.getPhoneNumber',
+                role: newRole.toUpperCase()
+            };
+            var csrfToken = $('input[name="csrfToken"]').attr('value');
+            $.ajaxSetup({
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader('Csrf-Token', csrfToken);
+                }
+            });
+            $.ajax({
+                url: '/updateUser',
+                type: 'POST',
+                data: JSON.stringify(user),
+                contentType: 'application/json',
+                success: function() {
+                    createAlert('info', '@user.getDisplayName\'s role changed to: ' + newRole);
+                },
+                error: function(err) {
+                    createAlert('warning', 'Error changing role!');
+                    console.log(err);
+                }
+            });
+        });
+</script>
