@@ -5,6 +5,7 @@ import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
+import controllers.ApplicationComponents.Role;
 import models.UsersModel;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class UserDB {
                     document.getString("photo_url"),
                     document.getId(),
                     document.getString("phone_number"),
-                    document.getString("role")
+                    Role.getRole(document.getString("role"))
             );
         } else {
             /* Log something */
@@ -70,7 +71,7 @@ public class UserDB {
                     document.getString("photo_url"),
                     document.getId(),
                     document.getString("phone_number"),
-                    document.getString("role")
+                    Role.getRole(document.getString("role"))
                     );
             userList.add(user);
         }
@@ -90,6 +91,7 @@ public class UserDB {
         data.put("email_verified",model.isEmailVerified());
         /* Asynchronously write user into DB */
         ApiFuture<WriteResult> result = docRef.set(data);
+        result.isDone();
     }
 
     static boolean removeUser(String userId){
