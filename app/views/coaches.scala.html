@@ -5,7 +5,6 @@
     <div class="container-fluid">
         <div class="panel panel-default">
             <div class="panel-heading">Coaches</div>
-
             <table class="table">
                 <thead>
                     <tr>
@@ -24,9 +23,10 @@
                         </td>
                         <td>@user.getDisplayName</td>
                         <td>@user.getEmail</td>
-                        <td>@user.getRole</td>
                         <td>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-@user.getUid" onclick="createModal('modal-@user.getUid', 'content', 'Change Role','')">Change Role</button>
+                            @partials.components._coachRoleDropdown(user.getUid)
+                        </td>
+                        <td>
                             <span class="mdl-list__item-secondary-content">
                                 <span class="action-primary">@partials.components._tooltipIconLink("", "assignment", "bottom", "Notes")</span>
                                 <span class="action-secondary">@partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Reschedule")</span>

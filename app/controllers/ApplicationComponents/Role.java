@@ -4,8 +4,8 @@ public enum Role {
     ADMIN("Admin"),
     COACH("Coach"),
     STUDENT("Student"),
-    DEFAULT(COACH.role),
-    UNKNOWN("");
+    DEFAULT(STUDENT.role);
+
     private String role;
 
     Role(String role) {

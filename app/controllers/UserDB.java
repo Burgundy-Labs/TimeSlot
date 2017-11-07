@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutionException;
 * UserDB works with UsersModel to retrieve and remove users in the Firestore DB.*/
 public class UserDB {
 
-    static UsersModel getUser(String userId) {
+    public static UsersModel getUser(String userId) {
         /* Return null user if none found */
         UsersModel userFound = null;
         /* Get the specific user reference from the DB*/
@@ -78,17 +78,17 @@ public class UserDB {
         return userList;
     }
 
-    static synchronized void addUser(UsersModel model) {
+    static synchronized void addUser(UsersModel user) {
         /* Get DB instance */
-        DocumentReference docRef = FirestoreDB.getFirestoreDB().collection("users").document(model.getUid());
+        DocumentReference docRef = FirestoreDB.getFirestoreDB().collection("users").document(user.getUid());
         Map<String, Object> data = new HashMap<>();
         /* Create user model for DB insert */
-        data.put("display_name", model.getDisplayName());
-        data.put("email",model.getEmail());
-        data.put("phone_number",model.getPhoneNumber());
-        data.put("photo_url",model.getPhotoURL());
-        data.put("role", model.getRole());
-        data.put("email_verified",model.isEmailVerified());
+        data.put("display_name", user.getDisplayName());
+        data.put("email",user.getEmail());
+        data.put("phone_number",user.getPhoneNumber());
+        data.put("photo_url",user.getPhotoURL());
+        data.put("role", user.getRole());
+        data.put("email_verified",user.isEmailVerified());
         /* Asynchronously write user into DB */
         ApiFuture<WriteResult> result = docRef.set(data);
         result.isDone();
