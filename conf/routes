@@ -7,14 +7,15 @@ GET     /Dashboard           controllers.DashboardController.index
 GET     /Account             controllers.AccountController.index
 GET     /Settings            controllers.SettingsController.index
 GET     /Appointments        controllers.AppointmentsController.index
-GET     /Coaches             controllers.CoachesController.index
+GET     /Coaches             controllers.UserController.index
 GET     /Center              controllers.CenterController.index
 GET     /Login               controllers.LoginController.index
 GET     /Help                controllers.StaticController.help
 GET     /Terms               controllers.StaticController.terms
 
 POST    /signedIn            controllers.LoginController.signedIn
-POST    /deleteUser          controllers.CoachesController.removeUser
+POST    /updateUser          controllers.UserController.updateUser()
+POST    /deleteUser          controllers.UserController.removeUser()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file        controllers.Assets.at(path="/public", file)

@@ -10,7 +10,7 @@ function createAlert(alertType, messageHTML) {
         "</button>" +
         '<div>' + messageHTML + '</div>'
 
-    ).alert();
+    ).fadeTo(2000, 500).slideUp(500);
 }
 
 function createModal(modalID, modalContent, buttonText, buttonFunction) {
