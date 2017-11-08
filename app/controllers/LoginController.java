@@ -21,7 +21,7 @@ public class LoginController extends Controller {
         /* Get user from json request */
         UsersModel user = Json.fromJson(json, UsersModel.class);
         /* Store UID in Session */
-        session().put("currentUser", user.getUid());
+        session("currentUser", user.getUid());
         /* Check if user is in DB */
         UsersModel u = UserDB.getUser(user.getUid());
         if (u == null) {
@@ -30,5 +30,9 @@ public class LoginController extends Controller {
         }
         /* Add user to DB with 'student' role (default) */
         return ok();
+    }
+    public Result logout(){
+        session().clear();
+        return redirect("/Login");
     }
 }

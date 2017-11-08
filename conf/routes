@@ -10,6 +10,7 @@ GET     /Appointments        controllers.AppointmentsController.index
 GET     /Coaches             controllers.UserController.index
 GET     /Center              controllers.CenterController.index
 GET     /Login               controllers.LoginController.index
+GET     /Logout              controllers.LoginController.logout
 GET     /Help                controllers.StaticController.help
 GET     /Terms               controllers.StaticController.terms
 
