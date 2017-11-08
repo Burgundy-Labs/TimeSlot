@@ -2,11 +2,8 @@ package controllers;
 
 import controllers.ApplicationComponents.MenuLink;
 
-import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.List;
-
-import static play.mvc.Controller.session;
 
 public class Application {
     public static List<MenuLink> menuLinks = Arrays.asList(
