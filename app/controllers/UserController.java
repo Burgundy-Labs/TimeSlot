@@ -44,7 +44,6 @@ public class UserController extends Controller {
     }
 
     public static UsersModel getCurrentUser() {
-        return UserDB.getUser(session().get("currentUser"));
+        return UserDB.getUser(session("currentUser"));
     }
-
 }

@@ -4,8 +4,7 @@
     @helper.CSRF.formField
     <div class="container-fluid">
         <div class="panel panel-default">
-            <div class="panel-heading">Coaches</div>
-            <table class="table usersTable">
+            <table class="table table-responsive" id="usersTable">
                 <thead>
                     <tr>
                         <th>Profile Picture</th>
@@ -22,14 +21,13 @@
                             <img class="userAvatar" src="@user.getPhotoURL" alt="Card image cap">
                         </td>
                         <td>@user.getDisplayName</td>
-                        <td>@user.getEmail</td>
+                        <td><a href="mailto:@user.getEmail" target="_blank">@user.getEmail</a></td>
                         <td>
                             @partials.components._coachRoleDropdown(user.getUid)
                         </td>
                         <td>
                             <span class="mdl-list__item-secondary-content">
-                                <span class="action-primary">@partials.components._tooltipIconLink("", "assignment", "bottom", "Notes")</span>
-                                <span class="action-secondary">@partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Reschedule")</span>
+                                <span class="action-primary">@partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Schedule Appointment")</span>
                                 <span class="action-delete"><span id="@user.getUid" onclick="deleteUser(this)">@partials.components._tooltipIconLink("", "close", "bottom", "Remove User")</span></span>
                             </span>
                         </td>
@@ -39,6 +37,14 @@
             </table>
         </div>
 <script type="text/javascript">
+        $(document).ready(function () {
+            $('#usersTable').DataTable({
+                "dom": "<'row'<'col-sm-10'l><'col-sm-2'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-5'i><'col-sm-7'p>>"
+            });
+        });
+
     function deleteUser(user){
         if(confirm("Are you sure you want to remove this user?")) {
             var userId = $(user).attr('id');
