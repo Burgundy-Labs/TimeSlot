@@ -14,7 +14,7 @@ public class AppointmentsController extends Controller {
 
     public List<AppointmentsModel> getAppointments(String userId){
         List<AppointmentsModel> appointments = new ArrayList<>();
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 100; i++) {
             AppointmentsModel appointment = new AppointmentsModel();
             appointment.setStudentName("John Doe " + i);
             appointment.setAppointmentNotes("Notes for appointment # " + i);
