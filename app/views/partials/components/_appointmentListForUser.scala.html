@@ -1,4 +1,4 @@
-<table class="table appointmentList">
+<table class="table table-responsive appointmentList" id="appointmentList">
     <thead>
         <tr>
             <th></th>
@@ -32,3 +32,14 @@
     }
     </tbody>
 </table>
+<script type="text/javascript">
+            $(document).ready(function () {
+                $('#appointmentList').DataTable({
+                    "dom": "<'row'<'col-sm-10'l><'col-sm-2'f>>" +
+                    "<'row'<'col-sm-12'tr>>" +
+                    "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                    responsive: true
+                });
+            });
+
+</script>
