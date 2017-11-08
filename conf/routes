@@ -2,12 +2,13 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET     /                    controllers.LoginController.index
-GET     /Dashboard           controllers.DashboardController.index
+GET     /                           controllers.LoginController.index
+GET     /Dashboard                  controllers.DashboardController.index
 GET     /Account                    controllers.AccountController.index
 GET     /Appointments               controllers.AppointmentsController.index
 GET     /Coaches                    controllers.CoachesController.index
 GET     /Center                     controllers.CenterController.index
+GET     /MakeAppointment            controllers.makeAppointmentController.index
 GET     /Login                      controllers.LoginController.index
 GET     /Help                       controllers.StaticController.help
 GET     /Terms                      controllers.StaticController.terms
