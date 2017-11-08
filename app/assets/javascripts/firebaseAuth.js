@@ -30,7 +30,8 @@ window.addEventListener('load', function () {
     document.getElementById('sign-out').addEventListener('click', function () {
         firebase.auth().signOut().then(function() {
             sessionStorage.clear();
-            localStorage.removeItem('firebaseui::rememberedAccounts');
+            localStorage.clear();
+            window.location = "/Logout";
         }).catch(function(error) {
             console.log(error);
         });

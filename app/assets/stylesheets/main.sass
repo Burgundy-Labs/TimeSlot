@@ -19,7 +19,7 @@ p
   font-family: 'Montserrat', sans-serif
 
 a
-  color: $primary-color
+  color: $application-primary
 
 .center
   text-align: center
@@ -90,16 +90,16 @@ a i.material-icons
     color: black
 
 .action-primary a
-  color: #3797DA
+  color: $application-primary
 
 .action-secondary a
-    color: #32CB70
+    color: $application-secondary
 
 .action-delete a
-  color: #E64D3E
+  color: $application-tertiary
 
 .nav-pills .nav-link.active
-  background-color: #3797DA
+  background-color: $application-primary
 
 .userAvatar
   width: 50px
@@ -123,6 +123,14 @@ button
   .fade.in
     opacity: 1
     -webkit-backface-visibility: hidden
+
+#usersTable
+  thead
+    background-color: $application-primary
+    color: white
+  td
+    vertical-align: middle
+
 
 // Custom Scrollbar
 ::-webkit-scrollbar

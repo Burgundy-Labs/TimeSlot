@@ -1,20 +1,35 @@
 @import controllers.ApplicationComponents.Role
 @(userId: String)
-@user = @{UserDB.getUser(userId)}
-<label>
-    <select id='select-@userId' class="custom-select">
-        <option selected>@user.getRole</option>
-        @for(role <- Role.values) {
-            @if(!Role.getRole(user.getRole).equals(role) && role != Role.DEFAULT){
-                <option value="@role.role()">@role.role()</option>
+@user = @{
+    UserDB.getUser(userId)
+}
+@if(true /*UserController.getCurrentUser.getRole.equals(Role.ADMIN.role())*/) {
+    <label>
+        <select id='select-@userId' class="custom-select">
+            <option selected>@user.getRole</option>
+            @for(role <- Role.values) {
+                @if(!Role.getRole(user.getRole).equals(role) && role != Role.DEFAULT) {
+                    <option value="@role.role()">@role.role()</option>
+                }
             }
-         }
-    </select>
-</label>
+        </select>
+    </label>
+} else {
+    @user.getRole
+}
 <script type="text/javascript">
-        $(document).on('change','#select-@userId', function() {
+
+        $(document).on('click', '#select-@userId', function () {
+            $(this).data('prev', $(this).val());
+        });
+
+        $(document).on('change', '#select-@userId', function () {
+            var newRole = $(this).val();
+            if (!confirm("Are you sure you want to change this user's role to " + newRole + "?")) {
+                $(this).val($.data(this, 'prev'));
+                return;
+            }
             /* Create user object with altered role + content from userDB */
-            var newRole = $(this).find("option:selected").attr('value').toString();
             var user = {
                 displayName: '@user.getDisplayName',
                 email: '@user.getEmail',
@@ -26,7 +41,7 @@
             };
             var csrfToken = $('input[name="csrfToken"]').attr('value');
             $.ajaxSetup({
-                beforeSend: function(xhr) {
+                beforeSend: function (xhr) {
                     xhr.setRequestHeader('Csrf-Token', csrfToken);
                 }
             });
@@ -35,10 +50,10 @@
                 type: 'POST',
                 data: JSON.stringify(user),
                 contentType: 'application/json',
-                success: function() {
+                success: function () {
                     createAlert('info', '@user.getDisplayName\'s role changed to: ' + newRole);
                 },
-                error: function(err) {
+                error: function (err) {
                     createAlert('warning', 'Error changing role!');
                     console.log(err);
                 }

@@ -11,7 +11,7 @@
                 var uiConfig = {
                     callbacks: {
                         signInSuccess: function (user, credential, redirectUrl) {
-                            var signedInUser = {
+                            var userSignIn = {
                                 displayName: user.displayName,
                                 email: user.email,
                                 emailVerified: user.emailVerified,
@@ -19,8 +19,6 @@
                                 uid: user.uid,
                                 phoneNumber: user.phoneNumber
                             };
-                            sessionStorage.setItem("signedInUser", JSON.stringify(signedInUser));
-                            console.log(sessionStorage.getItem("signedInUser"));
                             /* POST signed in user to Login Controller*/
                             var csrfToken = $('input[name="csrfToken"]').attr('value');
                             $.ajaxSetup({
@@ -31,7 +29,7 @@
                             $.ajax({
                                url: '/signedIn',
                                type: 'POST',
-                               data: JSON.stringify(signedInUser),
+                               data: JSON.stringify(userSignIn),
                                contentType: 'application/json',
                                error: function(err) {
                                    console.log(err);
