@@ -17,6 +17,6 @@ GET     /Terms               controllers.StaticController.terms
 POST    /signedIn            controllers.LoginController.signedIn
 POST    /updateUser          controllers.UserController.updateUser()
 POST    /deleteUser          controllers.UserController.removeUser()
-
+POST    /updateSettings      controllers.SettingsController.updateSettings()
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file        controllers.Assets.at(path="/public", file)
