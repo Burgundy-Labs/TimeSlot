@@ -24,4 +24,9 @@ public class SettingsController extends Controller {
         SettingsDB.changeSettings(settings);
         return ok();
     }
+
+    public static SettingsModel getSettings() {
+        return  SettingsDB.getSettings();
+    }
+
 }

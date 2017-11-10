@@ -3,16 +3,17 @@ package controllers.Databases;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
-import com.google.cloud.firestore.v1beta1.FirestoreSettings;
-import controllers.ApplicationComponents.Role;
+import controllers.Assets;
 import models.SettingsModel;
-import models.UsersModel;
+import play.api.Play;
+import scala.reflect.io.AbstractFile;
+import scala.reflect.io.VirtualFile;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
@@ -40,7 +41,6 @@ public class SettingsDB {
     }
 
     public static synchronized void changeSettings(SettingsModel settings) {
-
         DocumentReference docRef = FirestoreDB.getFirestoreDB().collection("settings").document("settings");
         Map<String, Object> data = new HashMap<>();
         data.put("universityName", settings.getUniversityName());
@@ -52,13 +52,25 @@ public class SettingsDB {
         if(matcher.matches()){
             data.put("primaryColor",settings.getPrimaryColor());
         } else {
-            data.put("primaryColor", "#000000");
+            settings.setPrimaryColor("#000000");
+            data.put("primaryColor", settings.getPrimaryColor());
         }
         matcher = pattern.matcher(settings.getSecondaryColor());
         if(matcher.matches()){
             data.put("secondaryColor",settings.getSecondaryColor());
         } else {
-            data.put("secondaryColor", "#ffffff");
+            settings.setSecondaryColor("#ffffff");
+            data.put("secondaryColor", settings.getSecondaryColor());
+        }
+
+        try {
+            File sassVars = Play.current().getFile("app/assets/stylesheets/partials/_colorSettings.sass");
+            sassVars.createNewFile();
+            FileWriter filewriter = new FileWriter(sassVars);
+            filewriter.write("$primary-color: " + settings.getPrimaryColor() + "\n" + "$secondary-color: " + settings.getSecondaryColor());
+            filewriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         /* Write settings to DB */
