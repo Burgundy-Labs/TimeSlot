@@ -38,12 +38,9 @@
     </form>
 
     <script type="text/javascript">
-         $(function() {
-                $('#primaryColorPicker').colorpicker();
-                $('#secondaryColorPicker').colorpicker();
-         });
-
          $(document).ready(function() {
+             $('#primaryColorPicker').colorpicker();
+             $('#secondaryColorPicker').colorpicker();
              if(window.location.hash === "#success"){
                  createAlert("info", "Settings updated successfully!");
                  history.pushState("", document.title, window.location.pathname+ window.location.search);
