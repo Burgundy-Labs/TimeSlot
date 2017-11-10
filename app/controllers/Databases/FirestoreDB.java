@@ -1,4 +1,4 @@
-package controllers;
+package controllers.Databases;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.FirestoreOptions;
 

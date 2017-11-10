@@ -1,4 +1,4 @@
-package controllers;
+package controllers.Databases;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
@@ -6,6 +6,7 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
 import controllers.ApplicationComponents.Role;
+import controllers.Databases.FirestoreDB;
 import models.UsersModel;
 
 import java.util.ArrayList;
@@ -78,7 +79,7 @@ public class UserDB {
         return userList;
     }
 
-    static synchronized void addUser(UsersModel user) {
+    public static synchronized void addUser(UsersModel user) {
         /* Get DB instance */
         DocumentReference docRef = FirestoreDB.getFirestoreDB().collection("users").document(user.getUid());
         Map<String, Object> data = new HashMap<>();
@@ -94,7 +95,7 @@ public class UserDB {
         result.isDone();
     }
 
-    static boolean removeUser(String userId){
+    public static boolean removeUser(String userId){
         /* Asynchronously remove user from DB */
         ApiFuture<WriteResult> writeResult = FirestoreDB.getFirestoreDB().collection("users").document(userId).delete();
         try {
