@@ -1,4 +1,5 @@
 @import controllers.ApplicationComponents.Role
+@import controllers.Databases.UserDB
 @(userId: String)
 @user = @{
     UserDB.getUser(userId)
