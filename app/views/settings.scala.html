@@ -6,26 +6,26 @@
         <div class="form-group">
             <label for="universityName" class="col-sm-2 col-form-label">University Name</label>
             <div class="col-sm-2">
-                <input type="text" class="form-control" id="universityName" value="@Application.Settings.getUniversityName">
+                <input type="text" class="form-control" id="universityName" value="@SettingsController.getSettings.getUniversityName">
             </div>
         </div>
         <div class="form-group">
             <label for="centerName" class="col-sm-2 col-form-label">Center Name</label>
             <div class="col-sm-2">
-            <input type="text" class="form-control" id="centerName" value="@Application.Settings.getCenterName">
+            <input type="text" class="form-control" id="centerName" value="@SettingsController.getSettings.getCenterName">
             </div>
         </div>
         <div class="form-group">
             <label for="primaryColor" class="col-sm-2 col-form-label">Primary Color</label>
             <div id="primaryColorPicker" class="input-group colorpicker-component col-sm-2">
-                <input id="primaryColor" type="text" value="@Application.Settings.getPrimaryColor" class="form-control" />
+                <input id="primaryColor" type="text" value="@SettingsController.getSettings.getPrimaryColor" class="form-control" />
                 <span class="input-group-addon"><i></i></span>
             </div>
         </div>
         <div class="form-group">
             <label for="secondaryColor" class="col-sm-2 col-form-label">Secondary Color</label>
             <div id="secondaryColorPicker" class="input-group colorpicker-component col-sm-2">
-                <input id="secondaryColor" type="text" value="@Application.Settings.getSecondaryColor" class="form-control" />
+                <input id="secondaryColor" type="text" value="@SettingsController.getSettings.getSecondaryColor" class="form-control" />
                 <span class="input-group-addon"><i></i></span>
             </div>
         </div>
@@ -42,6 +42,14 @@
                 $('#primaryColorPicker').colorpicker();
                 $('#secondaryColorPicker').colorpicker();
          });
+
+         $(document).ready(function() {
+             if(window.location.hash === "#success"){
+                 createAlert("info", "Settings updated successfully!");
+                 history.pushState("", document.title, window.location.pathname+ window.location.search);
+             }
+         });
+
         function updateSettings(){
             var settings = {
                 universityName: $('#universityName').val(),
@@ -49,6 +57,7 @@
                 primaryColor: $("#primaryColorPicker").colorpicker('getValue',$("#primaryColor").val()),
                 secondaryColor: $('#secondaryColorPicker').colorpicker('getValue',$('#secondaryColor').val())
             };
+            console.log(settings);
             var csrfToken = $('input[name="csrfToken"]').attr('value');
             $.ajaxSetup({
                 beforeSend: function (xhr) {
@@ -61,7 +70,8 @@
                 data: JSON.stringify(settings),
                 contentType: 'application/json',
                 success: function() {
-                    createAlert('info', 'Settings Updated!');
+                    window.location.hash = "#success";
+                    location.reload();
                     },
                 error: function () {
                     createAlert('warning', 'Settings not updated!');

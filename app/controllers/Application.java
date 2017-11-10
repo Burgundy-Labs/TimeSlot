@@ -16,7 +16,7 @@ public class Application {
             new MenuLink("/Center", "Center", "school", "View all coaches' appointments at the center."),
             new MenuLink("/Settings","Site Settings", "settings","Manage settings related to the center")
     );
-    public static SettingsModel Settings = SettingsDB.getSettings();
+
 
 }
 
