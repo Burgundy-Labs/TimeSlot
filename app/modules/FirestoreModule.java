@@ -3,7 +3,7 @@ package modules;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import controllers.FirestoreDB;
+import controllers.Databases.FirestoreDB;
 
 @Singleton
 public class FirestoreModule extends AbstractModule {
