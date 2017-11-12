@@ -15,7 +15,7 @@ public enum AppointmentType {
         return appointmentType;
     }
 
-    public static Role getAppointmentType(String appointmentType) {
-        return Role.valueOf(appointmentType.toUpperCase());
+    public static AppointmentType getAppointmentType(String appointmentType) {
+        return AppointmentType.valueOf(appointmentType.toUpperCase());
     }
 }

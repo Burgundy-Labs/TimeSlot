@@ -5,7 +5,9 @@ import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
+import controllers.ApplicationComponents.AppointmentType;
 import controllers.ApplicationComponents.Role;
+import controllers.Databases.FirestoreDB;
 import models.AppointmentsModel;
 
 import java.util.ArrayList;
@@ -18,9 +20,9 @@ import java.util.concurrent.ExecutionException;
 * AppointmentsDB works with AppointmentsModel to retrieve and remove appointments in the Firestore DB.*/
 public class AppointmentsDB {
 
-    public static AppointmentsModel getUser(String userId) {
+    public static AppointmentsModel getAppointment(String appointmentId) {
         /* Return null appointment if none found */
-        AppointmentsModel userFound = null;
+        AppointmentsModel appointmentFound = null;
         /* Get the specific appointment reference from the DB*/
         DocumentReference docRef = FirestoreDB.getFirestoreDB().collection("appointments").document(appointmentId);
         ApiFuture<DocumentSnapshot> future = docRef.get();
@@ -43,8 +45,7 @@ public class AppointmentsDB {
                     document.getString("coach_name"),
                     document.getString("appoinment_notes"),
                     document.getBoolean("present"),
-                    document.getString("appointment_type"))
-            );
+                    AppointmentType.getAppointmentType(document.getString("appointment_type")));
         } else {
             /* Log something */
         }
@@ -52,7 +53,7 @@ public class AppointmentsDB {
     }
 
     public static synchronized List<AppointmentsModel> getAppointments() {
-        List<AppointmentsModel> AppointmentList = new ArrayList<>();
+        List<AppointmentsModel> appointmentList = new ArrayList<>();
         /* Asynchronously retrieve all appointments */
         ApiFuture<QuerySnapshot> query = FirestoreDB.getFirestoreDB().collection("appointments").get();
         QuerySnapshot querySnapshot = null;
@@ -75,8 +76,7 @@ public class AppointmentsDB {
                     document.getString("coach_name"),
                     document.getString("appoinment_notes"),
                     document.getBoolean("present"),
-                    AppointmentType.getAppointmentType(document.getString("appointment_type"));
-            );
+                    AppointmentType.getAppointmentType(document.getString("appointment_type")));
             appointmentList.add(appointment);
         }
         return appointmentList;
@@ -100,7 +100,7 @@ public class AppointmentsDB {
         result.isDone();
     }
 
-    static boolean removeAppointment(String AppointmentId){
+    static boolean removeAppointment(String appointmentId){
         /* Asynchronously remove appointment from DB */
         ApiFuture<WriteResult> writeResult = FirestoreDB.getFirestoreDB().collection("appointments").document(appointmentId).delete();
         try {
