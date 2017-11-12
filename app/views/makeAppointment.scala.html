@@ -1,0 +1,25 @@
+@()
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Make an Appointment</title>
+        @partials._head()
+    </head>
+    <body>
+        <div class="col-md-12">
+            <div class="appointmentJumbotron">
+                <div class="jumbotron d-flex align-items-center">
+                    <div class="container">
+                        <br/>
+                        <h1>Make an Appointment</h1>
+                        @partials.components._appointmentCalendarForNewAppointment()
+                        <div style="width: 100%; margin-top: 25px">
+                            <button style="margin-right: 300px" href="#appointment-list">Back</button>
+                            <button style="margin-left: 300px" href="#appointment-calendar">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
