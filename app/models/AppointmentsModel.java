@@ -10,7 +10,7 @@ public class AppointmentsModel {
     private String coachName;
     private String appointmentNotes;
     private boolean present;
-    private String appointmentType;
+    private AppointmentType appointmentType;
 
     public AppointmentsModel( ) {
 
@@ -93,7 +93,7 @@ public class AppointmentsModel {
 
     public void setPresent(boolean present) { this.present = present; }
 
-    public String getAppointmentType() { return appointmentType; }
+    public AppointmentType getAppointmentType() { return appointmentType; }
 
-    public void setAppointmentType( String appointmentType ) { this.appointmentType = appointmentType; }
+    public void setAppointmentType( AppointmentType appointmentType ) { this.appointmentType = appointmentType; }
 }
