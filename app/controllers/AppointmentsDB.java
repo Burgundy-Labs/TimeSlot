@@ -75,7 +75,7 @@ public class AppointmentsDB {
                     document.getString("coach_name"),
                     document.getString("appoinment_notes"),
                     document.getBoolean("present"),
-                    document.getString("appointment_type"))
+                    AppointmentType.getAppointmentType(document.getString("appointment_type"));
             );
             appointmentList.add(appointment);
         }
