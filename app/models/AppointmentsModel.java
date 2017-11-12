@@ -1,4 +1,6 @@
 package models;
+import controllers.ApplicationComponents.AppointmentType;
+
 import java.util.Date;
 
 public class AppointmentsModel {
@@ -25,7 +27,7 @@ public class AppointmentsModel {
             String coachName,
             String appointmentNotes,
             boolean present,
-            String appointmentType ) {
+            AppointmentType appointmentType ) {
         this.appointmentName = appointmentName;
         this.appointmentId = appointmentId;
         this.startDate = startDate;
