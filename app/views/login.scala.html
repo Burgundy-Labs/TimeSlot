@@ -9,38 +9,63 @@
         <script type="text/javascript">
                 // FirebaseUI config.
                 var uiConfig = {
+                    callbacks: {
+                        signInSuccess: function (user, credential, redirectUrl) {
+                            var userSignIn = {
+                                displayName: user.displayName,
+                                email: user.email,
+                                emailVerified: user.emailVerified,
+                                photoURL: user.photoURL,
+                                uid: user.uid,
+                                phoneNumber: user.phoneNumber
+                            };
+                            /* POST signed in user to Login Controller*/
+                            var csrfToken = $('input[name="csrfToken"]').attr('value');
+                            $.ajaxSetup({
+                                beforeSend: function(xhr) {
+                                    xhr.setRequestHeader('Csrf-Token', csrfToken);
+                                }
+                            });
+                            $.ajax({
+                               url: '/signedIn',
+                               type: 'POST',
+                               data: JSON.stringify(userSignIn),
+                               contentType: 'application/json',
+                               error: function(err) {
+                                   console.log(err);
+                               }
+                            });
+                            return true;
+                        }
+                    },
                     signInSuccessUrl: '/Dashboard',
                     signInOptions: [
-                        // Leave the lines as is for the providers you want to offer your users.
                         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
                     ],
-                    credentialHelper: firebaseui.auth.CredentialHelper.NONE,
                     // Terms of service url.
-                    tosUrl: '/TOS'
+                    tosUrl: '/Terms'
                 };
 
-                // Initialize the FirebaseUI Widget using Firebase.
-                firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
+                // Initialize the FirebaseUI Widget using FirestoreDB.
                 var ui = new firebaseui.auth.AuthUI(firebase.auth());
                 // The start method will wait until the DOM is loaded.
                 ui.start('#firebaseui-auth-container', uiConfig);
         </script>
-        <div class="col-md-12">
             <div class="loginJumbotron">
                 <div class="jumbotron d-flex align-items-center">
                     <div class="container">
-                        <h1>Multiliteracies Center</h1>
+                        <h1>@SettingsController.getSettings.getCenterName</h1>
                         <br/>
                         <p><b>Welcome to Project Burgundy</b>
                             <br/>
-                            Please sign in below to view, schedule, and manage appointments at the Multiliteracies Center.
+                            @helper.CSRF.formField
+                            Please sign in below to view, schedule, and manage appointments at the @SettingsController.getSettings.getCenterName.
                         </p>
                         <div id="firebaseui-auth-container" class="btn"></div>
                         <div id="sign-out"></div>
                     </div>
                 </div>
             </div>
-        </div>
         @partials._footer()
     </body>
 </html>

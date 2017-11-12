@@ -1,5 +1,73 @@
+@import controllers.Databases.UserDB
 @()
 @* TOOD pull "MTMC" from DB *@
 @main("Coaches", "MTMC Coaches") {
+    @helper.CSRF.formField
+    <div class="container-fluid">
+        <div class="panel panel-default">
+            <table class="table table-responsive" id="usersTable">
+                <thead>
+                    <tr>
+                        <th>Profile Picture</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Manage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(user <- UserDB.getUsers){
+                    <tr>
+                        <td>
+                            <img class="userAvatar" src="@user.getPhotoURL" alt="Card image cap">
+                        </td>
+                        <td>@user.getDisplayName</td>
+                        <td>@user.getEmail</td>
+                        <td>
+                            @partials.components._coachRoleDropdown(user)
+                        </td>
+                        <td>
+                            <span class="mdl-list__item-secondary-content">
+                                <span class="action-primary">@partials.components._tooltipIconLink("mailto:" + user.getEmail,"email","bottom","Email User")</span>
+                                <span class="action-secondary">@partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Schedule Appointment")</span>
+                                <span class="action-delete"><span id="@user.getUid" onclick="deleteUser(this)">@partials.components._tooltipIconLink("", "close", "bottom", "Remove User")</span></span>
+                            </span>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+<script type="text/javascript">
+        $(document).ready(function () {
+            $('#usersTable').DataTable({
+                "dom": "<'row'<'col-sm-10'l><'col-sm-2'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-5'i><'col-sm-7'p>>"
+            });
+        });
 
+    function deleteUser(user){
+        if(confirm("Are you sure you want to remove this user?")) {
+            var userId = $(user).attr('id');
+            var csrfToken = $('input[name="csrfToken"]').attr('value');
+            $.ajaxSetup({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Csrf-Token', csrfToken);
+                }
+            });
+            $.ajax({
+                url: '/deleteUser',
+                type: 'POST',
+                data: JSON.stringify({userId: userId}),
+                contentType: 'application/json',
+                success: function() { location.reload();  /*  TODO convert window reload to datasource reload */},
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        }
+    }
+</script>
+    </div>
 }
