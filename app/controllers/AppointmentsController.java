@@ -25,4 +25,8 @@ public class AppointmentsController extends Controller {
         return appointments;
     }
 
+    public Result makeAppointment() {
+        return ok(views.html.makeAppointment.render());
+    }
+
 }
