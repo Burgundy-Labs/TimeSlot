@@ -1,0 +1,150 @@
+<script type="text/javascript">
+/*
+    Bug: FullCalendar won't load up a Calendar control if it's not on a displayed page.
+         Since the calendar isn't loaded when the page loads, but after you click the tab for it, the calendar doesn't show up.
+    Fixed: 10/26
+    Solution: The best solution I could find that other people used was to make the calendar creation into a function, and keep trying to load the
+              calendar. It will only load, however, when the calendar ID is visible on the page.
+ */
+$(document).ready(function() {
+  createMakeAppointmentCalendar();
+});
+
+function getMonth(month) {
+  switch(month) {
+    case "1":
+      return "January";
+      break;
+    case "2":
+      return "February";
+      break;
+    case "3":
+      return "March";
+      break;
+    case "4":
+      return "April";
+      break;
+    case "5":
+      return "May";
+      break;
+    case "6":
+      return "June";
+      break;
+    case "7":
+      return "July";
+      break;
+    case "8":
+      return "August";
+      break;
+    case "9":
+      return "September";
+      break;
+    case "10":
+      return "October";
+      break;
+    case "11":
+      return "November";
+      break;
+    case "12":
+      return "December";
+      break;
+    default:
+      return "uh oh";
+      break;
+  }
+}
+function createMakeAppointmentCalendar () {
+  if ($('#calendar').is(':visible')) { //if the container is visible on the page
+    $('#calendar').fullCalendar({
+      header: {
+        left: 'prev,next',
+        center: 'title',
+      },
+      defaultDate: '2017-10-12',
+      defaultView: 'agendaWeek',
+      editable: true,
+      weekends: false,
+      eventLimit: true, // allow "more" link when too many events
+      events: [
+        {
+          title: 'All Day Event',
+          start: '2017-10-01'
+        },
+        {
+          title: 'Long Event',
+          start: '2017-10-07',
+          end: '2017-10-10'
+        },
+        {
+          id: 999,
+          title: 'Repeating Event',
+          start: '2017-10-09T16:00:00'
+        },
+        {
+          id: 999,
+          title: 'Repeating Event',
+          start: '2017-10-16T16:00:00'
+        },
+        {
+          title: 'Conference',
+          start: '2017-10-11',
+          end: '2017-10-13'
+        },
+        {
+          title: 'Meeting',
+          start: '2017-10-12T10:30:00',
+          end: '2017-10-12T12:30:00'
+        },
+        {
+          title: 'Lunch',
+          start: '2017-10-12T12:00:00'
+        },
+        {
+          title: 'Meeting',
+          start: '2017-10-12T14:30:00'
+        },
+        {
+          title: 'Happy Hour',
+          start: '2017-10-12T17:30:00',
+        },
+        {
+          title: 'Dinner',
+          start: '2017-10-12T20:00:00'
+        },
+        {
+          title: 'Birthday Party',
+          start: '2017-10-13T07:00:00'
+        },
+        {
+          title: 'Click for Google',
+          url: 'http://google.com/',
+          start: '2017-10-28'
+        }
+      ],
+      eventColor: 'blue',
+      eventBoolean: 'false',
+      eventEvent: 'null',
+      eventRender: function(event, element, view) {
+        element.bind('click', function() {
+          $(this).css('background-color', 'green');
+          if ( eventBoolean = 'true' ) {
+              $(eventEvent).css('background-color', 'blue');
+          }
+          eventBoolean = 'true';
+        });
+      }
+    });
+  } else {
+    setTimeout(createMakeAppointmentCalendar, 50); //wait 50 ms, then try again
+  }
+};
+</script>
+<p><b>Choose an Appointment Slot Below</b></p>
+<br/>
+<div style="width: 1450px">
+  <div class="row">
+    <div class="col-md-6" id="calendarContainer">
+      <div id='calendar'></div>
+    </div>
+  </div></div>
+
