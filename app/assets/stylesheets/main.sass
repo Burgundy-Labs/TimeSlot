@@ -1,5 +1,5 @@
 @import "global_variables"
-
+@import "partials/_colorSettings"
 html, body
   height: 100%
   margin: 0 auto
@@ -19,7 +19,7 @@ p
   font-family: 'Montserrat', sans-serif
 
 a
-  color: $primary-color
+  color: $application-primary
 
 .center
   text-align: center
@@ -35,7 +35,6 @@ a
   width: 100%
   height: 100vh
   overflow-y: scroll
-  padding-left: 15px
   border-radius: 4px
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)
   transition: all 0.3s cubic-bezier(.25, .8, .25, 1)
@@ -71,8 +70,8 @@ a i.material-icons
   vertical-align: middle
   .jumbotron
     display: inline-block
-    width: 600px
     border-radius: 4px
+    max-width: 600px
     background-color: white
     border-bottom: 10px solid $primary-color
     margin: 0 auto
@@ -107,20 +106,48 @@ a i.material-icons
     background-color: $primary-color
     color: black
 
-[data-original-title="Notes"]
-  color: #3797DA
+.action-primary a
+  color: $application-primary
 
-[data-original-title="Reschedule"]
-  color: #32CB70
+.action-secondary a
+    color: $application-secondary
 
-[data-original-title="Cancel"]
-  color: #E64D3E
+.action-delete a
+  color: $application-tertiary
 
 .nav-pills .nav-link.active
-  background-color: #3797DA
+  background-color: $application-primary
+
+.userAvatar
+  width: 50px
+  height: 50px
+  border-radius: 100%
 
 #firebaseui-auth-container
   width: 100%
+
+button
+  &:hover
+    cursor: pointer
+
+.alert
+  position: absolute
+  z-index: 999
+  right: 50px
+  bottom: 50px
+
+.modal
+  .fade.in
+    opacity: 1
+    -webkit-backface-visibility: hidden
+
+#usersTable, #appointmentList
+  thead
+    background-color: $application-primary
+    color: white
+  td
+    vertical-align: middle
+
 
 // Custom Scrollbar
 ::-webkit-scrollbar

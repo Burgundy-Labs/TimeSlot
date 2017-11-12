@@ -1,14 +1,21 @@
 package models;
-
 import java.util.Date;
+//should setters pass info back to database (or however that works)
 
 public class AppointmentsModel {
+    private String appointmentName;
     private String appointmentId;
     private Date startDate;
     private Date endDate;
     private String studentName;
     private String coachName;
     private String appointmentNotes;
+    private boolean present;
+    private String appointmentType;
+
+    public String getAppointmentName() { return appointmentName; }
+
+    public void setAppointmentName(String appointmentName) { this.appointmentName = appointmentName; }
 
     public String getAppointmentId() {
         return appointmentId;
@@ -58,4 +65,11 @@ public class AppointmentsModel {
         this.appointmentNotes = appointmentNotes;
     }
 
+    public boolean getPresent() { return present; }
+
+    public void setPresent(boolean present) { this.present = present; }
+
+    public String getAppointmentType() { return appointmentType; }
+
+    public void setAppointmentType( String appointmentType ) { this.appointmentType = appointmentType; }
 }
