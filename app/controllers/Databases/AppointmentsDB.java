@@ -1,4 +1,4 @@
-package controllers;
+package controllers.Databases;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
@@ -6,7 +6,6 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
 import controllers.ApplicationComponents.AppointmentType;
-import controllers.ApplicationComponents.Role;
 import controllers.Databases.FirestoreDB;
 import models.AppointmentsModel;
 
@@ -37,12 +36,11 @@ public class AppointmentsDB {
         if (document.exists()) {
             System.out.println("Document data: " + document.getData());
             appointmentFound = new AppointmentsModel(
-                    document.getString("appointment_name"),
                     document.getId(),
-                    document.getDate("start_date"),
-                    document.getDate("end_date"),
-                    document.getString("student_name"),
-                    document.getString("coach_name"),
+                    document.getString("start_date"),
+                    document.getString("end_date"),
+                    document.getString("studentId"),
+                    document.getString("coachId"),
                     document.getString("appoinment_notes"),
                     document.getBoolean("present"),
                     AppointmentType.getAppointmentType(document.getString("appointment_type")));
@@ -68,12 +66,11 @@ public class AppointmentsDB {
         /* Iterate appointments and add them to a list for return */
         for (DocumentSnapshot document : documents) {
             AppointmentsModel appointment = new AppointmentsModel(
-                    document.getString("appointment_name"),
                     document.getId(),
-                    document.getDate("start_date"),
-                    document.getDate("end_date"),
-                    document.getString("student_name"),
-                    document.getString("coach_name"),
+                    document.getString("start_date"),
+                    document.getString("end_date"),
+                    document.getString("studentId"),
+                    document.getString("coachId"),
                     document.getString("appoinment_notes"),
                     document.getBoolean("present"),
                     AppointmentType.getAppointmentType(document.getString("appointment_type")));
@@ -82,25 +79,24 @@ public class AppointmentsDB {
         return appointmentList;
     }
 
-    static synchronized void addAppointment(AppointmentsModel appointment) {
+    public static synchronized void addAppointment(AppointmentsModel appointment) {
         /* Get DB instance */
         DocumentReference docRef = FirestoreDB.getFirestoreDB().collection("appointments").document(appointment.getAppointmentId());
         Map<String, Object> data = new HashMap<>();
         /* Create user model for DB insert */
-        data.put("appointment_name", appointment.getAppointmentName());
         data.put("start_date", appointment.getStartDate());
         data.put("end_date", appointment.getEndDate());
-        data.put("student_name", appointment.getStudentName());
-        data.put("coach_name", appointment.getCoachName());
+        data.put("studentId", appointment.getStudentId());
+        data.put("coachId", appointment.getCoachId());
         data.put("appointment_notes", appointment.getAppointmentNotes());
         data.put("present", appointment.getPresent());
-        data.put("appointment_type", appointment.getAppointmentType());
+        data.put("appointment_type", appointment.getAppointmentType().appointmentType());
         /* Asynchronously write appointment into DB */
         ApiFuture<WriteResult> result = docRef.set(data);
         result.isDone();
     }
 
-    static boolean removeAppointment(String appointmentId){
+    public static boolean removeAppointment(String appointmentId){
         /* Asynchronously remove appointment from DB */
         ApiFuture<WriteResult> writeResult = FirestoreDB.getFirestoreDB().collection("appointments").document(appointmentId).delete();
         try {

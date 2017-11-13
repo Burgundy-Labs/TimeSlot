@@ -6,7 +6,7 @@ $(document).ready(function () {
     }
     cheet('↑ ↑ ↓ ↓ ← → ← →', function () {
         localStorage.setItem("timeoutDisabled", true);
-        createAlert("warning", "Timeout has been disabled.");
+        createAlert("info", "Timeout has been disabled.");
     });
     setInterval(timerIncrement, 60000); // 1 minute
     $(this).mousemove(function (e) {

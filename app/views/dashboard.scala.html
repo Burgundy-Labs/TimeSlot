@@ -4,6 +4,7 @@
 @()
 
 @main("Dashboard", "Dashboard") {
+    @helper.CSRF.formField
     <a href="/MakeAppointment">Make a New Appointment</a>
     @* Will be moved into a modal for other page sections *@
     <ul class="stepper linear">
@@ -71,13 +72,18 @@
                 }
                 var appointment = {
                     id: selectedEvents[0].id,
-                    start: selectedEvents[0].start,
-                    end: selectedEvents[0].end
+                    startDate: selectedEvents[0].start,
+                    endDate: selectedEvents[0].end
                 };
                 var form = {
-                    "appointmentType": $('#appointmentType').val(),
-                    "coachId": $('#coachId').val(),
-                    "appointments": appointment
+                    appointmentType: $('#appointmentType').val(),
+                    coachId: $('#coachId').val(),
+                    studentId: firebase.auth().currentUser.uid,
+                    appointmentId: appointment.id,
+                    startDate: appointment.startDate,
+                    endDate:   appointment.endDate,
+                    appointmentNotes: "",
+                    present: false
                 };
                 if(confirm("Your appointment details:\n\n" +
                         "Appointment Type: " + form.appointmentType + "\n" +
@@ -85,9 +91,27 @@
                         "Date: " + moment(appointment.start).format('dddd, MMMM Do, YYYY h:mm:ss A') + "\n\n" +
                         "Confirm Appointment?")) {
                     /* Create appointment Here*/
-                    createAlert("success", "Appointment Created!");
+                    var csrfToken = $('input[name="csrfToken"]').attr('value');
+                    $.ajaxSetup({
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader('Csrf-Token', csrfToken);
+                        }
+                    });
+                    console.log(JSON.stringify(form));
+                    $.ajax({
+                        url: '/createAppointment',
+                        type: 'POST',
+                        data: JSON.stringify(form),
+                        contentType: 'application/json',
+                        success: function() {
+                            createAlert("success", "Appointment Created!");
+                        },
+                        error: function () {
+                            createAlert('danger', 'Appointment creation failed.');
+                        }
+                    });
                 } else {
-                    createAlert("warning", "Appointment Not Created");
+                    createAlert("info", "Appointment Not Created");
                 }
             }
     </script>
