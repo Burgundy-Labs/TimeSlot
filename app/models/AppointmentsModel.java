@@ -1,15 +1,12 @@
 package models;
 import controllers.ApplicationComponents.AppointmentType;
 
-import java.util.Date;
-
 public class AppointmentsModel {
-    private String appointmentName;
     private String appointmentId;
-    private Date startDate;
-    private Date endDate;
-    private String studentName;
-    private String coachName;
+    private String startDate;
+    private String endDate;
+    private String studentId;
+    private String coachId;
     private String appointmentNotes;
     private boolean present;
     private AppointmentType appointmentType;
@@ -19,29 +16,23 @@ public class AppointmentsModel {
     }
 
     public AppointmentsModel(
-            String appointmentName,
             String appointmentId,
-            Date startDate,
-            Date endDate,
+            String startDate,
+            String endDate,
             String studentName,
             String coachName,
             String appointmentNotes,
             boolean present,
             AppointmentType appointmentType ) {
-        this.appointmentName = appointmentName;
         this.appointmentId = appointmentId;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.studentName = studentName;
-        this.coachName = coachName;
+        this.studentId = studentName;
+        this.coachId = coachName;
         this.appointmentNotes = appointmentNotes;
         this.present = present;
         this.appointmentType = appointmentType;
     }
-
-    public String getAppointmentName() { return appointmentName; }
-
-    public void setAppointmentName(String appointmentName) { this.appointmentName = appointmentName; }
 
     public String getAppointmentId() {
         return appointmentId;
@@ -51,36 +42,36 @@ public class AppointmentsModel {
         this.appointmentId = appointmentId;
     }
 
-    public Date getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 
-    public String getStudentName() {
-        return studentName;
+    public String getStudentId() {
+        return studentId;
     }
 
-    public void setStudentName(String studentName) {
-        this.studentName = studentName;
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
     }
 
-    public String getCoachName() {
-        return coachName;
+    public String getCoachId() {
+        return coachId;
     }
 
-    public void setCoachName(String coachName) {
-        this.coachName = coachName;
+    public void setCoachId(String coachId) {
+        this.coachId = coachId;
     }
 
     public String getAppointmentNotes() {
