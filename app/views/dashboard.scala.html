@@ -1,17 +1,25 @@
 @import controllers.ApplicationComponents.AppointmentType
+@import controllers.Databases.UserDB
+@import controllers.ApplicationComponents.Role
 @()
 
 @main("Dashboard", "Dashboard") {
     <a href="/MakeAppointment">Make a New Appointment</a>
-
     @* Will be moved into a modal for other page sections *@
-    <form action="youraction" method="yourmethod">
     <ul class="stepper linear">
         <li class="step active">
-            <div class="step-title waves-effect">Appointment Time</div>
+            <div class="step-title waves-effect">Appointment Type</div>
             <div class="step-content">
                 <div class="row">
-                @partials.components._appointmentCalendarForNewAppointment()
+                    <label for="appointmentType"></label>
+                    <select id="appointmentType" name="appointmentType" required>
+                        <option selected disabled> Select an Appointment Type </option>
+                        @for(aType <- AppointmentType.values()) {
+                            @if(!aType.equals(AppointmentType.DEFAULT)) {
+                                <option value="@aType.appointmentType()">@aType.appointmentType()</option>
+                            }
+                        }
+                    </select>
                 </div>
                 <div class="step-actions">
                     <button class="btn btn-primary next-step">Next Step</button>
@@ -19,18 +27,19 @@
             </div>
         </li>
         <li class="step">
-            <div class="step-title waves-effect">Appointment Type</div>
+            <div class="step-title waves-effect">Select Coach</div>
             <div class="step-content">
                 <div class="row">
-                    <label for="appointmentType"></label>
-                        <select id="appointmentType" name="appointmentType" required>
-                            <option selected disabled> Select an Appointment Type </option>
-                        @for(aType <- AppointmentType.values()){
-                            @if(!aType.equals(AppointmentType.DEFAULT)) {
-                                <option value="@aType.appointmentType()">@aType.appointmentType()</option>
+                    <label for="coachId"></label>
+                    <select id="coachId" name="appointmentType" required>
+                        <option selected disabled> Select a coach </option>
+                        <option value="Any">Any Coach</option>
+                        @for(coach <- UserDB.getUsers) {
+                            @if(coach.getRole.equals(Role.COACH.role())) {
+                                <option value="@coach.getUid">@coach.getDisplayName</option>
                             }
                         }
-                        </select>
+                    </select>
                 </div>
                 <div class="step-actions">
                     <button class="btn btn-secondary previous-step">Previous Step</button>
@@ -39,20 +48,48 @@
             </div>
         </li>
         <li class="step">
-            <div class="step-title waves-effect">Select A Coach</div>
+            <div class="step-title waves-effect">Appointment Time</div>
             <div class="step-content">
-                Finish!
+                <div class="row">
+                @partials.components._appointmentCalendarForNewAppointment()
+                </div>
                 <div class="step-actions">
-                    <button class="btn btn-primary" type="submit">Create Appointment</button>
+
+                    <button class="btn btn-primary" onclick="createAppointment()" type="submit">Create Appointment</button>
                 </div>
             </div>
         </li>
     </ul>
-    </form>
     <script>
-            $(function(){
+            $(function () {
                 $('.stepper').activateStepper();
             });
+
+            function createAppointment() {
+                if (selectedEvents.length <= 0) {
+                    alert('No appointments have been selected');
+                }
+                var appointment = {
+                    id: selectedEvents[0].id,
+                    start: selectedEvents[0].start,
+                    end: selectedEvents[0].end
+                };
+                var form = {
+                    "appointmentType": $('#appointmentType').val(),
+                    "coachId": $('#coachId').val(),
+                    "appointments": appointment
+                };
+                if(confirm("Your appointment details:\n\n" +
+                        "Appointment Type: " + form.appointmentType + "\n" +
+                        "Coach: " + $("#coachId option:selected").text() + "\n" +
+                        "Date: " + moment(appointment.start).format('dddd, MMMM Do, YYYY h:mm:ss A') + "\n\n" +
+                        "Confirm Appointment?")) {
+                    /* Create appointment Here*/
+                    createAlert("success", "Appointment Created!");
+                } else {
+                    createAlert("warning", "Appointment Not Created");
+                }
+            }
     </script>
 }
 

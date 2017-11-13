@@ -71,14 +71,11 @@ function createMakeAppointmentCalendar() {
             eventLimit: true, // allow "more" link when too many events
             events: [
                 {
-                    "title": "Test",
-                    "start": moment().add(1, "days"),
-                    "end": moment().add(1, "days").add(30, "minutes")
-                },
-                {
-                    "title": "Test",
-                    "start": moment().add(2, "days"),
-                    "end": moment().add(2, "days").add(30, "minutes")
+                    title: "Test",
+                    id : "49hrjv941R",
+                    start:"10:00",
+                    end: "10:30",
+                    dow: [1,4]
                 }
             ],
             eventColor: '#0067F4',
@@ -90,11 +87,9 @@ function createMakeAppointmentCalendar() {
                         selectedEvents = jQuery.grep(selectedEvents, function (value) {
                             return value !== event;
                         });
-                        console.log(selectedEvents.length);
                     } else {
                         selectedEvents.push(event);
                         $(this).css('background-color', '#17C671');
-                        console.log(selectedEvents.length);
                     }
                 });
             }
