@@ -1,9 +1,11 @@
+@import controllers.ApplicationComponents.AppointmentType
 @()
 
 @main("Dashboard", "Dashboard") {
     <a href="/MakeAppointment">Make a New Appointment</a>
 
     @* Will be moved into a modal for other page sections *@
+    <form action="youraction" method="yourmethod">
     <ul class="stepper linear">
         <li class="step active">
             <div class="step-title waves-effect">Appointment Time</div>
@@ -12,45 +14,44 @@
                 @partials.components._appointmentCalendarForNewAppointment()
                 </div>
                 <div class="step-actions">
-                    <button class="waves-effect waves-dark btn next-step">Continue</button>
+                    <button class="btn btn-primary next-step">Next Step</button>
                 </div>
             </div>
         </li>
         <li class="step">
-            <div class="step-title waves-effect">Passo 2</div>
+            <div class="step-title waves-effect">Appointment Type</div>
             <div class="step-content">
                 <div class="row">
-                    <div class="input-field col s12">
-                        <input id="password" name="password" type="password" class="validate" required>
-                        <label for="password">Your password</label>
-                    </div>
+                    <label for="appointmentType"></label>
+                        <select id="appointmentType" name="appointmentType" required>
+                            <option selected disabled> Select an Appointment Type </option>
+                        @for(aType <- AppointmentType.values()){
+                            @if(!aType.equals(AppointmentType.DEFAULT)) {
+                                <option value="@aType.appointmentType()">@aType.appointmentType()</option>
+                            }
+                        }
+                        </select>
                 </div>
                 <div class="step-actions">
-                    <button class="waves-effect waves-dark btn next-step">CONTINUE</button>
-                    <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
+                    <button class="btn btn-secondary previous-step">Previous Step</button>
+                    <button class="btn btn-primary next-step">Next Step</button>
                 </div>
             </div>
         </li>
         <li class="step">
-            <div class="step-title waves-effect">Fim!</div>
+            <div class="step-title waves-effect">Select A Coach</div>
             <div class="step-content">
                 Finish!
                 <div class="step-actions">
-                    <button class="waves-effect waves-dark btn" type="submit">SUBMIT</button>
+                    <button class="btn btn-primary" type="submit">Create Appointment</button>
                 </div>
             </div>
         </li>
     </ul>
+    </form>
     <script>
             $(function(){
                 $('.stepper').activateStepper();
-                $('#embeddingDatePicker')
-                        .datepicker({
-                            format: 'mm/dd/yyyy'
-                        })
-                        .on('changeDate', function(e) {
-
-                        });
             });
     </script>
 }

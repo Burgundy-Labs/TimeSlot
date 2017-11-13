@@ -1,9 +1,9 @@
 package controllers.ApplicationComponents;
 
 public enum AppointmentType {
-    ONE_TO_ONE("One-to-one"),
+    REGULAR("Regular"),
     ASYNC("Async"),
-    DEFAULT(ONE_TO_ONE.appointmentType);
+    DEFAULT(REGULAR.appointmentType);
 
     private String appointmentType;
 

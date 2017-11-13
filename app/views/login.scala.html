@@ -39,9 +39,10 @@
                         }
                     },
                     signInSuccessUrl: '/Dashboard',
-                    signInOptions: [
-                        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-                    ],
+                    signInOptions: [{
+                        provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+                        scopes: ['https://www.googleapis.com/auth/calendar']
+                    }],
                     // Terms of service url.
                     tosUrl: '/Terms'
                 };
