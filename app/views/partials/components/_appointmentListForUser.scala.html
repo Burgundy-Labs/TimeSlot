@@ -10,7 +10,7 @@
         </tr>
     </thead>
     <tbody>
-    @for(appointment <- new AppointmentsController().getAppointments("")) {
+    @for(appointment <- AppointmentsDB.getAppointments) {
         <tr>
             <td>
                 <i class="material-icons mdl-list__item-avatar">person</i>
@@ -18,8 +18,8 @@
             <td>
             @appointment.getStudentName()
             </td>
-            <td>@appointment.getStartDate()</td>
-            <td>@appointment.getEndDate()</td>
+            <td class="date">@appointment.getStartDate()</td>
+            <td class="date">@appointment.getEndDate()</td>
             <td>@appointment.getAppointmentNotes()</td>
             <td>
                 <span class="mdl-list__item-secondary-content">
@@ -34,6 +34,13 @@
 </table>
 <script type="text/javascript">
             $(document).ready(function () {
+                /* Format dates for humans */
+                console.log($('.date').text());
+                $('.date').each(function() {
+                    $(this).text(moment($(this).text()).format('MMM DD YYYY, HH:mm'));
+                });
+
+
                 $('#appointmentList').DataTable({
                     "dom": "<'row'<'col-sm-10'l><'col-sm-2'f>>" +
                     "<'row'<'col-sm-12'tr>>" +
@@ -42,4 +49,4 @@
                 });
             });
 
-</script>
+</script>@import controllers.Databases.AppointmentsDB

@@ -8,6 +8,7 @@ import com.google.cloud.firestore.WriteResult;
 import controllers.ApplicationComponents.AppointmentType;
 import controllers.Databases.FirestoreDB;
 import models.AppointmentsModel;
+import models.UsersModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,8 +41,12 @@ public class AppointmentsDB {
                     document.getString("start_date"),
                     document.getString("end_date"),
                     document.getString("studentId"),
+                    document.getString("studentName"),
+                    document.getString("studentEmail"),
                     document.getString("coachId"),
-                    document.getString("appoinment_notes"),
+                    document.getString("coachName"),
+                    document.getString("coachEmail"),
+                    document.getString("appointment_notes"),
                     document.getBoolean("present"),
                     AppointmentType.getAppointmentType(document.getString("appointment_type")));
         } else {
@@ -70,8 +75,12 @@ public class AppointmentsDB {
                     document.getString("start_date"),
                     document.getString("end_date"),
                     document.getString("studentId"),
+                    document.getString("studentName"),
+                    document.getString("studentEmail"),
                     document.getString("coachId"),
-                    document.getString("appoinment_notes"),
+                    document.getString("coachName"),
+                    document.getString("coachEmail"),
+                    document.getString("appointment_notes"),
                     document.getBoolean("present"),
                     AppointmentType.getAppointmentType(document.getString("appointment_type")));
             appointmentList.add(appointment);
@@ -84,10 +93,16 @@ public class AppointmentsDB {
         DocumentReference docRef = FirestoreDB.getFirestoreDB().collection("appointments").document(appointment.getAppointmentId());
         Map<String, Object> data = new HashMap<>();
         /* Create user model for DB insert */
+        UsersModel student = UserDB.getUser(appointment.getStudentId());
+        UsersModel coach = UserDB.getUser(appointment.getCoachId());
         data.put("start_date", appointment.getStartDate());
         data.put("end_date", appointment.getEndDate());
         data.put("studentId", appointment.getStudentId());
+        data.put("studentName",student.getDisplayName());
+        data.put("studentEmail", student.getEmail());
         data.put("coachId", appointment.getCoachId());
+        data.put("coachName", coach.getDisplayName());
+        data.put("coachEmail", coach.getEmail());
         data.put("appointment_notes", appointment.getAppointmentNotes());
         data.put("present", appointment.getPresent());
         data.put("appointment_type", appointment.getAppointmentType().appointmentType());
