@@ -1,4 +1,8 @@
 <script type="text/javascript">
+
+var selectedEvents = [];
+/* Create array to keep track of events */
+
 /*
     Bug: FullCalendar won't load up a Calendar control if it's not on a displayed page.
          Since the calendar isn't loaded when the page loads, but after you click the tab for it, the calendar doesn't show up.
@@ -6,145 +10,106 @@
     Solution: The best solution I could find that other people used was to make the calendar creation into a function, and keep trying to load the
               calendar. It will only load, however, when the calendar ID is visible on the page.
  */
-$(document).ready(function() {
-  createMakeAppointmentCalendar();
+$(document).ready(function () {
+    createMakeAppointmentCalendar();
 });
 
 function getMonth(month) {
-  switch(month) {
-    case "1":
-      return "January";
-      break;
-    case "2":
-      return "February";
-      break;
-    case "3":
-      return "March";
-      break;
-    case "4":
-      return "April";
-      break;
-    case "5":
-      return "May";
-      break;
-    case "6":
-      return "June";
-      break;
-    case "7":
-      return "July";
-      break;
-    case "8":
-      return "August";
-      break;
-    case "9":
-      return "September";
-      break;
-    case "10":
-      return "October";
-      break;
-    case "11":
-      return "November";
-      break;
-    case "12":
-      return "December";
-      break;
-    default:
-      return "uh oh";
-      break;
-  }
+    switch (month) {
+        case "1":
+            return "January";
+            break;
+        case "2":
+            return "February";
+            break;
+        case "3":
+            return "March";
+            break;
+        case "4":
+            return "April";
+            break;
+        case "5":
+            return "May";
+            break;
+        case "6":
+            return "June";
+            break;
+        case "7":
+            return "July";
+            break;
+        case "8":
+            return "August";
+            break;
+        case "9":
+            return "September";
+            break;
+        case "10":
+            return "October";
+            break;
+        case "11":
+            return "November";
+            break;
+        case "12":
+            return "December";
+            break;
+        default:
+            return "uh oh";
+            break;
+    }
 }
-function createMakeAppointmentCalendar () {
-  if ($('#calendar').is(':visible')) { //if the container is visible on the page
-    $('#calendar').fullCalendar({
-      header: {
-        left: 'prev,next',
-        center: 'title',
-      },
-      defaultDate: '2017-10-12',
-      defaultView: 'agendaWeek',
-      editable: true,
-      weekends: false,
-      eventLimit: true, // allow "more" link when too many events
-      events: [
-        {
-          title: 'All Day Event',
-          start: '2017-10-01'
-        },
-        {
-          title: 'Long Event',
-          start: '2017-10-07',
-          end: '2017-10-10'
-        },
-        {
-          id: 999,
-          title: 'Repeating Event',
-          start: '2017-10-09T16:00:00'
-        },
-        {
-          id: 999,
-          title: 'Repeating Event',
-          start: '2017-10-16T16:00:00'
-        },
-        {
-          title: 'Conference',
-          start: '2017-10-11',
-          end: '2017-10-13'
-        },
-        {
-          title: 'Meeting',
-          start: '2017-10-12T10:30:00',
-          end: '2017-10-12T12:30:00'
-        },
-        {
-          title: 'Lunch',
-          start: '2017-10-12T12:00:00'
-        },
-        {
-          title: 'Meeting',
-          start: '2017-10-12T14:30:00'
-        },
-        {
-          title: 'Happy Hour',
-          start: '2017-10-12T17:30:00',
-        },
-        {
-          title: 'Dinner',
-          start: '2017-10-12T20:00:00'
-        },
-        {
-          title: 'Birthday Party',
-          start: '2017-10-13T07:00:00'
-        },
-        {
-          title: 'Click for Google',
-          url: 'http://google.com/',
-          start: '2017-10-28'
-        }
-      ],
-      eventColor: 'blue',
-      eventBoolean: 'false',
-      eventEvent: 'null',
-      eventRender: function(event, element, view) {
-        element.bind('click', function() {
-          $(this).css('background-color', 'green');
-          if ( eventBoolean = 'true' ) {
-              $(eventEvent).css('background-color', 'blue');
-          }
-          eventBoolean = 'true';
+
+function createMakeAppointmentCalendar() {
+    if ($('#calendar').is(':visible')) { //if the container is visible on the page
+        $('#calendar').fullCalendar({
+            header: {
+                left: 'prev,next',
+                center: 'title'
+            },
+            defaultView: 'agendaWeek',
+            editable: false,
+            weekends: false,
+            eventLimit: true, // allow "more" link when too many events
+            events: [
+                {
+                    "title": "Test",
+                    "start": moment().add(1, "days"),
+                    "end": moment().add(1, "days").add(30, "minutes")
+                },
+                {
+                    "title": "Test",
+                    "start": moment().add(2, "days"),
+                    "end": moment().add(2, "days").add(30, "minutes")
+                }
+            ],
+            eventColor: '#0067F4',
+            eventEvent: 'null',
+            eventRender: function (event, element, view) {
+                element.bind('click', function () {
+                    if ($.inArray(event, selectedEvents) !== -1) {
+                        $(this).css('background-color', '#0067F4');
+                        selectedEvents = jQuery.grep(selectedEvents, function (value) {
+                            return value !== event;
+                        });
+                        console.log(selectedEvents.length);
+                    } else {
+                        selectedEvents.push(event);
+                        $(this).css('background-color', '#17C671');
+                        console.log(selectedEvents.length);
+                    }
+                });
+            }
         });
-      }
-    });
-  } else {
-    setTimeout(createMakeAppointmentCalendar, 50); //wait 50 ms, then try again
-  }
+    } else {
+        setTimeout(createMakeAppointmentCalendar, 50); //wait 50 ms, then try again
+    }
 };
 </script>
-<p><b>Choose an Appointment Slot Below</b></p>
 <br/>
 <div style="width: 1450px">
-  <div class="row">
-    <div class="col-md-6" id="calendarContainer">
-      <div id='calendar'></div>
+    <div class="row">
+        <div class="col-md-6" id="calendarContainer">
+            <div id='calendar'></div>
+        </div>
     </div>
-  </div></div>
+</div>
 

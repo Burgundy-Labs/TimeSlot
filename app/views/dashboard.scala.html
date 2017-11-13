@@ -2,5 +2,56 @@
 
 @main("Dashboard", "Dashboard") {
     <a href="/MakeAppointment">Make a New Appointment</a>
+
+    @* Will be moved into a modal for other page sections *@
+    <ul class="stepper linear">
+        <li class="step active">
+            <div class="step-title waves-effect">Appointment Time</div>
+            <div class="step-content">
+                <div class="row">
+                @partials.components._appointmentCalendarForNewAppointment()
+                </div>
+                <div class="step-actions">
+                    <button class="waves-effect waves-dark btn next-step">Continue</button>
+                </div>
+            </div>
+        </li>
+        <li class="step">
+            <div class="step-title waves-effect">Passo 2</div>
+            <div class="step-content">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="password" name="password" type="password" class="validate" required>
+                        <label for="password">Your password</label>
+                    </div>
+                </div>
+                <div class="step-actions">
+                    <button class="waves-effect waves-dark btn next-step">CONTINUE</button>
+                    <button class="waves-effect waves-dark btn-flat previous-step">BACK</button>
+                </div>
+            </div>
+        </li>
+        <li class="step">
+            <div class="step-title waves-effect">Fim!</div>
+            <div class="step-content">
+                Finish!
+                <div class="step-actions">
+                    <button class="waves-effect waves-dark btn" type="submit">SUBMIT</button>
+                </div>
+            </div>
+        </li>
+    </ul>
+    <script>
+            $(function(){
+                $('.stepper').activateStepper();
+                $('#embeddingDatePicker')
+                        .datepicker({
+                            format: 'mm/dd/yyyy'
+                        })
+                        .on('changeDate', function(e) {
+
+                        });
+            });
+    </script>
 }
 
