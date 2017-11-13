@@ -4,11 +4,8 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.WriteResult;
-import controllers.Assets;
 import models.SettingsModel;
 import play.api.Play;
-import scala.reflect.io.AbstractFile;
-import scala.reflect.io.VirtualFile;
 
 import java.io.File;
 import java.io.FileWriter;
