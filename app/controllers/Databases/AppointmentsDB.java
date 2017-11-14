@@ -43,9 +43,11 @@ public class AppointmentsDB {
                     document.getString("studentId"),
                     document.getString("studentName"),
                     document.getString("studentEmail"),
+                    document.getString("studentPhoto"),
                     document.getString("coachId"),
                     document.getString("coachName"),
                     document.getString("coachEmail"),
+                    document.getString("coachPhoto"),
                     document.getString("appointment_notes"),
                     document.getBoolean("present"),
                     AppointmentType.getAppointmentType(document.getString("appointment_type")));
@@ -77,9 +79,11 @@ public class AppointmentsDB {
                     document.getString("studentId"),
                     document.getString("studentName"),
                     document.getString("studentEmail"),
+                    document.getString("studentPhoto"),
                     document.getString("coachId"),
                     document.getString("coachName"),
                     document.getString("coachEmail"),
+                    document.getString("coachPhoto"),
                     document.getString("appointment_notes"),
                     document.getBoolean("present"),
                     AppointmentType.getAppointmentType(document.getString("appointment_type")));
@@ -100,9 +104,11 @@ public class AppointmentsDB {
         data.put("studentId", appointment.getStudentId());
         data.put("studentName",student.getDisplayName());
         data.put("studentEmail", student.getEmail());
+        data.put("studentPhoto", student.getPhotoURL());
         data.put("coachId", appointment.getCoachId());
         data.put("coachName", coach.getDisplayName());
         data.put("coachEmail", coach.getEmail());
+        data.put("coachPhoto", coach.getPhotoURL());
         data.put("appointment_notes", appointment.getAppointmentNotes());
         data.put("present", appointment.getPresent());
         data.put("appointment_type", appointment.getAppointmentType().appointmentType());
