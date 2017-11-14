@@ -1,11 +1,11 @@
-@import controllers.ApplicationComponents.Role
+@import controllers.ApplicationComponents.Roles
 @(user: UsersModel)
-@if(true /*UserController.getCurrentUser.getRole.equals(Role.ADMIN.role())*/) {
+@if(true /*UserController.getCurrentUser.getRole.equals(Roles.ADMIN.role())*/) {
     <label>
         <select id='select-@user.getUid' class="custom-select">
             <option selected>@user.getRole</option>
-            @for(role <- Role.getRoles) {
-                @if(!Role.getRole(user.getRole).equals(role)) {
+            @for(role <- Roles.getRoles) {
+                @if(!Roles.getRole(user.getRole).equals(role)) {
                     <option value="@role.role()">@role.role()</option>
                 }
             }

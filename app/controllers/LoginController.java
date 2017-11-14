@@ -1,7 +1,7 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import controllers.ApplicationComponents.Role;
+import controllers.ApplicationComponents.Roles;
 import controllers.Databases.UserDB;
 import models.UsersModel;
 import play.libs.Json;
@@ -26,7 +26,7 @@ public class LoginController extends Controller {
         /* Check if user is in DB */
         UsersModel u = UserDB.getUser(user.getUid());
         if (u == null) {
-            user.setRole(Role.getRole("Student"));
+            user.setRole(Roles.getRole("Student"));
             UserDB.addUser(user);
         } else {
             user = u;

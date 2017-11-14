@@ -1,6 +1,6 @@
-@import controllers.ApplicationComponents.AppointmentType
+@import controllers.ApplicationComponents.{AppointmentTypes, Roles}
 @import controllers.Databases.UserDB
-@import controllers.ApplicationComponents.Role
+@import controllers.ApplicationComponents.Services
 @()
 
 @main("Dashboard", "Dashboard") {
@@ -12,13 +12,22 @@
             <div class="step-title waves-effect">Appointment Type</div>
             <div class="step-content col-md-3">
                 <div>
-                    <label for="appointmentType"></label>
+                    <label for="appointmentType">Type of appointment</label>
+                    <br/>
                     <select id="appointmentType" name="appointmentType" required>
                         <option selected disabled> Select an Appointment Type </option>
-                        @for(aType <- AppointmentType.getAppointmentTypes) {
-x                            <option value="@aType.appointmentType()">@aType.appointmentType()</option>
+                        @for(appointment <- AppointmentTypes.getAppointmentTypes) {
+x                            <option value="@appointment.appointmentType()">@appointment.appointmentType()</option>
                         }
-
+                    </select>
+                    <br/>
+                    <label for="appointmentType">Service desired</label>
+                    <br/>
+                    <select id="appointmentType" name="appointmentType" required>
+                        <option selected disabled> Select service</option>
+                        @for(service <- Services.getServices) {
+                            <option value="@service.service()">@service.service()</option>
+                        }
                     </select>
                 </div>
                 <div class="step-actions">
