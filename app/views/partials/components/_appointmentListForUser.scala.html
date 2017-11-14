@@ -1,11 +1,13 @@
 <table class="table table-responsive appointmentList" id="appointmentList">
     <thead>
         <tr>
-            <th>Profile Photo</th>
-            <th>Student Name</th>
-            <th>Coach Name</th>
+            <th></th>
+            <th>Student</th>
+            <th>Coach</th>
+            <th>Type</th>
             <th>Start</th>
             <th>End</th>
+            <th>Attendance</th>
             <th>Notes</th>
             <th>Manage</th>
         </tr>
@@ -22,8 +24,10 @@
             <td>
             @appointment.getCoachName()
             </td>
+            <td>@appointment.getAppointmentType()</td>
             <td class="date">@appointment.getStartDate()</td>
             <td class="date">@appointment.getEndDate()</td>
+            <td class="attendance">@appointment.getPresent()</td>
             <td class="appointmentNotes">@appointment.getAppointmentNotes()</td>
             <td>
                 <span class="mdl-list__item-secondary-content">
@@ -41,6 +45,14 @@
                 /* Format dates for humans */
                 $('.date').each(function() {
                     $(this).text(moment($(this).text()).format('MMM DD YYYY, HH:mm A'));
+                });
+
+                $('.attendance').each(function() {
+                    if($(this).text() === 'false'){
+                    $(this).html('<i class="material-icons application-tertiary">clear</i>');
+                    } else {
+                        $(this).html('<i class="material-icons application-secondary">done</i>');
+                    }
                 });
 
                 $('.appointmentNotes').shorten({

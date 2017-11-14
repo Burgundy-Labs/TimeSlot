@@ -50,7 +50,7 @@ public class AppointmentsDB {
                     document.getString("coachPhoto"),
                     document.getString("appointment_notes"),
                     document.getBoolean("present"),
-                    AppointmentType.getAppointmentType(document.getString("appointment_type")));
+                    document.getString("appointment_type"));
         } else {
             /* Log something */
         }
@@ -86,7 +86,7 @@ public class AppointmentsDB {
                     document.getString("coachPhoto"),
                     document.getString("appointment_notes"),
                     document.getBoolean("present"),
-                    AppointmentType.getAppointmentType(document.getString("appointment_type")));
+                    document.getString("appointment_type"));
             appointmentList.add(appointment);
         }
         return appointmentList;
@@ -111,7 +111,7 @@ public class AppointmentsDB {
         data.put("coachPhoto", coach.getPhotoURL());
         data.put("appointment_notes", appointment.getAppointmentNotes());
         data.put("present", appointment.getPresent());
-        data.put("appointment_type", appointment.getAppointmentType().appointmentType());
+        data.put("appointment_type", appointment.getAppointmentType());
         /* Asynchronously write appointment into DB */
         ApiFuture<WriteResult> result = docRef.set(data);
         result.isDone();
