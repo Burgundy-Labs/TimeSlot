@@ -8,9 +8,11 @@ public class AppointmentsModel {
     private String studentId;
     private String studentName;
     private String studentEmail;
+    private String studentPhoto;
     private String coachId;
     private String coachName;
     private String coachEmail;
+    private String coachPhoto;
     private String appointmentNotes;
     private boolean present;
     private AppointmentType appointmentType;
@@ -26,9 +28,11 @@ public class AppointmentsModel {
             String studentId,
             String studentName,
             String studentEmail,
+            String studentPhoto,
             String coachId,
             String coachName,
             String coachEmail,
+            String coachPhoto,
             String appointmentNotes,
             boolean present,
             AppointmentType appointmentType ) {
@@ -38,9 +42,11 @@ public class AppointmentsModel {
         this.studentName = studentName;
         this.studentId = studentId;
         this.studentEmail = studentEmail;
+        this.studentPhoto = studentPhoto;
         this.coachId = coachId;
         this.coachName = coachName;
         this.coachEmail = coachEmail;
+        this.coachPhoto = coachPhoto;
         this.appointmentNotes = appointmentNotes;
         this.present = present;
         this.appointmentType = appointmentType;
@@ -132,5 +138,21 @@ public class AppointmentsModel {
 
     public void setStudentEmail(String studentEmail) {
         this.studentEmail = studentEmail;
+    }
+
+    public String getCoachPhoto() {
+        return coachPhoto;
+    }
+
+    public void setCoachPhoto(String coachPhoto) {
+        this.coachPhoto = coachPhoto;
+    }
+
+    public String getStudentPhoto() {
+        return studentPhoto;
+    }
+
+    public void setStudentPhoto(String studentPhoto) {
+        this.studentPhoto = studentPhoto;
     }
 }
