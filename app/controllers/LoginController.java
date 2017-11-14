@@ -27,8 +27,9 @@ public class LoginController extends Controller {
         UsersModel u = UserDB.getUser(user.getUid());
         if (u == null) {
             user.setRole(Role.DEFAULT);
-            UserDB.addUser(user);
         }
+        UserDB.addUser(user);
+
         /* Add user to DB with 'student' role (default) */
         return ok();
     }

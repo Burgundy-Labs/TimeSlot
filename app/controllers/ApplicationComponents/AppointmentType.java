@@ -3,7 +3,7 @@ package controllers.ApplicationComponents;
 public enum AppointmentType {
     REGULAR("Regular"),
     WEEKLY("Weekly"),
-    ASYNC("Async"),
+    ONLINE("Online"),
     DEFAULT(REGULAR.appointmentType);
 
     private String appointmentType;
