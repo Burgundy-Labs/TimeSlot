@@ -1,7 +1,7 @@
 <table class="table table-responsive appointmentList" id="appointmentList">
     <thead>
         <tr>
-            <th></th>
+            <th>Profile Photo</th>
             <th>Student Name</th>
             <th>Coach Name</th>
             <th>Start</th>
@@ -24,12 +24,12 @@
             </td>
             <td class="date">@appointment.getStartDate()</td>
             <td class="date">@appointment.getEndDate()</td>
-            <td>@appointment.getAppointmentNotes()</td>
+            <td class="appointmentNotes">@appointment.getAppointmentNotes()</td>
             <td>
                 <span class="mdl-list__item-secondary-content">
-                    <span class="action-primary">@partials.components._tooltipIconLink("", "assignment", "bottom", "Notes")</span>
-                    <span class="action-secondary">@partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Reschedule")</span>
-                    <span class="action-delete">@partials.components._tooltipIconLink("", "close", "bottom", "Cancel")</span>
+                    <span class="action-primary">@partials.components._tooltipIconLink("", "assignment", "bottom", "Notes",32)</span>
+                    <span class="action-secondary">@partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Reschedule",32)</span>
+                    <span class="action-delete">@partials.components._tooltipIconLink("", "close", "bottom", "Cancel",32)</span>
                 </span>
             </td>
         </tr>
@@ -39,12 +39,13 @@
 <script type="text/javascript">
             $(document).ready(function () {
                 /* Format dates for humans */
-                console.log($('.date').text());
                 $('.date').each(function() {
                     $(this).text(moment($(this).text()).format('MMM DD YYYY, HH:mm A'));
                 });
 
-
+                $('.appointmentNotes').shorten({
+                    showChars: 150
+                });
                 $('#appointmentList').DataTable({
                     "dom": "<'row'<'col-sm-10'l><'col-sm-2'f>>" +
                     "<'row'<'col-sm-12'tr>>" +

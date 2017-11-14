@@ -27,16 +27,20 @@ initApp = function () {
 window.addEventListener('load', function () {
     initApp();
     document.getElementById('sign-out').addEventListener('click', function () {
-        firebase.auth().signOut().then(function() {
-            sessionStorage.clear();
-            localStorage.clear();
-            window.location = "/Logout";
-        }).catch(function(error) {
-            console.log(error);
-        });
+       signout();
     });
 });
 
+
+function signout() {
+    firebase.auth().signOut().then(function() {
+        sessionStorage.clear();
+        localStorage.clear();
+        window.location = "/Logout";
+    }).catch(function(error) {
+        console.log(error);
+    });
+}
 function disableLinks() {
     $("a[data-placement='right']").attr('href', '/Login');
 }

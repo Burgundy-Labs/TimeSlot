@@ -3,8 +3,8 @@
             <nav class="sidebar-navigation">
                 @for(menuLink <- Application.menuLinks) {
                     <div @if(currentPage.equals(menuLink.menuText)) {
-                        class="currentPage"}>@partials.components._tooltipIconLink(menuLink.href, menuLink.mdlIcon, "right", menuLink.menuText)</div>
+                        class="currentPage"}>@partials.components._tooltipIconLink(menuLink.href, menuLink.mdlIcon, "right", menuLink.menuText,32)</div>
                 }
-                    <div id="sign-out">@partials.components._tooltipIconLink("", "exit_to_app", "right", "Sign Out")</div>
+                    <div id="sign-out">@partials.components._tooltipIconLink("", "exit_to_app", "right", "Sign Out",32)</div>
         </nav>
     </div>

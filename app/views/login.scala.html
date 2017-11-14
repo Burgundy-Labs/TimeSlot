@@ -19,26 +19,32 @@
                                 uid: user.uid,
                                 phoneNumber: user.phoneNumber
                             };
-                            /* POST signed in user to Login Controller*/
-                            var csrfToken = $('input[name="csrfToken"]').attr('value');
-                            $.ajaxSetup({
-                                beforeSend: function(xhr) {
-                                    xhr.setRequestHeader('Csrf-Token', csrfToken);
-                                }
-                            });
-                            $.ajax({
-                               url: '/signedIn',
-                               type: 'POST',
-                               data: JSON.stringify(userSignIn),
-                               contentType: 'application/json',
-                               error: function(err) {
-                                   console.log(err);
-                               }
-                            });
-                            return true;
+                            if(!(user.email.split('@@')[1] === 'mtu.edu')){
+                                alert('Please sign in using an @@mtu.edu email address');
+                                signout();
+                                return false;
+                            } else {
+                                /* POST signed in user to Login Controller*/
+                                var csrfToken = $('input[name="csrfToken"]').attr('value');
+                                $.ajaxSetup({
+                                    beforeSend: function (xhr) {
+                                        xhr.setRequestHeader('Csrf-Token', csrfToken);
+                                    }
+                                });
+                                $.ajax({
+                                    url: '/signedIn',
+                                    type: 'POST',
+                                    data: JSON.stringify(userSignIn),
+                                    contentType: 'application/json',
+                                    error: function (err) {
+                                        console.log(err);
+                                    }
+                                });
+                                window.location = '/Dashboard';
+                                return true;
+                            }
                         }
                     },
-                    signInSuccessUrl: '/Dashboard',
                     signInOptions: [{
                         provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
                         scopes: ['https://www.googleapis.com/auth/calendar']
