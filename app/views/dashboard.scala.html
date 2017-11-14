@@ -20,7 +20,10 @@
                                 <option value="@aType.appointmentType()">@aType.appointmentType()</option>
                             }
                         }
-                    </select>
+                    </select> &nbsp; @partials.components._popoverIconLink("help","right","Appointment Type",
+                                                                            "<b>Regular</b>: One-on-one with a coach in the center." +
+                                                                            "<br/><br/> <b>Weekly</b>: A recurring weekly regular appointment." +
+                                                                            "<br/><br/> <b>Online</b>: Submit a paper for a coach to read and receive comments back.", 18)
                 </div>
                 <div class="step-actions">
                     <button class="btn btn-primary next-step">Next Step</button>
