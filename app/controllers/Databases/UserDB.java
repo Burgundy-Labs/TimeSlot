@@ -5,8 +5,7 @@ import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
-import controllers.ApplicationComponents.Role;
-import controllers.Databases.FirestoreDB;
+import controllers.ApplicationComponents.Roles;
 import models.UsersModel;
 
 import java.util.ArrayList;
@@ -42,7 +41,7 @@ public class UserDB {
                     document.getString("photo_url"),
                     document.getId(),
                     document.getString("phone_number"),
-                    Role.getRole(document.getString("role"))
+                    Roles.getRole(document.getString("role"))
             );
         } else {
             /* Log something */
@@ -72,7 +71,7 @@ public class UserDB {
                     document.getString("photo_url"),
                     document.getId(),
                     document.getString("phone_number"),
-                    Role.getRole(document.getString("role"))
+                    Roles.getRole(document.getString("role"))
                     );
             userList.add(user);
         }
