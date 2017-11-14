@@ -19,6 +19,7 @@
                                 uid: user.uid,
                                 phoneNumber: user.phoneNumber
                             };
+                            console.log(user.email.split('@@')[1]);
                             if(!(user.email.split('@@')[1] === 'mtu.edu')){
                                 alert('Please sign in using an @@mtu.edu email address');
                                 signout();
@@ -40,11 +41,11 @@
                                         console.log(err);
                                     }
                                 });
-                                window.location = '/Dashboard';
                                 return true;
                             }
                         }
                     },
+                    signInSuccessUrl: '/Dashboard',
                     signInOptions: [{
                         provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
                         scopes: ['https://www.googleapis.com/auth/calendar']
