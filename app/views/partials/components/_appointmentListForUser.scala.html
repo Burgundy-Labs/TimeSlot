@@ -3,6 +3,7 @@
         <tr>
             <th></th>
             <th>Student Name</th>
+            <th>Coach Name</th>
             <th>Start</th>
             <th>End</th>
             <th>Notes</th>
@@ -13,10 +14,13 @@
     @for(appointment <- AppointmentsDB.getAppointments) {
         <tr>
             <td>
-                <i class="material-icons mdl-list__item-avatar">person</i>
+                <img src="@appointment.getStudentPhoto()" class="userAvatar"/>
             </td>
             <td>
             @appointment.getStudentName()
+            </td>
+            <td>
+            @appointment.getCoachName()
             </td>
             <td class="date">@appointment.getStartDate()</td>
             <td class="date">@appointment.getEndDate()</td>
@@ -37,7 +41,7 @@
                 /* Format dates for humans */
                 console.log($('.date').text());
                 $('.date').each(function() {
-                    $(this).text(moment($(this).text()).format('MMM DD YYYY, HH:mm'));
+                    $(this).text(moment($(this).text()).format('MMM DD YYYY, HH:mm A'));
                 });
 
 

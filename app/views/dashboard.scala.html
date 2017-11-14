@@ -49,6 +49,21 @@
             </div>
         </li>
         <li class="step">
+            <div class="step-title waves-effect">Appointment Notes</div>
+            <div class="step-content">
+                <div class="row">
+                    <div class="form-group">
+                    <label for="appointmentNotes">What will the appointment be about?</label>
+                    <textarea class="form-control" rows="5" id="appointmentNotes"></textarea>
+                    </div>
+                </div>
+                <div class="step-actions">
+                    <button class="btn btn-secondary previous-step">Previous Step</button>
+                    <button class="btn btn-primary next-step">Next Step</button>
+                </div>
+            </div>
+        </li>
+        <li class="step">
             <div class="step-title waves-effect">Appointment Time</div>
             <div class="step-content">
                 <div class="row">
@@ -82,7 +97,7 @@
                     appointmentId: appointment.id,
                     startDate: appointment.startDate,
                     endDate:   appointment.endDate,
-                    appointmentNotes: "",
+                    appointmentNotes: $('#appointmentNotes').val(),
                     present: false
                 };
                 if(confirm("Your appointment details:\n\n" +
