@@ -6,9 +6,9 @@ $(document).ready(function () {
     }
     cheet('↑ ↑ ↓ ↓ ← → ← →', function () {
         localStorage.setItem("timeoutDisabled", true);
-        createAlert("warning", "Timeout has been disabled.");
+        createAlert("info", "Timeout has been disabled.");
     });
-    setInterval(timerIncrement, 60000); // 1 minute
+    setInterval(timerIncrement, 300000);
     $(this).mousemove(function (e) {
         idleTime = 0;
     });
@@ -19,7 +19,7 @@ $(document).ready(function () {
 
 function timerIncrement() {
     idleTime = idleTime + 1;
-    if (idleTime === 2 && Boolean(localStorage.getItem("timeoutDisabled"))) { // 20 minutes
+    if (idleTime === 2 && Boolean(localStorage.getItem("timeoutDisabled"))) {
         if (window.location.pathname !== "/Login") {
             alert('You have been signed out due to inactivity.');
             $('#sign-out').click();

@@ -1,5 +1,8 @@
 @import "global_variables"
-@import "partials/_colorSettings"
+*
+  -webkit-font-smoothing: antialiased
+  -moz-osx-font-smoothing: grayscale
+
 html, body
   height: 100%
   margin: 0 auto
@@ -51,6 +54,7 @@ a i.material-icons
   &:hover
     color: black
 
+
 .dashCards
   margin-top: 5px
   padding: 5px
@@ -76,6 +80,24 @@ a i.material-icons
     border-bottom: 10px solid $primary-color
     margin: 0 auto
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)
+
+.appointmentJumbotron
+  margin: 0 auto
+  text-align: center
+  height: 100vh
+  width: 100vw
+  display: table-cell
+  vertical-align: middle
+  .jumbotron
+    display: inline-block
+    width: 800px
+    height: 850px
+    border-radius: 4px
+    background-color: white
+    border-bottom: 10px solid $primary-color
+    margin: 0 auto
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)
+
   p
     background-color: darken(white, 2%)
     padding: 5px
@@ -100,6 +122,16 @@ a i.material-icons
 .nav-pills .nav-link.active
   background-color: $application-primary
 
+
+.application-primary
+  color: $application-primary
+
+.application-secondary
+  color: $application-secondary
+
+.application-tertiary
+  color: $application-tertiary
+
 .userAvatar
   width: 50px
   height: 50px
@@ -107,6 +139,9 @@ a i.material-icons
 
 #firebaseui-auth-container
   width: 100%
+
+.stepper
+  list-style-type: none
 
 button
   &:hover
@@ -117,6 +152,9 @@ button
   z-index: 999
   right: 50px
   bottom: 50px
+
+.appointmentNotes
+  width: 35%
 
 .modal
   .fade.in
@@ -130,6 +168,19 @@ button
   td
     vertical-align: middle
 
+
+[data-toggle="popover"]
+  &:hover
+    cursor: pointer
+
+.md-18
+  font-size: 18px
+
+.md-24
+  font-size: 24px
+
+.md-32
+  font-size: 32px
 
 // Custom Scrollbar
 ::-webkit-scrollbar

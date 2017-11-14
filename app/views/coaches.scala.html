@@ -11,7 +11,7 @@
                         <th>Profile Picture</th>
                         <th>Name</th>
                         <th>Email</th>
-                        <th>Role</th>
+                        <th>Roles</th>
                         <th>Manage</th>
                     </tr>
                 </thead>
@@ -28,9 +28,9 @@
                         </td>
                         <td>
                             <span class="mdl-list__item-secondary-content">
-                                <span class="action-primary">@partials.components._tooltipIconLink("mailto:" + user.getEmail,"email","bottom","Email User")</span>
-                                <span class="action-secondary">@partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Schedule Appointment")</span>
-                                <span class="action-delete"><span id="@user.getUid" onclick="deleteUser(this)">@partials.components._tooltipIconLink("", "close", "bottom", "Remove User")</span></span>
+                                <span class="action-primary">@partials.components._tooltipIconLink("mailto:" + user.getEmail,"email","bottom","Email User",32)</span>
+                                <span class="action-secondary">@partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Schedule Appointment",32)</span>
+                                <span class="action-delete"><span id="@user.getUid" onclick="deleteUser(this)">@partials.components._tooltipIconLink("", "close", "bottom", "Remove User",32)</span></span>
                             </span>
                         </td>
                     </tr>

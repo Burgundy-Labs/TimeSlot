@@ -1,7 +1,6 @@
 # Routes
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
-
 GET     /                    controllers.LoginController.index
 GET     /Dashboard           controllers.DashboardController.index
 GET     /Account             controllers.AccountController.index
@@ -13,10 +12,13 @@ GET     /Login               controllers.LoginController.index
 GET     /Logout              controllers.LoginController.logout
 GET     /Help                controllers.StaticController.help
 GET     /Terms               controllers.StaticController.terms
+GET     /MakeAppointment     controllers.AppointmentsController.makeAppointment
 
 POST    /signedIn            controllers.LoginController.signedIn
 POST    /updateUser          controllers.UserController.updateUser()
 POST    /deleteUser          controllers.UserController.removeUser()
 POST    /updateSettings      controllers.SettingsController.updateSettings()
+POST    /createAppointment   controllers.AppointmentsController.createAppointment()
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file        controllers.Assets.at(path="/public", file)
