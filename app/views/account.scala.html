@@ -1,5 +1,12 @@
 @()
 
 @main("Account", "Manage Account") {
-
+    @UserController.getCurrentUser.getDisplayName
+    <br/>
+    @UserController.getCurrentUser.getEmail
+    <br/>
+    @UserController.getCurrentUser.getUid
+    <br/>
+    @UserController.getCurrentUser.getRole
+    <br/>
 }

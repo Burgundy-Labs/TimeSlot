@@ -15,7 +15,7 @@ public class AppointmentsModel {
     private String coachPhoto;
     private String appointmentNotes;
     private boolean present;
-    private AppointmentType appointmentType;
+    private String appointmentType;
 
     public AppointmentsModel( ) {
 
@@ -35,7 +35,7 @@ public class AppointmentsModel {
             String coachPhoto,
             String appointmentNotes,
             boolean present,
-            AppointmentType appointmentType ) {
+            String appointmentType ) {
         this.appointmentId = appointmentId;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -104,9 +104,9 @@ public class AppointmentsModel {
 
     public void setPresent(boolean present) { this.present = present; }
 
-    public AppointmentType getAppointmentType() { return appointmentType; }
+    public String getAppointmentType() { return appointmentType; }
 
-    public void setAppointmentType( AppointmentType appointmentType ) { this.appointmentType = appointmentType; }
+    public void setAppointmentType( String appointmentType ) { this.appointmentType = appointmentType; }
 
     public String getStudentName() {
         return studentName;

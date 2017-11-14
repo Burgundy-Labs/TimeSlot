@@ -10,20 +10,16 @@
     <ul class="stepper linear">
         <li class="step active">
             <div class="step-title waves-effect">Appointment Type</div>
-            <div class="step-content col-md-2">
+            <div class="step-content col-md-3">
                 <div>
                     <label for="appointmentType"></label>
                     <select id="appointmentType" name="appointmentType" required>
                         <option selected disabled> Select an Appointment Type </option>
-                        @for(aType <- AppointmentType.values()) {
-                            @if(!aType.equals(AppointmentType.DEFAULT)) {
-                                <option value="@aType.appointmentType()">@aType.appointmentType()</option>
-                            }
+                        @for(aType <- AppointmentType.getAppointmentTypes) {
+x                            <option value="@aType.appointmentType()">@aType.appointmentType()</option>
                         }
-                    </select> &nbsp; @partials.components._popoverIconLink("help","right","Appointment Type",
-                                                                            "<b>Regular</b>: One-on-one with a coach in the center." +
-                                                                            "<br/><br/> <b>Weekly</b>: A recurring weekly regular appointment." +
-                                                                            "<br/><br/> <b>Online</b>: Submit a paper for a coach to read and receive comments back.", 24)
+
+                    </select>
                 </div>
                 <div class="step-actions">
                     <button class="btn btn-primary next-step">Next Step</button>
@@ -32,14 +28,14 @@
         </li>
         <li class="step">
             <div class="step-title waves-effect">Select Coach</div>
-            <div class="step-content  col-md-2">
+            <div class="step-content col-md-3">
                 <div>
                     <label for="coachId"></label>
                     <select id="coachId" name="appointmentType" required>
                         <option selected disabled> Select a coach </option>
                         <option value="Any">Any Coach</option>
                         @for(coach <- UserDB.getUsers) {
-                            @if(coach.getRole.equals(Role.COACH.role())) {
+                            @if(coach.getRole.equals("Coach")) {
                                 <option value="@coach.getUid">@coach.getDisplayName</option>
                             }
                         }
@@ -53,7 +49,7 @@
         </li>
         <li class="step">
             <div class="step-title waves-effect">Appointment Notes</div>
-            <div class="step-content col-md-2">
+            <div class="step-content col-md-3">
                 <div>
                     <div class="form-group">
                     <label for="appointmentNotes">What will the appointment be about?</label>
@@ -68,7 +64,7 @@
         </li>
         <li class="step">
             <div class="step-title waves-effect">Appointment Time</div>
-            <div class="step-content col-md-2">
+            <div class="step-content col-md-3">
                 <div>
                 @partials.components._appointmentCalendarForNewAppointment()
                 </div>
