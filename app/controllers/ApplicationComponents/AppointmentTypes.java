@@ -3,23 +3,23 @@ package controllers.ApplicationComponents;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AppointmentType {
-    private static List<AppointmentType> appointmentTypes = new ArrayList<>();
+public class AppointmentTypes {
+    private static List<AppointmentTypes> appointmentTypes = new ArrayList<>();
     private String appointmentType;
     private String description;
 
-    public AppointmentType(String appointmentType, String description) {
+    public AppointmentTypes(String appointmentType, String description) {
         this.appointmentType = appointmentType;
         this.description = description;
         appointmentTypes.add(this);
     }
 
-    public static List<AppointmentType> getAppointmentTypes() {
+    public static List<AppointmentTypes> getAppointmentTypes() {
         return appointmentTypes;
     }
 
-    public static AppointmentType getAppointmentType(String appointmentType) {
-        for(AppointmentType r : appointmentTypes) {
+    public static AppointmentTypes getAppointmentType(String appointmentType) {
+        for(AppointmentTypes r : appointmentTypes) {
             if(r.appointmentType.equals(appointmentType)){
                 return r;
             }
@@ -32,7 +32,7 @@ public class AppointmentType {
     }
     public String description() {return this.description;}
 
-    public void removeAppointmentType(AppointmentType appointmentType) {
+    public void removeAppointmentType(AppointmentTypes appointmentType) {
         appointmentTypes.remove(appointmentType);
     }
 }

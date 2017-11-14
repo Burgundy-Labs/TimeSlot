@@ -5,8 +5,6 @@ import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
-import controllers.ApplicationComponents.AppointmentType;
-import controllers.Databases.FirestoreDB;
 import models.AppointmentsModel;
 import models.UsersModel;
 

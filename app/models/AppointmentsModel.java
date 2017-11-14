@@ -1,5 +1,4 @@
 package models;
-import controllers.ApplicationComponents.AppointmentType;
 
 public class AppointmentsModel {
     private String appointmentId;

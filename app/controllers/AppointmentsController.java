@@ -1,13 +1,12 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import controllers.ApplicationComponents.AppointmentType;
+import controllers.ApplicationComponents.AppointmentTypes;
 import controllers.Databases.AppointmentsDB;
 import models.AppointmentsModel;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-import java.time.Instant;
 import java.util.*;
 
 public class AppointmentsController extends Controller {
@@ -41,7 +40,7 @@ public class AppointmentsController extends Controller {
         appointment.setAppointmentId(json.findPath("appointmentId").textValue());
         appointment.setCoachId(json.findPath("coachId").textValue());
         appointment.setStudentId(json.findPath("studentId").textValue());
-        appointment.setAppointmentType(AppointmentType.getAppointmentType(json.findPath("appointmentType").textValue()));
+        appointment.setAppointmentType(json.findPath("appointmentType").textValue());
         appointment.setStartDate(json.findPath("startDate").textValue());
         appointment.setEndDate(json.findPath("endDate").textValue());
         appointment.setAppointmentNotes(json.findPath("appointmentNotes").textValue());
