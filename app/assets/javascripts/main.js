@@ -3,6 +3,12 @@ $(function () {
     $('[data-toggle="popover"]').popover({html:true});
 });
 
+$(document).ready(function() {
+   if($('.sidebar').length) {
+       $('[data-original-title="Account"]').html('<img src="'+ firebase.auth().currentUser.photoURL+'" class="userAvatar"/>');
+   }
+});
+
 function createAlert(alertType, messageHTML) {
     $("<div></div>").appendTo('.page-content').addClass('alert alert-link alert-dismissible fade show alert-' + alertType)
         .html(
@@ -12,4 +18,30 @@ function createAlert(alertType, messageHTML) {
         '<div>' + messageHTML + '</div>'
 
     ).fadeTo(2000, 500).slideUp(500);
+}
+
+
+function createModal(modalID, modalContent, buttonText, buttonFunction) {
+    if ($('#'+modalID).length === 0) {
+        $(' <div class="modal fade" id="'+modalID+'" tabindex="-1" role="dialog" aria-labelledby="'+modalID+'-label" aria-hidden="true">\n' +
+            '        <div class="modal-dialog" role="document">\n' +
+            '        <div class="modal-content">\n' +
+            '        <div class="modal-header">\n' +
+            '        <h5 class="modal-title" id="'+modalID+'-label">Modal title</h5>\n' +
+            '    <button type="button" class="close" data-dismiss="modal" aria-label="Close">\n' +
+            '        <span aria-hidden="true">&times;</span>\n' +
+            '    </button>\n' +
+            '    </div>\n' +
+            '    <div class="modal-body">\n'
+            + modalContent +
+            '    </div>\n' +
+            '    <div class="modal-footer">\n' +
+            '        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>\n' +
+            '        <button type="button" onclick="' + buttonFunction + '" class="btn btn-primary">' + buttonText + '</button>\n' +
+            '    </div>\n' +
+            '    </div>\n' +
+            '    </div>\n' +
+            '    </div>\n'
+        ).appendTo('.page-content');
+    }
 }

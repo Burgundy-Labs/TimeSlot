@@ -34,7 +34,7 @@
                 photoURL: '@user.getPhotoURL',
                 uid: '@user.getUid',
                 phoneNumber: '@user.getPhoneNumber',
-                role: newRole.toUpperCase()
+                role: newRole
             };
             var csrfToken = $('input[name="csrfToken"]').attr('value');
             $.ajaxSetup({

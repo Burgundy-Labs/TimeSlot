@@ -47,6 +47,7 @@ public class AppointmentsDB {
                     document.getString("coachEmail"),
                     document.getString("coachPhoto"),
                     document.getString("appointment_notes"),
+                    document.getString("coach_notes"),
                     document.getBoolean("present"),
                     document.getString("appointment_type"));
         } else {
@@ -83,6 +84,7 @@ public class AppointmentsDB {
                     document.getString("coachEmail"),
                     document.getString("coachPhoto"),
                     document.getString("appointment_notes"),
+                    document.getString("coach_notes"),
                     document.getBoolean("present"),
                     document.getString("appointment_type"));
             appointmentList.add(appointment);
@@ -108,6 +110,7 @@ public class AppointmentsDB {
         data.put("coachEmail", coach.getEmail());
         data.put("coachPhoto", coach.getPhotoURL());
         data.put("appointment_notes", appointment.getAppointmentNotes());
+        data.put("coach_notes", appointment.getCoachNotes() != null ? appointment.getCoachNotes() : "");
         data.put("present", appointment.getPresent());
         data.put("appointment_type", appointment.getAppointmentType());
         /* Asynchronously write appointment into DB */
