@@ -106,13 +106,11 @@ a i.material-icons
 .list-group-item
   color: black
 
-  &:hover
-    background-color: $primary-color
-    color: black
+.action-black a
+  color: black
 
 .action-primary a
   color: $application-primary
-
 .action-secondary a
     color: $application-secondary
 
@@ -122,20 +120,27 @@ a i.material-icons
 .nav-pills .nav-link.active
   background-color: $application-primary
 
-
 .application-primary
   color: $application-primary
+.primary-background
+  background-color: $application-primary
 
 .application-secondary
   color: $application-secondary
+.secondary-background
+  background-color: $application-secondary
 
 .application-tertiary
   color: $application-tertiary
+.tertiary-background
+  background-color: $application-tertiary
 
 .userAvatar
   width: 50px
   height: 50px
   border-radius: 100%
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1)
 
 #firebaseui-auth-container
   width: 100%
@@ -146,6 +151,11 @@ a i.material-icons
 button
   &:hover
     cursor: pointer
+
+.no-button
+  -webkit-appearance: none
+  background: none
+  border: none
 
 .alert
   position: absolute

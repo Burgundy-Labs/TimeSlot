@@ -36,11 +36,12 @@ function signout() {
     firebase.auth().signOut().then(function() {
         sessionStorage.clear();
         localStorage.clear();
-        window.location = "/Logout";
+        window.location.href ='/Logout';
     }).catch(function(error) {
         console.log(error);
     });
 }
+
 function disableLinks() {
     $("a[data-placement='right']").attr('href', '/Login');
 }

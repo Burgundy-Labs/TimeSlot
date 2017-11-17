@@ -49,4 +49,21 @@ public class AppointmentsController extends Controller {
         AppointmentsDB.addAppointment(appointment);
         return ok();
     }
+
+    public Result cancelAppointment(){
+        JsonNode json = request().body().asJson();
+        String appointmentId = json.findPath("appointmentId").textValue();
+        AppointmentsDB.removeAppointment(appointmentId);
+        return ok();
+    }
+
+    public Result updateCoachNotes(){
+        JsonNode json = request().body().asJson();
+        String appointmentId = json.findPath("appointmentId").textValue();
+        String coachNotes = json.findPath("coachNotes").textValue();
+        AppointmentsModel appointment = AppointmentsDB.getAppointment(appointmentId);
+        appointment.setCoachNotes(coachNotes);
+        AppointmentsDB.addAppointment(appointment);
+        return ok();
+    }
 }
