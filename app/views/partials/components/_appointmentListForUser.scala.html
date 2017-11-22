@@ -1,15 +1,15 @@
 @helper.CSRF.formField
 @import controllers.Databases.AppointmentsDB
+@currentUser = @{UserController.getCurrentUser}
 @* Modal code to be dynamically filled by JS *@
-<div class="modal fade" id="deleteProductModal" tabindex="-1" role="dialog" aria-labelledby="deleteProductModalLabel" aria-hidden="true">
+<div class="modal fade" id="updateCoachNotes" tabindex="-1" role="dialog" aria-labelledby="updateCoachNotesLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="deleteProductModalLabel">Confirm Delete</h4>
+                <h4 class="modal-title" id="updateCoachNotesLabel"></h4>
             </div>
             <div class="modal-body">
-        Are you sure want to delete the product?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary">Update Coach Notes</button>
@@ -25,6 +25,7 @@
             <th>Student</th>
             <th>Coach</th>
             <th>Type</th>
+            <th>Service</th>
             <th>Start</th>
             <th>End</th>
             <th>Attendance</th>
@@ -36,25 +37,26 @@
     @for(appointment <- AppointmentsDB.getAppointments) {
         <tr>
             <td>
-                <img src="@appointment.getStudentPhoto()" class="userAvatar"/>
+                <img src="@appointment.getStudentPhoto" class="userAvatar"/>
             </td>
             <td>
-            @appointment.getStudentName()
+            @appointment.getStudentName
             </td>
             <td>
-            @appointment.getCoachName()
+            @appointment.getCoachName
             </td>
-            <td>@appointment.getAppointmentType()</td>
-            <td class="date">@appointment.getStartDate()</td>
-            <td class="date">@appointment.getEndDate()</td>
-            <td class="attendance">@appointment.getPresent()</td>
-            <td class="appointmentNotes">@appointment.getAppointmentNotes()</td>
+            <td>@appointment.getAppointmentType</td>
+            <td>@appointment.getServiceType</td>
+            <td class="date">@appointment.getStartDate</td>
+            <td class="date">@appointment.getEndDate</td>
+            <td class="attendance">@partials.components._appointmentAttendanceDropdown(appointment, currentUser)</td>
+            <td class="appointmentNotes">@appointment.getAppointmentNotes</td>
             <td>
                 <span class="mdl-list__item-secondary-content">
                     @if(appointment.getCoachNotes.equals("")){
-                        <button class="no-button" data-toggle="modal" data-target="#deleteProductModal" data-appointmentId="@appointment.getAppointmentId" data-appointmentNotes="@appointment.getCoachNotes"><span class="action-black" id="appointmentNotes">@partials.components._tooltipIconLink("javascript:void(0)", "assignment", "bottom", "Notes", 32)</span></button>
+                        <button class="no-button" data-toggle="modal" data-target="#updateCoachNotes" data-appointmentId="@appointment.getAppointmentId" data-appointmentNotes="@appointment.getCoachNotes"><span class="action-black" id="appointmentNotes">@partials.components._tooltipIconLink("javascript:void(0)", "assignment", "bottom", "Notes", 32)</span></button>
                     } else {
-                        <button class="no-button" data-toggle="modal" data-target="#deleteProductModal" data-appointmentId="@appointment.getAppointmentId" data-appointmentNotes="@appointment.getCoachNotes"><span class="action-primary" id="appointmentNotes">@partials.components._tooltipIconLink("javascript:void(0)", "assignment", "bottom", "Notes", 32)</span></button>
+                        <button class="no-button" data-toggle="modal" data-target="#updateCoachNotes" data-appointmentId="@appointment.getAppointmentId" data-appointmentNotes="@appointment.getCoachNotes"><span class="action-primary" id="appointmentNotes">@partials.components._tooltipIconLink("javascript:void(0)", "assignment", "bottom", "Notes", 32)</span></button>
 
                     }
                     <span class="action-secondary">@partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Reschedule", 32)</span>
@@ -115,7 +117,7 @@
     }
 
     $(document).ready(function () {
-        $('#deleteProductModal').on('show.bs.modal', function (event) { // id of the modal with event
+        $('#updateCoachNotes').on('show.bs.modal', function (event) { // id of the modal with event
             var button = $(event.relatedTarget); // Button that triggered the modal
             var appointmentId = button.attr('data-appointmentId'); // Extract info from data-* attributes
             var coachNotes = button.attr('data-appointmentNotes');
@@ -136,14 +138,6 @@
         /* Format dates for humans */
         $('.date').each(function () {
             $(this).text(moment($(this).text()).format('MMM DD YYYY, HH:mm A'));
-        });
-
-        $('.attendance').each(function () {
-            if ($(this).text() === 'false') {
-                $(this).html('<i class="material-icons application-tertiary">clear</i>');
-            } else {
-                $(this).html('<i class="material-icons application-secondary">done</i>');
-            }
         });
 
         $('.appointmentNotes').shorten({

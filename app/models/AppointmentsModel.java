@@ -16,6 +16,7 @@ public class AppointmentsModel {
     private String coachNotes;
     private boolean present;
     private String appointmentType;
+    private String serviceType;
 
     public AppointmentsModel( ) {
 
@@ -36,7 +37,8 @@ public class AppointmentsModel {
             String appointmentNotes,
             String coachNotes,
             boolean present,
-            String appointmentType ) {
+            String appointmentType,
+            String serviceType) {
         this.appointmentId = appointmentId;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -52,6 +54,7 @@ public class AppointmentsModel {
         this.coachNotes = coachNotes;
         this.present = present;
         this.appointmentType = appointmentType;
+        this.serviceType = serviceType;
     }
 
     public String getAppointmentId() {
@@ -164,5 +167,13 @@ public class AppointmentsModel {
 
     public void setCoachNotes(String coachNotes) {
         this.coachNotes = coachNotes;
+    }
+
+    public String getServiceType() {
+        return serviceType;
+    }
+
+    public void setServiceType(String serviceType) {
+        this.serviceType = serviceType;
     }
 }

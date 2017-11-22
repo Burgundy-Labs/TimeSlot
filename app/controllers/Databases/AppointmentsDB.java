@@ -33,7 +33,6 @@ public class AppointmentsDB {
         }
         assert document != null;
         if (document.exists()) {
-            System.out.println("Document data: " + document.getData());
             appointmentFound = new AppointmentsModel(
                     document.getId(),
                     document.getString("start_date"),
@@ -49,7 +48,8 @@ public class AppointmentsDB {
                     document.getString("appointment_notes"),
                     document.getString("coach_notes"),
                     document.getBoolean("present"),
-                    document.getString("appointment_type"));
+                    document.getString("appointment_type"),
+                    document.getString("service_type"));
         } else {
             /* Log something */
         }
@@ -86,7 +86,8 @@ public class AppointmentsDB {
                     document.getString("appointment_notes"),
                     document.getString("coach_notes"),
                     document.getBoolean("present"),
-                    document.getString("appointment_type"));
+                    document.getString("appointment_type"),
+                    document.getString("service_type"));
             appointmentList.add(appointment);
         }
         return appointmentList;
@@ -113,6 +114,7 @@ public class AppointmentsDB {
         data.put("coach_notes", appointment.getCoachNotes() != null ? appointment.getCoachNotes() : "");
         data.put("present", appointment.getPresent());
         data.put("appointment_type", appointment.getAppointmentType());
+        data.put("service_type",appointment.getServiceType());
         /* Asynchronously write appointment into DB */
         ApiFuture<WriteResult> result = docRef.set(data);
         result.isDone();

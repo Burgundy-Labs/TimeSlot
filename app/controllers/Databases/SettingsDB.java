@@ -59,17 +59,6 @@ public class SettingsDB {
             settings.setSecondaryColor("#ffffff");
             data.put("secondaryColor", settings.getSecondaryColor());
         }
-
-        try {
-            File sassVars = Play.current().getFile("app/assets/stylesheets/partials/_colorSettings.sass");
-            sassVars.createNewFile();
-            FileWriter filewriter = new FileWriter(sassVars);
-            filewriter.write("$primary-color: " + settings.getPrimaryColor() + "\n" + "$secondary-color: " + settings.getSecondaryColor());
-            filewriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         /* Write settings to DB */
         ApiFuture<WriteResult> result = docRef.set(data);
         result.isDone();
