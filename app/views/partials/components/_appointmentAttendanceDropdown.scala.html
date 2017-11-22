@@ -1,0 +1,53 @@
+@(appointment: AppointmentsModel, currentUser: UsersModel)
+@present = @{appointment.getPresent}
+@if(!currentUser.getRole.equals("Student")) {
+        <select id='select-@appointment.getAppointmentId' class="custom-select @if(present){success} else {danger}-border">
+            <option value="@present" selected>
+                @if(present) {&#10004;} else {&#x2716;}
+                </option>
+            <option value="@{!present}">
+            @if(!present) {&#10004;} else {&#x2716;}
+            </option>
+        </select>
+} else {
+
+}
+<script type="text/javascript">
+        $(document).on('click', '#select-@appointment.getAppointmentId', function () {
+            $(this).data('prev', $(this).val());
+        });
+
+        $(document).on('change', '#select-@appointment.getAppointmentId', function () {
+            var newPresence = $(this).val();
+            var csrfToken = $('input[name="csrfToken"]').attr('value');
+            $.ajaxSetup({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Csrf-Token', csrfToken);
+                }
+            });
+            var appointment = {
+              appointmentId: '@appointment.getAppointmentId',
+              present: newPresence
+            };
+            $.ajax({
+                url: '/updatePresence',
+                type: 'POST',
+                data: JSON.stringify(appointment),
+                contentType: 'application/json',
+                success: function () {
+                    if(newPresence){
+                        $('#select-@appointment.getAppointmentId').removeClass('danger-border');
+                        $('#select-@appointment.getAppointmentId').addClass('success-border');
+                    }else {
+                        $('#select-@appointment.getAppointmentId').removeClass('success-border');
+                        $('#select-@appointment.getAppointmentId').addClass('danger-border');
+                    }
+                    createAlert('info', 'Attendance Changed');
+                },
+                error: function (err) {
+                    createAlert('warning', 'Error changing attendance!');
+                    console.log(err);
+                }
+            });
+        });
+</script>
