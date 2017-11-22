@@ -33,7 +33,6 @@ public class AppointmentsDB {
         }
         assert document != null;
         if (document.exists()) {
-            System.out.println("Document data: " + document.getData());
             appointmentFound = new AppointmentsModel(
                     document.getId(),
                     document.getString("start_date"),
