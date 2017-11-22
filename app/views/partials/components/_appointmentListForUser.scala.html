@@ -1,3 +1,23 @@
+@helper.CSRF.formField
+@import controllers.Databases.AppointmentsDB
+@* Modal code to be dynamically filled by JS *@
+<div class="modal fade" id="deleteProductModal" tabindex="-1" role="dialog" aria-labelledby="deleteProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="deleteProductModalLabel">Confirm Delete</h4>
+            </div>
+            <div class="modal-body">
+        Are you sure want to delete the product?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Update Coach Notes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <table class="table table-responsive appointmentList" id="appointmentList">
     <thead>
         <tr>
@@ -31,39 +51,110 @@
             <td class="appointmentNotes">@appointment.getAppointmentNotes()</td>
             <td>
                 <span class="mdl-list__item-secondary-content">
-                    <span class="action-primary">@partials.components._tooltipIconLink("", "assignment", "bottom", "Notes",32)</span>
-                    <span class="action-secondary">@partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Reschedule",32)</span>
-                    <span class="action-delete">@partials.components._tooltipIconLink("", "close", "bottom", "Cancel",32)</span>
+                    @if(appointment.getCoachNotes.equals("")){
+                        <button class="no-button" data-toggle="modal" data-target="#deleteProductModal" data-appointmentId="@appointment.getAppointmentId" data-appointmentNotes="@appointment.getCoachNotes"><span class="action-black" id="appointmentNotes">@partials.components._tooltipIconLink("javascript:void(0)", "assignment", "bottom", "Notes", 32)</span></button>
+                    } else {
+                        <button class="no-button" data-toggle="modal" data-target="#deleteProductModal" data-appointmentId="@appointment.getAppointmentId" data-appointmentNotes="@appointment.getCoachNotes"><span class="action-primary" id="appointmentNotes">@partials.components._tooltipIconLink("javascript:void(0)", "assignment", "bottom", "Notes", 32)</span></button>
+
+                    }
+                    <span class="action-secondary">@partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Reschedule", 32)</span>
+                    <button type="button" class="no-button" onclick="cancelAppointment('@appointment.getAppointmentId')"><span class="action-delete">@partials.components._tooltipIconLink("", "close", "bottom", "Cancel", 32)</span>
+                    </button>
                 </span>
             </td>
         </tr>
     }
     </tbody>
 </table>
+
 <script type="text/javascript">
-            $(document).ready(function () {
-                /* Format dates for humans */
-                $('.date').each(function() {
-                    $(this).text(moment($(this).text()).format('MMM DD YYYY, HH:mm A'));
-                });
 
-                $('.attendance').each(function() {
-                    if($(this).text() === 'false'){
-                    $(this).html('<i class="material-icons application-tertiary">clear</i>');
-                    } else {
-                        $(this).html('<i class="material-icons application-secondary">done</i>');
-                    }
-                });
+    function updateCoachNotes(appointmentId) {
+        var coachNotes = $('#coachNotes-' + appointmentId).val();
+        var csrfToken = $('input[name="csrfToken"]').attr('value');
+        $.ajaxSetup({
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Csrf-Token', csrfToken);
+            }
+        });
+        $.ajax({
+            url: '/updateCoachNotes',
+            type: 'POST',
+            data: JSON.stringify({appointmentId: appointmentId, coachNotes: coachNotes }),
+            contentType: 'application/json',
+            success: function () {
+                location.reload();
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+    }
 
-                $('.appointmentNotes').shorten({
-                    showChars: 150
-                });
-                $('#appointmentList').DataTable({
-                    "dom": "<'row'<'col-sm-10'l><'col-sm-2'f>>" +
-                    "<'row'<'col-sm-12'tr>>" +
-                    "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-                    responsive: true
-                });
+    function cancelAppointment(appointmentId) {
+        if (confirm("Are you sure you want to cancel this appointment?")) {
+            var csrfToken = $('input[name="csrfToken"]').attr('value');
+            $.ajaxSetup({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Csrf-Token', csrfToken);
+                }
             });
+            $.ajax({
+                url: '/cancelAppointment',
+                type: 'POST',
+                data: JSON.stringify({appointmentId: appointmentId}),
+                contentType: 'application/json',
+                success: function () {
+                    location.reload();
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        }
+    }
 
-</script>@import controllers.Databases.AppointmentsDB
+    $(document).ready(function () {
+        $('#deleteProductModal').on('show.bs.modal', function (event) { // id of the modal with event
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var appointmentId = button.attr('data-appointmentId'); // Extract info from data-* attributes
+            var coachNotes = button.attr('data-appointmentNotes');
+
+            var title = 'Coach Notes';
+            var content = '  <div class="form-group">\n' +
+                    '    <label for="exampleTextarea">Coach Notes</label>\n' +
+                    '    <textarea class="form-control" id="coachNotes-' + appointmentId + '" rows="3">' + coachNotes + '</textarea>\n' +
+                    '  </div>';
+
+            // Update the modal's content.
+            var modal = $(this);
+            modal.find('.modal-title').text(title);
+            modal.find('.modal-body').html(content);
+            modal.find('button.btn-primary').val(appointmentId).attr("onclick", "updateCoachNotes('" + appointmentId + "')");
+        });
+
+        /* Format dates for humans */
+        $('.date').each(function () {
+            $(this).text(moment($(this).text()).format('MMM DD YYYY, HH:mm A'));
+        });
+
+        $('.attendance').each(function () {
+            if ($(this).text() === 'false') {
+                $(this).html('<i class="material-icons application-tertiary">clear</i>');
+            } else {
+                $(this).html('<i class="material-icons application-secondary">done</i>');
+            }
+        });
+
+        $('.appointmentNotes').shorten({
+            showChars: 150
+        });
+        $('#appointmentList').DataTable({
+            "dom": "<'row'<'col-sm-10'l><'col-sm-2'f>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+            responsive: true
+        });
+    });
+
+</script>

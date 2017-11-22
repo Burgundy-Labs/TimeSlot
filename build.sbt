@@ -2,7 +2,7 @@ name := "project_burgundy"
 
 version := "1.0"
 
-lazy val `project_burgundy` = (project in file(".")).enablePlugins(PlayJava)
+lazy val `project_burgundy` = (project in file(".")).enablePlugins(PlayJava, LauncherJarPlugin)
 
 resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 
