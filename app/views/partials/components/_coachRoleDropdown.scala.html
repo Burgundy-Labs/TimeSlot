@@ -1,6 +1,6 @@
 @import controllers.ApplicationComponents.Roles
-@(user: UsersModel)
-@if(true /*UserController.getCurrentUser.getRole.equals(Roles.ADMIN.role())*/) {
+@(user: UsersModel, currentUser: UsersModel)
+@if(currentUser.getRole.equals("Admin")) {
     <label>
         <select id='select-@user.getUid' class="custom-select">
             <option selected>@user.getRole</option>
