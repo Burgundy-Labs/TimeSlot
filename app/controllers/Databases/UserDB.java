@@ -33,7 +33,6 @@ public class UserDB {
         }
         assert document != null;
         if (document.exists()) {
-            System.out.println("Document data: " + document.getData());
             userFound = new UsersModel(
                     document.getString("display_name"),
                     document.getString("email"),

@@ -21,9 +21,9 @@ x                            <option value="@appointment.appointmentType()">@app
                         }
                     </select>
                     <br/>
-                    <label for="appointmentType">Service desired</label>
+                    <label for="serviceType">Service desired</label>
                     <br/>
-                    <select id="appointmentType" name="appointmentType" required>
+                    <select id="serviceType" name="serviceType" required>
                         <option selected disabled> Select service</option>
                         @for(service <- Services.getServices) {
                             <option value="@service.service()">@service.service()</option>
@@ -99,6 +99,7 @@ x                            <option value="@appointment.appointmentType()">@app
                 };
                 var form = {
                     appointmentType: $('#appointmentType').val(),
+                    serviceType: $('#serviceType').val(),
                     coachId: $('#coachId').val(),
                     studentId: firebase.auth().currentUser.uid,
                     appointmentId: appointment.id,
