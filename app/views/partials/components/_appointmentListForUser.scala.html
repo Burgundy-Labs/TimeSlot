@@ -25,6 +25,7 @@
             <th>Student</th>
             <th>Coach</th>
             <th>Type</th>
+            <th>Service</th>
             <th>Start</th>
             <th>End</th>
             <th>Attendance</th>
@@ -45,6 +46,7 @@
             @appointment.getCoachName
             </td>
             <td>@appointment.getAppointmentType</td>
+            <td>@appointment.getServiceType</td>
             <td class="date">@appointment.getStartDate</td>
             <td class="date">@appointment.getEndDate</td>
             <td class="attendance">@partials.components._appointmentAttendanceDropdown(appointment, currentUser)</td>

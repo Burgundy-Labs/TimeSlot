@@ -53,6 +53,7 @@ public class AppointmentsController extends Controller {
         appointment.setEndDate(json.findPath("endDate").textValue());
         appointment.setAppointmentNotes(json.findPath("appointmentNotes").textValue());
         appointment.setPresent(Boolean.getBoolean(json.findPath("present").textValue()));
+        appointment.setServiceType(json.findPath("serviceType").textValue());
         /* Check if user is in DB */
         AppointmentsDB.addAppointment(appointment);
         return ok();
