@@ -4,7 +4,6 @@
 
 @main("Site Settings", "Settings") {
     @currentUser = @{UserController.getCurrentUser}
-
     @if(currentUser.getRole.equals("Admin")){
     <p>Change site-level settings.</p>
     <div class="row">
