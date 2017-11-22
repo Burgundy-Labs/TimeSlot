@@ -3,6 +3,9 @@
 @()
 
 @main("Site Settings", "Settings") {
+    @currentUser = @{UserController.getCurrentUser}
+
+    @if(currentUser.getRole.equals("Admin")){
     <p>Change site-level settings.</p>
     <div class="row">
         <div class="col-md-6">
@@ -109,5 +112,10 @@
                 });
             }
     </script>
+    } else {
+        This page is for administrators only.
+
+        To do: Add user-level settings here (for non-admins) - or remove from sidebar.
+    }
 }
 
