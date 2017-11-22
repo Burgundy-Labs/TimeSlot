@@ -32,6 +32,14 @@ public class AppointmentsController extends Controller {
         return ok(views.html.makeAppointment.render());
     }
 
+
+    public Result updatePresence() {
+        JsonNode json = request().body().asJson();
+        AppointmentsModel appointment = AppointmentsDB.getAppointment(json.findPath("appointmentId").textValue());
+        appointment.setPresent(json.findPath("present").asBoolean());
+        AppointmentsDB.addAppointment(appointment);
+        return ok();
+    }
     public Result createAppointment() {
         /* Get user object from request */
         JsonNode json = request().body().asJson();
