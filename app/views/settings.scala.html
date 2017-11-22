@@ -1,80 +1,120 @@
+@import controllers.ApplicationComponents.AppointmentTypes
+@import controllers.ApplicationComponents.Services
 @()
+@currentUser = @{UserController.getCurrentUser}
 
 @main("Site Settings", "Settings") {
+    @if(currentUser.getRole.equals("Admin")){
     <p>Change site-level settings.</p>
-    <form>
-        <div class="form-group">
-            <label for="universityName" class="col-sm-2 col-form-label">University Name</label>
-            <div class="col-sm-2">
-                <input type="text" class="form-control" id="universityName" value="@SettingsController.getSettings.getUniversityName">
-            </div>
+    <div class="row">
+        <div class="col-md-6">
+            <form>
+                <div class="form-group">
+                    <label for="universityName" class="col-sm-2 col-form-label">University Name</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id="universityName" value="@SettingsController.getSettings.getUniversityName">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="centerName" class="col-sm-2 col-form-label">Center Name</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id="centerName" value="@SettingsController.getSettings.getCenterName">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="primaryColor" class="col-sm-2 col-form-label">Primary Color</label>
+                    <div id="primaryColorPicker" class="input-group colorpicker-component col-sm-4">
+                        <input id="primaryColor" type="text" value="@SettingsController.getSettings.getPrimaryColor" class="form-control" />
+                        <span class="input-group-addon"><i></i></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="secondaryColor" class="col-sm-2 col-form-label">Secondary Color</label>
+                    <div id="secondaryColorPicker" class="input-group colorpicker-component col-sm-4">
+                        <input id="secondaryColor" type="text" value="@SettingsController.getSettings.getSecondaryColor" class="form-control" />
+                        <span class="input-group-addon"><i></i></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-4">
+                        @helper.CSRF.formField
+                        <button type="submit" onclick="updateSettings()" class="btn btn-primary">Update Site Settings</button>
+                    </div>
+                </div>
+            </form>
         </div>
-        <div class="form-group">
-            <label for="centerName" class="col-sm-2 col-form-label">Center Name</label>
-            <div class="col-sm-2">
-            <input type="text" class="form-control" id="centerName" value="@SettingsController.getSettings.getCenterName">
-            </div>
+        <div class="col-md-2">
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center">
+                    <h6 class="mb-1">Add new appointment type</h6>
+                    <button class="btn btn-primary btn-success" onclick="console.log('pushed')"><i class="material-icons md-18">add</i></button>
+                </li>
+            @for(appointmentType <- AppointmentTypes.getAppointmentTypes) {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <h6 class="mb-1">@appointmentType.appointmentType()</h6>
+                        <button class="btn btn-primary btn-danger" onclick="console.log('pushed')">Remove</button>
+                </li>
+            }
+            </ul>
         </div>
-        <div class="form-group">
-            <label for="primaryColor" class="col-sm-2 col-form-label">Primary Color</label>
-            <div id="primaryColorPicker" class="input-group colorpicker-component col-sm-2">
-                <input id="primaryColor" type="text" value="@SettingsController.getSettings.getPrimaryColor" class="form-control" />
-                <span class="input-group-addon"><i></i></span>
-            </div>
+        <div class="col-md-2">
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center">
+                    <h6 class="mb-1">Add new service</h6>
+                    <button class="btn btn-primary btn-success" onclick="console.log('pushed')"><i class="material-icons md-18">add</i></button>
+                </li>
+                @for(service <- Services.getServices) {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <h6 class="mb-1">@service.service()</h6>
+                        <button class="btn btn-primary btn-danger" onclick="console.log('pushed')">Remove</button>
+                    </li>
+                }
+            </ul>
         </div>
-        <div class="form-group">
-            <label for="secondaryColor" class="col-sm-2 col-form-label">Secondary Color</label>
-            <div id="secondaryColorPicker" class="input-group colorpicker-component col-sm-2">
-                <input id="secondaryColor" type="text" value="@SettingsController.getSettings.getSecondaryColor" class="form-control" />
-                <span class="input-group-addon"><i></i></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-sm-2">
-                @helper.CSRF.formField
-                <button type="submit" onclick="updateSettings()" class="btn btn-primary">Update Site Settings</button>
-            </div>
-        </div>
-    </form>
-
+    </div>
     <script type="text/javascript">
-         $(document).ready(function() {
-             $('#primaryColorPicker').colorpicker();
-             $('#secondaryColorPicker').colorpicker();
-             if(window.location.hash === "#success"){
-                 createAlert("info", "Settings updated successfully!");
-                 history.pushState("", document.title, window.location.pathname+ window.location.search);
-             }
-         });
+            $(document).ready(function () {
+                $('#primaryColorPicker').colorpicker();
+                $('#secondaryColorPicker').colorpicker();
+                if (window.location.hash === "#success") {
+                    createAlert("info", "Settings updated successfully!");
+                    history.pushState("", document.title, window.location.pathname + window.location.search);
+                }
+            });
 
-        function updateSettings(){
-            var settings = {
-                universityName: $('#universityName').val(),
-                centerName: $('#centerName').val(),
-                primaryColor: $("#primaryColorPicker").colorpicker('getValue',$("#primaryColor").val()),
-                secondaryColor: $('#secondaryColorPicker').colorpicker('getValue',$('#secondaryColor').val())
-            };
-            console.log(settings);
-            var csrfToken = $('input[name="csrfToken"]').attr('value');
-            $.ajaxSetup({
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('Csrf-Token', csrfToken);
-                }
-            });
-            $.ajax({
-                url: '/updateSettings',
-                type: 'POST',
-                data: JSON.stringify(settings),
-                contentType: 'application/json',
-                success: function() {
-                    window.location.hash = "#success";
-                    location.reload();
+            function updateSettings() {
+                var settings = {
+                    universityName: $('#universityName').val(),
+                    centerName: $('#centerName').val(),
+                    primaryColor: $("#primaryColorPicker").colorpicker('getValue', $("#primaryColor").val()),
+                    secondaryColor: $('#secondaryColorPicker').colorpicker('getValue', $('#secondaryColor').val())
+                };
+                console.log(settings);
+                var csrfToken = $('input[name="csrfToken"]').attr('value');
+                $.ajaxSetup({
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('Csrf-Token', csrfToken);
+                    }
+                });
+                $.ajax({
+                    url: '/updateSettings',
+                    type: 'POST',
+                    data: JSON.stringify(settings),
+                    contentType: 'application/json',
+                    success: function () {
+                        window.location.hash = "#success";
+                        location.reload();
                     },
-                error: function () {
-                    createAlert('warning', 'Settings not updated!');
-                }
-            });
-        }
+                    error: function () {
+                        createAlert('warning', 'Settings not updated!');
+                    }
+                });
+            }
     </script>
+    } else {
+        This page is for administrators only.
+
+        To do: Add user-level settings here (for non-admins) - or remove from sidebar.
+    }
 }
 
