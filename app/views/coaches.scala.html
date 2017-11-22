@@ -1,6 +1,7 @@
 @import controllers.Databases.UserDB
 @()
 @* TOOD pull "MTMC" from DB *@
+@currentUser = @{UserController.getCurrentUser}
 @main("Coaches", "MTMC Coaches") {
     @helper.CSRF.formField
     <div class="container-fluid">
@@ -16,7 +17,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for(user <- UserDB.getUsers){
+                    @for(user <- if(currentUser.getRole.equals("Student")) UserDB.getCoaches else UserDB.getUsers){
                     <tr>
                         <td>
                             <img class="userAvatar" src="@user.getPhotoURL" alt="Card image cap">
@@ -24,13 +25,15 @@
                         <td>@user.getDisplayName</td>
                         <td>@user.getEmail</td>
                         <td>
-                            @partials.components._coachRoleDropdown(user)
+                            @partials.components._coachRoleDropdown(user, currentUser)
                         </td>
                         <td>
                             <span class="mdl-list__item-secondary-content">
                                 <span class="action-primary">@partials.components._tooltipIconLink("mailto:" + user.getEmail,"email","bottom","Email User",32)</span>
                                 <span class="action-secondary">@partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Schedule Appointment",32)</span>
+                                @if(currentUser.getRole.equals("Admin")) {
                                 <span class="action-delete"><span id="@user.getUid" onclick="deleteUser(this)">@partials.components._tooltipIconLink("", "close", "bottom", "Remove User",32)</span></span>
+                                }
                             </span>
                         </td>
                     </tr>
