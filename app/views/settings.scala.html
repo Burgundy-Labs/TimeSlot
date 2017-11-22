@@ -1,9 +1,9 @@
 @import controllers.ApplicationComponents.AppointmentTypes
 @import controllers.ApplicationComponents.Services
 @()
+@currentUser = @{UserController.getCurrentUser}
 
 @main("Site Settings", "Settings") {
-    @currentUser = @{UserController.getCurrentUser}
     @if(currentUser.getRole.equals("Admin")){
     <p>Change site-level settings.</p>
     <div class="row">
