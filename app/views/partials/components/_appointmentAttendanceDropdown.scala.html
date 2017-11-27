@@ -35,7 +35,7 @@
                 data: JSON.stringify(appointment),
                 contentType: 'application/json',
                 success: function () {
-                    if(newPresence){
+                    if(newPresence === 'true'){
                         $('#select-@appointment.getAppointmentId').removeClass('danger-border');
                         $('#select-@appointment.getAppointmentId').addClass('success-border');
                     }else {
