@@ -165,7 +165,7 @@ function createMakeAppointmentCalendar () {
                 left: 'prev,next',
                 center: 'title',
             },
-            defaultDate: '2017-10-12',
+            defaultDate: moment().startOf('isoWeek'),
             defaultView: 'agendaWeek',
             navLinks: true, // can click day/week names to navigate views
             editable: true,
