@@ -1,6 +1,7 @@
 @()
 
 @main("Account", "Manage Account") {
+    <h1>User Information: </h1>
     @UserController.getCurrentUser.getDisplayName
     <br/>
     @UserController.getCurrentUser.getEmail
@@ -9,4 +10,35 @@
     <br/>
     @UserController.getCurrentUser.getRole
     <br/>
+
+    <h1>Availability Schedule</h1>
+    <div class="col-md-6">
+        <div id='availabilitySchedule'></div>
+    </div>
+
+    <script>
+            $(document).ready(function() {
+                $('#availabilitySchedule').fullCalendar({
+                    weekends: false,
+                    editable: true,
+                    selectable: true,
+                    defaultDate: moment().startOf('isoWeek'),
+                    defaultView: 'agendaWeek',
+                    navLinks: true, // can click day/week names to navigate views
+                    eventLimit: true, // allow "more" link when too many events,
+                    select: function (start, end, jsEvent, view) {
+                        var newEvent = new Object();
+                        newEvent.title = "available";
+                        newEvent.start = moment(start).format();
+                        newEvent.end = moment(end).format();
+                        $('#availabilitySchedule').fullCalendar('renderEvent', newEvent);
+                    }
+                })
+            });
+    </script>
+
 }
+
+
+
+
