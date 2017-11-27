@@ -18,7 +18,10 @@
 
     <script>
             $(document).ready(function() {
+                var events = [];
                 $('#availabilitySchedule').fullCalendar({
+                    minTime: "10:00",
+                    maxTime: "21:00",
                     weekends: false,
                     editable: true,
                     selectable: true,
@@ -27,11 +30,44 @@
                     navLinks: true, // can click day/week names to navigate views
                     eventLimit: true, // allow "more" link when too many events,
                     select: function (start, end, jsEvent, view) {
-                        var newEvent = new Object();
-                        newEvent.title = "available";
+                        var newEvent = {};
+                        newEvent.title = "Available";
                         newEvent.start = moment(start).format();
                         newEvent.end = moment(end).format();
-                        $('#availabilitySchedule').fullCalendar('renderEvent', newEvent);
+                        $.confirm({
+                            title: 'Availability',
+                            content: 'Is this available slot weekly?',
+                            theme: 'modern',
+                            buttons: {
+                                yes: {
+                                    text: 'Yes, weekly',
+                                    btnClass: 'btn-primary',
+                                    keys: ['enter', 'shift'],
+                                    action: function(){
+                                       newEvent.dow = [moment(start).isoWeekday()];
+                                        events.push(newEvent);
+                                        console.log(events);
+                                        $('#availabilitySchedule').fullCalendar('renderEvent', newEvent);
+                                    }
+                                },
+                                no: {
+                                    text: 'No, one-time',
+                                    btnClass: 'btn-primary',
+                                    action: function(){
+                                        events.push(newEvent);
+                                        console.log(events);
+                                        $('#availabilitySchedule').fullCalendar('renderEvent', newEvent);
+                                    }
+                                },
+                                cancel: {
+                                    text: 'Cancel Creating Availability',
+                                    action: function(){
+                                        console.log(events);
+
+                                    }
+                                }
+                            }
+                        });
                     }
                 })
             });
