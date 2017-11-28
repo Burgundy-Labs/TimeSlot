@@ -7,7 +7,7 @@
         <div id='availabilitySchedule'></div>
     </div>
     <script>
-            $(document).ready(function() {
+            $(document).ready(function () {
                 $('#availabilitySchedule').fullCalendar({
                     height: 'auto',
                     allDaySlot: false,
@@ -31,7 +31,7 @@
                                         end: $(this).attr('endDate'),
                                         dow: []
                                     };
-                                    if($(this).attr("weekly") === true){
+                                    if ($(this).attr("weekly") === true) {
                                         event.title = "Weekly";
                                         event.dow = [moment($(this).attr('startDate')).isoWeekday()];
                                         event.start = moment($(this).attr('startDate')).format("HH:mm");
@@ -41,11 +41,12 @@
                                 });
                                 callback(events);
                             }
-                            })},
+                        })
+                    },
                     eventOverlap: false,
                     selectOverlap: false,
-                    eventRender: function(event, eventElement) {
-                            eventElement.find("div.fc-content").prepend("<button onclick='removeAvailability(event.id)' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
+                    eventRender: function (event, eventElement) {
+                        eventElement.find("div.fc-content").prepend("<button onclick='removeAvailability(\"" + event.id + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
                     },
                     /* TODO pull from open / close hours of operation in settings page */
                     minTime: "10:00",
@@ -57,21 +58,21 @@
                     defaultView: 'agendaWeek',
                     navLinks: true, // can click day/week names to navigate views
                     eventLimit: true, // allow "more" link when too many events,
-                    eventDrop: function(event, delta, revertFunc) {
+                    eventDrop: function (event, delta, revertFunc) {
                         var changedEvent = {
-                            availabilityId : event.id,
-                            userId : '@UserController.getCurrentUser.getUid',
-                            startDate : moment(event.start).format(),
+                            availabilityId: event.id,
+                            userId: '@UserController.getCurrentUser.getUid',
+                            startDate: moment(event.start).format(),
                             endDate: moment(event.end).format(),
                             weekly: event.dow !== [] && event.dow !== null
                         };
                         createAvailability(changedEvent);
                     },
-                    eventResize: function(event, delta, revertFunc) {
+                    eventResize: function (event, delta, revertFunc) {
                         var changedEvent = {
-                            availabilityId : event.id,
-                            userId : '@UserController.getCurrentUser.getUid',
-                            startDate : moment(event.start).format(),
+                            availabilityId: event.id,
+                            userId: '@UserController.getCurrentUser.getUid',
+                            startDate: moment(event.start).format(),
                             endDate: moment(event.end).format(),
                             weekly: event.dow !== [] && event.dow !== null
                         };
@@ -79,8 +80,8 @@
                     },
                     select: function (start, end, jsEvent, view) {
                         var newAvailability = {
-                            userId : '@UserController.getCurrentUser.getUid',
-                            startDate : moment(start).format(),
+                            userId: '@UserController.getCurrentUser.getUid',
+                            startDate: moment(start).format(),
                             endDate: moment(end).format(),
                             weekly: false
                         };
@@ -93,7 +94,7 @@
                                     text: 'Yes, weekly',
                                     btnClass: 'btn-primary',
                                     keys: ['enter', 'shift'],
-                                    action: function(){
+                                    action: function () {
                                         newAvailability.weekly = true;
                                         createAvailability(newAvailability);
                                     }
@@ -101,13 +102,13 @@
                                 no: {
                                     text: 'No, one-time',
                                     btnClass: 'btn-primary',
-                                    action: function(){
+                                    action: function () {
                                         createAvailability(newAvailability);
                                     }
                                 },
                                 cancel: {
                                     text: 'Cancel Creating Availability',
-                                    action: function(){
+                                    action: function () {
                                     }
                                 }
                             }
@@ -116,7 +117,7 @@
                 })
             });
 
-            function removeAvailability(id){
+            function removeAvailability(id) {
                 $.confirm({
                     title: 'Alert',
                     content: 'Do you want to remove this availability slot?',
@@ -126,7 +127,7 @@
                             text: 'Remove',
                             btnClass: 'btn-primary',
                             keys: ['enter', 'shift'],
-                            action: function(){
+                            action: function () {
                                 var csrfToken = $('input[name="csrfToken"]').attr('value');
                                 $.ajaxSetup({
                                     beforeSend: function (xhr) {
@@ -136,10 +137,10 @@
                                 $.ajax({
                                     url: '/removeAvailability',
                                     type: 'POST',
-                                    data: JSON.stringify({availabilityId : id}),
+                                    data: JSON.stringify({availabilityId: id}),
                                     contentType: 'application/json',
-                                    success: function() {
-                                        setTimeout(function() {
+                                    success: function () {
+                                        setTimeout(function () {
                                             $('#availabilitySchedule').fullCalendar('rerenderEvents');
                                             $('#availabilitySchedule').fullCalendar('refetchEvents');
                                             createAlert("success", "Availability Removed!");
@@ -153,7 +154,7 @@
                         },
                         cancel: {
                             text: 'Cancel',
-                            action: function(){
+                            action: function () {
                             }
                         }
                     }
@@ -172,8 +173,8 @@
                     type: 'POST',
                     data: JSON.stringify(newAvailability),
                     contentType: 'application/json',
-                    success: function() {
-                        setTimeout(function() {
+                    success: function () {
+                        setTimeout(function () {
                             $('#availabilitySchedule').fullCalendar('rerenderEvents');
                             $('#availabilitySchedule').fullCalendar('refetchEvents');
                         }, 50);
