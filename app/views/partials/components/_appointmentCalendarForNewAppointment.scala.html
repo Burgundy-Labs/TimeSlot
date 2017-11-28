@@ -71,15 +71,19 @@ function createMakeAppointmentCalendar() {
             eventLimit: true, // allow "more" link when too many events
             minTime: "10:00",
             maxTime: "21:00",
-            events: [
-                {
-                    title: "Test",
-                    id : Math.random().toString(16).slice(2),
-                    start:"10:00",
-                    end: "10:30",
-                    dow: [1,4]
-                }
-            ],
+            events: {
+                url: '/availableSlots',
+                type: 'POST',
+                data: {
+                    custom_param1: 'something',
+                    custom_param2: 'somethingelse'
+                },
+                error: function() {
+                    alert('there was an error while fetching events!');
+                },
+                color: 'yellow',   // a non-ajax option
+                textColor: 'black' // a non-ajax option
+            },
             eventColor: '#0067F4',
             eventEvent: 'null',
             eventRender: function (event, element, view) {

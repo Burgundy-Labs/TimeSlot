@@ -53,7 +53,7 @@ public class AvailabilityModel {
         return availabilityId;
     }
 
-    public void setavailabilityId(String availabilityId) {
-        this.availabilityId = availabilityId;
+    public void setavailabilityId(String appointmentId) {
+        this.availabilityId = appointmentId;
     }
 }

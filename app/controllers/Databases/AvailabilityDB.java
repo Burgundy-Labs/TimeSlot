@@ -22,9 +22,8 @@ public class AvailabilityDB {
     public static List<AvailabilityModel> getAvailabilitesForUser(String userId) {
         List<AvailabilityModel> availabilityTimes = new ArrayList<>();
         /* Return null appointment if none found */
-        AppointmentsModel appointmentFound = null;
         /* Get the specific appointment reference from the DB*/
-        ApiFuture<QuerySnapshot> future = FirestoreDB.getFirestoreDB().collection("availabilities").whereEqualTo("userid",userId).get();
+        ApiFuture<QuerySnapshot> future = FirestoreDB.getFirestoreDB().collection("availabilities").whereEqualTo("userId",userId).get();
         List<DocumentSnapshot> documents = null;
         try {
             documents = future.get().getDocuments();
