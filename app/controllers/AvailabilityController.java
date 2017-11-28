@@ -18,6 +18,7 @@ public class AvailabilityController extends Controller {
         JsonNode json = request().body().asJson();
         /* Get user from json request */
         AvailabilityModel availability = new AvailabilityModel();
+        availability.setavailabilityId(json.findPath("availabilityId").textValue());
         availability.setUserid(json.findPath("userId").textValue());
         availability.setStartDate(json.findPath("startDate").textValue());
         availability.setEndDate(json.findPath("endDate").textValue());
@@ -30,5 +31,12 @@ public class AvailabilityController extends Controller {
     public Result availableSlots(String userId) {
         List<AvailabilityModel> availabilities = AvailabilityDB.getAvailabilitesForUser(userId);
         return ok(Json.toJson(availabilities));
+    }
+
+    public Result removeAvailability(){
+        JsonNode json = request().body().asJson();
+        String availabilityId = json.findPath("availabilityId").asText();
+        AvailabilityDB.removeAvailability(availabilityId);
+        return ok();
     }
 }

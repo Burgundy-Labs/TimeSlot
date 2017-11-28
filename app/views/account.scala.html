@@ -2,28 +2,16 @@
 
 @main("Account", "Manage Account") {
     @helper.CSRF.formField
-
-    <h1>User Information: </h1>
-    @UserController.getCurrentUser.getDisplayName
-    <br/>
-    @UserController.getCurrentUser.getEmail
-    <br/>
-    @UserController.getCurrentUser.getUid
-    <br/>
-    @UserController.getCurrentUser.getRole
-    <br/>
-
     <h1>Availability Schedule</h1>
-    <div class="col-md-6">
+    <div class="col-md-12">
         <div id='availabilitySchedule'></div>
     </div>
-
     <script>
             $(document).ready(function() {
                 $('#availabilitySchedule').fullCalendar({
+                    height: 'auto',
+                    allDaySlot: false,
                     events: function (start, end, timezone, callback) {
-                        console.log(start);
-                        console.log(end);
                         var csrfToken = $('input[name="csrfToken"]').attr('value');
                         $.ajaxSetup({
                             beforeSend: function (xhr) {
@@ -35,22 +23,31 @@
                             type: 'GET',
                             success: function (response) {
                                 var events = [];
-                                console.log(response);
                                 $(response).each(function () {
                                     var event = {
-                                        title: "Available",
+                                        id: $(this).attr('availabilityId'),
+                                        title: "One-Time",
                                         start: $(this).attr('startDate'),
                                         end: $(this).attr('endDate'),
                                         dow: []
                                     };
                                     if($(this).attr("weekly") === true){
+                                        event.title = "Weekly";
                                         event.dow = [moment($(this).attr('startDate')).isoWeekday()];
+                                        event.start = moment($(this).attr('startDate')).format("HH:mm");
+                                        event.end = moment($(this).attr('endDate')).format("HH:mm");
                                     }
                                     events.push(event);
                                 });
                                 callback(events);
                             }
                             })},
+                    eventOverlap: false,
+                    selectOverlap: false,
+                    eventRender: function(event, eventElement) {
+                            eventElement.find("div.fc-content").prepend("<button onclick='removeAvailability(event.id)' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
+                    },
+                    /* TODO pull from open / close hours of operation in settings page */
                     minTime: "10:00",
                     maxTime: "21:00",
                     weekends: false,
@@ -60,9 +57,28 @@
                     defaultView: 'agendaWeek',
                     navLinks: true, // can click day/week names to navigate views
                     eventLimit: true, // allow "more" link when too many events,
+                    eventDrop: function(event, delta, revertFunc) {
+                        var changedEvent = {
+                            availabilityId : event.id,
+                            userId : '@UserController.getCurrentUser.getUid',
+                            startDate : moment(event.start).format(),
+                            endDate: moment(event.end).format(),
+                            weekly: event.dow !== [] && event.dow !== null
+                        };
+                        createAvailability(changedEvent);
+                    },
+                    eventResize: function(event, delta, revertFunc) {
+                        var changedEvent = {
+                            availabilityId : event.id,
+                            userId : '@UserController.getCurrentUser.getUid',
+                            startDate : moment(event.start).format(),
+                            endDate: moment(event.end).format(),
+                            weekly: event.dow !== [] && event.dow !== null
+                        };
+                        createAvailability(changedEvent);
+                    },
                     select: function (start, end, jsEvent, view) {
                         var newAvailability = {
-                            title : "Available",
                             userId : '@UserController.getCurrentUser.getUid',
                             startDate : moment(start).format(),
                             endDate: moment(end).format(),
@@ -100,6 +116,50 @@
                 })
             });
 
+            function removeAvailability(id){
+                $.confirm({
+                    title: 'Alert',
+                    content: 'Do you want to remove this availability slot?',
+                    theme: 'modern',
+                    buttons: {
+                        yes: {
+                            text: 'Remove',
+                            btnClass: 'btn-primary',
+                            keys: ['enter', 'shift'],
+                            action: function(){
+                                var csrfToken = $('input[name="csrfToken"]').attr('value');
+                                $.ajaxSetup({
+                                    beforeSend: function (xhr) {
+                                        xhr.setRequestHeader('Csrf-Token', csrfToken);
+                                    }
+                                });
+                                $.ajax({
+                                    url: '/removeAvailability',
+                                    type: 'POST',
+                                    data: JSON.stringify({availabilityId : id}),
+                                    contentType: 'application/json',
+                                    success: function() {
+                                        setTimeout(function() {
+                                            $('#availabilitySchedule').fullCalendar('rerenderEvents');
+                                            $('#availabilitySchedule').fullCalendar('refetchEvents');
+                                            createAlert("success", "Availability Removed!");
+                                        }, 50);
+                                    },
+                                    error: function (err) {
+                                        console.log(err);
+                                    }
+                                });
+                            }
+                        },
+                        cancel: {
+                            text: 'Cancel',
+                            action: function(){
+                            }
+                        }
+                    }
+                });
+            }
+
             function createAvailability(newAvailability) {
                 var csrfToken = $('input[name="csrfToken"]').attr('value');
                 $.ajaxSetup({
@@ -113,7 +173,10 @@
                     data: JSON.stringify(newAvailability),
                     contentType: 'application/json',
                     success: function() {
-                        $('#availabilitySchedule').fullCalendar('renderEvent', newAvailability);
+                        setTimeout(function() {
+                            $('#availabilitySchedule').fullCalendar('rerenderEvents');
+                            $('#availabilitySchedule').fullCalendar('refetchEvents');
+                        }, 50);
                     },
                     error: function (err) {
                         console.log(err);
