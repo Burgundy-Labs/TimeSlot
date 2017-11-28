@@ -15,6 +15,7 @@ GET     /Logout              controllers.LoginController.logout
 GET     /Help                controllers.StaticController.help
 GET     /Terms               controllers.StaticController.terms
 GET     /MakeAppointment     controllers.AppointmentsController.makeAppointment
+GET     /availableSlots/:userId      controllers.AvailabilityController.availableSlots(userId: String)
 
 # POST requests
 POST    /signedIn            controllers.LoginController.signedIn()
