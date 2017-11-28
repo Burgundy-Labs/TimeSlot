@@ -45,7 +45,6 @@ public class AppointmentsController extends Controller {
         JsonNode json = request().body().asJson();
         /* Get user from json request */
         AppointmentsModel appointment = new AppointmentsModel();
-        appointment.setAppointmentId(json.findPath("appointmentId").textValue());
         appointment.setCoachId(json.findPath("coachId").textValue());
         appointment.setStudentId(json.findPath("studentId").textValue());
         appointment.setAppointmentType(json.findPath("appointmentType").textValue());
