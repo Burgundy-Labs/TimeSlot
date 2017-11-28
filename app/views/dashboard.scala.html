@@ -17,7 +17,7 @@
                         <select id="appointmentType" name="appointmentType" required>
                             <option selected disabled> Select an Appointment Type </option>
                             @for(appointment <- AppointmentTypes.getAppointmentTypes) {
-                                x <option value="@appointment.appointmentType()">@appointment.appointmentType()</option>
+                                <option value="@appointment.appointmentType()">@appointment.appointmentType()</option>
                             }
                         </select>
                         <br/>
@@ -106,7 +106,6 @@
                         serviceType: $('#serviceType').val(),
                         coachId: $('#coachId').val(),
                         studentId: firebase.auth().currentUser.uid,
-                        appointmentId: appointment.id,
                         startDate: appointment.startDate,
                         endDate: appointment.endDate,
                         appointmentNotes: $('#appointmentNotes').val(),
