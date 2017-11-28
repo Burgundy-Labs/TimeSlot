@@ -1,6 +1,8 @@
 @()
 
 @main("Account", "Manage Account") {
+    @helper.CSRF.formField
+
     <h1>User Information: </h1>
     @UserController.getCurrentUser.getDisplayName
     <br/>
@@ -18,7 +20,6 @@
 
     <script>
             $(document).ready(function() {
-                var events = [];
                 $('#availabilitySchedule').fullCalendar({
                     minTime: "10:00",
                     maxTime: "21:00",
@@ -30,10 +31,12 @@
                     navLinks: true, // can click day/week names to navigate views
                     eventLimit: true, // allow "more" link when too many events,
                     select: function (start, end, jsEvent, view) {
-                        var newEvent = {};
-                        newEvent.title = "Available";
-                        newEvent.start = moment(start).format();
-                        newEvent.end = moment(end).format();
+                        var newAvailability = {
+                            title : "Available",
+                            userId : '@UserController.getCurrentUser.getUid',
+                            start : moment(start).format(),
+                            end : moment(end).format()
+                        };
                         $.confirm({
                             title: 'Availability',
                             content: 'Is this available slot weekly?',
@@ -44,25 +47,20 @@
                                     btnClass: 'btn-primary',
                                     keys: ['enter', 'shift'],
                                     action: function(){
-                                       newEvent.dow = [moment(start).isoWeekday()];
-                                        events.push(newEvent);
-                                        console.log(events);
-                                        $('#availabilitySchedule').fullCalendar('renderEvent', newEvent);
+                                        newAvailability.dow = [moment(start).isoWeekday()];
+                                        createAvailability(newAvailability);
                                     }
                                 },
                                 no: {
                                     text: 'No, one-time',
                                     btnClass: 'btn-primary',
                                     action: function(){
-                                        events.push(newEvent);
-                                        console.log(events);
-                                        $('#availabilitySchedule').fullCalendar('renderEvent', newEvent);
+                                        createAvailability(newAvailability);
                                     }
                                 },
                                 cancel: {
                                     text: 'Cancel Creating Availability',
                                     action: function(){
-                                        console.log(events);
                                     }
                                 }
                             }
@@ -70,6 +68,27 @@
                     }
                 })
             });
+
+            function createAvailability(newAvailability) {
+                var csrfToken = $('input[name="csrfToken"]').attr('value');
+                $.ajaxSetup({
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('Csrf-Token', csrfToken);
+                    }
+                });
+                $.ajax({
+                    url: '/createAvailability',
+                    type: 'POST',
+                    data: JSON.stringify(newAvailability),
+                    contentType: 'application/json',
+                    success: function() {
+                        $('#availabilitySchedule').fullCalendar('renderEvent', newAvailability);
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                });
+            }
     </script>
 
 }
