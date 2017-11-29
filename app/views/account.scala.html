@@ -1,6 +1,7 @@
 @()
 
 @main("Account", "Manage Account") {
+    @if(!UserController.getCurrentUser.getRole.equals("Student")){
     @helper.CSRF.formField
     <h1>Availability Schedule</h1>
     <div class="col-md-12">
@@ -59,12 +60,13 @@
                     navLinks: true, // can click day/week names to navigate views
                     eventLimit: true, // allow "more" link when too many events,
                     eventDrop: function (event, delta, revertFunc) {
+                        console.log(event);
                         var changedEvent = {
                             availabilityId: event.id,
                             userId: '@UserController.getCurrentUser.getUid',
                             startDate: moment(event.start).format(),
                             endDate: moment(event.end).format(),
-                            weekly: event.dow !== [] && event.dow !== null
+                            weekly: event.dow.length > 0
                         };
                         createAvailability(changedEvent);
                     },
@@ -74,7 +76,7 @@
                             userId: '@UserController.getCurrentUser.getUid',
                             startDate: moment(event.start).format(),
                             endDate: moment(event.end).format(),
-                            weekly: event.dow !== [] && event.dow !== null
+                            weekly: event.dow.length > 0
                         };
                         createAvailability(changedEvent);
                     },
@@ -186,6 +188,7 @@
             }
     </script>
 
+    }
 }
 
 

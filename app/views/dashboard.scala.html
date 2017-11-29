@@ -7,10 +7,10 @@
         @helper.CSRF.formField
         <a href="/MakeAppointment">Make a New Appointment</a>
         @* Will be moved into a modal for other page sections *@
-        <ul class="stepper linear">
+        <ul class="stepper linear ">
             <li class="step active">
                 <div class="step-title waves-effect">Appointment Type</div>
-                <div class="step-content col-md-3">
+                <div class="step-content">
                     <div>
                         <label for="appointmentType">Type of appointment</label>
                         <br/>
@@ -37,7 +37,7 @@
             </li>
             <li class="step">
                 <div class="step-title waves-effect">Select Coach</div>
-                <div class="step-content col-md-3">
+                <div class="step-content">
                     <div>
                         <label for="coachId"></label>
                         <select id="coachId" name="appointmentType" required>
@@ -58,7 +58,7 @@
             </li>
             <li class="step">
                 <div class="step-title waves-effect">Appointment Notes</div>
-                <div class="step-content col-md-3">
+                <div class="step-content">
                     <div>
                         <div class="form-group">
                             <label for="appointmentNotes">What will the appointment be about?</label>
@@ -73,7 +73,7 @@
             </li>
             <li class="step">
                 <div class="step-title waves-effect">Appointment Time</div>
-                <div class="step-content col-md-3">
+                <div class="step-content">
                     <div>
                     @partials.components._appointmentCalendarForNewAppointment()
                     </div>
@@ -95,8 +95,8 @@
                             content: 'No appointments slots have been selected.'
                         });
                     } else {
-
                     var appointment = {
+                        /* TOOD: If desired to allow multiple events - change this*/
                         id: selectedEvents[0].id,
                         startDate: selectedEvents[0].start,
                         endDate: selectedEvents[0].end
@@ -116,7 +116,7 @@
                         content: "<div class='appointmentDetails'>Your appointment details: <br/>" +
                         "<b>Appointment Type:</b> " + form.appointmentType + " <br/>" +
                         "<b>Coach:</b> " + $("#coachId option:selected").text() + " <br/>" +
-                        "<b>Date:</b>" + moment(appointment.start).format('dddd, MMMM Do, YYYY h:mm A') + " <br/>" +
+                        "<b>Date:</b>" + moment(appointment.startDate).format('dddd, MMMM Do, YYYY h:mm A') + " -" + moment(appointment.endDate).format('h:mm A')  + "<br/>" +
                         "</div>",
                         theme: 'modern',
                         buttons: {
