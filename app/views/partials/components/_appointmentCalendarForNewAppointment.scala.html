@@ -14,9 +14,25 @@ $(document).ready(function () {
 });
 
 function createMakeAppointmentCalendar() {
+    var visibleEvents = [];
     if ($('#calendar').is(':visible')) { //if the container is visible on the page
         $('#calendar').fullCalendar({
             height: 'auto',
+            selectAllow: function(selectInfo) {
+                window['moment-range'].extendMoment(moment);
+                var okay = false;
+                visibleEvents.forEach(function(item) {
+                    console.log(item.start);
+                    const range = moment.range(item.start, item.end);
+                    var selectStart = moment(selectInfo.start);
+                    var selectEnd = moment(selectInfo.end);
+                    if((selectStart.within(range) && selectEnd.within(range))){
+                        okay = true;
+
+                    }
+                });
+                return okay;
+            },
             allDaySlot: false,
             defaultView: 'agendaWeek',
             editable: false,
@@ -46,6 +62,7 @@ function createMakeAppointmentCalendar() {
                                 dow: [],
                                 rendering: 'background'
                             };
+                            visibleEvents.push($.extend({}, event));
                             if ($(this).attr("weekly") === true) {
                                 event.title = "Weekly";
                                 event.dow = [moment($(this).attr('startDate')).isoWeekday()];
