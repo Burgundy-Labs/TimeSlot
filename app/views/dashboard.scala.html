@@ -1,207 +1,121 @@
-@import controllers.ApplicationComponents.{AppointmentTypes, Roles}
+@import controllers.ApplicationComponents.AppointmentTypes
 @import controllers.Databases.UserDB
 @import controllers.ApplicationComponents.Services
 @()
-    @main("Dashboard", "Dashboard") {
-        @helper.CSRF.formField
-        <a href="/MakeAppointment">Make a New Appointment</a>
-        <button onclick="createNewAppointment()" class="btn btn-outline-primary">Schedule New Appointment</button>
+@main("Dashboard", "Test") {
+    @helper.CSRF.formField
+    <button onclick="createNewAppointment()" class="btn btn-outline-primary">Schedule New Appointment</button>
 
-
-
-        <script>
-
-            function createNewAppointment() {
-                $.dialog({
-                    title: "New Appointment",
-                    content: '\n' +
-                    '        <ul class="stepper linear ">\n' +
-                    '            <li class="step active">\n' +
-                    '                <div class="step-title waves-effect">Appointment Type</div>\n' +
-                    '                <div class="step-content">\n' +
-                    '                    <div>\n' +
-                    '                        <label for="appointmentType">Type of appointment</label>\n' +
-                    '                        <br/>\n' +
-                    '                        <select id="appointmentType" name="appointmentType" required>\n' +
-                    '                            <option selected disabled> Select an Appointment Type </option>\n' +
-                    '                            @for(appointment <- AppointmentTypes.getAppointmentTypes) {\n' +
-                    '                                <option value="@appointment.appointmentType()">@appointment.appointmentType()</option>\n' +
-                    '                            }\n' +
-                    '                        </select>\n' +
-                    '                        <br/>\n' +
-                    '                        <label for="serviceType">Service desired</label>\n' +
-                    '                        <br/>\n' +
-                    '                        <select id="serviceType" name="serviceType" required>\n' +
-                    '                            <option selected disabled> Select service</option>\n' +
-                    '                            @for(service <- Services.getServices) {\n' +
-                    '                                <option value="@service.service()">@service.service()</option>\n' +
-                    '                            }\n' +
-                    '                        </select>\n' +
-                    '                    </div>\n' +
-                    '                    <div class="step-actions">\n' +
-                    '                        <button class="btn btn-primary next-step">Next Step</button>\n' +
-                    '                    </div>\n' +
-                    '                </div>\n' +
-                    '            </li>\n' +
-                    '            <li class="step">\n' +
-                    '                <div class="step-title waves-effect">Select Coach</div>\n' +
-                    '                <div class="step-content">\n' +
-                    '                    <div>\n' +
-                    '                        <label for="coachId"></label>\n' +
-                    '                        <select id="coachId" name="appointmentType" required>\n' +
-                    '                            <option selected disabled> Select a coach </option>\n' +
-                    '                            <option value="Any">Any Coach</option>\n' +
-                    '                              @for(coach <- UserDB.getUsers) {\n' +
-                    '                                @if(coach.getRole.equals("Coach")) {\n' +
-                    '                                    <option value="@coach.getUid">"@coach.getDisplayName</option>\n' +
-                    '                                }\n' +
-                    '                            }\n' +
-                    '                        </select>\n' +
-                    '                    </div>\n' +
-                    '                    <div class="step-actions">\n' +
-                    '                        <button class="btn btn-secondary previous-step">Previous Step</button>\n' +
-                    '                        <button class="btn btn-primary next-step">Next Step</button>\n' +
-                    '                    </div>\n' +
-                    '                </div>\n' +
-                    '            </li>\n' +
-                    '            <li class="step">\n' +
-                    '                <div class="step-title waves-effect">Appointment Notes</div>\n' +
-                    '                <div class="step-content">\n' +
-                    '                    <div>\n' +
-                    '                        <div class="form-group">\n' +
-                    '                            <label for="appointmentNotes">What will the appointment be about?</label>\n' +
-                    '                            <textarea class="form-control" rows="5" id="appointmentNotes"></textarea>\n' +
-                    '                        </div>\n' +
-                    '                    </div>\n' +
-                    '                    <div class="step-actions">\n' +
-                    '                        <button class="btn btn-secondary previous-step">Previous Step</button>\n' +
-                    '                        <button class="btn btn-primary next-step">Next Step</button>\n' +
-                    '                    </div>\n' +
-                    '                </div>\n' +
-                    '            </li>\n' +
-                    '            <li class="step">\n' +
-                    '                <div class="step-title waves-effect">Appointment Time</div>\n' +
-                    '                <div class="step-content">\n' +
-                    '                    <div>\n' +
-                    '                        <div class="row">\n' +
-                    '                            <div class="col-md-12" id="calendarContainer">\n' +
-                    '                                <div id=\'calendar\'></div>\n' +
-                    '                            </div>\n' +
-                    '                        </div>\n' +
-                    '                    </div>\n' +
-                    '                    <div class="step-actions">\n' +
-                    '                        <div id="createNewAppointment" class="btn btn-primary">Create Appointment</div>\n' +
-                    '                    </div>\n' +
-                    '                </div>\n' +
-                    '            </li>\n' +
-                    '        </ul>'
-                })
-            }
-
-                $(function () {
-                    $('.stepper').activateStepper();
-                });
-
-                $("#createNewAppointment").on('click', function() {
-                    if (selectedEvents.length <= 0) {
-                        $.alert({
-                            title: 'Alert',
-                            content: 'No appointments slots have been selected.'
-                        });
-                    } else {
-                    var appointment = {
-                        /* TOOD: If desired to allow multiple events - change this*/
-                        id: selectedEvents[0].id,
-                        startDate: selectedEvents[0].start,
-                        endDate: selectedEvents[0].end
-                    };
-                    var form = {
-                        appointmentType: $('#appointmentType').val(),
-                        serviceType: $('#serviceType').val(),
-                        coachId: $('#coachId').val(),
-                        studentId: firebase.auth().currentUser.uid,
-                        startDate: appointment.startDate,
-                        endDate: appointment.endDate,
-                        appointmentNotes: $('#appointmentNotes').val(),
-                        present: false
-                    };
-                    $.confirm({
-                        title: 'New Appointment',
-                        content: "<div class='appointmentDetails'>Your appointment details: <br/>" +
-                        "<b>Appointment Type:</b> " + form.appointmentType + " <br/>" +
-                        "<b>Coach:</b> " + $("#coachId option:selected").text() + " <br/>" +
-                        "<b>Date:</b>" + moment(appointment.startDate).format('dddd, MMMM Do, YYYY h:mm A') + " -" + moment(appointment.endDate).format('h:mm A')  + "<br/>" +
-                        "</div>",
-                        theme: 'modern',
-                        buttons: {
-                            yes: {
-                                text: 'Create Appointment',
-                                btnClass: 'btn-primary',
-                                keys: ['enter', 'shift'],
-                                action: function () {
-                                    /* Create appointment Here*/
-                                    var csrfToken = $('input[name="csrfToken"]').attr('value');
-                                    $.ajaxSetup({
-                                        beforeSend: function (xhr) {
-                                            xhr.setRequestHeader('Csrf-Token', csrfToken);
-                                        }
-                                    });
-                                    $.ajax({
-                                        url: '/createAppointment',
-                                        type: 'POST',
-                                        data: JSON.stringify(form),
-                                        contentType: 'application/json',
-                                        success: function () {
-                                            createAlert("success", "Appointment Created!");
-                                        },
-                                        error: function () {
-                                            createAlert('danger', 'Appointment creation failed.');
-                                        }
-                                    });
-                                }
-                            },
-                            no: {
-                                text: 'Cancel Appointment',
-                                action: function () {
-                                    createAlert("warning", "Appointment Not Created");
-                                }
-                            }
-                        }
-                    });
-                    }
-                });
-        </script>
     <script type="text/javascript">
 
-            var selectedEvents = [];
+            function createNewAppointment() {
+                var content = `@{partials.components._appointmentCalendarForNewAppointment()}`
+                $.confirm({
+                    columnClass: 'col-md-12',
+                    title: "New Appointment",
+                    content: content,
+                    buttons: {
+                        cancel: {
+                            text: "Cancel Appointment Creation"
+                        }
+                    }
+                });
+                $(function () {
+                    $('.stepper').activateStepper();
+                    $("#createNewAppointment").on('click', function () {
+                        if (selectedEvents.length <= 0) {
+                            $.alert({
+                                title: 'Alert',
+                                content: 'No appointments slots have been selected.'
+                            });
+                        } else {
+                            var appointment = {
+                                /* TOOD: If desired to allow multiple events - change this*/
+                                id: selectedEvents[0].id,
+                                startDate: selectedEvents[0].start,
+                                endDate: selectedEvents[0].end
+                            };
+                            var form = {
+                                appointmentType: $('#appointmentType').val(),
+                                serviceType: $('#serviceType').val(),
+                                coachId: $('#coachId').val(),
+                                studentId: firebase.auth().currentUser.uid,
+                                startDate: appointment.startDate,
+                                endDate: appointment.endDate,
+                                appointmentNotes: $('#appointmentNotes').val(),
+                                present: false
+                            };
+                            $.confirm({
+                                title: 'New Appointment',
+                                content: "<div class='appointmentDetails'>Your appointment details: <br/>" +
+                                "<b>Appointment Type:</b> " + form.appointmentType + " <br/>" +
+                                "<b>Coach:</b> " + $("#coachId option:selected").text() + " <br/>" +
+                                "<b>Date:</b>" + moment(appointment.startDate).format('dddd, MMMM Do, YYYY h:mm A') + " -" + moment(appointment.endDate).format('h:mm A') + "<br/>" +
+                                "</div>",
+                                theme: 'modern',
+                                buttons: {
+                                    yes: {
+                                        text: 'Create Appointment',
+                                        btnClass: 'btn-primary',
+                                        keys: ['enter', 'shift'],
+                                        action: function () {
+                                            /* Create appointment Here*/
+                                            var csrfToken = $('input[name="csrfToken"]').attr('value');
+                                            $.ajaxSetup({
+                                                beforeSend: function (xhr) {
+                                                    xhr.setRequestHeader('Csrf-Token', csrfToken);
+                                                }
+                                            });
+                                            $.ajax({
+                                                url: '/createAppointment',
+                                                type: 'POST',
+                                                data: JSON.stringify(form),
+                                                contentType: 'application/json',
+                                                success: function () {
+                                                    createAlert("success", "Appointment Created!");
+                                                },
+                                                error: function () {
+                                                    createAlert('danger', 'Appointment creation failed.');
+                                                }
+                                            });
+                                        }
+                                    },
+                                    no: {
+                                        text: 'Cancel Appointment',
+                                        action: function () {
+                                            createAlert("warning", "Appointment Not Created");
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                });
+            }
 
-            /*
-                Bug: FullCalendar won't load up a Calendar control if it's not on a displayed page.
-                     Since the calendar isn't loaded when the page loads, but after you click the tab for it, the calendar doesn't show up.
-                Fixed: 10/26
-                Solution: The best solution I could find that other people used was to make the calendar creation into a function, and keep trying to load the
-                          calendar. It will only load, however, when the calendar ID is visible on the page.
-             */
+
+    </script>
+    <script type="text/javascript">
+            var selectedEvents = [];
             $(document).ready(function () {
                 createMakeAppointmentCalendar();
             });
-
             function createMakeAppointmentCalendar() {
                 var visibleEvents = [];
                 if ($('#calendar').is(':visible')) { //if the container is visible on the page
                     $('#calendar').fullCalendar({
                         height: 'auto',
-                        selectAllow: function(selectInfo) {
+                        selectAllow: function (selectInfo) {
                             window['moment-range'].extendMoment(moment);
                             var okay = false;
-                            visibleEvents.forEach(function(item) {
-                                console.log(item.start);
+
+                            visibleEvents.some(function (item) {
                                 const range = moment.range(item.start, item.end);
                                 var selectStart = moment(selectInfo.start);
                                 var selectEnd = moment(selectInfo.end);
-                                if((selectStart.within(range) && selectEnd.within(range))){
+                                if ((selectStart.within(range) && selectEnd.within(range))) {
                                     okay = true;
-
+                                    return true;
                                 }
                             });
                             return okay;
@@ -252,7 +166,7 @@
                             eventElement.find("div.fc-content").prepend("<button onclick='removeAppointment(\"" + event + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
                         },
                         select: function (start, end, jsEvent, view) {
-                            if(($("#calendar").fullCalendar( 'clientEvents', [1])).length > 0) {
+                            if (($("#calendar").fullCalendar('clientEvents', [1])).length > 0) {
                                 $.alert({
                                     title: "Hold on there",
                                     content: "You already have an appointment slot selected, cancel the current one to change your time.",
@@ -264,7 +178,7 @@
                                 })
                             } else {
                                 var newAppointment = {
-                                    title : "Appointment",
+                                    title: "Appointment",
                                     id: 1,
                                     userId: '@UserController.getCurrentUser.getUid',
                                     start: moment(start).format(),
@@ -291,7 +205,7 @@
                                 });
                             }
                         },
-                        selectOverlap: function(event) {
+                        selectOverlap: function (event) {
                             return event.rendering === 'background';
                         }
                     });
@@ -301,9 +215,8 @@
             }
 
             function removeAppointment() {
-                $('#calendar').fullCalendar( 'removeEvents', [1]);
+                $('#calendar').fullCalendar('removeEvents', [1]);
             }
-
     </script>
-    }
+}
 
