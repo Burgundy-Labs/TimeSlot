@@ -95,7 +95,12 @@ public class AppointmentsDB {
 
     public static synchronized void addAppointment(AppointmentsModel appointment) {
         /* Get DB instance */
-        DocumentReference docRef = FirestoreDB.getFirestoreDB().collection("appointments").document(appointment.getAppointmentId());
+        DocumentReference docRef;
+        if(appointment.getAppointmentId() == null) {
+            docRef = FirestoreDB.getFirestoreDB().collection("appointments").document();
+        } else {
+            docRef = FirestoreDB.getFirestoreDB().collection("appointments").document(appointment.getAppointmentId());
+        }
         Map<String, Object> data = new HashMap<>();
         /* Create user model for DB insert */
         UsersModel student = UserDB.getUser(appointment.getStudentId());
