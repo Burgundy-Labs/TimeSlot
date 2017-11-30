@@ -4,11 +4,19 @@ $(function () {
 });
 
 $(document).ready(function() {
-   if($('.sidebar').length) {
-       $('[data-original-title="Account"]').html('<img src="'+ firebase.auth().currentUser.photoURL+'" class="userAvatar"/>');
-   }
+        getAvatar();
 });
 
+function getAvatar() {
+    if(firebase.auth().currentUser){
+        if($('.sidebar').length) {
+            $('[data-original-title="Account"]').html('<img src="'+ firebase.auth().currentUser.photoURL+'" class="userAvatar"/>');
+        }
+    } else{
+        setTimeout(getAvatar(), 1);
+    }
+
+}
 function createAlert(alertType, messageHTML) {
     $("<div></div>").appendTo('.page-content').addClass('alert alert-link alert-dismissible fade show alert-' + alertType)
         .html(
