@@ -4,7 +4,53 @@
 @()
 @main("Dashboard", "Test") {
     @helper.CSRF.formField
-    <button onclick="createNewAppointment()" class="btn btn-outline-primary">Schedule New Appointment</button>
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    Your Profile:
+                </div>
+                <div class="card-block">
+                    Information On Your Profile
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    Schedule New Appointment
+                </div>
+                <div class="card-block">
+                    <button onclick="createNewAppointment()" class="btn btn-outline-primary">Schedule New Appointment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    Appointment Calendar
+                </div>
+                <div class="card-block">
+                    Calendar
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    Appointment List
+                </div>
+                <div class="card-block">
+                @partials.components._appointmentListForUser()
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     <script type="text/javascript">
 
