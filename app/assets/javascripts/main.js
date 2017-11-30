@@ -8,8 +8,8 @@ $(document).ready(function() {
 });
 
 function getAvatar() {
-    if(firebase.auth().currentUser){
-        if($('.sidebar').length) {
+    if($('.sidebar').length) {
+        if(firebase.auth().currentUser){
             $('[data-original-title="Account"]').html('<img src="'+ firebase.auth().currentUser.photoURL+'" class="userAvatar"/>');
         }
     } else{

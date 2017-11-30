@@ -1,4 +1,84 @@
-
-<br/>
-
-
+@import controllers.ApplicationComponents.AppointmentTypes
+@import controllers.ApplicationComponents.Services
+@import controllers.Databases.UserDB
+@()
+<ul class="stepper linear ">
+    <li class="step active">
+        <div class="step-title waves-effect">Appointment Type</div>
+        <div class="step-content">
+            <div>
+                <label for="appointmentType">Type of appointment</label>
+                <br/>
+                <select id="appointmentType" name="appointmentType" required>
+                    <option selected disabled> Select an Appointment Type </option>
+                    @for(appointment <- AppointmentTypes.getAppointmentTypes) {
+                        <option value="@appointment.appointmentType()">@appointment.appointmentType()</option>
+                    }
+                </select>
+                <br/>
+                <label for="serviceType">Service desired</label>
+                <br/>
+                <select id="serviceType" name="serviceType" required>
+                    <option selected disabled> Select service</option>
+                    @for(service <- Services.getServices) {
+                        <option value="@service.service()">@service.service()</option>
+                    }
+                </select>
+            </div>
+            <div class="step-actions">
+                <button class="btn btn-primary next-step">Next Step</button>
+            </div>
+        </div>
+    </li>
+    <li class="step">
+        <div class="step-title waves-effect">Select Coach</div>
+        <div class="step-content">
+            <div>
+                <label for="coachId"></label>
+                <select id="coachId" name="appointmentType" required>
+                    <option selected disabled> Select a coach </option>
+                    <option value="Any">Any Coach</option>
+                    @for(coach <- UserDB.getUsers) {
+                        @if(coach.getRole.equals("Coach")) {
+                            <option value="@coach.getUid">@coach.getDisplayName</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="step-actions">
+                <button class="btn btn-secondary previous-step">Previous Step</button>
+                <button class="btn btn-primary next-step">Next Step</button>
+            </div>
+        </div>
+    </li>
+    <li class="step">
+        <div class="step-title waves-effect">Appointment Notes</div>
+        <div class="step-content">
+            <div>
+                <div class="form-group">
+                    <label for="appointmentNotes">What will the appointment be about?</label>
+                    <textarea class="form-control" rows="5" id="appointmentNotes"></textarea>
+                </div>
+            </div>
+            <div class="step-actions">
+                <button class="btn btn-secondary previous-step">Previous Step</button>
+                <button class="btn btn-primary next-step">Next Step</button>
+            </div>
+        </div>
+    </li>
+    <li class="step">
+        <div class="step-title waves-effect">Appointment Time</div>
+        <div class="step-content">
+            <div>
+                <div class="row">
+                    <div class="col-md-12" id="calendarContainer">
+                        <div id="calendar"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="step-actions">
+                <div id="createNewAppointment" class="btn btn-primary">Create Appointment</div>
+            </div>
+        </div>
+    </li>
+</ul>
