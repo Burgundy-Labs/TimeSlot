@@ -17,7 +17,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for(user <- if(currentUser.getRole.equals("Student")) UserDB.getCoaches else UserDB.getUsers){
+                    @for(user <- if(!currentUser.getRole.equals("Admin")) UserDB.getCoaches else UserDB.getUsers){
                     <tr>
                         <td>
                             <img class="userAvatar" src="@user.getPhotoURL" alt="Card image cap">
@@ -40,6 +40,7 @@
                 }
                 </tbody>
             </table>
+
         </div>
 <script type="text/javascript">
         $(document).ready(function () {

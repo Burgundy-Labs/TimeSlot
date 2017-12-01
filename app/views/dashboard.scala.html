@@ -151,8 +151,7 @@
                         height: 'auto',
                         selectAllow: function (selectInfo) {
                             window['moment-range'].extendMoment(moment);
-                            var okay = false;
-
+                            var okay = true;
                             visibleEvents.some(function (item) {
                                 const range = moment.range(item.start, item.end);
                                 var selectStart = moment(selectInfo.start);
