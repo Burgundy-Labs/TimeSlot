@@ -1,41 +1,36 @@
 $(function () {
     $('[data-toggle="tooltip"]').tooltip();
-    $('[data-toggle="popover"]').popover({html:true});
+    $('[data-toggle="popover"]').popover({html: true});
 });
 
-$(document).ready(function() {
-        getAvatar();
+$(document).ready(function () {
+    firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+            if ($('.sidebar').length) {
+                $('[data-original-title="Account"]').html('<img src="' + firebase.auth().currentUser.photoURL + '" class="userAvatar"/>');
+            }
+        }
+    });
 });
 
-function getAvatar() {
-    if($('.sidebar').length) {
-        if(firebase.auth().currentUser){
-            $('[data-original-title="Account"]').html('<img src="'+ firebase.auth().currentUser.photoURL+'" class="userAvatar"/>');
-        }
-        else{
-            setTimeout(getAvatar(), 1000);
-        }
-    }
-}
 function createAlert(alertType, messageHTML) {
     $("<div></div>").appendTo('.page-content').addClass('alert alert-link alert-dismissible fade show alert-' + alertType)
         .html(
-        "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>\n" +
-        "<span aria-hidden='true'>&times;</span>\n" +
-        "</button>" +
-        '<div>' + messageHTML + '</div>'
-
-    ).fadeTo(2000, 500).slideUp(500);
+            "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>\n" +
+            "<span aria-hidden='true'>&times;</span>\n" +
+            "</button>" +
+            '<div>' + messageHTML + '</div>'
+        ).fadeTo(2000, 500).slideUp(500);
 }
 
 
 function createModal(modalID, modalContent, buttonText, buttonFunction) {
-    if ($('#'+modalID).length === 0) {
-        $(' <div class="modal fade" id="'+modalID+'" tabindex="-1" role="dialog" aria-labelledby="'+modalID+'-label" aria-hidden="true">\n' +
+    if ($('#' + modalID).length === 0) {
+        $(' <div class="modal fade" id="' + modalID + '" tabindex="-1" role="dialog" aria-labelledby="' + modalID + '-label" aria-hidden="true">\n' +
             '        <div class="modal-dialog" role="document">\n' +
             '        <div class="modal-content">\n' +
             '        <div class="modal-header">\n' +
-            '        <h5 class="modal-title" id="'+modalID+'-label">Modal title</h5>\n' +
+            '        <h5 class="modal-title" id="' + modalID + '-label">Modal title</h5>\n' +
             '    <button type="button" class="close" data-dismiss="modal" aria-label="Close">\n' +
             '        <span aria-hidden="true">&times;</span>\n' +
             '    </button>\n' +

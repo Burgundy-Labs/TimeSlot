@@ -1,54 +1,55 @@
-@import controllers.ApplicationComponents.AppointmentTypes
-@import controllers.Databases.UserDB
-@import controllers.ApplicationComponents.Services
 @()
 @main("Dashboard", "Your Dashboard") {
     @helper.CSRF.formField
     <div class="dashCards">
-    <div class="row">
-        <div class="col-lg-10">
-            <div class="card">
-                <div class="card-header">
-                    <h6> Your Profile</h6>
+        <div class="row">
+            <div class="col-lg-10">
+                <div class="card">
+                    <div class="card-header">
+                        <h6> Your Profile</h6>
+                    </div>
+                    <div class="card-block">
+                        <p>
+                            Hello <b>@{UserController.getCurrentUser.getDisplayName}</b>
+                        </p>
+                    </div>
                 </div>
-                <div class="card-block">
-                    Information On Your Profile
+            </div>
+            <div class="col-lg-2">
+                <div class="card text-center">
+                    <div class="card-header">
+                        <h6>Schedule New Appointment</h6>
+                    </div>
+                    <div class="card-block">
+                        <button onclick="createNewAppointment()" class="btn btn-outline-primary">
+                            Schedule New Appointment</button>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-2">
-            <div class="card text-center">
-                <div class="card-header">
-                    <h6>Schedule New Appointment</h6>
+        <br/>
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h6>Appointment Calendar</h6>
+                    </div>
+                    <div class="card-block">
+                        Calendar
+                    </div>
                 </div>
-                <div class="card-block">
-                    <button onclick="createNewAppointment()" class="btn btn-outline-primary">Schedule New Appointment</button>
+            </div>
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="float-left">Appointment List</h6>
+                        <a href="/Appointments" class="btn btn-outline-light float-right align-middle">
+                            View Appointment List</a>
+                    </div>
+                    @partials.components._nextFiveAppointments()
                 </div>
             </div>
         </div>
-    </div>
-    <br/>
-    <div class="row">
-        <div class="col-lg-4">
-            <div class="card">
-                <div class="card-header">
-                    <h6>Appointment Calendar</h6>
-                </div>
-                <div class="card-block">
-                    Calendar
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-8">
-            <div class="card">
-                <div class="card-header">
-                    <h6 class="float-left">Appointment List</h6>
-                    <a href="/Appointments" class="btn btn-outline-light float-right align-middle">View Appointment List</a>
-                </div>
-                @partials.components._nextFiveAppointments()
-            </div>
-        </div>
-    </div>
     </div>
     @partials.components._createNewAppointmentFlow_Scripts()
     <script type="text/javascript">
