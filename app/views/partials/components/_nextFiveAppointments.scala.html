@@ -11,7 +11,7 @@
         </tr>
     </thead>
     <tbody>
-    @for(appointment <- AppointmentsDB.getAppointmentsforUser(currentUser.getRole, currentUser.getUid)) {
+    @for(appointment <- AppointmentsDB.getAppointmentsForUser(currentUser.getRole, currentUser.getUid)) {
         <tr>
             <td>
                 <img src="@if(currentUser.getRole.equals("Coach")){ @appointment.getStudentPhoto }else{ @appointment.getCoachPhoto}" class="userAvatar"/>
@@ -36,10 +36,13 @@
             $(this).text(moment($(this).text()).format('HH:mm A'));
         });
         $('#appointmentList').DataTable({
-            "dom": "<'row'<'col-sm-10'l><'col-sm-2'f>>" +
+            "dom": "<'row'<'col-sm-12'l><'col-sm-12'f>>" +
             "<'row'<'col-sm-12'tr>>" +
             "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-            responsive: true
+            responsive: true,
+            paging: false,
+            info: false,
+            searching: false,
         });
     });
 

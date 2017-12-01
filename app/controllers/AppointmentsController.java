@@ -7,6 +7,7 @@ import models.AppointmentsModel;
 import play.mvc.Controller;
 import play.mvc.Result;
 
+import javax.xml.bind.DatatypeConverter;
 import java.util.*;
 
 public class AppointmentsController extends Controller {
@@ -18,7 +19,6 @@ public class AppointmentsController extends Controller {
     public Result makeAppointment() {
         return ok(views.html.makeAppointment.render());
     }
-
 
     public Result updatePresence() {
         JsonNode json = request().body().asJson();
@@ -35,8 +35,8 @@ public class AppointmentsController extends Controller {
         appointment.setCoachId(json.findPath("coachId").textValue());
         appointment.setStudentId(json.findPath("studentId").textValue());
         appointment.setAppointmentType(json.findPath("appointmentType").textValue());
-        appointment.setStartDate(json.findPath("startDate").textValue());
-        appointment.setEndDate(json.findPath("endDate").textValue());
+        appointment.setStartDate(DatatypeConverter.parseDateTime(json.findPath("startDate").textValue()).getTime());
+        appointment.setEndDate(DatatypeConverter.parseDateTime(json.findPath("startDate").textValue()).getTime());
         appointment.setAppointmentNotes(json.findPath("appointmentNotes").textValue());
         appointment.setPresent(Boolean.getBoolean(json.findPath("present").textValue()));
         appointment.setServiceType(json.findPath("serviceType").textValue());

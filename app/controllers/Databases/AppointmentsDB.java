@@ -1,10 +1,7 @@
 package controllers.Databases;
 
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.QuerySnapshot;
-import com.google.cloud.firestore.WriteResult;
+import com.google.cloud.firestore.*;
 import models.AppointmentsModel;
 import models.UsersModel;
 
@@ -35,8 +32,8 @@ public class AppointmentsDB {
         if (document.exists()) {
             appointmentFound = new AppointmentsModel(
                     document.getId(),
-                    document.getString("start_date"),
-                    document.getString("end_date"),
+                    document.getDate("start_date"),
+                    document.getDate("end_date"),
                     document.getString("studentId"),
                     document.getString("studentName"),
                     document.getString("studentEmail"),
@@ -56,10 +53,10 @@ public class AppointmentsDB {
         return appointmentFound;
     }
 
-    public static synchronized List<AppointmentsModel> getAppointmentsforUser(String role, String userId) {
+    public static synchronized List<AppointmentsModel> getAppointmentsForUser(String role, String userId) {
         List<AppointmentsModel> appointmentList = new ArrayList<>();
         /* Asynchronously retrieve all appointments */
-        ApiFuture<QuerySnapshot> query = FirestoreDB.getFirestoreDB().collection("appointments").whereEqualTo(role.toLowerCase()+"Id",userId).get();
+        ApiFuture<QuerySnapshot> query = FirestoreDB.getFirestoreDB().collection("appointments").orderBy("start_date", Query.Direction.DESCENDING).whereEqualTo(role.toLowerCase()+"Id",userId).limit(5).get();
         QuerySnapshot querySnapshot = null;
         try {
             /* Attempt to get a list of all appointments - blocking */
@@ -73,8 +70,8 @@ public class AppointmentsDB {
         for (DocumentSnapshot document : documents) {
             AppointmentsModel appointment = new AppointmentsModel(
                     document.getId(),
-                    document.getString("start_date"),
-                    document.getString("end_date"),
+                    document.getDate("start_date"),
+                    document.getDate("end_date"),
                     document.getString("studentId"),
                     document.getString("studentName"),
                     document.getString("studentEmail"),
@@ -110,8 +107,8 @@ public class AppointmentsDB {
         for (DocumentSnapshot document : documents) {
             AppointmentsModel appointment = new AppointmentsModel(
                     document.getId(),
-                    document.getString("start_date"),
-                    document.getString("end_date"),
+                    document.getDate("start_date"),
+                    document.getDate("end_date"),
                     document.getString("studentId"),
                     document.getString("studentName"),
                     document.getString("studentEmail"),
