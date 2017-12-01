@@ -1,0 +1,46 @@
+@import controllers.Databases.AppointmentsDB
+@currentUser = @{UserController.getCurrentUser}
+<table class="table table-responsive appointmentList" id="appointmentList">
+    <thead>
+        <tr>
+            <th></th>
+            <th>@if(currentUser.getRole.equals("Coach")){Student}else{Coach}</th>
+            <th>Type</th>
+            <th>Service</th>
+            <th>Time</th>
+        </tr>
+    </thead>
+    <tbody>
+    @for(appointment <- AppointmentsDB.getAppointmentsforUser(currentUser.getRole, currentUser.getUid)) {
+        <tr>
+            <td>
+                <img src="@if(currentUser.getRole.equals("Coach")){ @appointment.getStudentPhoto }else{ @appointment.getCoachPhoto}" class="userAvatar"/>
+            </td>
+            <td>
+            @if(currentUser.getRole.equals("Coach")){ @appointment.getStudentName }else{ @appointment.getCoachName}
+            </td>
+            <td>@appointment.getAppointmentType</td>
+            <td>@appointment.getServiceType</td>
+            <td class="date"><span class="startDate">@appointment.getStartDate</span> - <span class="endDate">@appointment.getEndDate</span></td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.startDate').each(function () {
+            $(this).text(moment($(this).text()).format('MMM, DD YYYY, HH:mm A'));
+        });
+        $('.endDate').each(function () {
+            $(this).text(moment($(this).text()).format('HH:mm A'));
+        });
+        $('#appointmentList').DataTable({
+            "dom": "<'row'<'col-sm-10'l><'col-sm-2'f>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+            responsive: true
+        });
+    });
+
+</script>
