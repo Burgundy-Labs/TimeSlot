@@ -2,23 +2,24 @@
 @import controllers.Databases.UserDB
 @import controllers.ApplicationComponents.Services
 @()
-@main("Dashboard", "Test") {
+@main("Dashboard", "Your Dashboard") {
     @helper.CSRF.formField
+    <div class="dashCards">
     <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-10">
             <div class="card">
                 <div class="card-header">
-                    Your Profile:
+                    <h6> Your Profile</h6>
                 </div>
                 <div class="card-block">
                     Information On Your Profile
                 </div>
             </div>
         </div>
-        <div class="col-lg-4">
-            <div class="card">
+        <div class="col-lg-2">
+            <div class="card text-center">
                 <div class="card-header">
-                    Schedule New Appointment
+                    <h6>Schedule New Appointment</h6>
                 </div>
                 <div class="card-block">
                     <button onclick="createNewAppointment()" class="btn btn-outline-primary">Schedule New Appointment</button>
@@ -31,7 +32,7 @@
         <div class="col-lg-4">
             <div class="card">
                 <div class="card-header">
-                    Appointment Calendar
+                    <h6>Appointment Calendar</h6>
                 </div>
                 <div class="card-block">
                     Calendar
@@ -41,7 +42,8 @@
         <div class="col-lg-8">
             <div class="card">
                 <div class="card-header">
-                    Appointment List
+                    <h6>Appointment List</h6>
+                    <a href="/Appointments" class="btn btn-outline-light float-right align-middle">View Appointment List</a>
                 </div>
                 <div class="card-block">
                 @partials.components._appointmentListForUser()
@@ -49,14 +51,14 @@
             </div>
         </div>
     </div>
-
+    </div>
 
 
     <script type="text/javascript">
 
             function createNewAppointment() {
                 var content = `@{partials.components._appointmentCalendarForNewAppointment()}`
-                $.confirm({
+                $.dialog({
                     columnClass: 'col-md-12',
                     title: "New Appointment",
                     content: content,
@@ -138,10 +140,6 @@
                     });
                 });
             }
-
-
-    </script>
-    <script type="text/javascript">
             var selectedEvents = [];
             $(document).ready(function () {
                 createMakeAppointmentCalendar();
