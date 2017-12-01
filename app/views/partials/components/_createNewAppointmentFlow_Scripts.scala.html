@@ -68,7 +68,18 @@
                     eventElement.find("div.fc-content").prepend("<button onclick='removeAppointment(\"" + event + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
                 },
                 select: function (start, end, jsEvent, view) {
-                    if (($("#calendar").fullCalendar('clientEvents', [1])).length > 0) {
+                    var duration = moment.duration(end.diff(start)).asHours();
+                    if(duration > 1){
+                        $.alert({
+                            title: "Hold on there",
+                            content: "An appointment slot cannot be more than 1 hour.",
+                            buttons: {
+                                ok: {
+                                    text: "Okay"
+                                }
+                            }
+                        })
+                    } else if (($("#calendar").fullCalendar('clientEvents', [1])).length > 0) {
                         $.alert({
                             title: "Hold on there",
                             content: "You already have an appointment slot selected, cancel the current one to change your time.",
@@ -118,5 +129,96 @@
     }
     function removeAppointment() {
         $('#calendar').fullCalendar('removeEvents', [1]);
+    }
+
+    function createNewAppointment() {
+        var content = ` @{ partials.components._createNewAppointmentFlow() } `;
+        $.confirm({
+            closeIcon: true,
+            columnClass: 'col-md-12',
+            title: "New Appointment",
+            content: content,
+            buttons: {
+                submit: {
+                    text: 'Create Appointment',
+                    btnClass: 'btn-primary',
+                    action: function () {
+                        if (selectedEvents.length <= 0) {
+                            $.alert({
+                                title: 'Alert',
+                                type: 'red',
+                                content: 'No appointments slots have been selected.'
+                            });
+                            return false;
+                        } else {
+                            var appointment = {
+                                /* TOOD: If desired to allow multiple events - change this*/
+                                id: selectedEvents[0].id,
+                                startDate: selectedEvents[0].start,
+                                endDate: selectedEvents[0].end
+                            };
+                            var form = {
+                                appointmentType: $('#appointmentType').val(),
+                                serviceType: $('#serviceType').val(),
+                                coachId: $('#coachId').val(),
+                                studentId: firebase.auth().currentUser.uid,
+                                startDate: appointment.startDate,
+                                endDate: appointment.endDate,
+                                appointmentNotes: $('#appointmentNotes').val(),
+                                present: false
+                            };
+                            $.confirm({
+                                title: 'New Appointment',
+                                content: "<div class='appointmentDetails'>Your appointment details: <br/>" +
+                                "<b>Appointment Type:</b> " + form.appointmentType + " <br/>" +
+                                "<b>Coach:</b> " + $("#coachId option:selected").text() + " <br/>" +
+                                "<b>Date:</b>" + moment(appointment.startDate).format('dddd, MMMM Do, YYYY h:mm A') + " -" + moment(appointment.endDate).format('h:mm A') + "<br/>" +
+                                "</div>",
+                                theme: 'modern',
+                                buttons: {
+                                    yes: {
+                                        text: 'Create Appointment',
+                                        btnClass: 'btn-primary',
+                                        keys: ['enter', 'shift'],
+                                        action: function () {
+                                            /* Create appointment Here*/
+                                            var csrfToken = $('input[name="csrfToken"]').attr('value');
+                                            $.ajaxSetup({
+                                                beforeSend: function (xhr) {
+                                                    xhr.setRequestHeader('Csrf-Token', csrfToken);
+                                                }
+                                            });
+                                            $.ajax({
+                                                url: '/createAppointment',
+                                                type: 'POST',
+                                                data: JSON.stringify(form),
+                                                contentType: 'application/json',
+                                                success: function () {
+                                                    createAlert("success", "Appointment Created!");
+                                                },
+                                                error: function () {
+                                                    createAlert('danger', 'Appointment creation failed.');
+                                                }
+                                            });
+                                        }
+                                    },
+                                    no: {
+                                        text: 'Cancel Appointment',
+                                        action: function () {
+                                            createAlert("warning", "Appointment Not Created");
+                                            selectedEvents = [];
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+        });
+
+        $(function () {
+            $('.stepper').activateStepper();
+        });
     }
 </script>
