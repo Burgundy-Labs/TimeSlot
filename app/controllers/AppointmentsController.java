@@ -36,7 +36,7 @@ public class AppointmentsController extends Controller {
         appointment.setStudentId(json.findPath("studentId").textValue());
         appointment.setAppointmentType(json.findPath("appointmentType").textValue());
         appointment.setStartDate(DatatypeConverter.parseDateTime(json.findPath("startDate").textValue()).getTime());
-        appointment.setEndDate(DatatypeConverter.parseDateTime(json.findPath("startDate").textValue()).getTime());
+        appointment.setEndDate(DatatypeConverter.parseDateTime(json.findPath("endDate").textValue()).getTime());
         appointment.setAppointmentNotes(json.findPath("appointmentNotes").textValue());
         appointment.setPresent(Boolean.getBoolean(json.findPath("present").textValue()));
         appointment.setServiceType(json.findPath("serviceType").textValue());
