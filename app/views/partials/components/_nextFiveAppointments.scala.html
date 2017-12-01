@@ -1,6 +1,6 @@
 @import controllers.Databases.AppointmentsDB
 @currentUser = @{UserController.getCurrentUser}
-<table class="table table-responsive appointmentList" id="appointmentList">
+<table class="table table-responsive appointmentList" id="next5Appointments" width="100%">
     <thead>
         <tr>
             <th></th>
@@ -35,10 +35,7 @@
         $('.endDate').each(function () {
             $(this).text(moment($(this).text()).format('HH:mm A'));
         });
-        $('#appointmentList').DataTable({
-            "dom": "<'row'<'col-sm-12'l><'col-sm-12'f>>" +
-            "<'row'<'col-sm-12'tr>>" +
-            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        $('#next5Appointments').DataTable({
             responsive: true,
             paging: false,
             info: false,

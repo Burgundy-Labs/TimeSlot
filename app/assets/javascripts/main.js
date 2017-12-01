@@ -13,7 +13,7 @@ function getAvatar() {
             $('[data-original-title="Account"]').html('<img src="'+ firebase.auth().currentUser.photoURL+'" class="userAvatar"/>');
         }
         else{
-            setTimeout(getAvatar(), 1);
+            setTimeout(getAvatar(), 1000);
         }
     }
 }
