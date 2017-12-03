@@ -212,6 +212,11 @@ button
 .appointmentDetails
   text-align: left
 
+ul.stepper.horizontal .step
+  position: inherit !important
+ul.stepper.horizontal .step.active .step-content
+  display: table !important
+
 // Custom Scrollbar
 ::-webkit-scrollbar
   width: 8px
@@ -228,3 +233,4 @@ button
 @import "partials/_sidebar"
 @import "partials/_footer"
 @import "partials/_fullCalendar"
+@import "partials/_stepper"
