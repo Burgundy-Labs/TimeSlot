@@ -56,6 +56,7 @@ public class AppointmentsDB {
     public static synchronized List<AppointmentsModel> getAppointmentsForUser(String role, String userId) {
         List<AppointmentsModel> appointmentList = new ArrayList<>();
         /* Asynchronously retrieve all appointments */
+
         ApiFuture<QuerySnapshot> query = FirestoreDB.getFirestoreDB().collection("appointments").orderBy("start_date", Query.Direction.DESCENDING).whereEqualTo(role.toLowerCase()+"Id",userId).limit(5).get();
         QuerySnapshot querySnapshot = null;
         try {

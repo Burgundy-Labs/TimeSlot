@@ -26,7 +26,6 @@ public class UserDB {
         ApiFuture<DocumentSnapshot> future = docRef.get();
         DocumentSnapshot document = null;
         try {
-            /* Attempt to get the reference - blocking */
             document = future.get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();

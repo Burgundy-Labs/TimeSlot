@@ -20,6 +20,7 @@
                                 phoneNumber: user.phoneNumber
                             };
                             if(!(user.email.split('@@')[1] === 'mtu.edu')){
+                                console.log("broken");
                                 $.alert({
                                     title: 'Alert',
                                     content: 'Please sign-in using an @@mtu.edu email address',
@@ -33,7 +34,7 @@
                                         }
                                     }
                                 });
-                                return false;
+                                window.location ="/Logout";
                             } else {
                                 /* POST signed in user to Login Controller*/
                                 var csrfToken = $('input[name="csrfToken"]').attr('value');
@@ -47,15 +48,17 @@
                                     type: 'POST',
                                     data: JSON.stringify(userSignIn),
                                     contentType: 'application/json',
+                                    success: function(){
+                                        window.location ="/Dashboard";
+
+                                    },
                                     error: function (err) {
                                         console.log(err);
                                     }
                                 });
-                                return true;
                             }
                         }
                     },
-                    signInSuccessUrl: '/Dashboard',
                     signInOptions: [{
                         provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
                         scopes: ['https://www.googleapis.com/auth/calendar']
