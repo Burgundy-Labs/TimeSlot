@@ -117,8 +117,8 @@
     }
 
     function removeAppointment(event) {
-        selectedEvents = selectedEvents.filter(function( obj ) {
-            return obj !== event;
+        selectedEvents = selectedEvents.filter(function( events ) {
+            return events.id !== event.id;
         });
         $('#calendar').fullCalendar('removeEvents', [1]);
     }
@@ -131,6 +131,10 @@
             title: "New Appointment",
             content: content,
             buttons: {
+                cancel: {
+                    text: "Cancel",
+                    btnClass: "btn"
+                },
                 submit: {
                     text: 'Create Appointment',
                     btnClass: 'btn-primary',
