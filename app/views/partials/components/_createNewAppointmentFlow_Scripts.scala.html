@@ -53,7 +53,7 @@
                     })
                 },
                 eventRender: function (event, eventElement) {
-                    eventElement.find("div.fc-content").prepend("<button onclick='removeAppointment(\"" + event + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
+                    eventElement.find("div.fc-content").prepend("<button onclick='removeAppointment(\"" + event.id + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
                 },
                 select: function (start, end, jsEvent, view) {
                     const duration = moment.duration(end.diff(start)).asHours();
@@ -80,6 +80,7 @@
                     } else {
                         const newAppointment = {
                             title: "Appointment",
+                            /* TODO If want to select more than 1 event, create unique id's */
                             id: 1,
                             userId: '@UserController.getCurrentUser.getUid',
                             start: moment(start).format(),
@@ -116,11 +117,9 @@
         }
     }
 
-    function removeAppointment(event) {
-        selectedEvents = selectedEvents.filter(function( events ) {
-            return events.id !== event.id;
-        });
-        $('#calendar').fullCalendar('removeEvents', [1]);
+    function removeAppointment(eventId) {
+        selectedEvents = selectedEvents.filter(obj => !obj.id === eventId);
+        $('#calendar').fullCalendar('removeEvents', [eventId]);
     }
 
     function createNewAppointment() {
