@@ -39,7 +39,7 @@ public class UserController extends Controller {
     }
 
     public static UsersModel getCurrentUser() {
-        String s = session().get("currentUser");
+        String s = session("currentUser");
         return UserDB.getUser(s);
     }
 }
