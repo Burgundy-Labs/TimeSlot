@@ -1,27 +1,15 @@
 <script type="text/javascript">
-    var selectedEvents = [];
+
+    let selectedEvents = [];
     $(document).ready(function () {
         createMakeAppointmentCalendar();
     });
+
     function createMakeAppointmentCalendar() {
-        var visibleEvents = [];
+        const visibleEvents = [];
         if ($('#calendar').is(':visible')) { //if the container is visible on the page
             $('#calendar').fullCalendar({
                 height: 'auto',
-                selectAllow: function (selectInfo) {
-                    window['moment-range'].extendMoment(moment);
-                    var okay = true;
-                    visibleEvents.some(function (item) {
-                        const range = moment.range(item.start, item.end);
-                        var selectStart = moment(selectInfo.start);
-                        var selectEnd = moment(selectInfo.end);
-                        if ((selectStart.within(range) && selectEnd.within(range))) {
-                            okay = true;
-                            return true;
-                        }
-                    });
-                    return okay;
-                },
                 allDaySlot: false,
                 defaultView: 'agendaWeek',
                 editable: false,
@@ -31,7 +19,7 @@
                 minTime: "10:00",
                 maxTime: "21:00",
                 events: function (start, end, timezone, callback) {
-                    var csrfToken = $('input[name="csrfToken"]').attr('value');
+                    const csrfToken = $('input[name="csrfToken"]').attr('value');
                     $.ajaxSetup({
                         beforeSend: function (xhr) {
                             xhr.setRequestHeader('Csrf-Token', csrfToken);
@@ -41,9 +29,9 @@
                         url: '/availableSlots/' + '@UserController.getCurrentUser.getUid',
                         type: 'GET',
                         success: function (response) {
-                            var events = [];
+                            const events = [];
                             $(response).each(function () {
-                                var event = {
+                                const event = {
                                     id: $(this).attr('availabilityId'),
                                     title: "One-Time",
                                     start: $(this).attr('startDate'),
@@ -68,8 +56,8 @@
                     eventElement.find("div.fc-content").prepend("<button onclick='removeAppointment(\"" + event + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
                 },
                 select: function (start, end, jsEvent, view) {
-                    var duration = moment.duration(end.diff(start)).asHours();
-                    if(duration > 1){
+                    const duration = moment.duration(end.diff(start)).asHours();
+                    if (duration > 1) {
                         $.alert({
                             title: "Hold on there",
                             content: "An appointment slot cannot be more than 1 hour.",
@@ -90,7 +78,7 @@
                             }
                         })
                     } else {
-                        var newAppointment = {
+                        const newAppointment = {
                             title: "Appointment",
                             id: 1,
                             userId: '@UserController.getCurrentUser.getUid',
@@ -127,12 +115,16 @@
             setTimeout(createMakeAppointmentCalendar, 50); //wait 50 ms, then try again
         }
     }
-    function removeAppointment() {
+
+    function removeAppointment(event) {
+        selectedEvents = selectedEvents.filter(function( obj ) {
+            return obj !== event;
+        });
         $('#calendar').fullCalendar('removeEvents', [1]);
     }
 
     function createNewAppointment() {
-        var content = ` @{ partials.components._createNewAppointmentFlow() } `;
+        let content = ` @{ partials.components._createNewAppointmentFlow() } `;
         $.confirm({
             closeIcon: true,
             columnClass: 'col-md-12',
@@ -151,13 +143,13 @@
                             });
                             return false;
                         } else {
-                            var appointment = {
+                            const appointment = {
                                 /* TOOD: If desired to allow multiple events - change this*/
                                 id: selectedEvents[0].id,
                                 startDate: selectedEvents[0].start,
                                 endDate: selectedEvents[0].end
                             };
-                            var form = {
+                            const form = {
                                 appointmentType: $('#appointmentType').val(),
                                 serviceType: $('#serviceType').val(),
                                 coachId: $('#coachId').val(),
@@ -182,7 +174,7 @@
                                         keys: ['enter', 'shift'],
                                         action: function () {
                                             /* Create appointment Here*/
-                                            var csrfToken = $('input[name="csrfToken"]').attr('value');
+                                            const csrfToken = $('input[name="csrfToken"]').attr('value');
                                             $.ajaxSetup({
                                                 beforeSend: function (xhr) {
                                                     xhr.setRequestHeader('Csrf-Token', csrfToken);
@@ -216,9 +208,39 @@
                 }
             }
         });
+        makeStepper();
+    }
 
-        $(function () {
-            $('.stepper').activateStepper();
-        });
+    function makeStepper() {
+        const createNewAppointmentForm = $('#createNewAppointmentForm');
+        if (createNewAppointmentForm.length) {
+            createNewAppointmentForm.steps({
+                onChange: function (currentIndex, newIndex, stepDirection) {
+                    if (currentIndex === 0) {
+                        if (stepDirection === 'forward') {
+                            let appointmentTypeValid = $('#appointmentInfo').validate();
+                            return appointmentTypeValid.valid();
+                        }
+                    }
+                    if (currentIndex === 1) {
+                        if (stepDirection === 'forward') {
+                            return true;
+                        }
+                    }
+                    if (currentIndex === 2) {
+                        if (stepDirection === 'forward') {
+                            return true;
+                        }
+                    }
+                    if (currentIndex === 3) {
+                        if (stepDirection === 'forward') {
+                            return true;
+                        }
+                    }
+                }
+            });
+        } else {
+            setTimeout(makeStepper, 50);
+        }
     }
 </script>
