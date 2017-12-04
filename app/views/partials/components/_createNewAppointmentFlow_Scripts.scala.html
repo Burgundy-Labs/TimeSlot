@@ -132,7 +132,11 @@
             buttons: {
                 cancel: {
                     text: "Cancel",
-                    btnClass: "btn"
+                    btnClass: "btn",
+                    action: function() {
+                        /* TODO fix calendar re-display on cancel - prevent having to reload page*/
+                        location.reload();
+                    }
                 },
                 submit: {
                     text: 'Create Appointment',
@@ -219,22 +223,29 @@
         if (createNewAppointmentForm.length) {
             createNewAppointmentForm.steps({
                 onChange: function (currentIndex, newIndex, stepDirection) {
+                    /* Appointment Info */
                     if (currentIndex === 0) {
                         if (stepDirection === 'forward') {
-                            let appointmentTypeValid = $('#appointmentInfo').validate();
-                            return appointmentTypeValid.valid();
+                            let appointmentTypeForm = $('#appointmentInfo');
+                            appointmentTypeForm.validate();
+                            return appointmentTypeForm.valid();
                         }
                     }
+                    /* Coach Select */
                     if (currentIndex === 1) {
                         if (stepDirection === 'forward') {
-                            return true;
+                            let coachForm = $('#coachForm');
+                            coachForm.validate();
+                            return coachForm.valid();
                         }
                     }
+                    /* Session Notes*/
                     if (currentIndex === 2) {
                         if (stepDirection === 'forward') {
                             return true;
                         }
                     }
+                    /* Event Time */
                     if (currentIndex === 3) {
                         if (stepDirection === 'forward') {
                             return true;
