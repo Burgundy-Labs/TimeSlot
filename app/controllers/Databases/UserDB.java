@@ -26,12 +26,12 @@ public class UserDB {
         ApiFuture<DocumentSnapshot> future = docRef.get();
         DocumentSnapshot document = null;
         try {
-            /* Attempt to get the reference - blocking */
             document = future.get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
         assert document != null;
+
         if (document.exists()) {
             userFound = new UsersModel(
                     document.getString("display_name"),
@@ -40,7 +40,8 @@ public class UserDB {
                     document.getString("photo_url"),
                     document.getId(),
                     document.getString("phone_number"),
-                    Roles.getRole(document.getString("role"))
+                    Roles.getRole(document.getString("role")),
+                    document.getBoolean("isCoach")
             );
         } else {
             /* Log something */
@@ -70,12 +71,14 @@ public class UserDB {
                     document.getString("photo_url"),
                     document.getId(),
                     document.getString("phone_number"),
-                    Roles.getRole(document.getString("role"))
-                    );
+                    Roles.getRole(document.getString("role")),
+                    document.getBoolean("isCoach")
+            );
             userList.add(user);
         }
         return userList;
     }
+
 
     public static synchronized List<UsersModel> getCoaches() {
         List<UsersModel> userList = new ArrayList<>();
@@ -92,7 +95,11 @@ public class UserDB {
         List<DocumentSnapshot> documents = querySnapshot.getDocuments();
         /* Iterate users and add them to a list for return */
         for (DocumentSnapshot document : documents) {
-            if(document.getString("role").equals("Coach")) {
+            if (document.getString("role").equals("Coach")
+                    || (document.getString("role").equals("Admin")
+                    && (Boolean.valueOf(document.getBoolean("isCoach"))) != null
+                    && document.getBoolean("isCoach")))
+            {
                 UsersModel user = new UsersModel(
                         document.getString("display_name"),
                         document.getString("email"),
@@ -100,7 +107,8 @@ public class UserDB {
                         document.getString("photo_url"),
                         document.getId(),
                         document.getString("phone_number"),
-                        Roles.getRole(document.getString("role"))
+                        Roles.getRole(document.getString("role")),
+                        document.getBoolean("isCoach")
                 );
                 userList.add(user);
             }
@@ -114,17 +122,23 @@ public class UserDB {
         Map<String, Object> data = new HashMap<>();
         /* Create user model for DB insert */
         data.put("display_name", user.getDisplayName());
-        data.put("email",user.getEmail());
-        data.put("phone_number",user.getPhoneNumber());
-        data.put("photo_url",user.getPhotoURL());
+        data.put("email", user.getEmail());
+        data.put("phone_number", user.getPhoneNumber());
+        data.put("photo_url", user.getPhotoURL());
         data.put("role", user.getRole());
-        data.put("email_verified",user.isEmailVerified());
+        data.put("email_verified", user.isEmailVerified());
+        if (user.getRole().equals("Admin")) {
+            if (user.isCoach() == null) {
+                user.setIsCoach(false);
+            }
+            data.put("isCoach", user.isCoach());
+        }
         /* Asynchronously write user into DB */
         ApiFuture<WriteResult> result = docRef.set(data);
         result.isDone();
     }
 
-    public static boolean removeUser(String userId){
+    public static boolean removeUser(String userId) {
         /* Asynchronously remove user from DB */
         ApiFuture<WriteResult> writeResult = FirestoreDB.getFirestoreDB().collection("users").document(userId).delete();
         try {

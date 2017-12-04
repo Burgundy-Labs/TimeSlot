@@ -1,142 +1,93 @@
-@import controllers.ApplicationComponents.{AppointmentTypes, Roles}
-@import controllers.Databases.UserDB
-@import controllers.ApplicationComponents.Services
 @()
-
-@main("Dashboard", "Dashboard") {
+@main("Dashboard", "Your Dashboard") {
     @helper.CSRF.formField
-    <a href="/MakeAppointment">Make a New Appointment</a>
-    @* Will be moved into a modal for other page sections *@
-    <ul class="stepper linear">
-        <li class="step active">
-            <div class="step-title waves-effect">Appointment Type</div>
-            <div class="step-content col-md-3">
-                <div>
-                    <label for="appointmentType">Type of appointment</label>
-                    <br/>
-                    <select id="appointmentType" name="appointmentType" required>
-                        <option selected disabled> Select an Appointment Type </option>
-                        @for(appointment <- AppointmentTypes.getAppointmentTypes) {
-x                            <option value="@appointment.appointmentType()">@appointment.appointmentType()</option>
-                        }
-                    </select>
-                    <br/>
-                    <label for="serviceType">Service desired</label>
-                    <br/>
-                    <select id="serviceType" name="serviceType" required>
-                        <option selected disabled> Select service</option>
-                        @for(service <- Services.getServices) {
-                            <option value="@service.service()">@service.service()</option>
-                        }
-                    </select>
-                </div>
-                <div class="step-actions">
-                    <button class="btn btn-primary next-step">Next Step</button>
-                </div>
-            </div>
-        </li>
-        <li class="step">
-            <div class="step-title waves-effect">Select Coach</div>
-            <div class="step-content col-md-3">
-                <div>
-                    <label for="coachId"></label>
-                    <select id="coachId" name="appointmentType" required>
-                        <option selected disabled> Select a coach </option>
-                        <option value="Any">Any Coach</option>
-                        @for(coach <- UserDB.getUsers) {
-                            @if(coach.getRole.equals("Coach")) {
-                                <option value="@coach.getUid">@coach.getDisplayName</option>
-                            }
-                        }
-                    </select>
-                </div>
-                <div class="step-actions">
-                    <button class="btn btn-secondary previous-step">Previous Step</button>
-                    <button class="btn btn-primary next-step">Next Step</button>
-                </div>
-            </div>
-        </li>
-        <li class="step">
-            <div class="step-title waves-effect">Appointment Notes</div>
-            <div class="step-content col-md-3">
-                <div>
-                    <div class="form-group">
-                    <label for="appointmentNotes">What will the appointment be about?</label>
-                    <textarea class="form-control" rows="5" id="appointmentNotes"></textarea>
+    <div class="dashCards">
+        <div class="row">
+            <div class="col-lg-10">
+                <div class="card">
+                    <div class="card-header">
+                        <h6> Your Profile</h6>
+                    </div>
+                    <div class="card-block">
+                        <p>
+                            Hello <b>@{UserController.getCurrentUser.getDisplayName}</b>
+                        </p>
                     </div>
                 </div>
-                <div class="step-actions">
-                    <button class="btn btn-secondary previous-step">Previous Step</button>
-                    <button class="btn btn-primary next-step">Next Step</button>
+            </div>
+            <div class="col-lg-2">
+                <div class="card text-center">
+                    <div class="card-header">
+                        <h6>Schedule New Appointment</h6>
+                    </div>
+                    <div class="card-block">
+                        <button onclick="createNewAppointment()" class="btn btn-outline-primary">
+                            Schedule New Appointment</button>
+                    </div>
                 </div>
             </div>
-        </li>
-        <li class="step">
-            <div class="step-title waves-effect">Appointment Time</div>
-            <div class="step-content col-md-3">
-                <div>
-                @partials.components._appointmentCalendarForNewAppointment()
-                </div>
-                <div class="step-actions">
-                    <button class="btn btn-primary" onclick="createAppointment()" type="submit">Create Appointment</button>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h6>Appointment Calendar</h6>
+                    </div>
+                    <div>
+                        <div id="appointmentCalendar"></div>
+                    </div>
                 </div>
             </div>
-        </li>
-    </ul>
-    <script>
-            $(function () {
-                $('.stepper').activateStepper();
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="float-left">Next Five Appointments</h6>
+                        <a href="/Appointments" class="btn btn-outline-light float-right align-middle">
+                            View Appointment List</a>
+                    </div>
+                    @partials.components._nextFiveAppointments()
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+            $(document).ready(function() {
+                $('#appointmentCalendar').fullCalendar({
+                    header: false,
+                    defaultView: 'basicWeek',
+                    height: 'auto',
+                    editable: false,
+                    weekends: false,
+                    selectable: false,
+                    events: function (start, end, timezone, callback) {
+                        const csrfToken = $('input[name="csrfToken"]').attr('value');
+                        $.ajaxSetup({
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader('Csrf-Token', csrfToken);
+                            }
+                        });
+                        $.ajax({
+                            url: '/appointmentsForUser/' + '@UserController.getCurrentUser.getRole'+"/" +'@UserController.getCurrentUser.getUid',
+                            type: 'GET',
+                            success: function (response) {
+                                const events = [];
+                                $(response).each(function () {
+                                    const event = {
+                                        id: $(this).attr('availabilityId'),
+                                        title: $(this).attr('studentName'),
+                                        start: moment($(this).attr('startDate')).format(),
+                                        end: moment($(this).attr('endDate')).format(),
+                                        dow: [],
+                                    };
+                                    events.push(event);
+                                });
+                                callback(events);
+                            }
+                        })
+                    },
+                });
             });
-
-            function createAppointment() {
-                if (selectedEvents.length <= 0) {
-                    alert('No appointments have been selected');
-                }
-                var appointment = {
-                    id: selectedEvents[0].id,
-                    startDate: selectedEvents[0].start,
-                    endDate: selectedEvents[0].end
-                };
-                var form = {
-                    appointmentType: $('#appointmentType').val(),
-                    serviceType: $('#serviceType').val(),
-                    coachId: $('#coachId').val(),
-                    studentId: firebase.auth().currentUser.uid,
-                    appointmentId: appointment.id,
-                    startDate: appointment.startDate,
-                    endDate:   appointment.endDate,
-                    appointmentNotes: $('#appointmentNotes').val(),
-                    present: false
-                };
-                if(confirm("Your appointment details:\n\n" +
-                        "Appointment Type: " + form.appointmentType + "\n" +
-                        "Coach: " + $("#coachId option:selected").text() + "\n" +
-                        "Date: " + moment(appointment.start).format('dddd, MMMM Do, YYYY h:mm:ss A') + "\n\n" +
-                        "Confirm Appointment?")) {
-                    /* Create appointment Here*/
-                    var csrfToken = $('input[name="csrfToken"]').attr('value');
-                    $.ajaxSetup({
-                        beforeSend: function (xhr) {
-                            xhr.setRequestHeader('Csrf-Token', csrfToken);
-                        }
-                    });
-                    console.log(JSON.stringify(form));
-                    $.ajax({
-                        url: '/createAppointment',
-                        type: 'POST',
-                        data: JSON.stringify(form),
-                        contentType: 'application/json',
-                        success: function() {
-                            createAlert("success", "Appointment Created!");
-                        },
-                        error: function () {
-                            createAlert('danger', 'Appointment creation failed.');
-                        }
-                    });
-                } else {
-                    createAlert("info", "Appointment Not Created");
-                }
-            }
     </script>
+    @partials.components._createNewAppointmentFlow_Scripts()
 }
-

@@ -21,8 +21,19 @@ function timerIncrement() {
     idleTime = idleTime + 1;
     if (idleTime === 2 && Boolean(localStorage.getItem("timeoutDisabled"))) {
         if (window.location.pathname !== "/Login") {
-            alert('You have been signed out due to inactivity.');
-            $('#sign-out').click();
+            $.alert({
+                title: 'Alert',
+                content: 'You have been signed out due to inactivity.',
+                buttons: {
+                    confirm: {
+                        text: "Okay",
+                        btnClass: "btn-primary",
+                        action: function() {
+                            $('#sign-out').click();
+                        }
+                    }
+            }
+            });
         }
     }
 }

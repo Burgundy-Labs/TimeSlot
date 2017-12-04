@@ -3,10 +3,14 @@ package controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import controllers.ApplicationComponents.AppointmentTypes;
 import controllers.Databases.AppointmentsDB;
+import controllers.Databases.AvailabilityDB;
 import models.AppointmentsModel;
+import models.AvailabilityModel;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
+import javax.xml.bind.DatatypeConverter;
 import java.util.*;
 
 public class AppointmentsController extends Controller {
@@ -15,23 +19,9 @@ public class AppointmentsController extends Controller {
         return ok(views.html.appointments.render());
     }
 
-    public List<AppointmentsModel> getAppointments(String userId){
-        List<AppointmentsModel> appointments = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            AppointmentsModel appointment = new AppointmentsModel();
-            appointment.setStudentId("John Doe " + i);
-            appointment.setAppointmentNotes("Notes for appointment # " + i);
-            appointment.setStartDate(new Date().toString());
-            appointment.setEndDate(new Date().toString());
-            appointments.add(appointment);
-        }
-        return appointments;
-    }
-
     public Result makeAppointment() {
         return ok(views.html.makeAppointment.render());
     }
-
 
     public Result updatePresence() {
         JsonNode json = request().body().asJson();
@@ -45,12 +35,11 @@ public class AppointmentsController extends Controller {
         JsonNode json = request().body().asJson();
         /* Get user from json request */
         AppointmentsModel appointment = new AppointmentsModel();
-        appointment.setAppointmentId(json.findPath("appointmentId").textValue());
         appointment.setCoachId(json.findPath("coachId").textValue());
         appointment.setStudentId(json.findPath("studentId").textValue());
         appointment.setAppointmentType(json.findPath("appointmentType").textValue());
-        appointment.setStartDate(json.findPath("startDate").textValue());
-        appointment.setEndDate(json.findPath("endDate").textValue());
+        appointment.setStartDate(DatatypeConverter.parseDateTime(json.findPath("startDate").textValue()).getTime());
+        appointment.setEndDate(DatatypeConverter.parseDateTime(json.findPath("endDate").textValue()).getTime());
         appointment.setAppointmentNotes(json.findPath("appointmentNotes").textValue());
         appointment.setPresent(Boolean.getBoolean(json.findPath("present").textValue()));
         appointment.setServiceType(json.findPath("serviceType").textValue());
@@ -74,5 +63,10 @@ public class AppointmentsController extends Controller {
         appointment.setCoachNotes(coachNotes);
         AppointmentsDB.addAppointment(appointment);
         return ok();
+    }
+
+    public Result appointmentsForUser(String role, String userId) {
+        List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsForUser(role, userId);
+        return ok(Json.toJson(appointments));
     }
 }

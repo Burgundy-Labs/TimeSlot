@@ -1,0 +1,260 @@
+<script type="text/javascript">
+
+    let selectedEvents = [];
+    $(document).ready(function () {
+        createMakeAppointmentCalendar();
+    });
+
+    function createMakeAppointmentCalendar() {
+        const visibleEvents = [];
+        if ($('#calendar').is(':visible')) { //if the container is visible on the page
+            $('#calendar').fullCalendar({
+                height: 'auto',
+                allDaySlot: false,
+                defaultView: 'agendaWeek',
+                editable: false,
+                weekends: false,
+                selectable: true,
+                /* TODO pull from open / close hours of operation in settings page */
+                minTime: "10:00",
+                maxTime: "21:00",
+                events: function (start, end, timezone, callback) {
+                    const csrfToken = $('input[name="csrfToken"]').attr('value');
+                    $.ajaxSetup({
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader('Csrf-Token', csrfToken);
+                        }
+                    });
+                    $.ajax({
+                        url: '/availableSlots/' + '@UserController.getCurrentUser.getUid',
+                        type: 'GET',
+                        success: function (response) {
+                            const events = [];
+                            $(response).each(function () {
+                                const event = {
+                                    id: $(this).attr('availabilityId'),
+                                    title: "One-Time",
+                                    start: $(this).attr('startDate'),
+                                    end: $(this).attr('endDate'),
+                                    dow: [],
+                                    rendering: 'background'
+                                };
+                                visibleEvents.push($.extend({}, event));
+                                if ($(this).attr("weekly") === true) {
+                                    event.title = "Weekly";
+                                    event.dow = [moment($(this).attr('startDate')).isoWeekday()];
+                                    event.start = moment($(this).attr('startDate')).format("HH:mm");
+                                    event.end = moment($(this).attr('endDate')).format("HH:mm");
+                                }
+                                events.push(event);
+                            });
+                            callback(events);
+                        }
+                    })
+                },
+                eventRender: function (event, eventElement) {
+                    eventElement.find("div.fc-content").prepend("<button onclick='removeAppointment(\"" + event.id + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
+                },
+                select: function (start, end, jsEvent, view) {
+                    const duration = moment.duration(end.diff(start)).asHours();
+                    if (duration > 1) {
+                        $.alert({
+                            title: "Hold on there",
+                            content: "An appointment slot cannot be more than 1 hour.",
+                            buttons: {
+                                ok: {
+                                    text: "Okay"
+                                }
+                            }
+                        })
+                    } else if (($("#calendar").fullCalendar('clientEvents', [1])).length > 0) {
+                        $.alert({
+                            title: "Hold on there",
+                            content: "You already have an appointment slot selected, cancel the current one to change your time.",
+                            buttons: {
+                                ok: {
+                                    text: "Okay"
+                                }
+                            }
+                        })
+                    } else {
+                        const newAppointment = {
+                            title: "Appointment",
+                            /* TODO If want to select more than 1 event, create unique id's */
+                            id: 1,
+                            userId: '@UserController.getCurrentUser.getUid',
+                            start: moment(start).format(),
+                            end: moment(end).format(),
+                            weekly: false
+                        };
+                        $.confirm({
+                            title: 'Confirm Appointment',
+                            content: 'Do you want to create an appointment for this time?',
+                            theme: 'modern',
+                            buttons: {
+                                yes: {
+                                    text: 'Yes, Create',
+                                    btnClass: 'btn-primary',
+                                    keys: ['enter', 'shift'],
+                                    action: function () {
+                                        $('#calendar').fullCalendar('renderEvent', newAppointment, true);
+                                        selectedEvents.push(newAppointment);
+                                    }
+                                },
+                                cancel: {
+                                    text: 'No, Cancel.'
+                                }
+                            }
+                        });
+                    }
+                },
+                selectOverlap: function (event) {
+                    return event.rendering === 'background';
+                }
+            });
+        } else {
+            setTimeout(createMakeAppointmentCalendar, 50); //wait 50 ms, then try again
+        }
+    }
+
+    function removeAppointment(eventId) {
+        selectedEvents = selectedEvents.filter(obj => !obj.id === eventId);
+        $('#calendar').fullCalendar('removeEvents', [eventId]);
+    }
+
+    function createNewAppointment() {
+        let content = ` @{ partials.components._createNewAppointmentFlow() } `;
+        $.confirm({
+            columnClass: 'col-md-12',
+            title: "New Appointment",
+            content: content,
+            buttons: {
+                cancel: {
+                    text: "Cancel",
+                    btnClass: "btn",
+                    action: function() {
+                       $('#calendar').hide();
+                        createMakeAppointmentCalendar();
+                    }
+                },
+                submit: {
+                    text: 'Create Appointment',
+                    btnClass: 'btn-primary',
+                    action: function () {
+                        if (selectedEvents.length <= 0) {
+                            $.alert({
+                                title: 'Alert',
+                                type: 'red',
+                                content: 'No appointments slots have been selected.'
+                            });
+                            return false;
+                        } else {
+                            const appointment = {
+                                /* TOOD: If desired to allow multiple events - change this*/
+                                id: selectedEvents[0].id,
+                                startDate: selectedEvents[0].start,
+                                endDate: selectedEvents[0].end
+                            };
+                            const form = {
+                                appointmentType: $('#appointmentType').val(),
+                                serviceType: $('#serviceType').val(),
+                                coachId: $('#coachId').val(),
+                                studentId: firebase.auth().currentUser.uid,
+                                startDate: appointment.startDate,
+                                endDate: appointment.endDate,
+                                appointmentNotes: $('#appointmentNotes').val(),
+                                present: false
+                            };
+                            $.confirm({
+                                title: 'New Appointment',
+                                content: "<div class='appointmentDetails'>Your appointment details: <br/>" +
+                                "<b>Appointment Type:</b> " + form.appointmentType + " <br/>" +
+                                "<b>Coach:</b> " + $("#coachId option:selected").text() + " <br/>" +
+                                "<b>Date:</b>" + moment(appointment.startDate).format('dddd, MMMM Do, YYYY h:mm A') + " -" + moment(appointment.endDate).format('h:mm A') + "<br/>" +
+                                "</div>",
+                                theme: 'modern',
+                                buttons: {
+                                    yes: {
+                                        text: 'Create Appointment',
+                                        btnClass: 'btn-primary',
+                                        keys: ['enter', 'shift'],
+                                        action: function () {
+                                            /* Create appointment Here*/
+                                            const csrfToken = $('input[name="csrfToken"]').attr('value');
+                                            $.ajaxSetup({
+                                                beforeSend: function (xhr) {
+                                                    xhr.setRequestHeader('Csrf-Token', csrfToken);
+                                                }
+                                            });
+                                            $.ajax({
+                                                url: '/createAppointment',
+                                                type: 'POST',
+                                                data: JSON.stringify(form),
+                                                contentType: 'application/json',
+                                                success: function () {
+                                                    createAlert("success", "Appointment Created!");
+                                                    location.reload();
+                                                },
+                                                error: function () {
+                                                    createAlert('danger', 'Appointment creation failed.');
+                                                }
+                                            });
+                                        }
+                                    },
+                                    no: {
+                                        text: 'Cancel Appointment',
+                                        action: function () {
+                                            createAlert("warning", "Appointment Not Created");
+                                            selectedEvents = [];
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+        });
+        makeStepper();
+    }
+
+    function makeStepper() {
+        const createNewAppointmentForm = $('#createNewAppointmentForm');
+        if (createNewAppointmentForm.length) {
+            createNewAppointmentForm.steps({
+                onChange: function (currentIndex, newIndex, stepDirection) {
+                    /* Appointment Info */
+                    if (currentIndex === 0) {
+                        if (stepDirection === 'forward') {
+                            let appointmentTypeForm = $('#appointmentInfo');
+                            appointmentTypeForm.validate();
+                            return appointmentTypeForm.valid();
+                        }
+                    }
+                    /* Coach Select */
+                    if (currentIndex === 1) {
+                        if (stepDirection === 'forward') {
+                            let coachForm = $('#coachForm');
+                            coachForm.validate();
+                            return coachForm.valid();
+                        }
+                    }
+                    /* Session Notes*/
+                    if (currentIndex === 2) {
+                        if (stepDirection === 'forward') {
+                            return true;
+                        }
+                    }
+                    /* Event Time */
+                    if (currentIndex === 3) {
+                        if (stepDirection === 'forward') {
+                            return true;
+                        }
+                    }
+                }
+            });
+        } else {
+            setTimeout(makeStepper, 50);
+        }
+    }
+</script>
