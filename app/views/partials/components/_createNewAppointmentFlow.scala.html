@@ -13,7 +13,7 @@
         <div class="step-content">
             <div class="step-tab-panel" id="step1">
                 <div>
-                    <form name="appointmentInfo" id="appointmentInfo">
+                    <form id="appointmentInfo">
                     <label for="appointmentType">Type of appointment</label>
                     <br/>
                     <select id="appointmentType" name="appointmentType" required>
@@ -36,6 +36,7 @@
             </div>
             <div class="step-tab-panel" id="step2">
                 <div>
+                    <form id="coachForm">
                     <label for="coachId">Select a coach</label>
                     <br/>
                     <select id="coachId" name="appointmentType" required>
@@ -47,6 +48,7 @@
                             }
                         }
                     </select>
+                    </form>
                 </div>
             </div>
             <div class="step-tab-panel" id="step3">
