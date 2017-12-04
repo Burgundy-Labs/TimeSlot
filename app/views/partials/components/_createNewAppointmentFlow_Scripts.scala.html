@@ -165,12 +165,14 @@
                                 appointmentNotes: $('#appointmentNotes').val(),
                                 present: false
                             };
+                            let coachName = $('#coachId option:selected').text();
                             $.confirm({
+                                boxWidth: "50%",
                                 title: 'New Appointment',
                                 content: "<div class='appointmentDetails'>Your appointment details: <br/>" +
                                 "<b>Appointment Type:</b> " + form.appointmentType + " <br/>" +
-                                "<b>Coach:</b> " + $("#coachId option:selected").text() + " <br/>" +
-                                "<b>Date:</b>" + moment(appointment.startDate).format('dddd, MMMM Do, YYYY h:mm A') + " -" + moment(appointment.endDate).format('h:mm A') + "<br/>" +
+                                "<b>Coach:</b> " + coachName + " <br/>" +
+                                "<b>Date:</b> " + moment(appointment.startDate).format('dddd, MMMM Do, YYYY h:mm A') + " -" + moment(appointment.endDate).format('h:mm A') + "<br/>" +
                                 "</div>",
                                 theme: 'modern',
                                 buttons: {
@@ -192,6 +194,20 @@
                                                 data: JSON.stringify(form),
                                                 contentType: 'application/json',
                                                 success: function () {
+                                                    let studentNotification = "New "+ form.appointmentType +" Appointment on " + moment(form.startDate).format("dddd, MMMM Do, h:mm A") + " - " + moment(form.endDate).format("h:mm A") + " with " + coachName;
+                                                    let coachNotification = "New "+ form.appointmentType +" Appointment on " + moment(form.startDate).format("dddd, MMMM Do, h:mm A") + " - " + moment(form.endDate).format("h:mm A") + " with " + "@UserController.getCurrentUser.getDisplayName";
+                                                    $.ajax({
+                                                        url: '/addNotificationToUser',
+                                                        type: 'POST',
+                                                        data: JSON.stringify({userId: form.coachId, notificationContent: coachNotification}),
+                                                        contentType: 'application/json',
+                                                    });
+                                                    $.ajax({
+                                                        url: '/addNotificationToUser',
+                                                        type: 'POST',
+                                                        data: JSON.stringify({userId: form.studentId, notificationContent: studentNotification}),
+                                                        contentType: 'application/json',
+                                                    });
                                                     createAlert("success", "Appointment Created!");
                                                     location.reload();
                                                 },

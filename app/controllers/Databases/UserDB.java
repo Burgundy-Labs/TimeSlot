@@ -1,22 +1,77 @@
 package controllers.Databases;
 
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.QuerySnapshot;
-import com.google.cloud.firestore.WriteResult;
+import com.google.cloud.firestore.*;
 import controllers.ApplicationComponents.Roles;
+import models.NotificationModel;
 import models.UsersModel;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.ZonedDateTime;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 /* DB classes contain the methods necessary to manage their corresponding models.
 * UserDB works with UsersModel to retrieve and remove users in the Firestore DB.*/
 public class UserDB {
+    public static synchronized void addNotificationToUser(NotificationModel notificationModel, String userId){
+         /* Get DB instance */
+        DocumentReference docRef = null;
+         if(notificationModel.getNotificationId() == null) {
+             docRef = FirestoreDB.getFirestoreDB().collection("users").document(userId).collection("notifications").document();
+         } else {
+             docRef = FirestoreDB.getFirestoreDB().collection("users").document(userId).collection("notifications").document(notificationModel.getNotificationId());
+         }
+        Map<String, Object> data = new HashMap<>();
+        /* Create user model for DB insert */
+        data.put("notificationId", docRef.getId());
+        data.put("notificationContent", notificationModel.getNotificationContent());
+        data.put("creationDate", new Date());
+        /* Asynchronously write user into DB */
+        ApiFuture<WriteResult> result = docRef.set(data);
+        result.isDone();
+    }
+
+    public static synchronized List<NotificationModel> getNotificaitonsForUser(String userId){
+        List<NotificationModel> notificationList = new ArrayList<>();
+        /* Asynchronously retrieve all users */
+        ApiFuture<QuerySnapshot> query = FirestoreDB.getFirestoreDB().collection("users").document(userId).collection("notifications").orderBy("creationDate", Query.Direction.DESCENDING).limit(5).get();
+        QuerySnapshot querySnapshot = null;
+        try {
+            /* Attempt to get a list of all users - blocking */
+            querySnapshot = query.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        assert querySnapshot != null;
+        List<DocumentSnapshot> documents = querySnapshot.getDocuments();
+        /* Iterate users and add them to a list for return */
+        ZonedDateTime now = ZonedDateTime.now();
+        ZonedDateTime thirtyDaysAgo = now.plusDays(-30);
+        for (DocumentSnapshot document : documents) {
+            if (document.getDate("creationDate").toInstant().isBefore(thirtyDaysAgo.toInstant())) {
+                removeNotification(userId, document.getString("notificationId"));
+            }
+            NotificationModel notification = new NotificationModel(
+                    document.getString("notificationId"),
+                    document.getString("notificationContent")
+            );
+            notificationList.add(notification);
+        }
+        return notificationList;
+    }
+
+    public static boolean removeNotification(String userId, String notificationId) {
+        /* Asynchronously remove user from DB */
+        ApiFuture<WriteResult> writeResult = FirestoreDB.getFirestoreDB().collection("users").document(userId).collection("notifications").document(notificationId).delete();
+        try {
+            /* Verify that action is complete */
+            writeResult.get();
+            return writeResult.isDone();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     public static UsersModel getUser(String userId) {
         /* Return null user if none found */

@@ -3,6 +3,7 @@ package controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import controllers.ApplicationComponents.Roles;
 import controllers.Databases.UserDB;
+import models.NotificationModel;
 import models.UsersModel;
 import play.Logger;
 import play.libs.Json;
@@ -23,6 +24,23 @@ public class UserController extends Controller {
         UsersModel user = Json.fromJson(json, UsersModel.class);
         /* Check if user is in DB */
         UserDB.addUser(user);
+        return ok();
+    }
+
+    public Result addNotificationToUser() {
+        JsonNode json = request().body().asJson();
+        String userId = json.get("userId").asText();
+        NotificationModel notification = new NotificationModel();
+        notification.setNotificationContent(json.get("notificationContent").asText());
+        UserDB.addNotificationToUser(notification,userId);
+        return ok();
+    }
+
+    public Result removeNotificationFromUser() {
+        JsonNode json = request().body().asJson();
+        String userId = json.get("userId").asText();
+        String notificationId = json.get("notificationId").asText();
+        UserDB.removeNotification(userId, notificationId);
         return ok();
     }
 
