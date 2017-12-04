@@ -3,7 +3,6 @@ $(function () {
     $('[data-toggle="popover"]').popover({html: true});
 });
 
-
 function createAlert(alertType, messageHTML) {
     $("<div></div>").appendTo('.page-content').addClass('alert alert-link alert-dismissible fade show alert-' + alertType)
         .html(
@@ -13,7 +12,6 @@ function createAlert(alertType, messageHTML) {
             '<div>' + messageHTML + '</div>'
         ).fadeTo(2000, 500).slideUp(500);
 }
-
 
 function createModal(modalID, modalContent, buttonText, buttonFunction) {
     if ($('#' + modalID).length === 0) {

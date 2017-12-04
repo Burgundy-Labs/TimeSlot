@@ -2,7 +2,6 @@ initApp = function () {
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
             // User is signed in.
-
             /* Make sure they're in the application - as defined by sidebar being displayed */
             if ($('.sidebar').length) {
                 if (window.location.pathname === "/Login" || window.location.pathname === "/") {
