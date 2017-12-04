@@ -3,15 +3,6 @@ $(function () {
     $('[data-toggle="popover"]').popover({html: true});
 });
 
-$(document).ready(function () {
-    firebase.auth().onAuthStateChanged(function (user) {
-        if (user) {
-            if ($('.sidebar').length) {
-                $('[data-original-title="Account"]').html('<img src="' + firebase.auth().currentUser.photoURL + '" class="userAvatar"/>');
-            }
-        }
-    });
-});
 
 function createAlert(alertType, messageHTML) {
     $("<div></div>").appendTo('.page-content').addClass('alert alert-link alert-dismissible fade show alert-' + alertType)

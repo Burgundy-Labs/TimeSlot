@@ -43,11 +43,7 @@ public class UserController extends Controller {
 
     public static UsersModel getCurrentUser() {
         String s = session("currentUser");
-        if(s ==  null){
-            UsersModel u = new UsersModel();
-            u.setRole(Roles.getRole("Student"));
-            return u;
-        }
+
         return UserDB.getUser(s);
     }
 }
