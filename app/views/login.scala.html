@@ -8,10 +8,10 @@
     <body>
         <script type="text/javascript">
                 // FirebaseUI config.
-                var uiConfig = {
+                let uiConfig = {
                     callbacks: {
                         signInSuccess: function (user, credential, redirectUrl) {
-                            var userSignIn = {
+                            let userSignIn = {
                                 displayName: user.displayName,
                                 email: user.email,
                                 emailVerified: user.emailVerified,
@@ -19,46 +19,26 @@
                                 uid: user.uid,
                                 phoneNumber: user.phoneNumber
                             };
-                            if(!(user.email.split('@@')[1] === 'mtu.edu')){
-                                console.log("broken");
-                                $.alert({
-                                    title: 'Alert',
-                                    content: 'Please sign-in using an @@mtu.edu email address',
-                                    buttons: {
-                                        confirm: {
-                                            text: "Okay",
-                                            btnClass: "btn-primary",
-                                            action: function() {
-                                                signout();
-                                            }
-                                        }
-                                    }
-                                });
-                                window.location ="/Logout";
-                            } else {
-                                /* POST signed in user to Login Controller*/
-                                var csrfToken = $('input[name="csrfToken"]').attr('value');
-                                $.ajaxSetup({
-                                    beforeSend: function (xhr) {
-                                        xhr.setRequestHeader('Csrf-Token', csrfToken);
-                                    }
-                                });
-                                $.ajax({
-                                    url: '/signedIn',
-                                    type: 'POST',
-                                    data: JSON.stringify(userSignIn),
-                                    contentType: 'application/json',
-                                    success: function(){
-                                        window.location ="/Dashboard";
-
-                                    },
-                                    error: function (err) {
-                                        console.log(err);
-                                    }
-                                });
-                            }
+                            /* POST signed in user to Login Controller*/
+                            let csrfToken = $('input[name="csrfToken"]').attr('value');
+                            $.ajaxSetup({
+                                beforeSend: function (xhr) {
+                                    xhr.setRequestHeader('Csrf-Token', csrfToken);
+                                }
+                            });
+                            $.ajax({
+                                url: '/signedIn',
+                                type: 'POST',
+                                data: JSON.stringify(userSignIn),
+                                contentType: 'application/json',
+                                error: function (err) {
+                                    console.log(err);
+                                }
+                            });
+                            return false;
                         }
                     },
+                    signInSuccessUrl: '/Dashboard',
                     signInOptions: [{
                         provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
                         scopes: ['https://www.googleapis.com/auth/calendar']
@@ -68,25 +48,25 @@
                 };
 
                 // Initialize the FirebaseUI Widget using FirestoreDB.
-                var ui = new firebaseui.auth.AuthUI(firebase.auth());
+                const ui = new firebaseui.auth.AuthUI(firebase.auth());
                 // The start method will wait until the DOM is loaded.
                 ui.start('#firebaseui-auth-container', uiConfig);
         </script>
-            <div class="loginJumbotron">
-                <div class="jumbotron d-flex align-items-center">
-                    <div class="container">
-                        <h1>@SettingsController.getSettings.getCenterName</h1>
+        <div class="loginJumbotron">
+            <div class="jumbotron d-flex align-items-center">
+                <div class="container">
+                    <h1>@SettingsController.getSettings.getCenterName</h1>
+                    <br/>
+                    <p><b>Welcome to Project Burgundy</b>
                         <br/>
-                        <p><b>Welcome to Project Burgundy</b>
-                            <br/>
-                            @helper.CSRF.formField
-                            Please sign in below to view, schedule, and manage appointments at the @SettingsController.getSettings.getCenterName.
-                        </p>
-                        <div id="firebaseui-auth-container" class="btn"></div>
-                        <div id="sign-out"></div>
-                    </div>
+                        @helper.CSRF.formField
+                        Please sign in below to view, schedule, and manage appointments at the @SettingsController.getSettings.getCenterName.
+                    </p>
+                    <div id="firebaseui-auth-container" class="btn"></div>
+                    <div id="sign-out"></div>
                 </div>
             </div>
+        </div>
         @partials._footer()
     </body>
 </html>
