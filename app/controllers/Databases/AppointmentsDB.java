@@ -57,7 +57,7 @@ public class AppointmentsDB {
         List<AppointmentsModel> appointmentList = new ArrayList<>();
         /* Asynchronously retrieve all appointments */
         if(role.equals("Admin")){role = "Coach";}
-        ApiFuture<QuerySnapshot> query = FirestoreDB.getFirestoreDB().collection("appointments").orderBy("start_date", Query.Direction.DESCENDING).whereEqualTo(role.toLowerCase()+"Id",userId).limit(5).get();
+        ApiFuture<QuerySnapshot> query = FirestoreDB.getFirestoreDB().collection("appointments").orderBy("start_date", Query.Direction.ASCENDING).whereEqualTo(role.toLowerCase()+"Id",userId).get();
         QuerySnapshot querySnapshot = null;
         try {
             /* Attempt to get a list of all appointments - blocking */
@@ -83,7 +83,45 @@ public class AppointmentsDB {
                     document.getString("coachPhoto"),
                     document.getString("appointment_notes"),
                     document.getString("coach_notes"),
-                    Boolean.valueOf(document.getBoolean("present")),
+                    document.getBoolean("present"),
+                    document.getString("appointment_type"),
+                    document.getString("service_type"));
+            appointmentList.add(appointment);
+        }
+        return appointmentList;
+    }
+
+    public static synchronized List<AppointmentsModel> getNextFiveAppointmentsForUser(String role, String userId) {
+        List<AppointmentsModel> appointmentList = new ArrayList<>();
+        /* Asynchronously retrieve all appointments */
+        if(role.equals("Admin")){role = "Coach";}
+        ApiFuture<QuerySnapshot> query = FirestoreDB.getFirestoreDB().collection("appointments").orderBy("start_date", Query.Direction.ASCENDING).whereEqualTo(role.toLowerCase()+"Id",userId).limit(5).get();
+        QuerySnapshot querySnapshot = null;
+        try {
+            /* Attempt to get a list of all appointments - blocking */
+            querySnapshot = query.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        assert querySnapshot != null;
+        List<DocumentSnapshot> documents = querySnapshot.getDocuments();
+        /* Iterate appointments and add them to a list for return */
+        for (DocumentSnapshot document : documents) {
+            AppointmentsModel appointment = new AppointmentsModel(
+                    document.getId(),
+                    document.getDate("start_date"),
+                    document.getDate("end_date"),
+                    document.getString("studentId"),
+                    document.getString("studentName"),
+                    document.getString("studentEmail"),
+                    document.getString("studentPhoto"),
+                    document.getString("coachId"),
+                    document.getString("coachName"),
+                    document.getString("coachEmail"),
+                    document.getString("coachPhoto"),
+                    document.getString("appointment_notes"),
+                    document.getString("coach_notes"),
+                    document.getBoolean("present"),
                     document.getString("appointment_type"),
                     document.getString("service_type"));
             appointmentList.add(appointment);
@@ -120,7 +158,7 @@ public class AppointmentsDB {
                     document.getString("coachPhoto"),
                     document.getString("appointment_notes"),
                     document.getString("coach_notes"),
-                    Boolean.valueOf(document.getBoolean("present")),
+                    document.getBoolean("present"),
                     document.getString("appointment_type"),
                     document.getString("service_type"));
             appointmentList.add(appointment);

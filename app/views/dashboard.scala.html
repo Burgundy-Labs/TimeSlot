@@ -1,3 +1,4 @@
+@import controllers.Databases.UserDB
 @()
 @main("Dashboard", "Your Dashboard") {
     @helper.CSRF.formField
@@ -6,23 +7,34 @@
             <div class="col-lg-10">
                 <div class="card">
                     <div class="card-header">
-                        <h6> Your Profile</h6>
+                        <h4>Hello, @{UserController.getCurrentUser.getDisplayName} </h4>
                     </div>
                     <div class="card-block">
-                        <p>
-                            Hello <b>@{UserController.getCurrentUser.getDisplayName}</b>
-                        </p>
+                        <div class="col-lg-6">
+                        <h6>Notifications:</h6>
+                        <ul class="list-group">
+                            @if(UserDB.getNotificaitonsForUser(UserController.getCurrentUser.getUid).size() == 0){
+                                There are currently no notifications to display.
+                            } else {
+                      @for(notification <- UserDB.getNotificaitonsForUser(UserController.getCurrentUser.getUid)){
+                          <li class="list-group-item">@notification.getNotificationContent <button onclick="deleteNotification('@notification.getNotificationId')" class="no-button deleteNotification"><i class="material-icons md-18">backspace</i></button></li>
+                      }
+                            <button class="clearAll no-button">Clear All</button>
+                            }
+                        </ul>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-lg-2">
                 <div class="card text-center">
                     <div class="card-header">
-                        <h6>Schedule New Appointment</h6>
+                       <h4>Quick-Schedule</h4>
                     </div>
                     <div class="card-block">
-                        <button onclick="createNewAppointment()" class="btn btn-outline-primary">
-                            Schedule New Appointment</button>
+                        <button onclick="createNewAppointment()" class="btn btn-primary">
+                            Schedule New Appointment
+                        </button>
                     </div>
                 </div>
             </div>
@@ -32,7 +44,7 @@
             <div class="col-lg-4">
                 <div class="card">
                     <div class="card-header">
-                        <h6>Appointment Calendar</h6>
+                        <h4>Appointment Calendar</h4>
                     </div>
                     <div>
                         <div id="appointmentCalendar"></div>
@@ -42,7 +54,7 @@
             <div class="col-lg-8">
                 <div class="card">
                     <div class="card-header">
-                        <h6 class="float-left">Next Five Appointments</h6>
+                        <h4 class="float-left">Next Five Appointments</h4>
                         <a href="/Appointments" class="btn btn-outline-light float-right align-middle">
                             View Appointment List</a>
                     </div>
@@ -52,7 +64,31 @@
         </div>
     </div>
     <script type="text/javascript">
+
+        function deleteNotification(notificationId) {
+            const csrfToken = $('input[name="csrfToken"]').attr('value');
+            $.ajaxSetup({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Csrf-Token', csrfToken);
+                }
+            });
+            $.ajax({
+                url: '/removeNotificationFromUser',
+                data: JSON.stringify({userId: '@UserController.getCurrentUser.getUid', notificationId: notificationId}),
+                contentType: 'application/json',
+                type: 'POST',
+                success: function (response) {
+                    /* TODO load from AJAX so we don't have to reload or hide element from */
+                    location.reload();
+                }
+            })
+        }
+
             $(document).ready(function() {
+                $('.clearAll').on('click',function() {
+                    $('.deleteNotification').click();
+                });
+
                 $('#appointmentCalendar').fullCalendar({
                     header: false,
                     defaultView: 'basicWeek',
@@ -75,7 +111,7 @@
                                 $(response).each(function () {
                                     const event = {
                                         id: $(this).attr('availabilityId'),
-                                        title: $(this).attr('studentName'),
+                                        title: @if(UserController.getCurrentUser.getRole.equals("Student")){$(this).attr("coachName"),}else{$(this).attr("coachName"),}
                                         start: moment($(this).attr('startDate')).format(),
                                         end: moment($(this).attr('endDate')).format(),
                                         dow: [],

@@ -22,6 +22,8 @@ GET         /appointmentsForUser/:role/:userId        controllers.AppointmentsCo
 POST        /signedIn                                 controllers.LoginController.signedIn()
 POST        /updateUser                               controllers.UserController.updateUser()
 POST        /deleteUser                               controllers.UserController.removeUser()
+POST        /addNotificationToUser                    controllers.UserController.addNotificationToUser()
+POST        /removeNotificationFromUser               controllers.UserController.removeNotificationFromUser()
 POST        /updateSettings                           controllers.SettingsController.updateSettings()
 POST        /createAppointment                        controllers.AppointmentsController.createAppointment()
 POST        /cancelAppointment                        controllers.AppointmentsController.cancelAppointment()
