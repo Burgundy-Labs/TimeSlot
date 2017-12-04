@@ -35,7 +35,7 @@ public class LoginController extends Controller {
         /* Add user to DB with 'student' role (default) */
         return ok();
     }
-    
+
     public Result logout(){
         session().clear();
         return redirect("/Login");

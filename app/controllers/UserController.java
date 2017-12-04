@@ -1,12 +1,15 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import controllers.ApplicationComponents.Roles;
 import controllers.Databases.UserDB;
 import models.UsersModel;
 import play.Logger;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+
+import javax.management.relation.Role;
 
 public class UserController extends Controller {
     public Result index() {
@@ -40,6 +43,11 @@ public class UserController extends Controller {
 
     public static UsersModel getCurrentUser() {
         String s = session("currentUser");
+        if(s ==  null){
+            UsersModel u = new UsersModel();
+            u.setRole(Roles.getRole("Student"));
+            return u;
+        }
         return UserDB.getUser(s);
     }
 }
