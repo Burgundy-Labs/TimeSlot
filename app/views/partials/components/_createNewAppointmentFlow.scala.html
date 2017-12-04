@@ -1,0 +1,75 @@
+@import controllers.ApplicationComponents.AppointmentTypes
+@import controllers.ApplicationComponents.Services
+@import controllers.Databases.UserDB
+@()
+<div id="createNewAppointmentForm">
+    <div class="step-app">
+        <ul class="step-steps">
+            <li><a href="#step1">Appointment Info</a></li>
+            <li><a href="#step2">Coach Selection</a></li>
+            <li><a href="#step3">Appointment Notes</a></li>
+            <li><a href="#step4">Appointment Time</a></li>
+        </ul>
+        <div class="step-content">
+            <div class="step-tab-panel" id="step1">
+                <div>
+                    <form id="appointmentInfo">
+                    <label for="appointmentType">Type of appointment</label>
+                    <br/>
+                    <select id="appointmentType" name="appointmentType" required>
+                        <option selected disabled hidden> Select an Appointment Type </option>
+                        @for(appointment <- AppointmentTypes.getAppointmentTypes) {
+                            <option value="@appointment.appointmentType()">@appointment.appointmentType()</option>
+                        }
+                        </select>
+                    <br/>
+                    <label for="serviceType">Service desired</label>
+                    <br/>
+                    <select id="serviceType" name="serviceType" required>
+                        <option selected disabled hidden> Select service</option>
+                        @for(service <- Services.getServices) {
+                            <option value="@service.service()">@service.service()</option>
+                        }
+                    </select>
+                    </form>
+                </div>
+            </div>
+            <div class="step-tab-panel" id="step2">
+                <div>
+                    <form id="coachForm">
+                    <label for="coachId">Select a coach</label>
+                    <br/>
+                    <select id="coachId" name="appointmentType" required>
+                        <option selected disabled> Select a coach </option>
+                        <option value="Any">Any Coach</option>
+                        @for(coach <- UserDB.getCoaches) {
+                                <option value="@coach.getUid">@coach.getDisplayName</option>
+                        }
+                    </select>
+                    </form>
+                </div>
+            </div>
+            <div class="step-tab-panel" id="step3">
+                <div>
+                    <div class="form-group">
+                        <label for="appointmentNotes">What will the appointment be about?</label>
+                        <textarea class="form-control" rows="5" id="appointmentNotes"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="step-tab-panel" id="step4">
+                <div>
+                    <div class="row">
+                        <div class="col-md-12" id="calendarContainer">
+                            <div id="calendar"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="step-footer">
+            <button class="btn" data-direction="prev">Previous</button>
+            <button class="btn btn-primary" data-direction="next">Next</button>
+        </div>
+    </div>
+</div>

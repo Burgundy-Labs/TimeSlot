@@ -10,7 +10,6 @@ scalaVersion := "2.12.2"
 
 libraryDependencies ++= Seq(javaJdbc, ehcache, ws, javaWs, guice,
   "org.webjars" % "bootstrap" % "4.0.0-beta",
-  "org.webjars" % "jquery" % "3.2.1",
   "com.google.cloud" % "google-cloud-firestore" % "0.25.0-beta",
   "org.mockito" % "mockito-core" % "1.10.19" % "test")
 

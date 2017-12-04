@@ -12,7 +12,7 @@
                     <div class="container">
                         <br/>
                         <h1>Make an Appointment</h1>
-                        @partials.components._appointmentCalendarForNewAppointment()
+                        @partials.components._createNewAppointmentFlow()
                         <div style="width: 100%; margin-top: 25px">
                             <button style="margin-right: 300px" href="#appointment-list">Back</button>
                             <button style="margin-left: 300px" href="#appointment-calendar">Next</button>
@@ -21,5 +21,6 @@
                 </div>
             </div>
         </div>
+        @partials.components._createNewAppointmentFlow_Scripts()
     </body>
 </html>

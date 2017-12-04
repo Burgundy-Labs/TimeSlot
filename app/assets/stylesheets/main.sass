@@ -54,12 +54,20 @@ a i.material-icons
   &:hover
     color: black
 
+.btn-outline-light
+  &:hover
+    color: $application-primary
 
 .dashCards
-  margin-top: 5px
-  padding: 5px
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)
-  background-color: white
+  .card-header
+    background-color: $application-primary
+    color: white
+    padding: 15px
+    h6
+      font-weight: bold
+
+.card-block
+  padding: 15px
 
 .nav-link
   color: black
@@ -111,6 +119,7 @@ a i.material-icons
 
 .action-primary a
   color: $application-primary
+
 .action-secondary a
     color: $application-secondary
 
@@ -122,16 +131,19 @@ a i.material-icons
 
 .application-primary
   color: $application-primary
+
 .primary-background
   background-color: $application-primary
 
 .application-secondary
   color: $application-secondary
+
 .secondary-background
   background-color: $application-secondary
 
 .application-tertiary
   color: $application-tertiary
+
 .tertiary-background
   background-color: $application-tertiary
 
@@ -197,6 +209,9 @@ button
 .md-32
   font-size: 32px
 
+.appointmentDetails
+  text-align: left
+
 // Custom Scrollbar
 ::-webkit-scrollbar
   width: 8px
@@ -213,3 +228,4 @@ button
 @import "partials/_sidebar"
 @import "partials/_footer"
 @import "partials/_fullCalendar"
+@import "partials/_stepper"

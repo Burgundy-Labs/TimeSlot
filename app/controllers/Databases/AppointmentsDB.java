@@ -1,10 +1,7 @@
 package controllers.Databases;
 
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.QuerySnapshot;
-import com.google.cloud.firestore.WriteResult;
+import com.google.cloud.firestore.*;
 import models.AppointmentsModel;
 import models.UsersModel;
 
@@ -35,8 +32,8 @@ public class AppointmentsDB {
         if (document.exists()) {
             appointmentFound = new AppointmentsModel(
                     document.getId(),
-                    document.getString("start_date"),
-                    document.getString("end_date"),
+                    document.getDate("start_date"),
+                    document.getDate("end_date"),
                     document.getString("studentId"),
                     document.getString("studentName"),
                     document.getString("studentEmail"),
@@ -47,13 +44,51 @@ public class AppointmentsDB {
                     document.getString("coachPhoto"),
                     document.getString("appointment_notes"),
                     document.getString("coach_notes"),
-                    document.getBoolean("present"),
+                    Boolean.valueOf(document.getBoolean("present")),
                     document.getString("appointment_type"),
                     document.getString("service_type"));
         } else {
             /* Log something */
         }
         return appointmentFound;
+    }
+
+    public static synchronized List<AppointmentsModel> getAppointmentsForUser(String role, String userId) {
+        List<AppointmentsModel> appointmentList = new ArrayList<>();
+        /* Asynchronously retrieve all appointments */
+        if(role.equals("Admin")){role = "Coach";}
+        ApiFuture<QuerySnapshot> query = FirestoreDB.getFirestoreDB().collection("appointments").orderBy("start_date", Query.Direction.DESCENDING).whereEqualTo(role.toLowerCase()+"Id",userId).limit(5).get();
+        QuerySnapshot querySnapshot = null;
+        try {
+            /* Attempt to get a list of all appointments - blocking */
+            querySnapshot = query.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        assert querySnapshot != null;
+        List<DocumentSnapshot> documents = querySnapshot.getDocuments();
+        /* Iterate appointments and add them to a list for return */
+        for (DocumentSnapshot document : documents) {
+            AppointmentsModel appointment = new AppointmentsModel(
+                    document.getId(),
+                    document.getDate("start_date"),
+                    document.getDate("end_date"),
+                    document.getString("studentId"),
+                    document.getString("studentName"),
+                    document.getString("studentEmail"),
+                    document.getString("studentPhoto"),
+                    document.getString("coachId"),
+                    document.getString("coachName"),
+                    document.getString("coachEmail"),
+                    document.getString("coachPhoto"),
+                    document.getString("appointment_notes"),
+                    document.getString("coach_notes"),
+                    Boolean.valueOf(document.getBoolean("present")),
+                    document.getString("appointment_type"),
+                    document.getString("service_type"));
+            appointmentList.add(appointment);
+        }
+        return appointmentList;
     }
 
     public static synchronized List<AppointmentsModel> getAppointments() {
@@ -73,8 +108,8 @@ public class AppointmentsDB {
         for (DocumentSnapshot document : documents) {
             AppointmentsModel appointment = new AppointmentsModel(
                     document.getId(),
-                    document.getString("start_date"),
-                    document.getString("end_date"),
+                    document.getDate("start_date"),
+                    document.getDate("end_date"),
                     document.getString("studentId"),
                     document.getString("studentName"),
                     document.getString("studentEmail"),
@@ -85,7 +120,7 @@ public class AppointmentsDB {
                     document.getString("coachPhoto"),
                     document.getString("appointment_notes"),
                     document.getString("coach_notes"),
-                    document.getBoolean("present"),
+                    Boolean.valueOf(document.getBoolean("present")),
                     document.getString("appointment_type"),
                     document.getString("service_type"));
             appointmentList.add(appointment);
@@ -95,7 +130,12 @@ public class AppointmentsDB {
 
     public static synchronized void addAppointment(AppointmentsModel appointment) {
         /* Get DB instance */
-        DocumentReference docRef = FirestoreDB.getFirestoreDB().collection("appointments").document(appointment.getAppointmentId());
+        DocumentReference docRef;
+        if(appointment.getAppointmentId() == null) {
+            docRef = FirestoreDB.getFirestoreDB().collection("appointments").document();
+        } else {
+            docRef = FirestoreDB.getFirestoreDB().collection("appointments").document(appointment.getAppointmentId());
+        }
         Map<String, Object> data = new HashMap<>();
         /* Create user model for DB insert */
         UsersModel student = UserDB.getUser(appointment.getStudentId());
