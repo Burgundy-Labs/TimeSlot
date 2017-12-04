@@ -11,7 +11,7 @@
         </tr>
     </thead>
     <tbody>
-    @for(appointment <- AppointmentsDB.getAppointmentsForUser(currentUser.getRole, currentUser.getUid)) {
+    @for(appointment <- AppointmentsDB.getNextFiveAppointmentsForUser(currentUser.getRole, currentUser.getUid)) {
         <tr>
             <td>
                 <img src="@if(currentUser.getRole.equals("Coach")){ @appointment.getStudentPhoto }else{ @appointment.getCoachPhoto}" class="userAvatar"/>
