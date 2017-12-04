@@ -44,7 +44,7 @@ public class AppointmentsDB {
                     document.getString("coachPhoto"),
                     document.getString("appointment_notes"),
                     document.getString("coach_notes"),
-                    document.getBoolean("present"),
+                    Boolean.valueOf(document.getBoolean("present")),
                     document.getString("appointment_type"),
                     document.getString("service_type"));
         } else {
@@ -83,7 +83,7 @@ public class AppointmentsDB {
                     document.getString("coachPhoto"),
                     document.getString("appointment_notes"),
                     document.getString("coach_notes"),
-                    document.getBoolean("present"),
+                    Boolean.valueOf(document.getBoolean("present")),
                     document.getString("appointment_type"),
                     document.getString("service_type"));
             appointmentList.add(appointment);
@@ -120,7 +120,7 @@ public class AppointmentsDB {
                     document.getString("coachPhoto"),
                     document.getString("appointment_notes"),
                     document.getString("coach_notes"),
-                    document.getBoolean("present"),
+                    Boolean.valueOf(document.getBoolean("present")),
                     document.getString("appointment_type"),
                     document.getString("service_type"));
             appointmentList.add(appointment);
