@@ -46,6 +46,7 @@
                     },
                     eventOverlap: false,
                     selectOverlap: false,
+                    disableDragging: true,
                     eventRender: function (event, eventElement) {
                         eventElement.find("div.fc-content").prepend("<button onclick='removeAvailability(\"" + event.id + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
                     },
@@ -53,7 +54,6 @@
                     minTime: "10:00",
                     maxTime: "21:00",
                     weekends: false,
-                    editable: true,
                     selectable: true,
                     defaultDate: moment().startOf('isoWeek'),
                     defaultView: 'agendaWeek',
@@ -120,7 +120,7 @@
 
             function removeAvailability(id) {
                 $.confirm({
-                    title: 'Alert',
+                    title: 'Remove Availability?',
                     content: 'Do you want to remove this availability slot?',
                     theme: 'modern',
                     buttons: {

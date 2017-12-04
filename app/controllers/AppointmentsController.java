@@ -3,7 +3,10 @@ package controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import controllers.ApplicationComponents.AppointmentTypes;
 import controllers.Databases.AppointmentsDB;
+import controllers.Databases.AvailabilityDB;
 import models.AppointmentsModel;
+import models.AvailabilityModel;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -60,5 +63,10 @@ public class AppointmentsController extends Controller {
         appointment.setCoachNotes(coachNotes);
         AppointmentsDB.addAppointment(appointment);
         return ok();
+    }
+
+    public Result appointmentsForUser(String role, String userId) {
+        List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsForUser(role, userId);
+        return ok(Json.toJson(appointments));
     }
 }

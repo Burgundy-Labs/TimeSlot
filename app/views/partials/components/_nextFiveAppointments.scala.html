@@ -30,10 +30,10 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $('.startDate').each(function () {
-            $(this).text(moment($(this).text()).format('MMM, DD YYYY, HH:mm A'));
+            $(this).text(moment($(this).text()).format('dddd, MMM, DD YYYY, h:mm A'));
         });
         $('.endDate').each(function () {
-            $(this).text(moment($(this).text()).format('HH:mm A'));
+            $(this).text(moment($(this).text()).format('h:mm A'));
         });
         $('#next5Appointments').DataTable({
             responsive: true,

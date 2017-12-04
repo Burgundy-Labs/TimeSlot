@@ -1,7 +1,7 @@
 @import controllers.Databases.UserDB
 @()
 @* TOOD pull "MTMC" from DB *@
-@currentUser = @{UserController.getCurrentUser()}
+@currentUser = @{UserController.getCurrentUser}
 @main("Coaches", "MTMC Coaches") {
     @helper.CSRF.formField
     <div class="container-fluid">
@@ -17,7 +17,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for(user <- if(!currentUser.getRole.equals("Admin")) UserDB.getCoaches() else UserDB.getUsers()){
+                    @for(user <- if(!currentUser.getRole.equals("Admin")) UserDB.getCoaches else UserDB.getUsers){
                     <tr>
                         <td>
                             <img class="userAvatar" src="@user.getPhotoURL" alt="Card image cap">

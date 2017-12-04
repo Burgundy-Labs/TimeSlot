@@ -125,7 +125,6 @@
     function createNewAppointment() {
         let content = ` @{ partials.components._createNewAppointmentFlow() } `;
         $.confirm({
-            closeIcon: true,
             columnClass: 'col-md-12',
             title: "New Appointment",
             content: content,
@@ -134,8 +133,8 @@
                     text: "Cancel",
                     btnClass: "btn",
                     action: function() {
-                        /* TODO fix calendar re-display on cancel - prevent having to reload page*/
-                        location.reload();
+                       $('#calendar').hide();
+                        createMakeAppointmentCalendar();
                     }
                 },
                 submit: {
@@ -194,6 +193,7 @@
                                                 contentType: 'application/json',
                                                 success: function () {
                                                     createAlert("success", "Appointment Created!");
+                                                    location.reload();
                                                 },
                                                 error: function () {
                                                     createAlert('danger', 'Appointment creation failed.');

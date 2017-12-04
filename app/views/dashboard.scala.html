@@ -34,8 +34,8 @@
                     <div class="card-header">
                         <h6>Appointment Calendar</h6>
                     </div>
-                    <div class="card-block">
-                        Calendar
+                    <div>
+                        <div id="appointmentCalendar"></div>
                     </div>
                 </div>
             </div>
@@ -51,5 +51,43 @@
             </div>
         </div>
     </div>
+    <script type="text/javascript">
+            $(document).ready(function() {
+                $('#appointmentCalendar').fullCalendar({
+                    header: false,
+                    defaultView: 'basicWeek',
+                    height: 'auto',
+                    editable: false,
+                    weekends: false,
+                    selectable: false,
+                    events: function (start, end, timezone, callback) {
+                        const csrfToken = $('input[name="csrfToken"]').attr('value');
+                        $.ajaxSetup({
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader('Csrf-Token', csrfToken);
+                            }
+                        });
+                        $.ajax({
+                            url: '/appointmentsForUser/' + '@UserController.getCurrentUser.getRole'+"/" +'@UserController.getCurrentUser.getUid',
+                            type: 'GET',
+                            success: function (response) {
+                                const events = [];
+                                $(response).each(function () {
+                                    const event = {
+                                        id: $(this).attr('availabilityId'),
+                                        title: $(this).attr('studentName'),
+                                        start: moment($(this).attr('startDate')).format(),
+                                        end: moment($(this).attr('endDate')).format(),
+                                        dow: [],
+                                    };
+                                    events.push(event);
+                                });
+                                callback(events);
+                            }
+                        })
+                    },
+                });
+            });
+    </script>
     @partials.components._createNewAppointmentFlow_Scripts()
 }

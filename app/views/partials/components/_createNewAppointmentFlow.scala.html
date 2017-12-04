@@ -7,7 +7,7 @@
         <ul class="step-steps">
             <li><a href="#step1">Appointment Info</a></li>
             <li><a href="#step2">Coach Selection</a></li>
-            <li><a href="#step3">Notes</a></li>
+            <li><a href="#step3">Appointment Notes</a></li>
             <li><a href="#step4">Appointment Time</a></li>
         </ul>
         <div class="step-content">
@@ -42,10 +42,8 @@
                     <select id="coachId" name="appointmentType" required>
                         <option selected disabled> Select a coach </option>
                         <option value="Any">Any Coach</option>
-                        @for(coach <- UserDB.getUsers) {
-                            @if(coach.getRole.equals("Coach")) {
+                        @for(coach <- UserDB.getCoaches) {
                                 <option value="@coach.getUid">@coach.getDisplayName</option>
-                            }
                         }
                     </select>
                     </form>

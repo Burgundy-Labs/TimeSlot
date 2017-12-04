@@ -10,12 +10,13 @@ public class UsersModel {
     private String uid;
     private String phoneNumber;
     private Roles role;
+    private Boolean isCoach;
 
     public UsersModel() {
 
     }
 
-    public UsersModel(String displayName, String email, boolean emailVerified, String photoURL, String uid, String phoneNumber, Roles role) {
+    public UsersModel(String displayName, String email, boolean emailVerified, String photoURL, String uid, String phoneNumber, Roles role, Boolean isCoach) {
         this.displayName = displayName;
         this.email = email;
         this.emailVerified = emailVerified;
@@ -23,6 +24,7 @@ public class UsersModel {
         this.uid = uid;
         this.phoneNumber = phoneNumber;
         this.role = role;
+        this.isCoach = isCoach;
     }
 
     public String getDisplayName() {
@@ -81,4 +83,12 @@ public class UsersModel {
         this.role = role;
     }
 
+
+    public Boolean isCoach() {
+        return isCoach;
+    }
+
+    public void setIsCoach(Boolean coach) {
+        isCoach = coach;
+    }
 }
