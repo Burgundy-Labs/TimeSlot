@@ -8,6 +8,7 @@ import controllers.ApplicationComponents.MenuLinks;
 import controllers.ApplicationComponents.Roles;
 import controllers.ApplicationComponents.Services;
 import controllers.Databases.FirestoreDB;
+import controllers.MailerService;
 
 @Singleton
 public class StartupModule extends AbstractModule {
@@ -16,7 +17,6 @@ public class StartupModule extends AbstractModule {
     protected void configure() {
         /* Start the database service */
         FirestoreDB.initialize();
-
         /* Define menu links */
         new MenuLinks("/Account", "Account", "account_circle", "Manage your account settings and preferences.");
         new MenuLinks("/Dashboard", "Dashboard", "dashboard", "Something about the dashboard.");

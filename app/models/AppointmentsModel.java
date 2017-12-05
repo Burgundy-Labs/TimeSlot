@@ -1,5 +1,6 @@
 package models;
 
+import java.text.DateFormat;
 import java.util.Date;
 
 public class AppointmentsModel {
@@ -177,5 +178,38 @@ public class AppointmentsModel {
 
     public void setServiceType(String serviceType) {
         this.serviceType = serviceType;
+    }
+
+    @Override
+    public String toString() {
+
+        return "Coach: " + coachName
+                +"\n" +
+                "Student: " + studentName
+                + "\n" +
+                "Type: " + appointmentType
+                + "\n" +
+                "Service: " + serviceType
+                + "\n" +
+                "Start Date: " + DateFormat.getDateTimeInstance().format(startDate)
+                + "\n" +
+                "End Date: " + DateFormat.getDateTimeInstance().format(endDate)
+                + "\n" +
+                "Student Notes: " + appointmentNotes + "";
+    }
+    public String toHTMLString() {
+        return "Coach: " + coachName
+                +"<br/>" +
+                "Student: " + studentName
+                + "<br/>" +
+                "Type: " + appointmentType
+                + "<br/>" +
+                "Service: " + serviceType
+                + "<br/>" +
+                "Start Date: " + DateFormat.getDateTimeInstance().format(startDate)
+                + "<br/>" +
+                "End Date: " +  DateFormat.getDateTimeInstance().format(endDate)
+                + "<br/>" +
+                "Student Notes: " + appointmentNotes + "";
     }
 }
