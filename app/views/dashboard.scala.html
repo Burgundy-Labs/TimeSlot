@@ -7,21 +7,23 @@
             <div class="col-lg-10">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Hello, @{UserController.getCurrentUser.getDisplayName} </h4>
+                        <h4>Hello, @{
+                            UserController.getCurrentUser.getDisplayName
+                        } </h4>
                     </div>
                     <div class="card-block">
                         <div class="col-lg-6">
-                        <h6>Notifications:</h6>
-                        <ul class="list-group">
-                            @if(UserDB.getNotificaitonsForUser(UserController.getCurrentUser.getUid).size() == 0){
+                            <h6>Notifications:</h6>
+                            <ul class="list-group">
+                            @if(UserDB.getNotificaitonsForUser(UserController.getCurrentUser.getUid).size() == 0) {
                                 There are currently no notifications to display.
                             } else {
-                      @for(notification <- UserDB.getNotificaitonsForUser(UserController.getCurrentUser.getUid)){
-                          <li class="list-group-item">@notification.getNotificationContent <button onclick="deleteNotification('@notification.getNotificationId')" class="no-button deleteNotification"><i class="material-icons md-18">backspace</i></button></li>
-                      }
-                            <button class="clearAll no-button">Clear All</button>
+                                @for(notification <- UserDB.getNotificaitonsForUser(UserController.getCurrentUser.getUid)) {
+                                    <li class="list-group-item">@notification.getNotificationContent <button onclick="deleteNotification('@notification.getNotificationId')" class="no-button deleteNotification"><i class="material-icons md-18">backspace</i></button></li>
+                                }
+                                <button class="clearAll no-button">Clear All</button>
                             }
-                        </ul>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -29,7 +31,7 @@
             <div class="col-lg-2">
                 <div class="card text-center">
                     <div class="card-header">
-                       <h4>Quick-Schedule</h4>
+                        <h4>Quick-Schedule</h4>
                     </div>
                     <div class="card-block">
                         <button onclick="createNewAppointment()" class="btn btn-primary">
@@ -65,27 +67,30 @@
     </div>
     <script type="text/javascript">
 
-        function deleteNotification(notificationId) {
-            const csrfToken = $('input[name="csrfToken"]').attr('value');
-            $.ajaxSetup({
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('Csrf-Token', csrfToken);
-                }
-            });
-            $.ajax({
-                url: '/removeNotificationFromUser',
-                data: JSON.stringify({userId: '@UserController.getCurrentUser.getUid', notificationId: notificationId}),
-                contentType: 'application/json',
-                type: 'POST',
-                success: function (response) {
-                    /* TODO load from AJAX so we don't have to reload or hide element from */
-                    location.reload();
-                }
-            })
-        }
+            function deleteNotification(notificationId) {
+                const csrfToken = $('input[name="csrfToken"]').attr('value');
+                $.ajaxSetup({
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('Csrf-Token', csrfToken);
+                    }
+                });
+                $.ajax({
+                    url: '/removeNotificationFromUser',
+                    data: JSON.stringify({
+                        userId: '@UserController.getCurrentUser.getUid',
+                        notificationId: notificationId
+                    }),
+                    contentType: 'application/json',
+                    type: 'POST',
+                    success: function (response) {
+                        /* TODO load from AJAX so we don't have to reload or hide element from */
+                        location.reload();
+                    }
+                })
+            }
 
-            $(document).ready(function() {
-                $('.clearAll').on('click',function() {
+            $(document).ready(function () {
+                $('.clearAll').on('click', function () {
                     $('.deleteNotification').click();
                 });
 
@@ -104,18 +109,28 @@
                             }
                         });
                         $.ajax({
-                            url: '/appointmentsForUser/' + '@UserController.getCurrentUser.getRole'+"/" +'@UserController.getCurrentUser.getUid',
+                            url: '/appointmentsForUser/' + '@UserController.getCurrentUser.getRole' + "/" + '@UserController.getCurrentUser.getUid',
                             type: 'GET',
                             success: function (response) {
                                 const events = [];
                                 $(response).each(function () {
                                     const event = {
                                         id: $(this).attr('availabilityId'),
-                                        title: @if(UserController.getCurrentUser.getRole.equals("Student")){$(this).attr("coachName"),}else{$(this).attr("coachName"),}
-                                        start: moment($(this).attr('startDate')).format(),
-                                        end: moment($(this).attr('endDate')).format(),
-                                        dow: [],
-                                    };
+                                        title: @if(UserController.getCurrentUser.getRole.equals("Student")){$(this).attr("coachName"),
+                                        }else{$(
+                                        this
+                                ).
+                                    attr("coachName"), }
+                                            start
+                                :
+                                    moment($(this).attr('startDate')).format(),
+                                            end
+                                :
+                                    moment($(this).attr('endDate')).format(),
+                                            dow
+                                :
+                                    [],
+                                };
                                     events.push(event);
                                 });
                                 callback(events);
