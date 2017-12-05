@@ -167,7 +167,7 @@ public class AppointmentsDB {
         return appointmentList;
     }
 
-    public static synchronized void addAppointment(AppointmentsModel appointment) {
+    public static synchronized AppointmentsModel addAppointment(AppointmentsModel appointment) {
         /* Get DB instance */
         DocumentReference docRef;
         if(appointment.getAppointmentId() == null) {
@@ -203,23 +203,14 @@ public class AppointmentsDB {
         appointment.setCoachEmail(coach.getEmail());
         appointment.setStudentName(student.getDisplayName());
         appointment.setStudentEmail(student.getEmail());
-        MailerService.sendAppointmentConfirmation(appointment);
-
         result.isDone();
+        return appointment;
     }
 
-    public static boolean removeAppointment(String appointmentId){
+    public static AppointmentsModel removeAppointment(String appointmentId){
         AppointmentsModel appointment = getAppointment(appointmentId);
-        MailerService.sendAppointmentCancellation(appointment);
         /* Asynchronously remove appointment from DB */
         ApiFuture<WriteResult> writeResult = FirestoreDB.getFirestoreDB().collection("appointments").document(appointmentId).delete();
-        try {
-            /* Verify that action is complete */
-            writeResult.get();
-            return writeResult.isDone();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return appointment;
     }
 }
