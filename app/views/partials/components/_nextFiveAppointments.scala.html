@@ -14,10 +14,10 @@
     @for(appointment <- AppointmentsDB.getNextFiveAppointmentsForUser(currentUser.getRole, currentUser.getUid)) {
         <tr>
             <td>
-                <img src="@if(currentUser.getRole.equals("Coach")){ @appointment.getStudentPhoto }else{ @appointment.getCoachPhoto}" class="userAvatar"/>
+                <img src="@if(currentUser.getRole.equals("Student")){ @appointment.getCoachPhoto }else{ @appointment.getStudentPhoto}" class="userAvatar"/>
             </td>
             <td>
-            @if(currentUser.getRole.equals("Coach")){ @appointment.getStudentName }else{ @appointment.getCoachName}
+            @if(currentUser.getRole.equals("Student")){ @appointment.getCoachName }else{ @appointment.getStudentName}
             </td>
             <td>@appointment.getAppointmentType</td>
             <td>@appointment.getServiceType</td>
