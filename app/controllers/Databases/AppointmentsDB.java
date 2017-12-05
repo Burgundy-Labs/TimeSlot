@@ -203,12 +203,14 @@ public class AppointmentsDB {
         appointment.setCoachEmail(coach.getEmail());
         appointment.setStudentName(student.getDisplayName());
         appointment.setStudentEmail(student.getEmail());
-        MailerService.sendAppointmentReminder(appointment);
+        MailerService.sendAppointmentConfirmation(appointment);
 
         result.isDone();
     }
 
     public static boolean removeAppointment(String appointmentId){
+        AppointmentsModel appointment = getAppointment(appointmentId);
+        MailerService.sendAppointmentCancellation(appointment);
         /* Asynchronously remove appointment from DB */
         ApiFuture<WriteResult> writeResult = FirestoreDB.getFirestoreDB().collection("appointments").document(appointmentId).delete();
         try {
