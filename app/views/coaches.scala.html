@@ -2,7 +2,9 @@
 @import controllers.ApplicationComponents.Roles
 @()
 @* TOOD pull "MTMC" from DB *@
-@currentUser = @{UserController.getCurrentUser}
+@currentUser = @{
+    UserController.getCurrentUser
+}
 @main("Coaches", "MTMC Coaches") {
     @helper.CSRF.formField
     <div class="container-fluid">
@@ -18,7 +20,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for(user <- if(!currentUser.getRole.equals("Admin")) UserDB.getCoaches else UserDB.getUsers){
+                @for(user <- if(!currentUser.getRole.equals("Admin")) UserDB.getCoaches else UserDB.getUsers) {
                     <tr>
                         <td>
                             <img class="userAvatar" src="@user.getPhotoURL" alt="Card image cap">
@@ -27,26 +29,26 @@
                         <td>@user.getEmail</td>
                         <td>
                             <label>
-                                @if(currentUser.getRole.equals("Admin")) {
-                                    <select id='select' data-id="@user.getUid" class="custom-select">
-                                        <option selected>@user.getRole</option>
-                                        @for(role <- Roles.getRoles) {
-                                            @if(!Roles.getRole(user.getRole).equals(role)) {
-                                                <option value="@role.role()">@role.role()</option>
-                                            }
+                            @if(currentUser.getRole.equals("Admin")) {
+                                <select id='select' data-id="@user.getUid" class="custom-select">
+                                    <option selected>@user.getRole</option>
+                                    @for(role <- Roles.getRoles) {
+                                        @if(!Roles.getRole(user.getRole).equals(role)) {
+                                            <option value="@role.role()">@role.role()</option>
                                         }
-                                    </select>
-                                } else {
-                                    @user.getRole
-                                }
+                                    }
+                                </select>
+                            } else {
+                                @user.getRole
+                            }
                             </label>
                         </td>
                         <td>
                             <span class="mdl-list__item-secondary-content">
-                                <span class="action-primary">@partials.components._tooltipIconLink("mailto:" + user.getEmail,"email","bottom","Email User",32)</span>
-                                <span class="action-secondary">@partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Schedule Appointment",32)</span>
+                                <span class="action-primary">@partials.components._tooltipIconLink("mailto:" + user.getEmail, "email", "bottom", "Email User", 32)</span>
+                                <span class="action-secondary">@partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Schedule Appointment", 32)</span>
                                 @if(currentUser.getRole.equals("Admin")) {
-                                <span class="action-delete"><span id="@user.getUid" onclick="deleteUser(this)">@partials.components._tooltipIconLink("", "close", "bottom", "Remove User",32)</span></span>
+                                    <span class="action-delete"><span id="@user.getUid" onclick="deleteUser(this)">@partials.components._tooltipIconLink("", "close", "bottom", "Remove User", 32)</span></span>
                                 }
                             </span>
                         </td>
@@ -54,30 +56,30 @@
                 }
                 </tbody>
             </table>
-
         </div>
-<script type="text/javascript">
-        $(document).on('click', '#select', function () {
-            $(this).data('prev', $(this).val());
-        });
+    </div>
+    <script type="text/javascript">
+            $(document).on('click', '#select', function () {
+                $(this).data('prev', $(this).val());
+            });
 
-        $(document).on('change', '#select', function () {
-            const newRole = $(this).val();
-            if (!confirm("Are you sure you want to change this user's role to " + newRole + "?")) {
-                $(this).val($.data(this, 'prev'));
-                return;
-            }
-            /* Create user object with altered role + content from userDB */
-            const user = {
-                uid: $(this).data('id'),
-                role: newRole
-            };
-            console.log(user);
-            changeRole(user, newRole);
-        });
+            $(document).on('change', '#select', function () {
+                const newRole = $(this).val();
+                if (!confirm("Are you sure you want to change this user's role to " + newRole + "?")) {
+                    $(this).val($.data(this, 'prev'));
+                    return;
+                }
+                /* Create user object with altered role + content from userDB */
+                const user = {
+                    uid: $(this).data('id'),
+                    role: newRole
+                };
+                console.log(user);
+                changeRole(user, newRole);
+            });
 
-    function changeRole(user, newRole) {
-        let csrfToken = $('input[name="csrfToken"]').attr('value');
+            function changeRole(user, newRole) {
+                let csrfToken = $('input[name="csrfToken"]').attr('value');
                 $.ajaxSetup({
                     beforeSend: function (xhr) {
                         xhr.setRequestHeader('Csrf-Token', csrfToken);
@@ -89,43 +91,46 @@
                     data: JSON.stringify(user),
                     contentType: 'application/json',
                     success: function () {
-                        createAlert('info', user.displayName + "'s role changed to: "+ newRole);
+                        createAlert('info', user.displayName + "'s role changed to: " + newRole);
                     },
                     error: function (err) {
                         createAlert('warning', 'Error changing role!');
                         console.log(err);
                     }
                 });
-    }
-        $(document).ready(function () {
-            $('#usersTable').DataTable({
-                "dom": "<'row'<'col-sm-10'l><'col-sm-2'f>>" +
-                "<'row'<'col-sm-12'tr>>" +
-                "<'row'<'col-sm-5'i><'col-sm-7'p>>"
-            });
-        });
+            }
 
-    function deleteUser(user){
-        if(confirm("Are you sure you want to remove this user?")) {
-            var userId = $(user).attr('id');
-            var csrfToken = $('input[name="csrfToken"]').attr('value');
-            $.ajaxSetup({
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('Csrf-Token', csrfToken);
-                }
+            $(document).ready(function () {
+                $('#usersTable').DataTable({
+                    "dom": "<'row'<'col-sm-10'l><'col-sm-2'f>>" +
+                    "<'row'<'col-sm-12'tr>>" +
+                    "<'row'<'col-sm-5'i><'col-sm-7'p>>"
+                });
             });
-            $.ajax({
-                url: '/deleteUser',
-                type: 'POST',
-                data: JSON.stringify({userId: userId}),
-                contentType: 'application/json',
-                success: function() { location.reload();  /*  TODO convert window reload to datasource reload */},
-                error: function (err) {
-                    console.log(err);
+
+            function deleteUser(user) {
+                if (confirm("Are you sure you want to remove this user?")) {
+                    var userId = $(user).attr('id');
+                    var csrfToken = $('input[name="csrfToken"]').attr('value');
+                    $.ajaxSetup({
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader('Csrf-Token', csrfToken);
+                        }
+                    });
+                    $.ajax({
+                        url: '/deleteUser',
+                        type: 'POST',
+                        data: JSON.stringify({userId: userId}),
+                        contentType: 'application/json',
+                        success: function () {
+                            location.reload();
+                            /*  TODO convert window reload to datasource reload */
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    });
                 }
-            });
-        }
-    }
-</script>
-    </div>
+            }
+    </script>
 }
