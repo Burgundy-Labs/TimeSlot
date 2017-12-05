@@ -27,6 +27,19 @@ public class UserController extends Controller {
         return ok();
     }
 
+    public Result updateUserRole() {
+        /* Get user object from request */
+        JsonNode json = request().body().asJson();
+        /* Get user from json request */
+        String userId = json.get("uid").asText();
+        String role = json.get("role").asText();
+        /* Check if user is in DB */
+        UsersModel u = UserDB.getUser(userId);
+        u.setRole(Roles.getRole(role));
+        UserDB.addUser(u);
+        return ok();
+    }
+
     public Result addNotificationToUser() {
         JsonNode json = request().body().asJson();
         String userId = json.get("userId").asText();
