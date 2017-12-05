@@ -19,7 +19,7 @@
                                 There are currently no notifications to display.
                             } else {
                                 @for(notification <- UserDB.getNotificaitonsForUser(UserController.getCurrentUser.getUid)) {
-                                    <li class="list-group-item">@notification.getNotificationContent <button onclick="deleteNotification('@notification.getNotificationId')" class="no-button deleteNotification"><i class="material-icons md-18">backspace</i></button></li>
+                                    <li class="list-group-item @notification.getNotificationId">@notification.getNotificationContent <button onclick="deleteNotification('@notification.getNotificationId')" class="no-button deleteNotification"><i class="material-icons md-18">backspace</i></button></li>
                                 }
                                 <button class="clearAll no-button">Clear All</button>
                             }
@@ -84,7 +84,8 @@
                     type: 'POST',
                     success: function (response) {
                         /* TODO load from AJAX so we don't have to reload or hide element from */
-                        location.reload();
+                        createAlert("success","Notification Removed.");
+                        $('.'+notificationId).hide();
                     }
                 })
             }

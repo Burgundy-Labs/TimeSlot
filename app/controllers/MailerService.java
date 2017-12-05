@@ -6,6 +6,8 @@ import play.api.Play;
 import play.libs.mailer.Email;
 import play.libs.mailer.MailerClient;
 
+import java.text.DateFormat;
+
 public class MailerService {
 
     public static void sendEmail(String subject, String from, String toName, String toEmail, String bodyHtml) {
@@ -21,7 +23,7 @@ public class MailerService {
         SettingsModel settings = SettingsController.getSettings();
         /* Coach Email */
         Email email = new Email()
-                .setSubject("New Appointment With " + appointment.getStudentName()+ " at the " + settings.getCenterName() )
+                .setSubject("New Appointment With " + appointment.getStudentName() + " on " + DateFormat.getDateTimeInstance().format(appointment.getStartDate()) + " at the " + settings.getCenterName() )
                 .setFrom("Project Burgundy <contact.project.burgundy@gmail.com>")
                 .addTo(appointment.getCoachName() + "<"+appointment.getCoachEmail()+">")
                 .setBodyHtml("<p style=\"font-size:48px;color:#17C671;text-align:center;\">&#x2705;</p><h1 style=\"text-align:center;\">You have a new Appointment!</h1> <h3>Details:</h3>" +
@@ -41,7 +43,7 @@ public class MailerService {
         Play.current().injector().instanceOf(MailerClient.class).send(email);
         /* Student Email */
         email = new Email()
-                .setSubject("New Appointment With " + appointment.getCoachName() + " at the " + settings.getCenterName())
+                .setSubject("New Appointment With " + appointment.getCoachName() + " on " + DateFormat.getDateTimeInstance().format(appointment.getStartDate()) + " at the " + settings.getCenterName())
                 .setFrom("Project Burgundy <contact.project.burgundy@gmail.com>")
                 .addTo(appointment.getStudentName() + "<"+appointment.getStudentEmail()+">")
                 .setBodyHtml("<p style=\"font-size:48px;color:#17C671;text-align:center;\">&#x2705;</p><h1 style=\"text-align:center;\">You have a new Appointment!</h1> <h3>Details:</h3>" +
@@ -65,7 +67,7 @@ public class MailerService {
         SettingsModel settings = SettingsController.getSettings();
         /* Coach Email */
         Email email = new Email()
-                .setSubject("Appointment With " + appointment.getStudentName()+ " at the " + settings.getCenterName() +" CANCELLED")
+                .setSubject("Appointment With " + appointment.getStudentName() + " on " + DateFormat.getDateTimeInstance().format(appointment.getStartDate()) + " at the " + settings.getCenterName() +" CANCELLED")
                 .setFrom("Project Burgundy <contact.project.burgundy@gmail.com>")
                 .addTo(appointment.getCoachName() + "<"+appointment.getCoachEmail()+">")
                 .setBodyHtml("<p style=\"font-size:48px;color:#C4183C;text-align:center;\">&#10060;</p><h1 style=\"text-align:center;\">Your Appointment Has Been Cancelled</h1> <h3>Details:</h3>" +
@@ -78,7 +80,7 @@ public class MailerService {
         Play.current().injector().instanceOf(MailerClient.class).send(email);
         /* Student Email */
         email = new Email()
-                .setSubject("Appointment With " + appointment.getCoachName() + " at the " + settings.getCenterName() + " CANCELLED")
+                .setSubject("Appointment With " + appointment.getCoachName()+ " on " + DateFormat.getDateTimeInstance().format(appointment.getStartDate()) + " at the " + settings.getCenterName() + " CANCELLED")
                 .setFrom("Project Burgundy <contact.project.burgundy@gmail.com>")
                 .addTo(appointment.getStudentName() + "<"+appointment.getStudentEmail()+">")
                 .setBodyHtml("<p style=\"font-size:48px;color:#C4183C;text-align:center;\">&#10060;</p><h1 style=\"text-align:center;\">Your Appointment Has Been Cancelled</h1> <h3>Details:</h3>" +

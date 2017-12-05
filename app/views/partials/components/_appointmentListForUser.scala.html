@@ -20,7 +20,7 @@
     </thead>
     <tbody>
     @for(appointment <- AppointmentsDB.getAppointments) {
-        <tr>
+        <tr class="@appointment.getAppointmentId">
             <td>
                 <img src="@appointment.getStudentPhoto" class="userAvatar"/>
             </td>
@@ -43,8 +43,8 @@
                     } else {
                         <button id="notesFor-@appointment.getAppointmentId" class="no-button" onclick="updateCoachNotes('@appointment.getAppointmentId','@appointment.getCoachNotes')"><span class="action-primary" id="appointmentNotes">@partials.components._tooltipIconLink("javascript:void(0)", "assignment", "bottom", "Notes", 32)</span></button>
                     }
-                    <span class="action-secondary">@partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Reschedule", 32)</span>
-                    <button type="button" class="no-button" onclick="cancelAppointment('@appointment.getAppointmentId')"><span class="action-delete">@partials.components._tooltipIconLink("", "close", "bottom", "Cancel", 32)</span>
+                    <span class="action-secondary">@partials.components._tooltipIconLink("javascript:void(0)", "insert_invitation", "bottom", "Reschedule", 32)</span>
+                    <button type="button" class="no-button" onclick="cancelAppointment('@appointment.getAppointmentId')"><span class="action-delete">@partials.components._tooltipIconLink("javascript:void(0)", "close", "bottom", "Cancel", 32)</span>
                     </button>
                 </span>
             </td>
@@ -83,7 +83,6 @@
                             data: JSON.stringify({appointmentId: appointmentId, coachNotes: coachNotes }),
                             contentType: 'application/json',
                             success: function () {
-                                location.reload();
                             },
                             error: function (err) {
                                 createAlert("danger","There was an error updating coach notes");
@@ -96,26 +95,41 @@
     }
 
     function cancelAppointment(appointmentId) {
-        if (confirm("Are you sure you want to cancel this appointment?")) {
-            var csrfToken = $('input[name="csrfToken"]').attr('value');
-            $.ajaxSetup({
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('Csrf-Token', csrfToken);
-                }
-            });
-            $.ajax({
-                url: '/cancelAppointment',
-                type: 'POST',
-                data: JSON.stringify({appointmentId: appointmentId}),
-                contentType: 'application/json',
-                success: function () {
-                    location.reload();
+        $.confirm({
+            title: 'Cancel Appointment',
+            content: 'Are you sure you want to cancel this appointment?',
+            buttons: {
+                updateNotes: {
+                    text: 'Cancel Appointment',
+                    btnClass: 'btn-primary',
+                    action: function () {
+                        let csrfToken = $('input[name="csrfToken"]').attr('value');
+                        $.ajaxSetup({
+                            beforeSend: function (xhr) {
+                                xhr.setRequestHeader('Csrf-Token', csrfToken);
+                            }
+                        });
+                        $.ajax({
+                            url: '/cancelAppointment',
+                            type: 'POST',
+                            data: JSON.stringify({appointmentId: appointmentId}),
+                            contentType: 'application/json',
+                            success: function () {
+                                $('.'+appointmentId).hide();
+                                createAlert("success", "Appointment cancelled.");
+                            },
+                            error: function (err) {
+                                console.log(err);
+                            }
+                        });
+                    }
                 },
-                error: function (err) {
-                    console.log(err);
+                cancel: {
+                    text: "Cancel",
+                    btClass: "btn"
                 }
-            });
-        }
+            },
+        });
     }
 
     $(document).ready(function () {
