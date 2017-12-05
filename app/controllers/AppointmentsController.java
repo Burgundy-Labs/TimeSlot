@@ -44,14 +44,16 @@ public class AppointmentsController extends Controller {
         appointment.setPresent(Boolean.getBoolean(json.findPath("present").textValue()));
         appointment.setServiceType(json.findPath("serviceType").textValue());
         /* Check if user is in DB */
-        AppointmentsDB.addAppointment(appointment);
+        appointment = AppointmentsDB.addAppointment(appointment);
+        MailerService.sendAppointmentConfirmation(appointment);
         return ok();
     }
 
     public Result cancelAppointment(){
         JsonNode json = request().body().asJson();
         String appointmentId = json.findPath("appointmentId").textValue();
-        AppointmentsDB.removeAppointment(appointmentId);
+        AppointmentsModel appointment = AppointmentsDB.removeAppointment(appointmentId);
+        MailerService.sendAppointmentCancellation(appointment);
         return ok();
     }
 
