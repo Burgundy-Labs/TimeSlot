@@ -1,5 +1,6 @@
 package models;
 
+import java.text.DateFormat;
 import java.util.Date;
 
 public class AppointmentsModel {
@@ -181,6 +182,7 @@ public class AppointmentsModel {
 
     @Override
     public String toString() {
+
         return "Coach: " + coachName
                 +"\n" +
                 "Student: " + studentName
@@ -189,9 +191,9 @@ public class AppointmentsModel {
                 + "\n" +
                 "Service: " + serviceType
                 + "\n" +
-                "Start Date: " + startDate
+                "Start Date: " + DateFormat.getDateTimeInstance().format(startDate)
                 + "\n" +
-                "End Date: " + endDate
+                "End Date: " + DateFormat.getDateTimeInstance().format(endDate)
                 + "\n" +
                 "Student Notes: " + appointmentNotes + "";
     }
@@ -204,9 +206,9 @@ public class AppointmentsModel {
                 + "<br/>" +
                 "Service: " + serviceType
                 + "<br/>" +
-                "Start Date: " + startDate
+                "Start Date: " + DateFormat.getDateTimeInstance().format(startDate)
                 + "<br/>" +
-                "End Date: " + endDate
+                "End Date: " +  DateFormat.getDateTimeInstance().format(endDate)
                 + "<br/>" +
                 "Student Notes: " + appointmentNotes + "";
     }
