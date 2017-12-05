@@ -152,7 +152,7 @@ public class UserDB {
         for (DocumentSnapshot document : documents) {
             if (document.getString("role").equals("Coach")
                     || (document.getString("role").equals("Admin")
-                    && (Boolean.valueOf(document.getBoolean("isCoach"))) != null
+                    && (document.getBoolean("isCoach") != null)
                     && document.getBoolean("isCoach")))
             {
                 UsersModel user = new UsersModel(
