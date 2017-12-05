@@ -194,14 +194,17 @@ public class AppointmentsDB {
         data.put("present", appointment.getPresent());
         data.put("appointment_type", appointment.getAppointmentType());
         data.put("service_type",appointment.getServiceType());
+
         /* Asynchronously write appointment into DB */
         ApiFuture<WriteResult> result = docRef.set(data);
+
         /* Add required email information to appointment model for emails */
         appointment.setCoachName(coach.getDisplayName());
         appointment.setCoachEmail(coach.getEmail());
         appointment.setStudentName(student.getDisplayName());
         appointment.setStudentEmail(student.getEmail());
         MailerService.sendAppointmentReminder(appointment);
+
         result.isDone();
     }
 
