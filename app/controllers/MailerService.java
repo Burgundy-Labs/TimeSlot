@@ -17,14 +17,14 @@ public class MailerService {
         Play.current().injector().instanceOf(MailerClient.class).send(email);
     }
 
-    public static void sendAppointmentReminder(AppointmentsModel appointment) {
+    public static void sendAppointmentConfirmation(AppointmentsModel appointment) {
         SettingsModel settings = SettingsController.getSettings();
         /* Coach Email */
         Email email = new Email()
                 .setSubject("New Appointment With " + appointment.getStudentName()+ " at the " + settings.getCenterName() )
                 .setFrom("Project Burgundy <contact.project.burgundy@gmail.com>")
                 .addTo(appointment.getCoachName() + "<"+appointment.getCoachEmail()+">")
-                .setBodyHtml("<h1>You have a new Appointment!</h1> <h3>Details:</h3>" +
+                .setBodyHtml("<p style=\"font-size:48px;color:#17C671;text-align:center;\">&#x2705;</p><h1 style=\"text-align:center;\">You have a new Appointment!</h1> <h3>Details:</h3>" +
                         "<div style=\"background-color:#EFF0F1; border-radius:4px; padding: 10px;\">"+
                         appointment.toHTMLString() +
                         "</div>" +
@@ -44,7 +44,7 @@ public class MailerService {
                 .setSubject("New Appointment With " + appointment.getCoachName() + " at the " + settings.getCenterName())
                 .setFrom("Project Burgundy <contact.project.burgundy@gmail.com>")
                 .addTo(appointment.getStudentName() + "<"+appointment.getStudentEmail()+">")
-                .setBodyHtml("<h1>You have a new Appointment!</h1> <h3>Details:</h3>" +
+                .setBodyHtml("<p style=\"font-size:48px;color:#17C671;text-align:center;\">&#x2705;</p><h1 style=\"text-align:center;\">You have a new Appointment!</h1> <h3>Details:</h3>" +
                         "<div style=\"background-color:#EFF0F1; border-radius:4px; padding: 10px;\">"+
                         appointment.toHTMLString() +
                         "</div>" +
@@ -58,6 +58,36 @@ public class MailerService {
                         "&sf=true" +
                         "&output=xml\"" +
                         "target=\"_blank\" rel=\"nofollow\">Add to my calendar</a> <br/>");
+        Play.current().injector().instanceOf(MailerClient.class).send(email);
+    }
+
+    public static void sendAppointmentCancellation(AppointmentsModel appointment) {
+        SettingsModel settings = SettingsController.getSettings();
+        /* Coach Email */
+        Email email = new Email()
+                .setSubject("Appointment With " + appointment.getStudentName()+ " at the " + settings.getCenterName() +" CANCELLED")
+                .setFrom("Project Burgundy <contact.project.burgundy@gmail.com>")
+                .addTo(appointment.getCoachName() + "<"+appointment.getCoachEmail()+">")
+                .setBodyHtml("<p style=\"font-size:48px;color:#C4183C;text-align:center;\">&#10060;</p><h1 style=\"text-align:center;\">Your Appointment Has Been Cancelled</h1> <h3>Details:</h3>" +
+                        "<div style=\"background-color:#EFF0F1; border-radius:4px; padding: 10px;\">"+
+                        appointment.toHTMLString() +
+                        "</div>" +
+                        "<br/>" +
+                        "<a style=\"background-color:#0067F4; color: white; border-radius: 4px; padding: 10px; margin:0 auto; display:block; width: 90%; text-align: center; font-size: 18px; text-decoration:none; \" " +
+                        "href=\"PUT URL HERE\">Schedule a new appointment</a> <br/>");
+        Play.current().injector().instanceOf(MailerClient.class).send(email);
+        /* Student Email */
+        email = new Email()
+                .setSubject("Appointment With " + appointment.getCoachName() + " at the " + settings.getCenterName() + " CANCELLED")
+                .setFrom("Project Burgundy <contact.project.burgundy@gmail.com>")
+                .addTo(appointment.getStudentName() + "<"+appointment.getStudentEmail()+">")
+                .setBodyHtml("<p style=\"font-size:48px;color:#C4183C;text-align:center;\">&#10060;</p><h1 style=\"text-align:center;\">Your Appointment Has Been Cancelled</h1> <h3>Details:</h3>" +
+                        "<div style=\"background-color:#EFF0F1; border-radius:4px; padding: 10px;\">"+
+                        appointment.toHTMLString() +
+                        "</div>" +
+                        "<br/>" +
+                        "<a style=\"background-color:#0067F4; color: white; border-radius: 4px; padding: 10px; margin:0 auto; display:block; width: 90%; text-align: center; font-size: 18px; text-decoration:none; \" " +
+                        "href=\"PUT URL HERE\">Schedule a new appointment</a> <br/>");
         Play.current().injector().instanceOf(MailerClient.class).send(email);
     }
 }
