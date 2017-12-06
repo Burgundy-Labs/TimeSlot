@@ -26,6 +26,7 @@ POST        /updateUserRole                           controllers.UserController
 POST        /addNotificationToUser                    controllers.UserController.addNotificationToUser()
 POST        /removeNotificationFromUser               controllers.UserController.removeNotificationFromUser()
 POST        /updateSettings                           controllers.SettingsController.updateSettings()
+POST        /createAppointmentType                    controllers.SettingsController.createAppointmentType()
 POST        /createAppointment                        controllers.AppointmentsController.createAppointment()
 POST        /cancelAppointment                        controllers.AppointmentsController.cancelAppointment()
 POST        /updateCoachNotes                         controllers.AppointmentsController.updateCoachNotes()

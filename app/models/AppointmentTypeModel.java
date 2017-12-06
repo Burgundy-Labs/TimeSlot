@@ -1,7 +1,5 @@
 package models;
 
-import controllers.ApplicationComponents.Roles;
-
 public class AppointmentTypeModel {
     private String appointmentTypeId;
     private String appointmentType;

@@ -141,8 +141,13 @@
                                 } else {
                                     const form = {
                                         appointmentTypeName: $('#appointmentTypeName').val(),
-                                        appointmentTypeDesc: $('#appointmentTypeDesc').val()
                                     };
+                                    var csrfToken = $('input[name="csrfToken"]').attr('value');
+                                    $.ajaxSetup({
+                                        beforeSend: function (xhr) {
+                                            xhr.setRequestHeader('Csrf-Token', csrfToken);
+                                        }
+                                    });
                                     $.ajax({
                                         url: '/createAppointmentType',
                                         type: 'POST',
