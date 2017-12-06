@@ -3,6 +3,7 @@ package controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import controllers.Databases.SettingsDB;
 import controllers.Databases.UserDB;
+import models.AppointmentTypeModel;
 import models.SettingsModel;
 import models.UsersModel;
 import play.libs.Json;
@@ -22,6 +23,16 @@ public class SettingsController extends Controller {
         SettingsModel settings = Json.fromJson(json, SettingsModel.class);
         /* Check if user is in DB */
         SettingsDB.changeSettings(settings);
+        return ok();
+    }
+
+    public Result createAppointmentType() {
+        /* Get user object from request */
+        JsonNode json = request().body().asJson();
+        /* Get user from json request */
+        String appointmentTypeName = json.findPath("appointmentTypeName").asText();
+        AppointmentTypeModel appointmentType = new AppointmentTypeModel(null, appointmentTypeName);
+        /* Check if user is in DB */
         return ok();
     }
 
