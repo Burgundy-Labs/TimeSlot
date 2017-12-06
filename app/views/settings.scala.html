@@ -47,7 +47,7 @@
             <ul class="list-group">
                 <li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center">
                     <h6 class="mb-1">Add new appointment type</h6>
-                    <button class="btn btn-primary btn-success" onclick="console.log('pushed')"><i class="material-icons md-18">add</i></button>
+                    <button class="btn btn-primary btn-success" onclick=createAppointmentType()><i class="material-icons md-18">add</i></button>
                 </li>
             @for(appointmentType <- AppointmentTypes.getAppointmentTypes) {
                 <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -61,7 +61,7 @@
             <ul class="list-group">
                 <li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center">
                     <h6 class="mb-1">Add new service</h6>
-                    <button class="btn btn-primary btn-success" onclick="console.log('pushed')"><i class="material-icons md-18">add</i></button>
+                    <button class="btn btn-primary btn-success" onclick=createService()><i class="material-icons md-18">add</i></button>
                 </li>
                 @for(service <- Services.getServices) {
                     <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -110,6 +110,117 @@
                     }
                 });
             }
+
+            function createAppointmentType() {
+                $.confirm({
+                    title: 'New Appointment Type',
+                    columnClass: 'col-md-4',
+                    content: '' +
+                        '<form action="" class="formName">' +
+                        '<div class="form-group">' +
+                        '<label>Name for the new appointment type:</label>' +
+                        '<input id="appointmentTypeName" type="text" class="name form-control" required />' +
+                        '</div>' +
+                        '<div class="form-group">' +
+                        '<label>Description:</label>' +
+                        '<input id="appointmentTypeDesc" type="text" class="name form-control" required />' +
+                        '</div>' +
+                        '</form>',
+                    buttons: {
+                        confirm: {
+                            text: 'Confirm',
+                            keys: ['enter'],
+                            action: function() {
+                                if ($('#appointmentTypeName').val() == '' || $('#appointmentTypeDesc').val() == '' ) {
+                                    $.alert({
+                                        title: 'Alert',
+                                        type: 'red',
+                                        content: 'You must give an appointment type name and description.'
+                                    });
+                                    return false;
+                                } else {
+                                    const form = {
+                                        appointmentTypeName: $('#appointmentTypeName').val(),
+                                        appointmentTypeDesc: $('#appointmentTypeDesc').val()
+                                    };
+                                    $.ajax({
+                                        url: '/createAppointmentType',
+                                        type: 'POST',
+                                        data: JSON.stringify(form),
+                                        contentType: 'application/json',
+                                        success: function () {
+                                            createAlert("success", "Appointment Type Created!");
+                                            location.reload();
+                                        },
+                                        error: function () {
+                                            createAlert('danger', 'Appointment type creation failed.');
+                                        }
+                                    });
+                                };
+                            }
+                        },
+                        cancel: {
+                            text: 'Cancel'
+                        }
+                    }
+                });
+            }
+
+            function createService() {
+                $.confirm({
+                    title: 'New Appointment Type',
+                    columnClass: 'col-md-4',
+                    content: '' +
+                        '<form action="" class="formName">' +
+                        '<div class="form-group">' +
+                        '<label>Name for the new service:</label>' +
+                        '<input id="serviceName" type="text" class="name form-control" required />' +
+                        '</div>' +
+                        '<div class="form-group">' +
+                        '<label>Description:</label>' +
+                        '<input id="serviceDesc" type="text" class="name form-control" required />' +
+                        '</div>' +
+                        '</form>',
+                    buttons: {
+                        confirm: {
+                            text: 'Confirm',
+                            keys: ['enter'],
+                            action: function() {
+                                if ($('#serviceName').val() == '' || $('#serviceDesc').val() == '' ) {
+                                    $.alert({
+                                        title: 'Alert',
+                                        type: 'red',
+                                        content: 'You must give a service name and description.'
+                                    });
+                                    return false;
+                                } else {
+                                    const form = {
+                                        serviceName: $('#serviceName').val(),
+                                        serviceDesc: $('#serviceDesc').val()
+                                    };
+                                    $.ajax({
+                                        url: '/createService',
+                                        type: 'POST',
+                                        data: JSON.stringify(form),
+                                        contentType: 'application/json',
+                                        success: function () {
+                                            createAlert("success", "Service Created!");
+                                            location.reload();
+                                        },
+                                        error: function () {
+                                            createAlert('danger', 'Service creation failed.');
+                                        }
+                                    });
+                                };
+                            }
+                        },
+                        cancel: {
+                            text: 'Cancel'
+                        }
+                    }
+                });
+            }
+
     </script>
     } else {
         This page is for administrators only.
