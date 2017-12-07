@@ -37,5 +37,6 @@ POST        /updateCoachNotes                         controllers.AppointmentsCo
 POST        /updatePresence                           controllers.AppointmentsController.updatePresence()
 POST        /createAvailability                       controllers.AvailabilityController.createAvailability()
 POST        /removeAvailability                       controllers.AvailabilityController.removeAvailability()
+POST        /sendFeedback                             controllers.FeedbackController.sendFeedback()
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                             controllers.Assets.at(path="/public", file)
