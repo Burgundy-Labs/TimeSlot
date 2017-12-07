@@ -1,235 +1,280 @@
-@import controllers.ApplicationComponents.AppointmentTypes
-@import controllers.ApplicationComponents.Services
+
 @()
-@currentUser = @{UserController.getCurrentUser}
+@currentUser = @{
+    UserController.getCurrentUser
+}
 
 @main("Site Settings", "Settings") {
-    @if(currentUser.getRole.equals("Admin")){
-    <p>Change site-level settings.</p>
-    <div class="row">
-        <div class="col-md-6">
-            <form>
-                <div class="form-group">
-                    <label for="universityName" class="col-sm-2 col-form-label">University Name</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control" id="universityName" value="@SettingsController.getSettings.getUniversityName">
+    @if(currentUser.getRole.equals("Admin")) {
+        @helper.CSRF.formField
+        <p>Change site-level settings.</p>
+        <div class="row">
+            <div class="col-md-6">
+                <form>
+                    <div class="form-group">
+                        <label for="universityName" class="col-sm-2 col-form-label">University Name</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="universityName" value="@SettingsController.getSettings.getUniversityName">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="centerName" class="col-sm-2 col-form-label">Center Name</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control" id="centerName" value="@SettingsController.getSettings.getCenterName">
+                    <div class="form-group">
+                        <label for="centerName" class="col-sm-2 col-form-label">Center Name</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="centerName" value="@SettingsController.getSettings.getCenterName">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="primaryColor" class="col-sm-2 col-form-label">Primary Color</label>
-                    <div id="primaryColorPicker" class="input-group colorpicker-component col-sm-4">
-                        <input id="primaryColor" type="text" value="@SettingsController.getSettings.getPrimaryColor" class="form-control" />
-                        <span class="input-group-addon"><i></i></span>
+                    <div class="form-group">
+                        <label for="primaryColor" class="col-sm-2 col-form-label">Primary Color</label>
+                        <div id="primaryColorPicker" class="input-group colorpicker-component col-sm-4">
+                            <input id="primaryColor" type="text" value="@SettingsController.getSettings.getPrimaryColor" class="form-control" />
+                            <span class="input-group-addon"><i></i></span>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="secondaryColor" class="col-sm-2 col-form-label">Secondary Color</label>
-                    <div id="secondaryColorPicker" class="input-group colorpicker-component col-sm-4">
-                        <input id="secondaryColor" type="text" value="@SettingsController.getSettings.getSecondaryColor" class="form-control" />
-                        <span class="input-group-addon"><i></i></span>
+                    <div class="form-group">
+                        <label for="secondaryColor" class="col-sm-2 col-form-label">Secondary Color</label>
+                        <div id="secondaryColorPicker" class="input-group colorpicker-component col-sm-4">
+                            <input id="secondaryColor" type="text" value="@SettingsController.getSettings.getSecondaryColor" class="form-control" />
+                            <span class="input-group-addon"><i></i></span>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-4">
-                        @helper.CSRF.formField
-                        <button type="submit" onclick="updateSettings()" class="btn btn-primary">Update Site Settings</button>
+                    <div class="form-group">
+                        <div class="col-sm-4">
+                            @helper.CSRF.formField
+                            <button type="submit" onclick="updateSettings()" class="btn btn-primary">
+                                Update Site Settings</button>
+                        </div>
                     </div>
-                </div>
-            </form>
-        </div>
-        <div class="col-md-2">
-            <ul class="list-group">
-                <li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center">
-                    <h6 class="mb-1">Add new appointment type</h6>
-                    <button class="btn btn-primary btn-success" onclick=createAppointmentType()><i class="material-icons md-18">add</i></button>
-                </li>
-            @for(appointmentType <- AppointmentTypes.getAppointmentTypes) {
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <h6 class="mb-1">@appointmentType.appointmentType()</h6>
-                        <button class="btn btn-primary btn-danger" onclick="console.log('pushed')">Remove</button>
-                </li>
-            }
-            </ul>
-        </div>
-        <div class="col-md-2">
-            <ul class="list-group">
-                <li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center">
-                    <h6 class="mb-1">Add new service</h6>
-                    <button class="btn btn-primary btn-success" onclick=createService()><i class="material-icons md-18">add</i></button>
-                </li>
-                @for(service <- Services.getServices) {
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <h6 class="mb-1">@service.service()</h6>
-                        <button class="btn btn-primary btn-danger" onclick="console.log('pushed')">Remove</button>
+                </form>
+            </div>
+            <div class="col-md-2">
+                <ul class="list-group">
+                    <li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center">
+                        <h6 class="mb-1">Add new appointment type</h6>
+                        <button class="btn btn-primary btn-success" onclick=createAppointmentType()><i class="material-icons md-18">
+                            add</i></button>
                     </li>
-                }
-            </ul>
+                    @for(appointmentType <- SettingsController.getAppointmentTypes) {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <h6 class="mb-1">@appointmentType.getAppointmentType</h6>
+                            <button class="btn btn-primary btn-danger" onclick="removeAppointmentType('@appointmentType.getAppointmentTypeId')">Remove</button>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="col-md-2">
+                <ul class="list-group">
+                    <li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center">
+                        <h6 class="mb-1">Add new service</h6>
+                        <button class="btn btn-primary btn-success" onclick=createService()><i class="material-icons md-18">
+                            add</i></button>
+                    </li>
+                    @for(service <- SettingsController.getServices) {
+                        <li class="list-group-item d-flex justify-content-between align-items-center @service.getServiceId">
+                            <h6 class="mb-1">@service.getService()</h6>
+                            <button class="btn btn-primary btn-danger" onclick="removeService('@service.getServiceId')">Remove</button>
+                        </li>
+                    }
+                </ul>
+            </div>
         </div>
-    </div>
-    <script type="text/javascript">
-            $(document).ready(function () {
-                $('#primaryColorPicker').colorpicker();
-                $('#secondaryColorPicker').colorpicker();
-                if (window.location.hash === "#success") {
-                    createAlert("info", "Settings updated successfully!");
-                    history.pushState("", document.title, window.location.pathname + window.location.search);
+        <script type="text/javascript">
+
+                function removeService(serviceId) {
+                    $.confirm({
+                        title: 'Remove Service',
+                        content: 'Are you sure you want to remove this service?',
+                        buttons: {
+                            confirm: {
+                                text: 'Remove Service',
+                                btnClass: "btn btn-primary",
+                                action: function () {
+                                        var csrfToken = $('input[name="csrfToken"]').attr('value');
+                                        $.ajaxSetup({
+                                            beforeSend: function (xhr) {
+                                                xhr.setRequestHeader('Csrf-Token', csrfToken);
+                                            }
+                                        });
+                                        $.ajax({
+                                            url: '/removeService',
+                                            type: 'POST',
+                                            data: JSON.stringify({serviceId: serviceId}),
+                                            contentType: 'application/json',
+                                            success: function () {
+                                                createAlert("success", "Service removed!");
+                                                $('.'+serviceId).hide();
+                                            },
+                                            error: function () {
+                                                createAlert('danger', 'Service deletion failed.');
+                                            }
+                                        });
+                                    }
+                                }
+                            },
+                            cancel: {
+                                text: 'Cancel'
+                            }
+                    });
                 }
-            });
 
-            function updateSettings() {
-                var settings = {
-                    universityName: $('#universityName').val(),
-                    centerName: $('#centerName').val(),
-                    primaryColor: $("#primaryColorPicker").colorpicker('getValue', $("#primaryColor").val()),
-                    secondaryColor: $('#secondaryColorPicker').colorpicker('getValue', $('#secondaryColor').val())
-                };
-                console.log(settings);
-                var csrfToken = $('input[name="csrfToken"]').attr('value');
-                $.ajaxSetup({
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader('Csrf-Token', csrfToken);
+                function removeAppointmentType(appointmentTypeId) {
+
+                }
+
+                $(document).ready(function () {
+                    $('#primaryColorPicker').colorpicker();
+                    $('#secondaryColorPicker').colorpicker();
+                    if (window.location.hash === "#success") {
+                        createAlert("info", "Settings updated successfully!");
+                        history.pushState("", document.title, window.location.pathname + window.location.search);
                     }
                 });
-                $.ajax({
-                    url: '/updateSettings',
-                    type: 'POST',
-                    data: JSON.stringify(settings),
-                    contentType: 'application/json',
-                    success: function () {
-                        window.location.hash = "#success";
-                        location.reload();
-                    },
-                    error: function () {
-                        createAlert('warning', 'Settings not updated!');
-                    }
-                });
-            }
 
-            function createAppointmentType() {
-                $.confirm({
-                    title: 'New Appointment Type',
-                    columnClass: 'col-md-4',
-                    content: '' +
+                function updateSettings() {
+                    const settings = {
+                        universityName: $('#universityName').val(),
+                        centerName: $('#centerName').val(),
+                        primaryColor: $("#primaryColorPicker").colorpicker('getValue', $("#primaryColor").val()),
+                        secondaryColor: $('#secondaryColorPicker').colorpicker('getValue', $('#secondaryColor').val())
+                    };
+                    console.log(settings);
+                    const csrfToken = $('input[name="csrfToken"]').attr('value');
+                    $.ajaxSetup({
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader('Csrf-Token', csrfToken);
+                        }
+                    });
+                    $.ajax({
+                        url: '/updateSettings',
+                        type: 'POST',
+                        data: JSON.stringify(settings),
+                        contentType: 'application/json',
+                        success: function () {
+                            window.location.hash = "#success";
+                            location.reload();
+                        },
+                        error: function () {
+                            createAlert('warning', 'Settings not updated!');
+                        }
+                    });
+                }
+
+                function createAppointmentType() {
+                    $.confirm({
+                        title: 'New Appointment Type',
+                        columnClass: 'col-md-4',
+                        content: '' +
                         '<form action="" class="formName">' +
                         '<div class="form-group">' +
                         '<label>Name for the new appointment type:</label>' +
                         '<input id="appointmentTypeName" type="text" class="name form-control" required />' +
                         '</div>' +
-                        '<div class="form-group">' +
-                        '<label>Description:</label>' +
-                        '<input id="appointmentTypeDesc" type="text" class="name form-control" required />' +
-                        '</div>' +
                         '</form>',
-                    buttons: {
-                        confirm: {
-                            text: 'Confirm',
-                            keys: ['enter'],
-                            action: function() {
-                                if ($('#appointmentTypeName').val() == '' || $('#appointmentTypeDesc').val() == '' ) {
-                                    $.alert({
-                                        title: 'Alert',
-                                        type: 'red',
-                                        content: 'You must give an appointment type name and description.'
-                                    });
-                                    return false;
-                                } else {
-                                    const form = {
-                                        appointmentTypeName: $('#appointmentTypeName').val(),
+                        buttons: {
+                            confirm: {
+                                text: 'Confirm',
+                                btnClass: 'btn btn-primary',
+                                keys: ['enter'],
+                                action: function () {
+                                    if ($('#appointmentTypeName').val() === '') {
+                                        $.alert({
+                                            title: 'Alert',
+                                            type: 'red',
+                                            content: 'You must give the appointment type a name.'
+                                        });
+                                        return false;
+                                    } else {
+                                        const form = {
+                                            appointmentTypeName: $('#appointmentTypeName').val(),
+                                        };
+                                        const csrfToken = $('input[name="csrfToken"]').attr('value');
+                                        $.ajaxSetup({
+                                            beforeSend: function (xhr) {
+                                                xhr.setRequestHeader('Csrf-Token', csrfToken);
+                                            }
+                                        });
+                                        $.ajax({
+                                            url: '/createAppointmentType',
+                                            type: 'POST',
+                                            data: JSON.stringify(form),
+                                            contentType: 'application/json',
+                                            success: function () {
+                                                createAlert("success", "Appointment Type Created!");
+                                                location.reload();
+                                            },
+                                            error: function () {
+                                                createAlert('danger', 'Appointment type creation failed.');
+                                            }
+                                        });
                                     };
-                                    var csrfToken = $('input[name="csrfToken"]').attr('value');
-                                    $.ajaxSetup({
-                                        beforeSend: function (xhr) {
-                                            xhr.setRequestHeader('Csrf-Token', csrfToken);
-                                        }
-                                    });
-                                    $.ajax({
-                                        url: '/createAppointmentType',
-                                        type: 'POST',
-                                        data: JSON.stringify(form),
-                                        contentType: 'application/json',
-                                        success: function () {
-                                            createAlert("success", "Appointment Type Created!");
-                                            location.reload();
-                                        },
-                                        error: function () {
-                                            createAlert('danger', 'Appointment type creation failed.');
-                                        }
-                                    });
-                                };
+                                }
+                            },
+                            cancel: {
+                                text: 'Cancel'
                             }
-                        },
-                        cancel: {
-                            text: 'Cancel'
                         }
-                    }
-                });
-            }
+                    });
+                }
 
-            function createService() {
-                $.confirm({
-                    title: 'New Appointment Type',
-                    columnClass: 'col-md-4',
-                    content: '' +
+                function createService() {
+                    $.confirm({
+                        title: 'New Service',
+                        columnClass: 'col-md-4',
+                        content: '' +
                         '<form action="" class="formName">' +
                         '<div class="form-group">' +
                         '<label>Name for the new service:</label>' +
                         '<input id="serviceName" type="text" class="name form-control" required />' +
                         '</div>' +
-                        '<div class="form-group">' +
-                        '<label>Description:</label>' +
-                        '<input id="serviceDesc" type="text" class="name form-control" required />' +
-                        '</div>' +
                         '</form>',
-                    buttons: {
-                        confirm: {
-                            text: 'Confirm',
-                            keys: ['enter'],
-                            action: function() {
-                                if ($('#serviceName').val() == '' || $('#serviceDesc').val() == '' ) {
-                                    $.alert({
-                                        title: 'Alert',
-                                        type: 'red',
-                                        content: 'You must give a service name and description.'
-                                    });
-                                    return false;
-                                } else {
-                                    const form = {
-                                        serviceName: $('#serviceName').val(),
-                                        serviceDesc: $('#serviceDesc').val()
+                        buttons: {
+                            confirm: {
+                                text: 'Confirm',
+                                btnClass: "btn btn-primary",
+                                keys: ['enter'],
+                                action: function () {
+                                    if ($('#serviceName').val() === '') {
+                                        $.alert({
+                                            title: 'Alert',
+                                            type: 'red',
+                                            content: 'You must give a service name.'
+                                        });
+                                        return false;
+                                    } else {
+                                        const form = {
+                                            serviceName: $('#serviceName').val(),
+                                        };
+                                        const csrfToken = $('input[name="csrfToken"]').attr('value');
+                                        $.ajaxSetup({
+                                            beforeSend: function (xhr) {
+                                                xhr.setRequestHeader('Csrf-Token', csrfToken);
+                                            }
+                                        });
+                                        $.ajax({
+                                            url: '/createService',
+                                            type: 'POST',
+                                            data: JSON.stringify(form),
+                                            contentType: 'application/json',
+                                            success: function () {
+                                                createAlert("success", "Service Created!");
+                                                location.reload();
+                                            },
+                                            error: function () {
+                                                createAlert('danger', 'Service creation failed.');
+                                            }
+                                        });
                                     };
-                                    $.ajax({
-                                        url: '/createService',
-                                        type: 'POST',
-                                        data: JSON.stringify(form),
-                                        contentType: 'application/json',
-                                        success: function () {
-                                            createAlert("success", "Service Created!");
-                                            location.reload();
-                                        },
-                                        error: function () {
-                                            createAlert('danger', 'Service creation failed.');
-                                        }
-                                    });
-                                };
+                                }
+                            },
+                            cancel: {
+                                text: 'Cancel'
                             }
-                        },
-                        cancel: {
-                            text: 'Cancel'
                         }
-                    }
-                });
-            }
+                    });
+                }
 
-    </script>
+        </script>
     } else {
         This page is for administrators only.
-
         To do: Add user-level settings here (for non-admins) - or remove from sidebar.
     }
 }
