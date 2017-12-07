@@ -14,6 +14,7 @@ GET         /Login                                    controllers.LoginControlle
 GET         /Logout                                   controllers.LoginController.logout
 GET         /Help                                     controllers.StaticController.help
 GET         /Terms                                    controllers.StaticController.terms
+GET         /Feedback                                 controllers.FeedbackController.feedback
 GET         /MakeAppointment                          controllers.AppointmentsController.makeAppointment
 GET         /availableSlots/:userId                   controllers.AvailabilityController.availableSlots(userId: String)
 GET         /appointmentsForUser/:role/:userId        controllers.AppointmentsController.appointmentsForUser(role: String, userId: String)

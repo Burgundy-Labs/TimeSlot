@@ -18,6 +18,7 @@ initApp = function () {
                 case "/Login":
                 case "/Terms":
                 case "/Help":
+                case "/Feedback":
                     break;
                 default:
                     window.location.href = '/Login';
