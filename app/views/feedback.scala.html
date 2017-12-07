@@ -1,4 +1,46 @@
-@main("Feedback","Feedback"){
+@main("Feedback", "Feedback") {
+    <div class="container dashCards">
+        <div class="card">
+            <div class="card-header">
+                <h4>Feedback Form</h4>
+            </div>
+            <div class="row card-block col-md-12 center">
+                <p class="card-block well">Feedback is important for us to improve Project Burgundy. Please use the form below to report bugs, provide suggestions, or give us your input on the current design/functionality.</p>
+                <form class="col-md-12">
+                    <div class="form-group center">
+                        <label for="name" class="col-2 col-form-label">Name</label>
+                        <div class="col-lg-6 center">
+                            <input class="form-control" type="text" placeholder="John Doe kale" id="name">
+                        </div>
+                    </div>
+                    <div class="form-group center">
+                        <label for="email" class="col-2 col-form-label">Email</label>
+                        <div class="col-lg-6 center">
+                            <input class="form-control" type="email" placeholder="username@@domain.com" id="email">
+                        </div>
+                    </div>
+                    <div class="form-group center">
+                        <label for="feedback" class="col-2 col-form-label">Feedback</label>
+                        <div class="col-lg-6 center">
+                            <textarea class="form-control" id="feedback" placeholder="Man this site is neat." rows="3"></textarea>
+                        </div>
+                    </div>
+                    <br/>
+                    <button onclick="submitFeedback()" class="btn btn-primary col-lg-5 center">Submit Feedback</button>
+                    <br/>
+                </form>
+            </div>
+        </div>
+    </div>
 
+    <script type="text/javascript">
+        function submitFeedback() {
+            let form = {
+                name: $('#name').val(),
+                email: $('$email').val(),
+                feedback: $('#feedback').val(),
 
+            }
+        }
+    </script>
 }
