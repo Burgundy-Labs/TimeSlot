@@ -3,10 +3,10 @@ initApp = function () {
         if (user) {
             // User is signed in.
             /* Make sure they're in the application - as defined by sidebar being displayed */
+            if (window.location.pathname === "/Login" || window.location.pathname === "/") {
+                window.location.href = '/Dashboard';
+            }
             if ($('.sidebar').length) {
-                if (window.location.pathname === "/Login" || window.location.pathname === "/") {
-                    window.location.href = '/Dashboard';
-                }
                 $('[data-original-title="Account"]').html('<img src="' + firebase.auth().currentUser.photoURL + '" class="userAvatar"/>');
             }
             $('#sign-out').show();
