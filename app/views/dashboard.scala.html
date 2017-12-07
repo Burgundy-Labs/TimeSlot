@@ -117,20 +117,10 @@
                                 $(response).each(function () {
                                     const event = {
                                         id: $(this).attr('availabilityId'),
-                                        title: @if(UserController.getCurrentUser.getRole.equals("Student")){$(this).attr("coachName"),
-                                        }else{$(
-                                        this
-                                ).
-                                    attr("coachName"), }
-                                            start
-                                :
-                                    moment($(this).attr('startDate')).format(),
-                                            end
-                                :
-                                    moment($(this).attr('endDate')).format(),
-                                            dow
-                                :
-                                    [],
+                                        title: @if(UserController.getCurrentUser.getRole.equals("Student")){$(this).attr("coachName")}else{$(this).attr("coachName")},
+                                            start: moment($(this).attr('startDate')).format(),
+                                            end: moment($(this).attr('endDate')).format(),
+                                            dow:[],
                                 };
                                     events.push(event);
                                 });
