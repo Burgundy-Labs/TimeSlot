@@ -117,7 +117,7 @@
                                 $(response).each(function () {
                                     const event = {
                                         id: $(this).attr('availabilityId'),
-                                        title: @if(UserController.getCurrentUser.getRole.equals("Student")){$(this).attr("coachName")}else{$(this).attr("coachName")},
+                                        title: @if(UserController.getCurrentUser.getRole.equals("Student")){$(this).attr("coachName")}else{$(this).attr("studentName")},
                                             start: moment($(this).attr('startDate')).format(),
                                             end: moment($(this).attr('endDate')).format(),
                                             dow:[],
