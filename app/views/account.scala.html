@@ -17,17 +17,15 @@
                     <ul class="list-group col-md-3">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <select id="selectedService" title="Services" class="col-md-9" style="border:hidden">
-                            <option>Test</option>
+                            @for(service <- AccountController.getAvailableServices(UserController.getCurrentUser.getUid)) {
+                                <option value="@service.getServiceId">
+                                    @service.getService
+                                </option>
+                            }
                         </select>
                         <button class="btn btn-primary btn-success" onclick=createService()><i class="material-icons md-18">
                             add</i></button>
                         </li>
-                        @for(service <- SettingsController.getServices) {
-                            <li class="list-group-item d-flex justify-content-between align-items-center @service.getServiceId">
-                                <h6 class="mb-1">@service.getService</h6>
-                                <button class="btn btn-primary btn-danger" onclick="removeService('@service.getServiceId')">Remove</button>
-                            </li>
-                        }
                     </ul>
                 </div>
         </div>
