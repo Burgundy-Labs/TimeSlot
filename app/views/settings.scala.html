@@ -46,35 +46,37 @@
                     </div>
                 </form>
             </div>
-            <div class="col-md-2">
-                <ul class="list-group">
-                    <li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center">
-                        <h6 class="mb-1">Add new appointment type</h6>
-                        <button class="btn btn-primary btn-success" onclick=createAppointmentType()><i class="material-icons md-18">
-                            add</i></button>
-                    </li>
-                    @for(appointmentType <- SettingsController.getAppointmentTypes) {
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <h6 class="mb-1">@appointmentType.getAppointmentType</h6>
-                            <button class="btn btn-primary btn-danger" onclick="removeAppointmentType('@appointmentType.getAppointmentTypeId')">Remove</button>
+            <div class="col-md-6 row">
+                <div class="col-md-6">
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center">
+                            <h6 class="mb-1">Appointment Types</h6>
+                            <button class="btn btn-primary btn-success" onclick=createAppointmentType()><i class="material-icons md-18">
+                                add</i></button>
                         </li>
-                    }
-                </ul>
-            </div>
-            <div class="col-md-2">
-                <ul class="list-group">
-                    <li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center">
-                        <h6 class="mb-1">Add new service</h6>
-                        <button class="btn btn-primary btn-success" onclick=createService()><i class="material-icons md-18">
-                            add</i></button>
-                    </li>
-                    @for(service <- SettingsController.getServices) {
-                        <li class="list-group-item d-flex justify-content-between align-items-center @service.getServiceId">
-                            <h6 class="mb-1">@service.getService()</h6>
-                            <button class="btn btn-primary btn-danger" onclick="removeService('@service.getServiceId')">Remove</button>
+                        @for(appointmentType <- SettingsController.getAppointmentTypes) {
+                            <li class="list-group-item d-flex justify-content-between align-items-center @appointmentType.getAppointmentTypeId">
+                                <h6 class="mb-1">@appointmentType.getAppointmentType</h6>
+                                <button class="btn btn-primary btn-danger" onclick="removeAppointmentType('@appointmentType.getAppointmentTypeId')">Remove</button>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center">
+                            <h6 class="mb-1">Services</h6>
+                            <button class="btn btn-primary btn-success" onclick=createService()><i class="material-icons md-18">
+                                add</i></button>
                         </li>
-                    }
-                </ul>
+                        @for(service <- SettingsController.getServices) {
+                            <li class="list-group-item d-flex justify-content-between align-items-center @service.getServiceId">
+                                <h6 class="mb-1">@service.getService</h6>
+                                <button class="btn btn-primary btn-danger" onclick="removeService('@service.getServiceId')">Remove</button>
+                            </li>
+                        }
+                    </ul>
+                </div>
             </div>
         </div>
         <script type="text/javascript">
@@ -101,7 +103,7 @@
                                             contentType: 'application/json',
                                             success: function () {
                                                 createAlert("success", "Service removed!");
-                                                $('.'+serviceId).hide();
+                                                $('.'+serviceId).removeClass('d-flex').hide();
                                             },
                                             error: function () {
                                                 createAlert('danger', 'Service deletion failed.');
@@ -117,7 +119,40 @@
                 }
 
                 function removeAppointmentType(appointmentTypeId) {
-
+                    $.confirm({
+                        title: 'Remove Appointment Type',
+                        content: 'Are you sure you want to remove this Appointment Type?',
+                        buttons: {
+                            confirm: {
+                                text: 'Remove Appointment Type',
+                                btnClass: "btn btn-primary",
+                                action: function () {
+                                    var csrfToken = $('input[name="csrfToken"]').attr('value');
+                                    $.ajaxSetup({
+                                        beforeSend: function (xhr) {
+                                            xhr.setRequestHeader('Csrf-Token', csrfToken);
+                                        }
+                                    });
+                                    $.ajax({
+                                        url: '/removeAppointmentType',
+                                        type: 'POST',
+                                        data: JSON.stringify({appointmentTypeId: appointmentTypeId}),
+                                        contentType: 'application/json',
+                                        success: function () {
+                                            createAlert("success", "Appointment Type removed!");
+                                            $('.'+appointmentTypeId).removeClass('d-flex').hide();
+                                        },
+                                        error: function () {
+                                            createAlert('danger', 'Appointment Type deletion failed.');
+                                        }
+                                    });
+                                }
+                            }
+                        },
+                        cancel: {
+                            text: 'Cancel'
+                        }
+                    });
                 }
 
                 $(document).ready(function () {
@@ -262,7 +297,7 @@
                                                 createAlert('danger', 'Service creation failed.');
                                             }
                                         });
-                                    };
+                                    }
                                 }
                             },
                             cancel: {

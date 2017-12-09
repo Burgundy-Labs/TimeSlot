@@ -11,7 +11,6 @@ initApp = function () {
                 }
             }
             if ($('.sidebar').length) {
-
                 $('[data-original-title="Account"]').html('<img src="' + firebase.auth().currentUser.photoURL + '" class="userAvatar"/>');
             }
             $('#sign-out').show();
