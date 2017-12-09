@@ -4,6 +4,7 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import controllers.ApplicationComponents.Roles;
 import models.NotificationModel;
+import models.ServiceModel;
 import models.UsersModel;
 
 import java.time.ZonedDateTime;
@@ -13,6 +14,57 @@ import java.util.concurrent.ExecutionException;
 /* DB classes contain the methods necessary to manage their corresponding models.
 * UserDB works with UsersModel to retrieve and remove users in the Firestore DB.*/
 public class UserDB {
+
+    public static synchronized void addServiceToUser(String userId, ServiceModel service){
+         /* Get DB instance */
+        DocumentReference docRef = FirestoreDB.getFirestoreDB().collection("users").document(userId).collection("services").document(service.getServiceId());
+        Map<String, Object> data = new HashMap<>();
+        /* Create user model for DB insert */
+        data.put("service", service.getService());
+        /* Asynchronously write user into DB */
+        ApiFuture<WriteResult> result = docRef.set(data);
+        result.isDone();
+    }
+
+    public static synchronized List<ServiceModel> getServicesForUser(String userId){
+        List<ServiceModel> servicesList = new ArrayList<>();
+        /* Asynchronously retrieve all users */
+        ApiFuture<QuerySnapshot> query = FirestoreDB.getFirestoreDB().collection("users").document(userId).collection("services").get();
+        QuerySnapshot querySnapshot = null;
+        try {
+            /* Attempt to get a list of all users - blocking */
+            querySnapshot = query.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        assert querySnapshot != null;
+        List<DocumentSnapshot> documents = querySnapshot.getDocuments();
+        /* Iterate users and add them to a list for return */
+        ZonedDateTime now = ZonedDateTime.now();
+        ZonedDateTime thirtyDaysAgo = now.plusDays(-30);
+        for (DocumentSnapshot document : documents) {
+                   ServiceModel service = new ServiceModel(
+                    document.getId(),
+                    document.getString("service")
+            );
+            servicesList.add(service);
+        }
+        return servicesList;
+    }
+
+    public static boolean removeServiceFromUser(String userId, String serviceId) {
+        /* Asynchronously remove user from DB */
+        ApiFuture<WriteResult> writeResult = FirestoreDB.getFirestoreDB().collection("users").document(userId).collection("services").document(serviceId).delete();
+        try {
+            /* Verify that action is complete */
+            writeResult.get();
+            return writeResult.isDone();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static synchronized void addNotificationToUser(NotificationModel notificationModel, String userId){
          /* Get DB instance */
         DocumentReference docRef = null;
