@@ -26,10 +26,60 @@
                         <button class="btn btn-primary btn-success" onclick=createService()><i class="material-icons md-18">
                             add</i></button>
                         </li>
+                        @for( service <- AccountController.getServicesForUser(UserController.getCurrentUser.getUid)) {
+                        <li class="list-group-item d-flex justify-content-between align-items-center @service.getServiceId">
+                            <h6 class="mb-1">@service.getService</h6>
+                            <button class="btn btn-primary btn-danger" onclick="removeService('@service.getServiceId')">Remove</button>
+                        </li>
+                    }
                     </ul>
                 </div>
         </div>
         <script>
+            function createService() {
+                let selectedService = $('#selectedService:selected');
+                let selectedServiceText = selectedService.text();
+                let selectedServiceId = selectedService.val();
+                $.confirm({
+                    title: 'Add Service',
+                    content: 'Do you want add ' + selectedServiceText + ' as a service you provide?',
+                    buttons: {
+                        confirm: {
+                            text: 'Confirm',
+                            btnClass: "btn btn-primary",
+                            keys: ['enter'],
+                            action: function () {
+                                    const form = {
+                                        serviceName: $('#serviceName').val(),
+                                    };
+                                    const csrfToken = $('input[name="csrfToken"]').attr('value');
+                                    $.ajaxSetup({
+                                        beforeSend: function (xhr) {
+                                            xhr.setRequestHeader('Csrf-Token', csrfToken);
+                                        }
+                                    });
+                                    $.ajax({
+                                        url: '/',
+                                        type: 'POST',
+                                        data: JSON.stringify(form),
+                                        contentType: 'application/json',
+                                        success: function () {
+                                            createAlert("success", "Service Created!");
+                                            location.reload();
+                                        },
+                                        error: function () {
+                                            createAlert('danger', 'Service creation failed.');
+                                        }
+                                    });
+                            }
+                        },
+                        cancel: {
+                            text: 'Cancel'
+                        }
+                    }
+                });
+
+            }
                 $(document).ready(function () {
                     $('#availabilitySchedule').fullCalendar({
                         height: 'auto',

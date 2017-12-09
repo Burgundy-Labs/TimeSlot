@@ -32,4 +32,9 @@ public class AccountController extends Controller {
 
         return availableServices;
     }
+
+    public static List<ServiceModel> getServicesForUser(String userId) {
+        List<ServiceModel> coachServices = UserDB.getServicesForUser(userId);
+        return coachServices;
+    }
 }
