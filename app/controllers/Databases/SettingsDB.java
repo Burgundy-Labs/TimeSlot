@@ -109,7 +109,7 @@ public class SettingsDB {
             docRef = FirestoreDB.getFirestoreDB().collection("settings").document("settings").collection("services").document(service.getServiceId());
         }
         Map<String, Object> data = new HashMap<>();
-        data.put("service", service.getServiceId());
+        data.put("service", service.getService());
         ApiFuture<WriteResult> result = docRef.set(data);
         result.isDone();
     }
@@ -147,7 +147,7 @@ public class SettingsDB {
         for (DocumentSnapshot document : documents) {
             ServiceModel service = new ServiceModel(
                     document.getId(),
-                    document.getString("services")
+                    document.getString("service")
             );
             serviceModel.add(service);
         }

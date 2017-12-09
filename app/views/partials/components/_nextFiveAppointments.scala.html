@@ -21,7 +21,7 @@
             </td>
             <td>@appointment.getAppointmentType</td>
             <td>@appointment.getServiceType</td>
-            <td class="date"><span class="startDate">@appointment.getStartDate</span> - <span class="endDate">@appointment.getEndDate</span></td>
+            <td class="date"><span class="startDate">@appointment.getStartDate.toInstant</span> - <span class="endDate">@appointment.getEndDate.toInstant</span></td>
         </tr>
     }
     </tbody>
