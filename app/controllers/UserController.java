@@ -11,7 +11,7 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-import javax.management.relation.Role;
+import java.util.List;
 
 public class UserController extends Controller {
     public Result index() {
@@ -91,9 +91,15 @@ public class UserController extends Controller {
         }
     }
 
+    public Result getCoachesByService() {
+        JsonNode json = request().body().asJson();
+        String serviceId = json.get("serviceId").asText();
+        List<UsersModel> coaches = UserDB.getCoachesByService(serviceId);
+        return ok(Json.toJson(coaches));
+    }
+
     public static UsersModel getCurrentUser() {
         String s = session("currentUser");
-
         return UserDB.getUser(s);
     }
 }
