@@ -117,8 +117,8 @@ public class AppointmentsDB {
     public static synchronized List<AppointmentsModel> getNextFiveAppointmentsForUser(String role, String userId) {
         List<AppointmentsModel> appointmentList = new ArrayList<>();
         /* Asynchronously retrieve all appointments */
-        ApiFuture<QuerySnapshot> coachQuery = FirestoreDB.getFirestoreDB().collection("appointments").orderBy("start_date", Query.Direction.ASCENDING).whereEqualTo("coachId",userId).limit(5).get();
-        ApiFuture<QuerySnapshot> studentQuery = FirestoreDB.getFirestoreDB().collection("appointments").orderBy("start_date", Query.Direction.ASCENDING).whereEqualTo("studentId",userId).limit(5).get();
+        ApiFuture<QuerySnapshot> coachQuery = FirestoreDB.getFirestoreDB().collection("appointments").whereGreaterThan("start_date",new Date()).orderBy("start_date", Query.Direction.ASCENDING).whereEqualTo("coachId",userId).limit(5).get();
+        ApiFuture<QuerySnapshot> studentQuery = FirestoreDB.getFirestoreDB().collection("appointments").whereGreaterThan("start_date",new Date()).orderBy("start_date", Query.Direction.ASCENDING).whereEqualTo("studentId",userId).limit(5).get();
 
         QuerySnapshot querySnapshotCoach = null;
         QuerySnapshot querySnapshotStudent = null;
