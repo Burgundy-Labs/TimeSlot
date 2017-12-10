@@ -208,11 +208,12 @@
                                 present: false
                             };
                             let coachName = $('#coachId option:selected').text();
+                            let appointmentType = $('#appointmentType option:selected').text();
                             $.confirm({
                                 boxWidth: "50%",
                                 title: 'New Appointment',
                                 content: "<div class='appointmentDetails'>Your appointment details: <br/>" +
-                                "<b>Appointment Type:</b> " + form.appointmentType + " <br/>" +
+                                "<b>Appointment Type:</b> " + appointmentType  + " <br/>" +
                                 "<b>Coach:</b> " + coachName + " <br/>" +
                                 "<b>Date:</b> " + moment(appointment.startDate).format('dddd, MMMM Do, YYYY h:mm A') + " -" + moment(appointment.endDate).format('h:mm A') + "<br/>" +
                                 "</div>",
