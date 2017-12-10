@@ -26,6 +26,8 @@ POST        /deleteUser                               controllers.UserController
 POST        /updateUserRole                           controllers.UserController.updateUserRole()
 POST        /addNotificationToUser                    controllers.UserController.addNotificationToUser()
 POST        /removeNotificationFromUser               controllers.UserController.removeNotificationFromUser()
+POST        /addServiceToCoach                        controllers.UserController.addServiceToCoach()
+POST        /removeServiceFromCoach                   controllers.UserController.removeServiceFromCoach()
 POST        /updateSettings                           controllers.SettingsController.updateSettings()
 POST        /createAppointmentType                    controllers.SettingsController.createAppointmentType()
 POST        /removeAppointmentType                    controllers.SettingsController.removeAppointmentType()

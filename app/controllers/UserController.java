@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import controllers.ApplicationComponents.Roles;
 import controllers.Databases.UserDB;
 import models.NotificationModel;
+import models.ServiceModel;
 import models.UsersModel;
 import play.Logger;
 import play.libs.Json;
@@ -40,12 +41,30 @@ public class UserController extends Controller {
         return ok();
     }
 
+    public Result addServiceToCoach() {
+        JsonNode json = request().body().asJson();
+        String userId = json.get("userId").asText();
+        String serviceText = json.get("serviceName").asText();
+        String serviceId = json.get("serviceId").asText();
+        ServiceModel service = new ServiceModel(serviceId, serviceText);
+        UserDB.addServiceToUser(userId, service);
+        return ok();
+    }
+
     public Result addNotificationToUser() {
         JsonNode json = request().body().asJson();
         String userId = json.get("userId").asText();
         NotificationModel notification = new NotificationModel();
         notification.setNotificationContent(json.get("notificationContent").asText());
         UserDB.addNotificationToUser(notification,userId);
+        return ok();
+    }
+
+    public Result removeServiceFromCoach() {
+        JsonNode json = request().body().asJson();
+        String userId = json.get("userId").asText();
+        String serviceId = json.get("serviceId").asText();
+        UserDB.removeServiceFromUser(userId, serviceId);
         return ok();
     }
 
