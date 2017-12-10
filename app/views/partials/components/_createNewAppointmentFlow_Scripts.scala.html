@@ -1,8 +1,36 @@
 <script type="text/javascript">
+    const csrfToken = $('input[name="csrfToken"]').attr('value');
 
     let selectedEvents = [];
     $(document).ready(function () {
         createMakeAppointmentCalendar();
+
+        $(document).on("change", '#serviceType', function(e) {
+            const service = $(this).val();
+            $.ajaxSetup({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Csrf-Token', csrfToken);
+                }
+            });
+            $.ajax({
+                url: '/getCoachesByService',
+                type: 'POST',
+                data: JSON.stringify({service: service}),
+                contentType: 'application/json',
+                success: function(json) {
+                    console.log(json);
+//                    const $el = $("#name");
+//                    $el.empty(); // remove old options
+//                    $el.append($("<option></option>")
+//                            .attr("value", '').text('Please Select'));
+//                    $.each(json, function(value, key) {
+//                        $el.append($("<option></option>")
+//                                .attr("value", value).text(key));
+//                    });
+//
+                }
+            });
+        });
     });
 
     function createMakeAppointmentCalendar() {
@@ -19,7 +47,6 @@
                 minTime: "10:00",
                 maxTime: "21:00",
                 events: function (start, end, timezone, callback) {
-                    const csrfToken = $('input[name="csrfToken"]').attr('value');
                     $.ajaxSetup({
                         beforeSend: function (xhr) {
                             xhr.setRequestHeader('Csrf-Token', csrfToken);
@@ -182,7 +209,6 @@
                                         keys: ['enter', 'shift'],
                                         action: function () {
                                             /* Create appointment Here*/
-                                            const csrfToken = $('input[name="csrfToken"]').attr('value');
                                             $.ajaxSetup({
                                                 beforeSend: function (xhr) {
                                                     xhr.setRequestHeader('Csrf-Token', csrfToken);

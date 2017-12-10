@@ -1,5 +1,6 @@
 package controllers.Databases;
 
+import com.google.api.Service;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import controllers.ApplicationComponents.Roles;
@@ -221,6 +222,20 @@ public class UserDB {
             }
         }
         return userList;
+    }
+
+    public static List<UsersModel> getCoachesByService(String serviceId) {
+        List<UsersModel> coachesWithService = new ArrayList<>();
+        List<UsersModel> coaches = getCoaches();
+        for(UsersModel c : coaches) {
+            List<ServiceModel> services = getServicesForUser(c.getUid());
+            for(ServiceModel s : services) {
+                if (s.getServiceId().equals(serviceId)) {
+                    coachesWithService.add(c);
+                }
+            }
+        }
+        return coachesWithService;
     }
 
     public static synchronized void addUser(UsersModel user) {
