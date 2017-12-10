@@ -5,11 +5,7 @@ initApp = function () {
             // User is signed in.
             /* Make sure they're in the application - as defined by sidebar being displayed */
 
-            if(localStorage.getItem("firebaseui::rememberedAccounts") !== null) {
-                if (window.location.pathname === "/Login" || window.location.pathname === "/") {
-                    window.location.href = '/Dashboard';
-                }
-            }
+            
             if ($('.sidebar').length) {
                 $('[data-original-title="Account"]').html('<img src="' + firebase.auth().currentUser.photoURL + '" class="userAvatar"/>');
             }

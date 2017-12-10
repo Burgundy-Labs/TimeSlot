@@ -13,21 +13,22 @@
                 }
             });
             $.ajax({
-                url: '/getCoachesByService',
-                type: 'POST',
-                data: JSON.stringify({service: service}),
-                contentType: 'application/json',
+                url: '/getCoachesByService/' + service,
+                type: 'GET',
                 success: function(json) {
-                    console.log(json);
-//                    const $el = $("#name");
-//                    $el.empty(); // remove old options
-//                    $el.append($("<option></option>")
-//                            .attr("value", '').text('Please Select'));
-//                    $.each(json, function(value, key) {
-//                        $el.append($("<option></option>")
-//                                .attr("value", value).text(key));
-//                    });
-//
+                    const coachDropdown = $("#coachId");
+                    coachDropdown.empty(); // remove old options
+                    let count = 0;
+                    $.each(json, function(key, value) {
+                        coachDropdown.append("<option value='"+value.uid+"'>" + value.displayName + "</option>");
+                        count++;
+                    });
+                    if(count === 0) {
+                        coachDropdown.prepend("<option selected value disabled hidden'>No Coaches Found</option>");
+                    } else {
+                        coachDropdown.prepend("<option value='any'>Any Coach</option>");
+                        coachDropdown.prepend("<option selected value disabled hidden'>Select A Coach</option>");
+                    }
                 }
             });
         });
@@ -47,13 +48,14 @@
                 minTime: "10:00",
                 maxTime: "21:00",
                 events: function (start, end, timezone, callback) {
+                    const coachId = $("#coachId :selected").val();
                     $.ajaxSetup({
                         beforeSend: function (xhr) {
                             xhr.setRequestHeader('Csrf-Token', csrfToken);
                         }
                     });
                     $.ajax({
-                        url: '/availableSlots/' + '@UserController.getCurrentUser.getUid',
+                        url: '/availableSlots/' + coachId,
                         type: 'GET',
                         success: function (response) {
                             const events = [];

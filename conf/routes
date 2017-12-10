@@ -9,6 +9,7 @@ GET         /Account                                  controllers.AccountControl
 GET         /Settings                                 controllers.SettingsController.index
 GET         /Appointments                             controllers.AppointmentsController.index
 GET         /Coaches                                  controllers.UserController.index
+GET        /getCoachesByService/:serviceId            controllers.UserController.getCoachesByService(serviceId: String)
 GET         /Center                                   controllers.CenterController.index
 GET         /Login                                    controllers.LoginController.index
 GET         /Logout                                   controllers.LoginController.logout
@@ -28,7 +29,6 @@ POST        /addNotificationToUser                    controllers.UserController
 POST        /removeNotificationFromUser               controllers.UserController.removeNotificationFromUser()
 POST        /addServiceToCoach                        controllers.UserController.addServiceToCoach()
 POST        /removeServiceFromCoach                   controllers.UserController.removeServiceFromCoach()
-POST        /getCoachesByService                      controllers.UserController.getCoachesByService()
 POST        /updateSettings                           controllers.SettingsController.updateSettings()
 POST        /createAppointmentType                    controllers.SettingsController.createAppointmentType()
 POST        /removeAppointmentType                    controllers.SettingsController.removeAppointmentType()
