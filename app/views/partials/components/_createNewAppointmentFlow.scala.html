@@ -38,11 +38,6 @@
                     <label for="coachId">Select a coach</label>
                     <br/>
                     <select id="coachId" name="appointmentType" required>
-                        <option selected disabled> Select a coach </option>
-                        <option value="Any">Any Coach</option>
-                        @for(coach <- UserDB.getCoaches) {
-                                <option value="@coach.getUid">@coach.getDisplayName</option>
-                        }
                     </select>
                     </form>
                 </div>

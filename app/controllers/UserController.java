@@ -91,9 +91,7 @@ public class UserController extends Controller {
         }
     }
 
-    public Result getCoachesByService() {
-        JsonNode json = request().body().asJson();
-        String serviceId = json.get("serviceId").asText();
+    public Result getCoachesByService(String serviceId) {
         List<UsersModel> coaches = UserDB.getCoachesByService(serviceId);
         return ok(Json.toJson(coaches));
     }
