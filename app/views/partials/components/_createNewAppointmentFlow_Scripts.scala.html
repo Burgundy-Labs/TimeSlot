@@ -85,6 +85,19 @@
                     eventElement.find("div.fc-content").prepend("<button onclick='removeAppointment(\"" + event.id + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
                 },
                 select: function (start, end, jsEvent, view) {
+                    window['moment-range'].extendMoment(moment);
+                    const cal = $("#calendar");
+                    const events = cal.fullCalendar('clientEvents');
+                    let selectedEvent = null;
+                    for (let i in events) {
+                        var range = moment().range(events[i].start, events[i].end);
+                        if (range.contains(start) && range.contains(end)) {
+                            selectedEvent = events[i];
+                        }
+                    }
+                    if(selectedEvent === null) {
+                        return false;
+                    }
                     const duration = moment.duration(end.diff(start)).asHours();
                     if (duration > 1) {
                         $.alert({
