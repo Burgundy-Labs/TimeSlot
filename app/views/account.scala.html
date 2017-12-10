@@ -1,7 +1,7 @@
 @()
-
+@currentUser = @{UserController.getCurrentUser}
 @main("Account", "Manage Account") {
-    @if(!UserController.getCurrentUser.getRole.equals("Student")) {
+    @if(!currentUser.getRole.equals("Student")) {
         @helper.CSRF.formField
         <h1>Availability Schedule</h1>
         <div class="row">
@@ -16,8 +16,11 @@
                 <br/>
                     <ul class="list-group col-md-3">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <select id="selectedService" title="Services" class="col-md-9" style="border:hidden">
-                            @for(service <- AccountController.getAvailableServices(UserController.getCurrentUser.getUid)) {
+                            <select id="selectedService" title="Services" class="col-md-9">
+                                <option value="" selected default hidden>
+                                Select A Service
+                                </option>
+                            @for(service <- AccountController.getAvailableServices(currentUser.getUid)) {
                                 <option value="@service.getServiceId">
                                     @service.getService
                                 </option>
@@ -26,7 +29,7 @@
                         <button class="btn btn-primary btn-success" onclick=createService()><i class="material-icons md-18">
                             add</i></button>
                         </li>
-                        @for( service <- AccountController.getServicesForUser(UserController.getCurrentUser.getUid)) {
+                        @for( service <- AccountController.getServicesForUser(currentUser.getUid)) {
                         <li class="list-group-item d-flex justify-content-between align-items-center @service.getServiceId">
                             <h6 class="mb-1">@service.getService</h6>
                             <button class="btn btn-primary btn-danger" onclick="removeService('@service.getServiceId')">Remove</button>
@@ -36,21 +39,73 @@
                 </div>
         </div>
         <script>
-            function createService() {
-                let selectedService = $('#selectedService:selected');
-                let selectedServiceText = selectedService.text();
-                let selectedServiceId = selectedService.val();
+
+            function removeService(serviceId) {
+
                 $.confirm({
-                    title: 'Add Service',
-                    content: 'Do you want add ' + selectedServiceText + ' as a service you provide?',
+                    title: 'Remove Service',
+                    content: 'Are you sure you want to remove this service?',
                     buttons: {
                         confirm: {
-                            text: 'Confirm',
+                            text: 'Yes, Remove',
                             btnClass: "btn btn-primary",
                             keys: ['enter'],
                             action: function () {
+                                const form = {
+                                    userId: '@currentUser.getUid',
+                                    serviceId: serviceId
+                                };
+                                const csrfToken = $('input[name="csrfToken"]').attr('value');
+                                $.ajaxSetup({
+                                    beforeSend: function (xhr) {
+                                        xhr.setRequestHeader('Csrf-Token', csrfToken);
+                                    }
+                                });
+                                $.ajax({
+                                    url: '/removeServiceFromCoach',
+                                    type: 'POST',
+                                    data: JSON.stringify(form),
+                                    contentType: 'application/json',
+                                    success: function () {
+                                        createAlert("success", "Service Removed!");
+                                        location.reload();
+                                    },
+                                    error: function () {
+                                        createAlert('danger', 'Removing service failed.');
+                                    }
+                                });
+                            }
+                        },
+                        cancel: {
+                            text: 'Cancel'
+                        }
+                    }
+                });
+            }
+            function createService() {
+                let selectedService = $('#selectedService :selected');
+                console.log(selectedService);
+                let selectedServiceText = selectedService.text();
+                let selectedServiceId = selectedService.val();
+                if(selectedServiceId === "" || selectedServiceId === null) {
+                    $.alert({
+                        title: "Select Service",
+                        content: "Please select a service to add."
+                    })
+                } else {
+                    $.confirm({
+                        title: 'Add Service',
+                        content: 'Do you want add ' + selectedServiceText + ' as a service you provide?',
+                        buttons: {
+                            confirm: {
+                                text: 'Confirm',
+                                btnClass: "btn btn-primary",
+                                keys: ['enter'],
+                                action: function () {
                                     const form = {
-                                        serviceName: $('#serviceName').val(),
+                                        userId: '@currentUser.getUid',
+                                        serviceName: selectedServiceText,
+                                        serviceId: selectedServiceId
                                     };
                                     const csrfToken = $('input[name="csrfToken"]').attr('value');
                                     $.ajaxSetup({
@@ -59,26 +114,26 @@
                                         }
                                     });
                                     $.ajax({
-                                        url: '/',
+                                        url: '/addServiceToCoach',
                                         type: 'POST',
                                         data: JSON.stringify(form),
                                         contentType: 'application/json',
                                         success: function () {
-                                            createAlert("success", "Service Created!");
+                                            createAlert("success", "Service Added!");
                                             location.reload();
                                         },
                                         error: function () {
-                                            createAlert('danger', 'Service creation failed.');
+                                            createAlert('danger', 'Adding service failed.');
                                         }
                                     });
+                                }
+                            },
+                            cancel: {
+                                text: 'Cancel'
                             }
-                        },
-                        cancel: {
-                            text: 'Cancel'
                         }
-                    }
-                });
-
+                    });
+                }
             }
                 $(document).ready(function () {
                     $('#availabilitySchedule').fullCalendar({
@@ -92,7 +147,7 @@
                                 }
                             });
                             $.ajax({
-                                url: '/availableSlots/' + '@UserController.getCurrentUser.getUid',
+                                url: '/availableSlots/' + '@currentUser.getUid',
                                 type: 'GET',
                                 success: function (response) {
                                     var events = [];
@@ -134,7 +189,7 @@
                         eventDrop: function (event, delta, revertFunc) {
                             var changedEvent = {
                                 availabilityId: event.id,
-                                userId: '@UserController.getCurrentUser.getUid',
+                                userId: '@currentUser.getUid',
                                 startDate: moment(event.start).format(),
                                 endDate: moment(event.end).format(),
                                 weekly: event.dow.length > 0
@@ -144,7 +199,7 @@
                         eventResize: function (event, delta, revertFunc) {
                             var changedEvent = {
                                 availabilityId: event.id,
-                                userId: '@UserController.getCurrentUser.getUid',
+                                userId: '@currentUser.getUid',
                                 startDate: moment(event.start).format(),
                                 endDate: moment(event.end).format(),
                                 weekly: event.dow.length > 0
@@ -153,7 +208,7 @@
                         },
                         select: function (start, end, jsEvent, view) {
                             var newAvailability = {
-                                userId: '@UserController.getCurrentUser.getUid',
+                                userId: '@currentUser.getUid',
                                 startDate: moment(start).format(),
                                 endDate: moment(end).format(),
                                 weekly: false
