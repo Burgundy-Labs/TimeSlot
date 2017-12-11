@@ -55,7 +55,7 @@
                         }
                     });
                     $.ajax({
-                        url: '/availableSlots/' + coachId,
+                        url: '/availableSlotsForAppointments/' + coachId,
                         type: 'GET',
                         success: function (response) {
                             const events = [];

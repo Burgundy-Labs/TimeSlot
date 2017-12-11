@@ -35,8 +35,14 @@ public class AvailabilityController extends Controller {
 
     public Result availableSlots(String userId) {
         List<AvailabilityModel> availabilities = AvailabilityDB.getAvailabilitesForUser(userId);
+        return ok(Json.toJson(availabilities));
+    }
+
+    public Result availableSlotsForAppointments(String userId) {
+        List<AvailabilityModel> availabilities = AvailabilityDB.getAvailabilitesForUser(userId);
         List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsForUser("Coach", userId);
-        for (int j = 0; j < availabilities.size(); j++) {
+        int size = availabilities.size();
+        for (int j = 0; j < size; j++) {
             AvailabilityModel a = availabilities.get(j);
             Date startDate = new DateTime( a.getStartDate() ).toDate();
             Date endDate = new DateTime( a.getEndDate() ).toDate();
@@ -53,24 +59,23 @@ public class AvailabilityController extends Controller {
                             ));
                 }
                 availabilities.remove(a);
-                j += 2;
+                j += (diffInMinutes / 30);
+                size = availabilities.size();
             }
         }
-
-            for(AvailabilityModel av : availabilities) {
-                for(AppointmentsModel ap : appointments) {
-                    Date availabilityStart = new DateTime( av.getStartDate() ).toDate();
-                    Date availabilityEnd = new DateTime( av.getEndDate() ).toDate();
-                    Date appointmentStart = new DateTime( ap.getStartDate() ).toDate();
-                    Date appointmentEnd = new DateTime( ap.getEndDate() ).toDate();
-                    if( (appointmentStart.before(availabilityStart) || appointmentStart.equals(availabilityStart)) && (appointmentEnd.after(availabilityEnd) || appointmentEnd.equals(availabilityEnd)) ) {
-                        System.out.println("Test");
-                        availabilities.remove(av);
-                        break;
-                    }
-            }
-        }
-
+//        for(AvailabilityModel av : availabilities) {
+//            for(AppointmentsModel ap : appointments) {
+//                Date availabilityStart = new DateTime( av.getStartDate() ).toDate();
+//                Date availabilityEnd = new DateTime( av.getEndDate() ).toDate();
+//                Date appointmentStart = new DateTime( ap.getStartDate() ).toDate();
+//                Date appointmentEnd = new DateTime( ap.getEndDate() ).toDate();
+//                if( (appointmentStart.before(availabilityStart) || appointmentStart.equals(availabilityStart)) && (appointmentEnd.after(availabilityEnd) || appointmentEnd.equals(availabilityEnd)) ) {
+//                    System.out.println("Test");
+//                    availabilities.remove(av);
+//                    break;
+//                }
+//            }
+//        }
         return ok(Json.toJson(availabilities));
     }
 
