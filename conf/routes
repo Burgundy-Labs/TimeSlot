@@ -9,7 +9,7 @@ GET         /Account                                  controllers.AccountControl
 GET         /Settings                                 controllers.SettingsController.index
 GET         /Appointments                             controllers.AppointmentsController.index
 GET         /Coaches                                  controllers.UserController.index
-GET        /getCoachesByService/:serviceId            controllers.UserController.getCoachesByService(serviceId: String)
+GET         /getCoachesByService/:serviceId           controllers.UserController.getCoachesByService(serviceId: String)
 GET         /Center                                   controllers.CenterController.index
 GET         /Login                                    controllers.LoginController.index
 GET         /Logout                                   controllers.LoginController.logout
@@ -18,6 +18,7 @@ GET         /Terms                                    controllers.StaticControll
 GET         /Feedback                                 controllers.FeedbackController.feedback
 GET         /MakeAppointment                          controllers.AppointmentsController.makeAppointment
 GET         /availableSlots/:userId                   controllers.AvailabilityController.availableSlots(userId: String)
+GET         /availableSlotsForAppointments/:userId    controllers.AvailabilityController.availableSlotsForAppointments(userId: String)
 GET         /appointmentsForUser/:role/:userId        controllers.AppointmentsController.appointmentsForUser(role: String, userId: String)
 
 # POST requests
