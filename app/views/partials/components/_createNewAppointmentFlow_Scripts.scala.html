@@ -94,10 +94,10 @@
                     }
                     const duration = moment.duration(end.diff(start)).asHours();
                     // TODO pull duration from DB - settings
-                    if (duration > 1) {
+                    if (duration > .5) {
                         $.alert({
                             title: "Hold on there",
-                            content: "An appointment slot cannot be more than 1 hour.",
+                            content: "An appointment slot cannot be more than 30 minutes.",
                             buttons: {
                                 ok: {
                                     text: "Okay"
