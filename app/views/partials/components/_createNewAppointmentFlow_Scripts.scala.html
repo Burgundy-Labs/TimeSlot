@@ -193,8 +193,8 @@
                                 endDate: selectedEvents[0].end
                             };
                             const form = {
-                                appointmentType: $('#appointmentType').val(),
-                                serviceType: $('#serviceType').val(),
+                                appointmentType: $('#appointmentType option:selected').text(),
+                                serviceType: $('#serviceType option:selected').text(),
                                 coachId: $('#coachId').val(),
                                 studentId: firebase.auth().currentUser.uid,
                                 startDate: appointment.startDate,
