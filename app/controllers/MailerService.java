@@ -10,10 +10,10 @@ import java.text.DateFormat;
 
 public class MailerService {
 
-    public static void sendEmail(String subject, String from, String toName, String toEmail, String bodyHtml) {
+    public static void sendEmail(String subject, String fromName, String fromEmail, String toName, String toEmail, String bodyHtml) {
         Email email = new Email()
                 .setSubject(subject)
-                .setFrom("Project Burgundy <contact.project.burgundy@gmail.com>")
+                .setFrom(fromName +"<"+fromEmail+">")
                 .addTo(toName + "<"+toEmail+">")
                 .setBodyHtml(bodyHtml);
         Play.current().injector().instanceOf(MailerClient.class).send(email);

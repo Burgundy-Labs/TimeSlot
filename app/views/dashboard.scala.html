@@ -97,10 +97,14 @@
 
                 $('#appointmentCalendar').fullCalendar({
                     header: false,
-                    defaultView: 'basicWeek',
+                    defaultView: 'agendaWeek',
                     height: 'auto',
                     editable: false,
                     weekends: false,
+                    minTime: "10:00",
+                    maxTime: "21:00",
+                    height: "auto",
+                    allDaySlot: false,
                     selectable: false,
                     events: function (start, end, timezone, callback) {
                         const csrfToken = $('input[name="csrfToken"]').attr('value');
@@ -115,22 +119,16 @@
                             success: function (response) {
                                 const events = [];
                                 $(response).each(function () {
+                                    var userID = '@UserController.getCurrentUser.getUid';
+                                    var role = '@UserController.getCurrentUser.getRole';
+                                    var title = "";
+                                    if ( userID === $(this).attr("studentId") ) { if ( role !== "Student" ) { title = $(this).attr("studentName") } else {title = $(this).attr("coachName")}}else{title = $(this).attr("studentName")}
                                     const event = {
                                         id: $(this).attr('availabilityId'),
-                                        title: @if(UserController.getCurrentUser.getRole.equals("Student")){$(this).attr("coachName"),
-                                        }else{$(
-                                        this
-                                ).
-                                    attr("coachName"), }
-                                            start
-                                :
-                                    moment($(this).attr('startDate')).format(),
-                                            end
-                                :
-                                    moment($(this).attr('endDate')).format(),
-                                            dow
-                                :
-                                    [],
+                                        title: title,
+                                        start: moment($(this).attr('startDate')).format(),
+                                        end: moment($(this).attr('endDate')).format(),
+                                        dow:[],
                                 };
                                     events.push(event);
                                 });

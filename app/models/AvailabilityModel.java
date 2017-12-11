@@ -1,15 +1,17 @@
 package models;
 
+import java.util.Date;
+
 public class AvailabilityModel {
     private String availabilityId;
     private String userid;
-    private String startDate;
-    private String endDate;
+    private Date startDate;
+    private Date endDate;
     private Boolean weekly;
 
     public AvailabilityModel(){}
 
-    public AvailabilityModel(String availabilityId, String userid, String startDate, String endDate, Boolean weekly) {
+    public AvailabilityModel(String availabilityId, String userid, Date startDate, Date endDate, Boolean weekly) {
         this.availabilityId = availabilityId;
         this.userid = userid;
         this.startDate = startDate;
@@ -25,19 +27,19 @@ public class AvailabilityModel {
         this.userid = userid;
     }
 
-    public String getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(String startDate) {
+    public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
-    public String getEndDate() {
+    public Date getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(String endDate) {
+    public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
 

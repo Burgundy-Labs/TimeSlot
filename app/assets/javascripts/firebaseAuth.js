@@ -1,12 +1,12 @@
 initApp = function () {
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
+            startTimeout();
             // User is signed in.
             /* Make sure they're in the application - as defined by sidebar being displayed */
+
+            
             if ($('.sidebar').length) {
-                if (window.location.pathname === "/Login" || window.location.pathname === "/") {
-                    window.location.href = '/Dashboard';
-                }
                 $('[data-original-title="Account"]').html('<img src="' + firebase.auth().currentUser.photoURL + '" class="userAvatar"/>');
             }
             $('#sign-out').show();
@@ -18,6 +18,7 @@ initApp = function () {
                 case "/Login":
                 case "/Terms":
                 case "/Help":
+                case "/Feedback":
                     break;
                 default:
                     window.location.href = '/Login';
