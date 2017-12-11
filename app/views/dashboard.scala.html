@@ -126,8 +126,8 @@
                                     const event = {
                                         id: $(this).attr('availabilityId'),
                                         title: title,
-                                        start: moment($(this).attr('startDate')).format(),
-                                        end: moment($(this).attr('endDate')).format(),
+                                        start: moment($(this).attr('startDate')),
+                                        end: moment($(this).attr('endDate')),
                                         dow:[],
                                 };
                                     events.push(event);
