@@ -258,7 +258,6 @@ public class AppointmentsDB {
         appointment.setCoachEmail(coach.getEmail());
         appointment.setStudentName(student.getDisplayName());
         appointment.setStudentEmail(student.getEmail());
-        result.isDone();
         return appointment;
     }
 
