@@ -12,7 +12,9 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 import javax.xml.bind.DatatypeConverter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -58,21 +60,22 @@ public class AvailabilityController extends Controller {
                             ));
                 }
                 availabilities.remove(a);
+                j--;
             }
         }
-//        for(AvailabilityModel av : availabilities) {
-//            for(AppointmentsModel ap : appointments) {
-//                Date availabilityStart = new DateTime( av.getStartDate() ).toDate();
-//                Date availabilityEnd = new DateTime( av.getEndDate() ).toDate();
-//                Date appointmentStart = new DateTime( ap.getStartDate() ).toDate();
-//                Date appointmentEnd = new DateTime( ap.getEndDate() ).toDate();
-//                if( (appointmentStart.before(availabilityStart) || appointmentStart.equals(availabilityStart)) && (appointmentEnd.after(availabilityEnd) || appointmentEnd.equals(availabilityEnd)) ) {
-//                    System.out.println("Test");
-//                    availabilities.remove(av);
-//                    break;
-//                }
-//            }
-//        }
+        ArrayList<AvailabilityModel> toRemove = new ArrayList<AvailabilityModel>();
+        for(AvailabilityModel av : availabilities) {
+            for(AppointmentsModel ap : appointments) {
+                Date availabilityStart = new DateTime( av.getStartDate() ).toDate();
+                Date availabilityEnd = new DateTime( av.getEndDate() ).toDate();
+                Date appointmentStart = new DateTime( ap.getStartDate() ).toDate();
+                Date appointmentEnd = new DateTime( ap.getEndDate() ).toDate();
+                if( (appointmentStart.before(availabilityStart) || appointmentStart.equals(availabilityStart)) && (appointmentEnd.after(availabilityEnd) || appointmentEnd.equals(availabilityEnd)) ) {
+                    toRemove.add(av);
+                }
+            }
+        }
+        availabilities.removeAll(toRemove);
         return ok(Json.toJson(availabilities));
     }
 
