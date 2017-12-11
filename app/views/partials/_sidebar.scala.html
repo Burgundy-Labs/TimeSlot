@@ -1,5 +1,5 @@
 @(currentPage: String)
-    <div class="sidebar">
+    <div class="sidebar primary-background">
             <nav class="sidebar-navigation">
                 @for(menuLink <- Application.menuLinks) {
                     <div @if(currentPage.equals(menuLink.menuText)) {

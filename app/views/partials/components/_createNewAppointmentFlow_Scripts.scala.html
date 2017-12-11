@@ -1,8 +1,37 @@
 <script type="text/javascript">
+    const csrfToken = $('input[name="csrfToken"]').attr('value');
 
     let selectedEvents = [];
     $(document).ready(function () {
         createMakeAppointmentCalendar();
+
+        $(document).on("change", '#serviceType', function(e) {
+            const service = $(this).val();
+            $.ajaxSetup({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Csrf-Token', csrfToken);
+                }
+            });
+            $.ajax({
+                url: '/getCoachesByService/' + service,
+                type: 'GET',
+                success: function(json) {
+                    const coachDropdown = $("#coachId");
+                    coachDropdown.empty(); // remove old options
+                    let count = 0;
+                    $.each(json, function(key, value) {
+                        coachDropdown.append("<option value='"+value.uid+"'>" + value.displayName + "</option>");
+                        count++;
+                    });
+                    if(count === 0) {
+                        coachDropdown.prepend("<option selected value disabled hidden'>No Coaches Found</option>");
+                    } else {
+                        coachDropdown.prepend("<option value='any'>Any Coach</option>");
+                        coachDropdown.prepend("<option selected value disabled hidden'>Select A Coach</option>");
+                    }
+                }
+            });
+        });
     });
 
     function createMakeAppointmentCalendar() {
@@ -19,14 +48,14 @@
                 minTime: "10:00",
                 maxTime: "21:00",
                 events: function (start, end, timezone, callback) {
-                    const csrfToken = $('input[name="csrfToken"]').attr('value');
+                    const coachId = $("#coachId :selected").val();
                     $.ajaxSetup({
                         beforeSend: function (xhr) {
                             xhr.setRequestHeader('Csrf-Token', csrfToken);
                         }
                     });
                     $.ajax({
-                        url: '/availableSlots/' + '@UserController.getCurrentUser.getUid',
+                        url: '/availableSlotsForAppointments/' + coachId,
                         type: 'GET',
                         success: function (response) {
                             const events = [];
@@ -34,18 +63,12 @@
                                 const event = {
                                     id: $(this).attr('availabilityId'),
                                     title: "One-Time",
-                                    start: $(this).attr('startDate'),
-                                    end: $(this).attr('endDate'),
-                                    dow: [],
+                                    start: moment($(this).attr('startDate')).format("HH:mm"),
+                                    end: moment($(this).attr('endDate')).format("HH:mm"),
+                                    dow: [moment($(this).attr('startDate')).isoWeekday()],
                                     rendering: 'background'
                                 };
                                 visibleEvents.push($.extend({}, event));
-                                if ($(this).attr("weekly") === true) {
-                                    event.title = "Weekly";
-                                    event.dow = [moment($(this).attr('startDate')).isoWeekday()];
-                                    event.start = moment($(this).attr('startDate')).format("HH:mm");
-                                    event.end = moment($(this).attr('endDate')).format("HH:mm");
-                                }
                                 events.push(event);
                             });
                             callback(events);
@@ -56,7 +79,21 @@
                     eventElement.find("div.fc-content").prepend("<button onclick='removeAppointment(\"" + event.id + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
                 },
                 select: function (start, end, jsEvent, view) {
+                    window['moment-range'].extendMoment(moment);
+                    const cal = $("#calendar");
+                    const events = cal.fullCalendar('clientEvents');
+                    let selectedEvent = null;
+                    for (let i in events) {
+                        var range = moment().range(events[i].start, events[i].end);
+                        if (range.contains(start) && range.contains(end)) {
+                            selectedEvent = events[i];
+                        }
+                    }
+                    if(selectedEvent === null) {
+                        return false;
+                    }
                     const duration = moment.duration(end.diff(start)).asHours();
+                    // TODO pull duration from DB - settings
                     if (duration > 1) {
                         $.alert({
                             title: "Hold on there",
@@ -166,11 +203,12 @@
                                 present: false
                             };
                             let coachName = $('#coachId option:selected').text();
+                            let appointmentType = $('#appointmentType option:selected').text();
                             $.confirm({
                                 boxWidth: "50%",
                                 title: 'New Appointment',
                                 content: "<div class='appointmentDetails'>Your appointment details: <br/>" +
-                                "<b>Appointment Type:</b> " + form.appointmentType + " <br/>" +
+                                "<b>Appointment Type:</b> " + appointmentType  + " <br/>" +
                                 "<b>Coach:</b> " + coachName + " <br/>" +
                                 "<b>Date:</b> " + moment(appointment.startDate).format('dddd, MMMM Do, YYYY h:mm A') + " -" + moment(appointment.endDate).format('h:mm A') + "<br/>" +
                                 "</div>",
@@ -182,7 +220,6 @@
                                         keys: ['enter', 'shift'],
                                         action: function () {
                                             /* Create appointment Here*/
-                                            const csrfToken = $('input[name="csrfToken"]').attr('value');
                                             $.ajaxSetup({
                                                 beforeSend: function (xhr) {
                                                     xhr.setRequestHeader('Csrf-Token', csrfToken);

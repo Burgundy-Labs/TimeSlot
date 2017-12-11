@@ -1,6 +1,6 @@
 var idleTime = 0;
 
-$(document).ready(function () {
+function startTimeout() {
     if(localStorage.getItem("timeoutDisabled") === null){
         localStorage.setItem("timeoutDisabled", false);
     }
@@ -15,7 +15,7 @@ $(document).ready(function () {
     $(this).keypress(function (e) {
         idleTime = 0;
     });
-});
+}
 
 function timerIncrement() {
     idleTime = idleTime + 1;

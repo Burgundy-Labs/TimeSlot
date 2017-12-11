@@ -1,191 +1,296 @@
 @()
-
+@currentUser = @{UserController.getCurrentUser}
 @main("Account", "Manage Account") {
-    @if(!UserController.getCurrentUser.getRole.equals("Student")){
-    @helper.CSRF.formField
-    <h1>Availability Schedule</h1>
-    <div class="col-md-12">
-        <div id='availabilitySchedule'></div>
-    </div>
-    <script>
-            $(document).ready(function () {
-                $('#availabilitySchedule').fullCalendar({
-                    height: 'auto',
-                    allDaySlot: false,
-                    events: function (start, end, timezone, callback) {
-                        var csrfToken = $('input[name="csrfToken"]').attr('value');
-                        $.ajaxSetup({
-                            beforeSend: function (xhr) {
-                                xhr.setRequestHeader('Csrf-Token', csrfToken);
+    @if(!currentUser.getRole.equals("Student")) {
+        @helper.CSRF.formField
+        <h1>Availability Schedule</h1>
+        <div class="row">
+            <div class="col-md-12">
+                <div id='availabilitySchedule'></div>
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Assigned Services</h1>
+                <br/>
+                    <ul class="list-group col-md-3">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <select id="selectedService" title="Services" class="col-md-9 form-control">
+                                <option value="" selected default hidden>
+                                Select A Service
+                                </option>
+                            @for(service <- AccountController.getAvailableServices(currentUser.getUid)) {
+                                <option value="@service.getServiceId">
+                                    @service.getService
+                                </option>
                             }
-                        });
-                        $.ajax({
-                            url: '/availableSlots/' + '@UserController.getCurrentUser.getUid',
-                            type: 'GET',
-                            success: function (response) {
-                                var events = [];
-                                $(response).each(function () {
-                                    var event = {
-                                        id: $(this).attr('availabilityId'),
-                                        title: "One-Time",
-                                        start: $(this).attr('startDate'),
-                                        end: $(this).attr('endDate'),
-                                        dow: []
-                                    };
-                                    if ($(this).attr("weekly") === true) {
-                                        event.title = "Weekly";
-                                        event.dow = [moment($(this).attr('startDate')).isoWeekday()];
-                                        event.start = moment($(this).attr('startDate')).format("HH:mm");
-                                        event.end = moment($(this).attr('endDate')).format("HH:mm");
-                                    }
-                                    events.push(event);
-                                });
-                                callback(events);
-                            }
-                        })
-                    },
-                    eventOverlap: false,
-                    selectOverlap: false,
-                    disableDragging: true,
-                    eventRender: function (event, eventElement) {
-                        eventElement.find("div.fc-content").prepend("<button onclick='removeAvailability(\"" + event.id + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
-                    },
-                    /* TODO pull from open / close hours of operation in settings page */
-                    minTime: "10:00",
-                    maxTime: "21:00",
-                    weekends: false,
-                    selectable: true,
-                    defaultDate: moment().startOf('isoWeek'),
-                    defaultView: 'agendaWeek',
-                    navLinks: true, // can click day/week names to navigate views
-                    eventLimit: true, // allow "more" link when too many events,
-                    eventDrop: function (event, delta, revertFunc) {
-                        var changedEvent = {
-                            availabilityId: event.id,
-                            userId: '@UserController.getCurrentUser.getUid',
-                            startDate: moment(event.start).format(),
-                            endDate: moment(event.end).format(),
-                            weekly: event.dow.length > 0
-                        };
-                        createAvailability(changedEvent);
-                    },
-                    eventResize: function (event, delta, revertFunc) {
-                        var changedEvent = {
-                            availabilityId: event.id,
-                            userId: '@UserController.getCurrentUser.getUid',
-                            startDate: moment(event.start).format(),
-                            endDate: moment(event.end).format(),
-                            weekly: event.dow.length > 0
-                        };
-                        createAvailability(changedEvent);
-                    },
-                    select: function (start, end, jsEvent, view) {
-                        var newAvailability = {
-                            userId: '@UserController.getCurrentUser.getUid',
-                            startDate: moment(start).format(),
-                            endDate: moment(end).format(),
-                            weekly: false
-                        };
-                        $.confirm({
-                            title: 'Availability',
-                            content: 'Is this available slot weekly?',
-                            theme: 'modern',
-                            buttons: {
-                                yes: {
-                                    text: 'Yes, weekly',
-                                    btnClass: 'btn-primary',
-                                    keys: ['enter', 'shift'],
-                                    action: function () {
-                                        newAvailability.weekly = true;
-                                        createAvailability(newAvailability);
-                                    }
-                                },
-                                no: {
-                                    text: 'No, one-time',
-                                    btnClass: 'btn-primary',
-                                    action: function () {
-                                        createAvailability(newAvailability);
-                                    }
-                                },
-                                cancel: {
-                                    text: 'Cancel Creating Availability',
-                                    action: function () {
-                                    }
-                                }
-                            }
-                        });
+                        </select>
+                        <button class="btn btn-primary btn-success" onclick=createService()><i class="material-icons md-18">
+                            add</i></button>
+                        </li>
+                        @for( service <- AccountController.getServicesForUser(currentUser.getUid)) {
+                        <li class="list-group-item d-flex justify-content-between align-items-center @service.getServiceId">
+                            <h6 class="mb-1">@service.getService</h6>
+                            <button class="btn btn-primary btn-danger" onclick="removeService('@service.getServiceId')">Remove</button>
+                        </li>
                     }
-                })
-            });
+                    </ul>
+                </div>
+        </div>
+        <script>
 
-            function removeAvailability(id) {
+            function removeService(serviceId) {
+
                 $.confirm({
-                    title: 'Remove Availability?',
-                    content: 'Do you want to remove this availability slot?',
-                    theme: 'modern',
+                    title: 'Remove Service',
+                    content: 'Are you sure you want to remove this service?',
                     buttons: {
-                        yes: {
-                            text: 'Remove',
-                            btnClass: 'btn-primary',
-                            keys: ['enter', 'shift'],
+                        confirm: {
+                            text: 'Yes, Remove',
+                            btnClass: "btn btn-primary",
+                            keys: ['enter'],
                             action: function () {
-                                var csrfToken = $('input[name="csrfToken"]').attr('value');
+                                const form = {
+                                    userId: '@currentUser.getUid',
+                                    serviceId: serviceId
+                                };
+                                const csrfToken = $('input[name="csrfToken"]').attr('value');
                                 $.ajaxSetup({
                                     beforeSend: function (xhr) {
                                         xhr.setRequestHeader('Csrf-Token', csrfToken);
                                     }
                                 });
                                 $.ajax({
-                                    url: '/removeAvailability',
+                                    url: '/removeServiceFromCoach',
                                     type: 'POST',
-                                    data: JSON.stringify({availabilityId: id}),
+                                    data: JSON.stringify(form),
                                     contentType: 'application/json',
                                     success: function () {
-                                        setTimeout(function () {
-                                            $('#availabilitySchedule').fullCalendar('rerenderEvents');
-                                            $('#availabilitySchedule').fullCalendar('refetchEvents');
-                                            createAlert("success", "Availability Removed!");
-                                        }, 50);
+                                        createAlert("success", "Service Removed!");
+                                        location.reload();
                                     },
-                                    error: function (err) {
-                                        console.log(err);
+                                    error: function () {
+                                        createAlert('danger', 'Removing service failed.');
                                     }
                                 });
                             }
                         },
                         cancel: {
-                            text: 'Cancel',
-                            action: function () {
-                            }
+                            text: 'Cancel'
                         }
                     }
                 });
             }
-
-            function createAvailability(newAvailability) {
-                var csrfToken = $('input[name="csrfToken"]').attr('value');
-                $.ajaxSetup({
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader('Csrf-Token', csrfToken);
-                    }
-                });
-                $.ajax({
-                    url: '/createAvailability',
-                    type: 'POST',
-                    data: JSON.stringify(newAvailability),
-                    contentType: 'application/json',
-                    success: function () {
-                        setTimeout(function () {
-                            $('#availabilitySchedule').fullCalendar('rerenderEvents');
-                            $('#availabilitySchedule').fullCalendar('refetchEvents');
-                        }, 50);
-                    },
-                    error: function (err) {
-                        console.log(err);
-                    }
-                });
+            function createService() {
+                let selectedService = $('#selectedService :selected');
+                let selectedServiceText = selectedService.text();
+                let selectedServiceId = selectedService.val();
+                if(selectedServiceId === "" || selectedServiceId === null) {
+                    $.alert({
+                        title: "Select Service",
+                        content: "Please select a service to add."
+                    })
+                } else {
+                    $.confirm({
+                        title: 'Add Service',
+                        content: 'Do you want add ' + selectedServiceText + ' as a service you provide?',
+                        buttons: {
+                            confirm: {
+                                text: 'Confirm',
+                                btnClass: "btn btn-primary",
+                                keys: ['enter'],
+                                action: function () {
+                                    const form = {
+                                        userId: '@currentUser.getUid',
+                                        serviceName: selectedServiceText,
+                                        serviceId: selectedServiceId
+                                    };
+                                    const csrfToken = $('input[name="csrfToken"]').attr('value');
+                                    $.ajaxSetup({
+                                        beforeSend: function (xhr) {
+                                            xhr.setRequestHeader('Csrf-Token', csrfToken);
+                                        }
+                                    });
+                                    $.ajax({
+                                        url: '/addServiceToCoach',
+                                        type: 'POST',
+                                        data: JSON.stringify(form),
+                                        contentType: 'application/json',
+                                        success: function () {
+                                            createAlert("success", "Service Added!");
+                                            location.reload();
+                                        },
+                                        error: function () {
+                                            createAlert('danger', 'Adding service failed.');
+                                        }
+                                    });
+                                }
+                            },
+                            cancel: {
+                                text: 'Cancel'
+                            }
+                        }
+                    });
+                }
             }
-    </script>
+                $(document).ready(function () {
+                    $('#availabilitySchedule').fullCalendar({
+                        height: 'auto',
+                        allDaySlot: false,
+                        events: function (start, end, timezone, callback) {
+                            var csrfToken = $('input[name="csrfToken"]').attr('value');
+                            $.ajaxSetup({
+                                beforeSend: function (xhr) {
+                                    xhr.setRequestHeader('Csrf-Token', csrfToken);
+                                }
+                            });
+                            $.ajax({
+                                url: '/availableSlots/' + '@currentUser.getUid',
+                                type: 'GET',
+                                success: function (response) {
+                                    var events = [];
+                                    $(response).each(function () {
+                                        var event = {
+                                            id: $(this).attr('availabilityId'),
+                                            title: "One-Time",
+                                            start: moment($(this).attr('startDate')),
+                                            end: moment($(this).attr('endDate')),
+                                            dow: []
+                                        };
+                                        if ($(this).attr("weekly") === true) {
+                                            event.title = "Weekly";
+                                            event.dow = [moment($(this).attr('startDate')).isoWeekday()];
+                                            event.start = moment($(this).attr('startDate')).format("HH:mm");
+                                            event.end = moment($(this).attr('endDate')).format("HH:mm");
+                                        }
+                                        events.push(event);
+                                    });
+                                    callback(events);
+                                }
+                            })
+                        },
+                        eventOverlap: false,
+                        selectOverlap: false,
+                        disableDragging: true,
+                        eventRender: function (event, eventElement) {
+                            eventElement.find("div.fc-content").prepend("<button onclick='removeAvailability(\"" + event.id + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
+                        },
+                        /* TODO pull from open / close hours of operation in settings page */
+                        minTime: "10:00",
+                        maxTime: "21:00",
+                        weekends: false,
+                        selectable: true,
+                        defaultView: 'agendaWeek',
+                        navLinks: true,
+                        eventLimit: false,
+                        select: function (start, end, jsEvent, view) {
+                            var newAvailability = {
+                                userId: '@currentUser.getUid',
+                                startDate: moment(start).format(),
+                                endDate: moment(end).format(),
+                                weekly: false
+                            };
+                            $.confirm({
+                                title: 'Availability',
+                                content: 'Is this available slot weekly?',
+                                theme: 'modern',
+                                buttons: {
+                                    yes: {
+                                        text: 'Yes, weekly',
+                                        btnClass: 'btn-primary',
+                                        keys: ['enter', 'shift'],
+                                        action: function () {
+                                            newAvailability.weekly = true;
+                                            createAvailability(newAvailability);
+                                        }
+                                    },
+                                    no: {
+                                        text: 'No, one-time',
+                                        btnClass: 'btn-primary',
+                                        action: function () {
+                                            createAvailability(newAvailability);
+                                        }
+                                    },
+                                    cancel: {
+                                        text: 'Cancel Creating Availability',
+                                        action: function () {
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    })
+                });
+
+                function removeAvailability(id) {
+                    $.confirm({
+                        title: 'Remove Availability?',
+                        content: 'Do you want to remove this availability slot?',
+                        theme: 'modern',
+                        buttons: {
+                            yes: {
+                                text: 'Remove',
+                                btnClass: 'btn-primary',
+                                keys: ['enter', 'shift'],
+                                action: function () {
+                                    var csrfToken = $('input[name="csrfToken"]').attr('value');
+                                    $.ajaxSetup({
+                                        beforeSend: function (xhr) {
+                                            xhr.setRequestHeader('Csrf-Token', csrfToken);
+                                        }
+                                    });
+                                    $.ajax({
+                                        url: '/removeAvailability',
+                                        type: 'POST',
+                                        data: JSON.stringify({availabilityId: id}),
+                                        contentType: 'application/json',
+                                        success: function () {
+                                            setTimeout(function () {
+                                                $('#availabilitySchedule').fullCalendar('rerenderEvents');
+                                                $('#availabilitySchedule').fullCalendar('refetchEvents');
+                                                createAlert("success", "Availability Removed!");
+                                            }, 50);
+                                        },
+                                        error: function (err) {
+                                            console.log(err);
+                                        }
+                                    });
+                                }
+                            },
+                            cancel: {
+                                text: 'Cancel',
+                                action: function () {
+                                }
+                            }
+                        }
+                    });
+                }
+
+                function createAvailability(newAvailability) {
+                    var csrfToken = $('input[name="csrfToken"]').attr('value');
+                    $.ajaxSetup({
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader('Csrf-Token', csrfToken);
+                        }
+                    });
+                    $.ajax({
+                        url: '/createAvailability',
+                        type: 'POST',
+                        data: JSON.stringify(newAvailability),
+                        contentType: 'application/json',
+                        success: function () {
+                            setTimeout(function () {
+                                $('#availabilitySchedule').fullCalendar('rerenderEvents');
+                                $('#availabilitySchedule').fullCalendar('refetchEvents');
+                            }, 250);
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    });
+                }
+        </script>
 
     }
 }
