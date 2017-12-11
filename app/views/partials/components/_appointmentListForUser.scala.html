@@ -38,13 +38,17 @@
             <td class="appointmentNotes">@appointment.getAppointmentNotes</td>
             <td>
                 <span class="mdl-list__item-secondary-content">
-                    @if(appointment.getCoachNotes.equals("")){
-                        <button id="notesFor-@appointment.getAppointmentId" class="no-button" onclick="updateCoachNotes('@appointment.getAppointmentId','@appointment.getCoachNotes')"><span class="action-black" id="appointmentNotes">@partials.components._tooltipIconLink("javascript:void(0)", "assignment", "bottom", "Notes", 32)</span></button>
+                    @if(currentUser.getRole.equals("Student")){
+                        <button class="no-button"> <span class="action-primary">@partials.components._tooltipIconLink("mailto:" + appointment.getCoachEmail, "email", "bottom", "Email Coach", 32)</span></button>
                     } else {
-                        <button id="notesFor-@appointment.getAppointmentId" class="no-button" onclick="updateCoachNotes('@appointment.getAppointmentId','@appointment.getCoachNotes')"><span class="action-primary" id="appointmentNotes">@partials.components._tooltipIconLink("javascript:void(0)", "assignment", "bottom", "Notes", 32)</span></button>
+                        <button class="no-button"> <span class="action-primary">@partials.components._tooltipIconLink("mailto:" + appointment.getStudentEmail, "email", "bottom", "Email Student", 32)</span></button>
                     }
-                    <span class="action-secondary">@partials.components._tooltipIconLink("javascript:void(0)", "insert_invitation", "bottom", "Reschedule", 32)</span>
-                    <button type="button" class="no-button" onclick="cancelAppointment('@appointment.getAppointmentId')"><span class="action-delete">@partials.components._tooltipIconLink("javascript:void(0)", "close", "bottom", "Cancel", 32)</span>
+                    @if(appointment.getCoachNotes.equals("")){
+                        <button id="notesFor-@appointment.getAppointmentId" class="no-button" onclick="updateCoachNotes('@appointment.getAppointmentId','@appointment.getCoachNotes')"><span class="action-black" id="appointmentNotes">@partials.components._tooltipIconLink("javascript:void(0)", "assignment", "bottom", "Session Notes", 32)</span></button>
+                    } else {
+                        <button id="notesFor-@appointment.getAppointmentId" class="no-button" onclick="updateCoachNotes('@appointment.getAppointmentId','@appointment.getCoachNotes')"><span class="action-secondary" id="appointmentNotes">@partials.components._tooltipIconLink("javascript:void(0)", "assignment", "bottom", "Session Notes", 32)</span></button>
+                    }
+                    <button class="no-button" onclick="cancelAppointment('@appointment.getAppointmentId')"><span class="action-delete">@partials.components._tooltipIconLink("javascript:void(0)", "close", "bottom", "Cancel", 32)</span>
                     </button>
                 </span>
             </td>
@@ -57,7 +61,7 @@
     function updateCoachNotes(appointmentId, coachNotes){
         $.confirm({
             closeIcon: true,
-            title: 'Coach Notes',
+            title: 'Session Notes',
             content: '' +
             '<form action="" class="coachNoteForm">' +
             '<div class="form-group">' +
@@ -83,6 +87,17 @@
                             data: JSON.stringify({appointmentId: appointmentId, coachNotes: coachNotes }),
                             contentType: 'application/json',
                             success: function () {
+                                $('#notesFor-'+appointmentId).attr("onclick",'updateCoachNotes("'+appointmentId+'", "'+coachNotes +'")');
+                                $().val(coachNotes);
+                                let spanIcon = $('#notesFor-'+appointmentId+' span');
+                                if(coachNotes === '' || coachNotes === null) {
+                                    spanIcon.removeClass('action-secondary');
+                                    spanIcon.addClass('action-black');
+                                } else {
+                                    spanIcon.removeClass('action-black');
+                                    spanIcon.addClass('action-secondary');
+
+                                }
                             },
                             error: function (err) {
                                 createAlert("danger","There was an error updating coach notes");
@@ -99,6 +114,10 @@
             title: 'Cancel Appointment',
             content: 'Are you sure you want to cancel this appointment?',
             buttons: {
+                cancel: {
+                    text: "Nevermind",
+                    btClass: "btn"
+                },
                 updateNotes: {
                     text: 'Cancel Appointment',
                     btnClass: 'btn-primary',
@@ -124,10 +143,6 @@
                         });
                     }
                 },
-                cancel: {
-                    text: "Cancel",
-                    btClass: "btn"
-                }
             },
         });
     }
