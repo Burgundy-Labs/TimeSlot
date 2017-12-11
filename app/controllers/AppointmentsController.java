@@ -45,7 +45,8 @@ public class AppointmentsController extends Controller {
         appointment.setServiceType(json.findPath("serviceType").textValue());
         /* Check if user is in DB */
         appointment = AppointmentsDB.addAppointment(appointment);
-        MailerService.sendAppointmentConfirmation(appointment);
+        AppointmentsModel finalAppointment = appointment;
+        new Thread(() -> MailerService.sendAppointmentConfirmation(finalAppointment)).start();
         return ok();
     }
 
