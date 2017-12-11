@@ -154,8 +154,8 @@
                                         var event = {
                                             id: $(this).attr('availabilityId'),
                                             title: "One-Time",
-                                            start: $(this).attr('startDate'),
-                                            end: $(this).attr('endDate'),
+                                            start: moment($(this).attr('startDate')),
+                                            end: moment($(this).attr('endDate')),
                                             dow: []
                                         };
                                         if ($(this).attr("weekly") === true) {
@@ -182,28 +182,8 @@
                         weekends: false,
                         selectable: true,
                         defaultView: 'agendaWeek',
-                        navLinks: true, // can click day/week names to navigate views
-                        eventLimit: true, // allow "more" link when too many events,
-                        eventDrop: function (event, delta, revertFunc) {
-                            var changedEvent = {
-                                availabilityId: event.id,
-                                userId: '@currentUser.getUid',
-                                startDate: moment(event.start).format(),
-                                endDate: moment(event.end).format(),
-                                weekly: event.dow.length > 0
-                            };
-                            createAvailability(changedEvent);
-                        },
-                        eventResize: function (event, delta, revertFunc) {
-                            var changedEvent = {
-                                availabilityId: event.id,
-                                userId: '@currentUser.getUid',
-                                startDate: moment(event.start).format(),
-                                endDate: moment(event.end).format(),
-                                weekly: event.dow.length > 0
-                            };
-                            createAvailability(changedEvent);
-                        },
+                        navLinks: true,
+                        eventLimit: false,
                         select: function (start, end, jsEvent, view) {
                             var newAvailability = {
                                 userId: '@currentUser.getUid',
@@ -303,7 +283,7 @@
                             setTimeout(function () {
                                 $('#availabilitySchedule').fullCalendar('rerenderEvents');
                                 $('#availabilitySchedule').fullCalendar('refetchEvents');
-                            }, 50);
+                            }, 250);
                         },
                         error: function (err) {
                             console.log(err);
