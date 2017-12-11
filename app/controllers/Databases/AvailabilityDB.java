@@ -34,8 +34,8 @@ public class AvailabilityDB {
             availabilityTimes.add(new AvailabilityModel(
                     document.getId(),
                     document.getString("userId"),
-                    document.getString("startDate"),
-                    document.getString("endDate"),
+                    document.getDate("startDate"),
+                    document.getDate("endDate"),
                     document.getBoolean("weekly")));
         }
         return availabilityTimes;
@@ -56,8 +56,8 @@ public class AvailabilityDB {
             availabilityTimes.add(new AvailabilityModel(
                     document.getId(),
                     document.getString("userId"),
-                    document.getString("startDate"),
-                    document.getString("endDate"),
+                    document.getDate("startDate"),
+                    document.getDate("endDate"),
                     document.getBoolean("weekly")));
         }
         return availabilityTimes;
