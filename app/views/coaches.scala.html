@@ -46,9 +46,9 @@
                         <td>
                             <span class="mdl-list__item-secondary-content">
                                 <span class="action-primary">@partials.components._tooltipIconLink("mailto:" + user.getEmail, "email", "bottom", "Email User", 32)</span>
-                                <span class="action-secondary">@partials.components._tooltipIconLink("", "insert_invitation", "bottom", "Schedule Appointment", 32)</span>
+                                <span class="action-secondary">@partials.components._tooltipIconLink("javascript:void(0)", "insert_invitation", "bottom", "Schedule Appointment", 32)</span>
                                 @if(currentUser.getRole.equals("Admin")) {
-                                    <span class="action-delete"><span id="@user.getUid" onclick="deleteUser(this)">@partials.components._tooltipIconLink("", "close", "bottom", "Remove User", 32)</span></span>
+                                    <span class="action-delete"><span id="@user.getUid" onclick="deleteUser(this)">@partials.components._tooltipIconLink("javascript:void(0)", "close", "bottom", "Remove User", 32)</span></span>
                                 }
                             </span>
                         </td>
@@ -109,28 +109,43 @@
             });
 
             function deleteUser(user) {
-                if (confirm("Are you sure you want to remove this user?")) {
-                    var userId = $(user).attr('id');
-                    var csrfToken = $('input[name="csrfToken"]').attr('value');
-                    $.ajaxSetup({
-                        beforeSend: function (xhr) {
-                            xhr.setRequestHeader('Csrf-Token', csrfToken);
-                        }
-                    });
-                    $.ajax({
-                        url: '/deleteUser',
-                        type: 'POST',
-                        data: JSON.stringify({userId: userId}),
-                        contentType: 'application/json',
-                        success: function () {
-                            location.reload();
-                            /*  TODO convert window reload to datasource reload */
+                $.confirm({
+                    title: 'Delete User',
+                    content: 'Are you sure you want to delete this user?',
+                    type: 'red',
+                    buttons: {
+                        cancel: {
+                            text: "Cancel",
+                            btClass: "btn"
                         },
-                        error: function (err) {
-                            console.log(err);
-                        }
-                    });
-                }
+                        updateNotes: {
+                            text: 'Delete User',
+                            btnClass: 'btn-danger',
+                            action: function () {
+                                var userId = $(user).attr('id');
+                                var csrfToken = $('input[name="csrfToken"]').attr('value');
+                                $.ajaxSetup({
+                                    beforeSend: function (xhr) {
+                                        xhr.setRequestHeader('Csrf-Token', csrfToken);
+                                    }
+                                });
+                                $.ajax({
+                                    url: '/deleteUser',
+                                    type: 'POST',
+                                    data: JSON.stringify({userId: userId}),
+                                    contentType: 'application/json',
+                                    success: function () {
+                                        location.reload();
+                                        /*  TODO convert window reload to datasource reload */
+                                    },
+                                    error: function (err) {
+                                        console.log(err);
+                                    }
+                                });
+                            }
+                        },
+                    },
+                });
             }
     </script>
 }
