@@ -10,6 +10,10 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 import javax.xml.bind.DatatypeConverter;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class SettingsController extends Controller {
@@ -27,6 +31,15 @@ public class SettingsController extends Controller {
         settings.setUniversityName(json.findPath("universityName").asText());
         settings.setSemesterStart(DatatypeConverter.parseDateTime(json.findPath("semesterStart").textValue()).getTime());
         settings.setSemesterEnd(DatatypeConverter.parseDateTime(json.findPath("semesterEnd").textValue()).getTime());
+        DateFormat format = new SimpleDateFormat("hh:mm");
+        Date startTime = null;
+        Date endTime = null;
+        try {
+            startTime = format.parse(json.findPath("startTime").asText());
+            endTime = format.parse(json.findPath("endTime").asText());
+        } catch (ParseException e) { e.printStackTrace(); }
+        settings.setStartTime(startTime);
+        settings.setEndTime(endTime);
         /* Check if user is in DB */
         SettingsDB.changeSettings(settings);
         return ok();

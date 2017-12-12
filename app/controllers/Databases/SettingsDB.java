@@ -158,6 +158,8 @@ public class SettingsDB {
         data.put("centerName", settings.getCenterName());
         data.put("semesterStart", settings.getSemesterStart());
         data.put("semesterEnd", settings.getSemesterEnd());
+        data.put("startTime", settings.getStartTime());
+        data.put("endTime", settings.getEndTime());
         /* Write settings to DB */
         ApiFuture<WriteResult> result = docRef.set(data);
         result.isDone();
