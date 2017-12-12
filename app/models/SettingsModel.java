@@ -1,18 +1,20 @@
 package models;
 
+import java.util.Date;
+
 public class SettingsModel {
     private String universityName;
     private String centerName;
-    private String primaryColor;
-    private String secondaryColor;
+    private Date semesterStart;
+    private Date semesterEnd;
 
     public static SettingsModel replaceNull(SettingsModel settings) {
         if(settings == null) settings = new SettingsModel();
         if(settings.getUniversityName() == null) settings.setUniversityName("NOT SET");
         if(settings.getCenterName() == null) settings.setCenterName("NOT SET");
         /* Verify that color exists - if not set to white and black */
-        if(settings.getPrimaryColor() == null) settings.setPrimaryColor("#000000");
-        if(settings.getSecondaryColor() == null) settings.setSecondaryColor("#FFFFFF");
+        if(settings.getSemesterStart() == null) settings.setSemesterStart(new Date());
+        if(settings.getSemesterEnd() == null) settings.setSemesterEnd(new Date());
         return settings;
     }
 
@@ -32,19 +34,12 @@ public class SettingsModel {
         this.centerName = centerName;
     }
 
-    public String getPrimaryColor() {
-        return primaryColor;
-    }
+    public Date getSemesterStart() { return semesterStart; }
 
-    public void setPrimaryColor(String primaryColor) {
-        this.primaryColor = primaryColor;
-    }
+    public void setSemesterStart(Date semesterStart) { this.semesterStart = semesterStart; }
 
-    public String getSecondaryColor() {
-        return secondaryColor;
-    }
+    public Date getSemesterEnd() { return semesterEnd; }
 
-    public void setSecondaryColor(String secondaryColor) {
-        this.secondaryColor = secondaryColor;
-    }
+    public void setSemesterEnd(Date semesterEnd) { this.semesterEnd = semesterEnd; }
+
 }

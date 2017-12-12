@@ -16,10 +16,7 @@ import play.api.Play;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -159,22 +156,8 @@ public class SettingsDB {
         Map<String, Object> data = new HashMap<>();
         data.put("universityName", settings.getUniversityName());
         data.put("centerName", settings.getCenterName());
-        /* Verify that colors are valid */
-        Pattern pattern = Pattern.compile("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$");
-        Matcher matcher = pattern.matcher(settings.getPrimaryColor());
-        if(matcher.matches()){
-            data.put("primaryColor",settings.getPrimaryColor());
-        } else {
-            settings.setPrimaryColor("#000000");
-            data.put("primaryColor", settings.getPrimaryColor());
-        }
-        matcher = pattern.matcher(settings.getSecondaryColor());
-        if(matcher.matches()){
-            data.put("secondaryColor",settings.getSecondaryColor());
-        } else {
-            settings.setSecondaryColor("#ffffff");
-            data.put("secondaryColor", settings.getSecondaryColor());
-        }
+        data.put("semesterStart", settings.getSemesterStart());
+        data.put("semesterEnd", settings.getSemesterEnd());
         /* Write settings to DB */
         ApiFuture<WriteResult> result = docRef.set(data);
         result.isDone();
