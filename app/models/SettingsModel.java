@@ -7,6 +7,8 @@ public class SettingsModel {
     private String centerName;
     private Date semesterStart;
     private Date semesterEnd;
+    private Date startTime;
+    private Date endTime;
 
     public static SettingsModel replaceNull(SettingsModel settings) {
         if(settings == null) settings = new SettingsModel();
@@ -15,6 +17,8 @@ public class SettingsModel {
         /* Verify that color exists - if not set to white and black */
         if(settings.getSemesterStart() == null) settings.setSemesterStart(new Date());
         if(settings.getSemesterEnd() == null) settings.setSemesterEnd(new Date());
+        if(settings.getStartTime() == null) settings.setStartTime(new Date());
+        if(settings.getEndTime() == null) settings.setEndTime(new Date());
         return settings;
     }
 
@@ -26,9 +30,7 @@ public class SettingsModel {
         this.universityName = universityName;
     }
 
-    public String getCenterName() {
-        return centerName;
-    }
+    public String getCenterName() { return centerName; }
 
     public void setCenterName(String centerName) {
         this.centerName = centerName;
@@ -42,4 +44,11 @@ public class SettingsModel {
 
     public void setSemesterEnd(Date semesterEnd) { this.semesterEnd = semesterEnd; }
 
+    public Date getStartTime() { return startTime; }
+
+    public void setStartTime(Date startTime) { this.startTime = startTime; }
+
+    public Date getEndTime() { return endTime; }
+
+    public void setEndTime(Date endTime) { this.endTime = endTime; }
 }
