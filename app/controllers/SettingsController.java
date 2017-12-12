@@ -9,6 +9,7 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
+import javax.xml.bind.DatatypeConverter;
 import java.util.List;
 
 public class SettingsController extends Controller {
@@ -21,7 +22,11 @@ public class SettingsController extends Controller {
         /* Get user object from request */
         JsonNode json = request().body().asJson();
         /* Get user from json request */
-        SettingsModel settings = Json.fromJson(json, SettingsModel.class);
+        SettingsModel settings = new SettingsModel();
+        settings.setCenterName(json.findPath("centerName").asText());
+        settings.setUniversityName(json.findPath("universityName").asText());
+        settings.setSemesterStart(DatatypeConverter.parseDateTime(json.findPath("semesterStart").textValue()).getTime());
+        settings.setSemesterEnd(DatatypeConverter.parseDateTime(json.findPath("semesterEnd").textValue()).getTime());
         /* Check if user is in DB */
         SettingsDB.changeSettings(settings);
         return ok();
