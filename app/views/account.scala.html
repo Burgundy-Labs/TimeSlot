@@ -138,6 +138,8 @@
                     $('#availabilitySchedule').fullCalendar({
                         height: 'auto',
                         allDaySlot: false,
+                        minTime: '@SettingsController.getSettings.getStartTime.format("HH:mm")',
+                        maxTime: '@SettingsController.getSettings.getEndTime.format("HH:mm")',
                         events: function (start, end, timezone, callback) {
                             var csrfToken = $('input[name="csrfToken"]').attr('value');
                             $.ajaxSetup({
@@ -177,8 +179,6 @@
                             eventElement.find("div.fc-content").prepend("<button onclick='removeAvailability(\"" + event.id + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
                         },
                         /* TODO pull from open / close hours of operation in settings page */
-                        minTime: "10:00",
-                        maxTime: "21:00",
                         weekends: false,
                         selectable: true,
                         defaultView: 'agendaWeek',
