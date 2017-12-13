@@ -101,8 +101,8 @@
                     height: 'auto',
                     editable: false,
                     weekends: false,
-                    minTime: '@SettingsController.getSettings.getStartTime.format("HH:mm")',
-                    maxTime: '@SettingsController.getSettings.getEndTime.format("HH:mm")',
+                    minTime: moment('@SettingsController.getSettings.getStartTime.toInstant').format("HH:mm"),
+                    maxTime: moment('@SettingsController.getSettings.getEndTime.toInstant').format("HH:mm"),
                     allDaySlot: false,
                     selectable: false,
                     events: function (start, end, timezone, callback) {
