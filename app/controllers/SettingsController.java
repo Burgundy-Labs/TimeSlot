@@ -37,12 +37,18 @@ public class SettingsController extends Controller {
         try {
             startTime = format.parse(json.findPath("startTime").asText());
             endTime = format.parse(json.findPath("endTime").asText());
-        } catch (ParseException e) { e.printStackTrace(); }
-        settings.setStartTime(startTime);
-        settings.setEndTime(endTime);
-        /* Check if user is in DB */
-        SettingsDB.changeSettings(settings);
-        return ok();
+            if ( endTime.before(startTime) || startTime.after(endTime) || startTime.equals(endTime) ) {
+                throw new Exception("The start time was set before or at the same time as the end time.");
+            }
+            settings.setStartTime(startTime);
+            settings.setEndTime(endTime);
+            /* Check if user is in DB */
+            SettingsDB.changeSettings(settings);
+            return ok();
+        }
+        catch (ParseException e) { e.printStackTrace(); }
+        catch (Exception e) { e.printStackTrace(); }
+        return notAcceptable();
     }
 
     public Result createAppointmentType() {
