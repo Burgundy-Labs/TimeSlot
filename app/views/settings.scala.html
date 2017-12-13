@@ -12,29 +12,39 @@
             <div class="col-md-6">
                 <form>
                     <div class="form-group">
-                        <label for="universityName" class="col-sm-2 col-form-label">University Name</label>
+                        <label for="universityName" class="col-sm-12 col-form-label">University Name</label>
                         <div class="col-sm-4">
                             <input type="text" class="form-control" id="universityName" value="@SettingsController.getSettings.getUniversityName">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="centerName" class="col-sm-2 col-form-label">Center Name</label>
+                        <label for="centerName" class="col-sm-12 col-form-label">Center Name</label>
                         <div class="col-sm-4">
                             <input type="text" class="form-control" id="centerName" value="@SettingsController.getSettings.getCenterName">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="primaryColor" class="col-sm-2 col-form-label">Primary Color</label>
-                        <div id="primaryColorPicker" class="input-group colorpicker-component col-sm-4">
-                            <input id="primaryColor" type="text" value="@SettingsController.getSettings.getPrimaryColor" class="form-control" />
-                            <span class="input-group-addon"><i></i></span>
+                        <label for="semesterDates" class="col-sm-12 col-form-label">Semester Start Date</label>
+                        <div class="col-sm-4">
+                            <input id="semesterStart" class="form-control" type="date" name="semesterStart" value="@SettingsController.getSettings.getSemesterStart.format("yyyy-MM-dd")">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="secondaryColor" class="col-sm-2 col-form-label">Secondary Color</label>
-                        <div id="secondaryColorPicker" class="input-group colorpicker-component col-sm-4">
-                            <input id="secondaryColor" type="text" value="@SettingsController.getSettings.getSecondaryColor" class="form-control" />
-                            <span class="input-group-addon"><i></i></span>
+                        <label for="semesterDates" class="col-sm-12 col-form-label">Semester End Date</label>
+                        <div class="col-sm-4">
+                            <input id="semesterEnd" class="form-control" type="date" name="semesterEnd" value="@SettingsController.getSettings.getSemesterEnd.format("yyyy-MM-dd")">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="startTime" class="col-sm-12 col-form-label">Learning Center Open Time</label>
+                        <div class="col-sm-4">
+                            <input id="startTime" class="form-control" type="time" name="startTime" value='@SettingsController.getSettings.getStartTime.format("HH:mm")'>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="endTime" class="col-sm-12 col-form-label">Learning Center Close Time</label>
+                        <div class="col-sm-4">
+                            <input id="endTime" class="form-control" type="time" name="endTime" value='@SettingsController.getSettings.getEndTime.format("HH:mm")'>
                         </div>
                     </div>
                     <div class="form-group">
@@ -156,8 +166,6 @@
                 }
 
                 $(document).ready(function () {
-                    $('#primaryColorPicker').colorpicker();
-                    $('#secondaryColorPicker').colorpicker();
                     if (window.location.hash === "#success") {
                         createAlert("info", "Settings updated successfully!");
                         history.pushState("", document.title, window.location.pathname + window.location.search);
@@ -166,12 +174,13 @@
 
                 function updateSettings() {
                     const settings = {
-                        universityName: $('#universityName').val(),
-                        centerName: $('#centerName').val(),
-                        primaryColor: $("#primaryColorPicker").colorpicker('getValue', $("#primaryColor").val()),
-                        secondaryColor: $('#secondaryColorPicker').colorpicker('getValue', $('#secondaryColor').val())
+                        universityName:     $('#universityName').val(),
+                        centerName:         $('#centerName').val(),
+                        semesterStart:      $('#semesterStart').val(),
+                        semesterEnd:        $('#semesterEnd').val(),
+                        startTime:          $('#startTime').val(),
+                        endTime:            $('#endTime').val()
                     };
-                    console.log(settings);
                     const csrfToken = $('input[name="csrfToken"]').attr('value');
                     $.ajaxSetup({
                         beforeSend: function (xhr) {
