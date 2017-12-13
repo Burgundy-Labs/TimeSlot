@@ -5,10 +5,8 @@ initApp = function () {
             // User is signed in.
             /* Make sure they're in the application - as defined by sidebar being displayed */
 
-            
-            if ($('.sidebar').length) {
-                $('[data-original-title="Account"]').html('<img src="' + firebase.auth().currentUser.photoURL + '" class="userAvatar"/>');
-            }
+
+
             $('#sign-out').show();
         } else {
             // User is signed out.

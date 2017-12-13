@@ -1,6 +1,9 @@
 @(currentPage: String)
     <div class="sidebar primary-background">
             <nav class="sidebar-navigation">
+                <div>
+                    <img src="assets/images/husky-icon-resize.jpg" class="col-sm-12">
+                </div>
                 @for(menuLink <- Application.menuLinks) {
                     <div @if(currentPage.equals(menuLink.menuText)) {
                         class="currentPage"}>@partials.components._tooltipIconLink(menuLink.href, menuLink.mdlIcon, "right", menuLink.menuText,32)</div>
