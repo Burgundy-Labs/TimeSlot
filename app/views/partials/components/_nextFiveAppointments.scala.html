@@ -1,6 +1,6 @@
 @import controllers.Databases.AppointmentsDB
 @currentUser = @{UserController.getCurrentUser}
-<table class="table table-responsive appointmentList" id="next5Appointments" width="100%">
+<table class="table table-responsive appointmentList" id="next5Appointments">
     <thead>
         <tr>
             <th></th>
@@ -10,7 +10,7 @@
             <th>Time</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody class="col-lg-12">
     @for(appointment <- AppointmentsDB.getNextFiveAppointmentsForUser(currentUser.getRole, currentUser.getUid)) {
         <tr>
             <td>

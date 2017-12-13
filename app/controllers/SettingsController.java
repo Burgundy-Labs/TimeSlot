@@ -9,6 +9,11 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
+import javax.xml.bind.DatatypeConverter;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class SettingsController extends Controller {
@@ -21,10 +26,32 @@ public class SettingsController extends Controller {
         /* Get user object from request */
         JsonNode json = request().body().asJson();
         /* Get user from json request */
-        SettingsModel settings = Json.fromJson(json, SettingsModel.class);
-        /* Check if user is in DB */
-        SettingsDB.changeSettings(settings);
-        return ok();
+        SettingsModel settings = new SettingsModel();
+        try {
+            settings.setCenterName(json.findPath("centerName").asText());
+            settings.setUniversityName(json.findPath("universityName").asText());
+            Date startDate = DatatypeConverter.parseDateTime(json.findPath("semesterStart").textValue()).getTime();
+            Date endDate = DatatypeConverter.parseDateTime(json.findPath("semesterEnd").textValue()).getTime();
+            settings.setSemesterStart(startDate);
+            settings.setSemesterEnd(endDate);
+            DateFormat format = new SimpleDateFormat("hh:mm");
+            Date startTime = format.parse(json.findPath("startTime").asText());
+            Date endTime = format.parse(json.findPath("endTime").asText());
+            if ( endTime.before(startTime) || startTime.after(endTime) || startTime.equals(endTime) ) {
+                throw new Exception("The start time was set before or at the same time as the end time.");
+            }
+            if ( endDate.before(startDate) || startDate.after(endDate) || startDate.equals(endDate) ) {
+                throw new Exception("The start date was set before or at the same date as the end date.");
+            }
+            settings.setStartTime(startTime);
+            settings.setEndTime(endTime);
+            /* Check if user is in DB */
+            SettingsDB.changeSettings(settings);
+            return ok();
+        }
+        catch (ParseException e) { e.printStackTrace(); }
+        catch (Exception e) { e.printStackTrace(); }
+        return notAcceptable();
     }
 
     public Result createAppointmentType() {
