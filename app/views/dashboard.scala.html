@@ -14,14 +14,14 @@
                     <div class="card-block">
                         <div class="col-lg-6">
                             <h6>Notifications:</h6>
-                            <ul class="list-group">
+                            <ul class="list-group" id="notifications">
                             @if(UserDB.getNotificaitonsForUser(UserController.getCurrentUser.getUid).size() == 0) {
                                 There are currently no notifications to display.
                             } else {
                                 @for(notification <- UserDB.getNotificaitonsForUser(UserController.getCurrentUser.getUid)) {
                                     <li class="list-group-item @notification.getNotificationId">@notification.getNotificationContent <button onclick="deleteNotification('@notification.getNotificationId')" class="no-button deleteNotification"><i class="material-icons md-18">backspace</i></button></li>
                                 }
-                                <button class="clearAll no-button">Clear All</button>
+                                <button class="clearAll no-button" id="notificationButton">Clear All</button>
                             }
                             </ul>
                         </div>
