@@ -34,7 +34,7 @@ public class SettingsController extends Controller {
             Date endDate = DatatypeConverter.parseDateTime(json.findPath("semesterEnd").textValue()).getTime();
             settings.setSemesterStart(startDate);
             settings.setSemesterEnd(endDate);
-            DateFormat format = new SimpleDateFormat("hh:mm");
+            DateFormat format = new SimpleDateFormat("HH:mm");
             Date startTime = format.parse(json.findPath("startTime").asText());
             Date endTime = format.parse(json.findPath("endTime").asText());
             if ( endTime.before(startTime) || startTime.after(endTime) || startTime.equals(endTime) ) {
@@ -48,9 +48,7 @@ public class SettingsController extends Controller {
             /* Check if user is in DB */
             SettingsDB.changeSettings(settings);
             return ok();
-        }
-        catch (ParseException e) { e.printStackTrace(); }
-        catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) { e.printStackTrace(); }
         return notAcceptable();
     }
 
