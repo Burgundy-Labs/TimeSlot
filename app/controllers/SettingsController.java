@@ -27,18 +27,21 @@ public class SettingsController extends Controller {
         JsonNode json = request().body().asJson();
         /* Get user from json request */
         SettingsModel settings = new SettingsModel();
-        settings.setCenterName(json.findPath("centerName").asText());
-        settings.setUniversityName(json.findPath("universityName").asText());
-        settings.setSemesterStart(DatatypeConverter.parseDateTime(json.findPath("semesterStart").textValue()).getTime());
-        settings.setSemesterEnd(DatatypeConverter.parseDateTime(json.findPath("semesterEnd").textValue()).getTime());
-        DateFormat format = new SimpleDateFormat("hh:mm");
-        Date startTime = null;
-        Date endTime = null;
         try {
-            startTime = format.parse(json.findPath("startTime").asText());
-            endTime = format.parse(json.findPath("endTime").asText());
+            settings.setCenterName(json.findPath("centerName").asText());
+            settings.setUniversityName(json.findPath("universityName").asText());
+            Date startDate = DatatypeConverter.parseDateTime(json.findPath("semesterStart").textValue()).getTime();
+            Date endDate = DatatypeConverter.parseDateTime(json.findPath("semesterEnd").textValue()).getTime();
+            settings.setSemesterStart(startDate);
+            settings.setSemesterEnd(endDate);
+            DateFormat format = new SimpleDateFormat("hh:mm");
+            Date startTime = format.parse(json.findPath("startTime").asText());
+            Date endTime = format.parse(json.findPath("endTime").asText());
             if ( endTime.before(startTime) || startTime.after(endTime) || startTime.equals(endTime) ) {
                 throw new Exception("The start time was set before or at the same time as the end time.");
+            }
+            if ( endDate.before(startDate) || startDate.after(endDate) || startDate.equals(endDate) ) {
+                throw new Exception("The start date was set before or at the same date as the end date.");
             }
             settings.setStartTime(startTime);
             settings.setEndTime(endTime);
