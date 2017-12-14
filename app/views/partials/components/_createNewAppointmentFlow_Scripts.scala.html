@@ -45,8 +45,8 @@
                 weekends: false,
                 selectable: true,
                 /* TODO pull from open / close hours of operation in settings page */
-                minTime: '@SettingsController.getSettings.getStartTime.format("HH:mm")',
-                maxTime: '@SettingsController.getSettings.getEndTime.format("HH:mm")',
+                minTime: moment('@SettingsController.getSettings.getStartTime.toInstant').format(),
+                maxTime: moment('@SettingsController.getSettings.getEndTime.toInstant').format(),
                 events: function (start, end, timezone, callback) {
                     const coachId = $("#coachId :selected").val();
                     $.ajaxSetup({
