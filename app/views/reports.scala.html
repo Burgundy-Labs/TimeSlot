@@ -1,4 +1,31 @@
 @()
 @main("Reports", "Reports") {
+    <div class="row">
+        <div class="col-md-6">
+        <canvas id="servicesChart"></canvas>
+        </div>
+    </div>
+
+
+    <script type="text/javascript">
+            const serviceChart = document.getElementById('servicesChart').getContext('2d');
+            const servicesChart = new Chart(serviceChart, {
+                type: 'doughnut',
+                data : {
+                    datasets: [{
+                        data: [10, 20, 30],
+                        backgroundColor: palette('tol', [10, 20, 30].length).map(function(hex) {
+                            return '#' + hex;
+                        })
+                    }],
+                    labels: [
+                        'Red',
+                        'Yellow',
+                        'Blue'
+                    ],
+                },
+            });
+
+    </script>
 
 }
