@@ -4,7 +4,6 @@
     let selectedEvents = [];
     $(document).ready(function () {
         createMakeAppointmentCalendar();
-
         $(document).on("change", '#serviceType', function(e) {
             const service = $(this).val();
             $.ajaxSetup({
@@ -35,9 +34,8 @@
     });
 
     function createMakeAppointmentCalendar() {
-        const visibleEvents = [];
-        if ($('#calendar').is(':visible')) { //if the container is visible on the page
-            $('#calendar').fullCalendar({
+        if ($('#newAppointmentCalendar').is(':visible')) { //if the container is visible on the page
+            $('#newAppointmentCalendar').fullCalendar({
                 height: 'auto',
                 allDaySlot: false,
                 defaultView: 'agendaWeek',
@@ -63,12 +61,11 @@
                                 const event = {
                                     id: $(this).attr('availabilityId'),
                                     title: "One-Time",
-                                    start: moment($(this).attr('startDate')).format("HH:mm"),
-                                    end: moment($(this).attr('endDate')).format("HH:mm"),
+                                    start: moment($(this).attr('startDate')).format(),
+                                    end: moment($(this).attr('endDate')).format(),
                                     dow: [moment($(this).attr('startDate')).isoWeekday()],
                                     rendering: 'background'
                                 };
-                                visibleEvents.push($.extend({}, event));
                                 events.push(event);
                             });
                             callback(events);
@@ -80,14 +77,15 @@
                 },
                 select: function (start, end, jsEvent, view) {
                     window['moment-range'].extendMoment(moment);
-                    const cal = $("#calendar");
+                    const cal = $("#newAppointmentCalendar");
                     const events = cal.fullCalendar('clientEvents');
                     let selectedEvent = null;
                     for (let i in events) {
-                        var range = moment().range(events[i].start, events[i].end);
-                        if (range.contains(start) && range.contains(end)) {
-                            selectedEvent = events[i];
-                        }
+                        const range = moment().range(moment(events[i].start).format(), moment(events[i].end).format());
+                            if (range.contains(start) && range.contains(end)) {
+                                selectedEvent = events[i];
+                                break;
+                            }
                     }
                     if(selectedEvent === null) {
                         return false;
@@ -104,7 +102,7 @@
                                 }
                             }
                         })
-                    } else if (($("#calendar").fullCalendar('clientEvents', [1])).length > 0) {
+                    } else if (($("#newAppointmentCalendar").fullCalendar('clientEvents', [1])).length > 0) {
                         $.alert({
                             title: "Hold on there",
                             content: "You already have an appointment slot selected, cancel the current one to change your time.",
@@ -134,7 +132,7 @@
                                     btnClass: 'btn-primary',
                                     keys: ['enter', 'shift'],
                                     action: function () {
-                                        $('#calendar').fullCalendar('renderEvent', newAppointment, true);
+                                        $('#newAppointmentCalendar').fullCalendar('renderEvent', newAppointment, true);
                                         selectedEvents.push(newAppointment);
                                     }
                                 },
@@ -156,7 +154,7 @@
 
     function removeAppointment(eventId) {
         selectedEvents = selectedEvents.filter(obj => !obj.id === eventId);
-        $('#calendar').fullCalendar('removeEvents', [eventId]);
+        $('#newAppointmentCalendar').fullCalendar('removeEvents', [eventId]);
     }
 
     function createNewAppointment() {
@@ -170,7 +168,7 @@
                     text: "Cancel",
                     btnClass: "btn",
                     action: function() {
-                       $('#calendar').hide();
+                       $('#newAppointmentCalendar').hide();
                         createMakeAppointmentCalendar();
                     }
                 },
