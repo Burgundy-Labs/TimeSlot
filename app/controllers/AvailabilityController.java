@@ -46,7 +46,7 @@ public class AvailabilityController extends Controller {
         List<AvailabilityModel> availabilities = new ArrayList<>();
         List<AppointmentsModel> appointments = new ArrayList<>();
         if(userId.equals("any")) {
-            List<UsersModel> users = UserDB.getUsers();
+            List<UsersModel> users = UserDB.getCoaches();
             for (UsersModel u : users) {
                 availabilities = AvailabilityDB.getAvailabilitesForUser(u.getUid());
                 appointments = AppointmentsDB.getAppointmentsForUser("Coach", u.getUid());
