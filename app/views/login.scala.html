@@ -40,12 +40,6 @@
                                 return false;
                             } else {
                                 /* POST signed in user to Login Controller*/
-                                var csrfToken = $('input[name="csrfToken"]').attr('value');
-                                $.ajaxSetup({
-                                    beforeSend: function (xhr) {
-                                        xhr.setRequestHeader('Csrf-Token', csrfToken);
-                                    }
-                                });
                                 $.ajax({
                                     url: '/signedIn',
                                     type: 'POST',
@@ -82,7 +76,6 @@
                         <br/>
                         <p><b>Welcome to Project Burgundy</b>
                             <br/>
-                            @helper.CSRF.formField
                             Please sign in below to view, schedule, and manage appointments at the @SettingsController.getSettings.getCenterName.
                         </p>
                         <div id="firebaseui-auth-container" class="btn"></div>

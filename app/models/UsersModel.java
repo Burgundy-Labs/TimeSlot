@@ -83,7 +83,6 @@ public class UsersModel {
         this.role = role;
     }
 
-
     public Boolean isCoach() {
         return isCoach;
     }

@@ -5,8 +5,6 @@
 }
 
 @main("Site Settings", "Settings") {
-    @if(currentUser.getRole.equals("Admin")) {
-        @helper.CSRF.formField
         <p>Change site-level settings.</p>
         <div class="row">
             <div class="col-md-6">
@@ -49,7 +47,6 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-4">
-                            @helper.CSRF.formField
                             <button type="submit" onclick="updateSettings()" class="btn btn-primary">
                                 Update Site Settings</button>
                         </div>
@@ -100,12 +97,6 @@
                                 text: 'Remove Service',
                                 btnClass: "btn btn-primary",
                                 action: function () {
-                                        var csrfToken = $('input[name="csrfToken"]').attr('value');
-                                        $.ajaxSetup({
-                                            beforeSend: function (xhr) {
-                                                xhr.setRequestHeader('Csrf-Token', csrfToken);
-                                            }
-                                        });
                                         $.ajax({
                                             url: '/removeService',
                                             type: 'POST',
@@ -137,12 +128,6 @@
                                 text: 'Remove Appointment Type',
                                 btnClass: "btn btn-primary",
                                 action: function () {
-                                    var csrfToken = $('input[name="csrfToken"]').attr('value');
-                                    $.ajaxSetup({
-                                        beforeSend: function (xhr) {
-                                            xhr.setRequestHeader('Csrf-Token', csrfToken);
-                                        }
-                                    });
                                     $.ajax({
                                         url: '/removeAppointmentType',
                                         type: 'POST',
@@ -181,12 +166,6 @@
                         startTime:          $('#startTime').val(),
                         endTime:            $('#endTime').val()
                     };
-                    const csrfToken = $('input[name="csrfToken"]').attr('value');
-                    $.ajaxSetup({
-                        beforeSend: function (xhr) {
-                            xhr.setRequestHeader('Csrf-Token', csrfToken);
-                        }
-                    });
                     $.ajax({
                         url: '/updateSettings',
                         type: 'POST',
@@ -230,12 +209,6 @@
                                         const form = {
                                             appointmentTypeName: $('#appointmentTypeName').val(),
                                         };
-                                        const csrfToken = $('input[name="csrfToken"]').attr('value');
-                                        $.ajaxSetup({
-                                            beforeSend: function (xhr) {
-                                                xhr.setRequestHeader('Csrf-Token', csrfToken);
-                                            }
-                                        });
                                         $.ajax({
                                             url: '/createAppointmentType',
                                             type: 'POST',
@@ -287,12 +260,6 @@
                                         const form = {
                                             serviceName: $('#serviceName').val(),
                                         };
-                                        const csrfToken = $('input[name="csrfToken"]').attr('value');
-                                        $.ajaxSetup({
-                                            beforeSend: function (xhr) {
-                                                xhr.setRequestHeader('Csrf-Token', csrfToken);
-                                            }
-                                        });
                                         $.ajax({
                                             url: '/createService',
                                             type: 'POST',
@@ -315,11 +282,6 @@
                         }
                     });
                 }
-
         </script>
-    } else {
-        This page is for administrators only.
-        To do: Add user-level settings here (for non-admins) - or remove from sidebar.
-    }
 }
 

@@ -1,7 +1,6 @@
 @import controllers.Databases.UserDB
 @()
 @main("Dashboard", "Your Dashboard") {
-    @helper.CSRF.formField
     <div class="dashCards">
         <div class="row">
             <div class="col-lg-10">
@@ -68,12 +67,6 @@
     <script type="text/javascript">
 
             function deleteNotification(notificationId) {
-                const csrfToken = $('input[name="csrfToken"]').attr('value');
-                $.ajaxSetup({
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader('Csrf-Token', csrfToken);
-                    }
-                });
                 $.ajax({
                     url: '/removeNotificationFromUser',
                     data: JSON.stringify({
@@ -106,12 +99,6 @@
                     allDaySlot: false,
                     selectable: false,
                     events: function (start, end, timezone, callback) {
-                        const csrfToken = $('input[name="csrfToken"]').attr('value');
-                        $.ajaxSetup({
-                            beforeSend: function (xhr) {
-                                xhr.setRequestHeader('Csrf-Token', csrfToken);
-                            }
-                        });
                         $.ajax({
                             url: '/appointmentsForUser/' + '@UserController.getCurrentUser.getRole' + "/" + '@UserController.getCurrentUser.getUid',
                             type: 'GET',
