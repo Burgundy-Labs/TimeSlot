@@ -1,5 +1,8 @@
 @import controllers.Databases.UserDB
 @()
+    @currentUser = @{
+        UserController.getCurrentUser
+    }
 @main("Dashboard", "Your Dashboard") {
     <div class="dashCards">
         <div class="row">
@@ -14,10 +17,10 @@
                         <div class="col-lg-6">
                             <h6>Notifications:</h6>
                             <ul class="list-group" id="notifications">
-                            @if(UserDB.getNotificaitonsForUser(UserController.getCurrentUser.getUid).size() == 0) {
+                            @if(UserDB.getNotificaitonsForUser(currentUser.getUid).size() == 0) {
                                 There are currently no notifications to display.
                             } else {
-                                @for(notification <- UserDB.getNotificaitonsForUser(UserController.getCurrentUser.getUid)) {
+                                @for(notification <- UserDB.getNotificaitonsForUser(currentUser.getUid)) {
                                     <li class="list-group-item @notification.getNotificationId">@notification.getNotificationContent <button onclick="deleteNotification('@notification.getNotificationId')" class="no-button deleteNotification"><i class="material-icons md-18">backspace</i></button></li>
                                 }
                                 <button class="clearAll no-button" id="notificationButton">Clear All</button>
@@ -70,7 +73,7 @@
                 $.ajax({
                     url: '/removeNotificationFromUser',
                     data: JSON.stringify({
-                        userId: '@UserController.getCurrentUser.getUid',
+                        userId: '@currentUser.getUid',
                         notificationId: notificationId
                     }),
                     contentType: 'application/json',
@@ -100,13 +103,13 @@
                     selectable: false,
                     events: function (start, end, timezone, callback) {
                         $.ajax({
-                            url: '/appointmentsForUser/' + '@UserController.getCurrentUser.getRole' + "/" + '@UserController.getCurrentUser.getUid',
+                            url: '/appointmentsForUser/' + '@currentUser.getRole' + "/" + '@currentUser.getUid',
                             type: 'GET',
                             success: function (response) {
                                 const events = [];
                                 $(response).each(function () {
-                                    var userID = '@UserController.getCurrentUser.getUid';
-                                    var role = '@UserController.getCurrentUser.getRole';
+                                    var userID = '@currentUser.getUid';
+                                    var role = '@currentUser.getRole';
                                     var title = "";
                                     if ( userID === $(this).attr("studentId") ) { if ( role !== "Student" ) { title = $(this).attr("studentName") } else {title = $(this).attr("coachName")}}else{title = $(this).attr("studentName")}
                                     const event = {
