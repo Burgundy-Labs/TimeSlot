@@ -1,31 +1,58 @@
 @()
 @main("Reports", "Reports") {
+    @helper.CSRF.formField
+
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
+            <h1 class="center">Appointment Type</h1>
+            <br/>
         <canvas id="servicesChart"></canvas>
         </div>
     </div>
 
 
     <script type="text/javascript">
+        $(document).ready(function() {
             const serviceChart = document.getElementById('servicesChart').getContext('2d');
             const servicesChart = new Chart(serviceChart, {
                 type: 'doughnut',
                 data : {
                     datasets: [{
-                        data: [10, 20, 30],
+                        data: [],
                         backgroundColor: palette('tol', [10, 20, 30].length).map(function(hex) {
                             return '#' + hex;
                         })
                     }],
-                    labels: [
-                        'Red',
-                        'Yellow',
-                        'Blue'
-                    ],
+                    labels: [],
                 },
             });
+            const csrfToken = $('input[name="csrfToken"]').attr('value');
+            $.ajaxSetup({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Csrf-Token', csrfToken);
+                }
+            });
+            $.ajax({
+                url: '/appointmentTypeStatistics',
+                type: 'GET',
+                success: function (response) {
+                    $(response).each(function () {
+                        for(let i = 0; i < Object.getOwnPropertyNames(this).length; i++ ) {
+                            addData(servicesChart, Object.getOwnPropertyNames(this)[i], Object.values(this)[i]);
+                        }
+                        servicesChart.update();
+                    });
+                }
+            });
 
+        });
+
+        function addData(chart, label, data){
+            chart.data.labels.push(label);
+            chart.data.datasets.forEach((dataset) => {
+                dataset.data.push(data);
+            });
+        }
     </script>
 
 }
