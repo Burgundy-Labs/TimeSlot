@@ -19,12 +19,6 @@
 
         $(document).on('change', '#select-@appointment.getAppointmentId', function () {
             var newPresence = $(this).val();
-            var csrfToken = $('input[name="csrfToken"]').attr('value');
-            $.ajaxSetup({
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('Csrf-Token', csrfToken);
-                }
-            });
             var appointment = {
               appointmentId: '@appointment.getAppointmentId',
               present: newPresence

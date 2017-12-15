@@ -2,7 +2,6 @@
 @currentUser = @{UserController.getCurrentUser}
 @main("Account", "Manage Account") {
     @if(!currentUser.getRole.equals("Student")) {
-        @helper.CSRF.formField
         <h1>Availability Schedule</h1>
         <div class="row">
             <div class="col-md-12">
@@ -55,12 +54,6 @@
                                     userId: '@currentUser.getUid',
                                     serviceId: serviceId
                                 };
-                                const csrfToken = $('input[name="csrfToken"]').attr('value');
-                                $.ajaxSetup({
-                                    beforeSend: function (xhr) {
-                                        xhr.setRequestHeader('Csrf-Token', csrfToken);
-                                    }
-                                });
                                 $.ajax({
                                     url: '/removeServiceFromCoach',
                                     type: 'POST',
@@ -106,12 +99,6 @@
                                         serviceName: selectedServiceText,
                                         serviceId: selectedServiceId
                                     };
-                                    const csrfToken = $('input[name="csrfToken"]').attr('value');
-                                    $.ajaxSetup({
-                                        beforeSend: function (xhr) {
-                                            xhr.setRequestHeader('Csrf-Token', csrfToken);
-                                        }
-                                    });
                                     $.ajax({
                                         url: '/addServiceToCoach',
                                         type: 'POST',
@@ -141,12 +128,6 @@
                         minTime: moment('@SettingsController.getSettings.getStartTime.toInstant').format("HH:mm"),
                         maxTime: moment('@SettingsController.getSettings.getEndTime.toInstant').format("HH:mm"),
                         events: function (start, end, timezone, callback) {
-                            var csrfToken = $('input[name="csrfToken"]').attr('value');
-                            $.ajaxSetup({
-                                beforeSend: function (xhr) {
-                                    xhr.setRequestHeader('Csrf-Token', csrfToken);
-                                }
-                            });
                             $.ajax({
                                 url: '/availableSlots/' + '@currentUser.getUid',
                                 type: 'GET',
@@ -234,12 +215,6 @@
                                 btnClass: 'btn-primary',
                                 keys: ['enter', 'shift'],
                                 action: function () {
-                                    var csrfToken = $('input[name="csrfToken"]').attr('value');
-                                    $.ajaxSetup({
-                                        beforeSend: function (xhr) {
-                                            xhr.setRequestHeader('Csrf-Token', csrfToken);
-                                        }
-                                    });
                                     $.ajax({
                                         url: '/removeAvailability',
                                         type: 'POST',
@@ -268,12 +243,6 @@
                 }
 
                 function createAvailability(newAvailability) {
-                    var csrfToken = $('input[name="csrfToken"]').attr('value');
-                    $.ajaxSetup({
-                        beforeSend: function (xhr) {
-                            xhr.setRequestHeader('Csrf-Token', csrfToken);
-                        }
-                    });
                     $.ajax({
                         url: '/createAvailability',
                         type: 'POST',

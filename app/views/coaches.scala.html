@@ -6,7 +6,6 @@
     UserController.getCurrentUser
 }
 @main("Coaches", "Coaches") {
-    @helper.CSRF.formField
     <div class="container-fluid">
         <div class="panel panel-default">
             <table class="table table-responsive" id="usersTable">
@@ -79,12 +78,6 @@
             });
 
             function changeRole(user, newRole) {
-                let csrfToken = $('input[name="csrfToken"]').attr('value');
-                $.ajaxSetup({
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader('Csrf-Token', csrfToken);
-                    }
-                });
                 $.ajax({
                     url: '/updateUserRole',
                     type: 'POST',
@@ -123,12 +116,6 @@
                             btnClass: 'btn-danger',
                             action: function () {
                                 var userId = $(user).attr('id');
-                                var csrfToken = $('input[name="csrfToken"]').attr('value');
-                                $.ajaxSetup({
-                                    beforeSend: function (xhr) {
-                                        xhr.setRequestHeader('Csrf-Token', csrfToken);
-                                    }
-                                });
                                 $.ajax({
                                     url: '/deleteUser',
                                     type: 'POST',

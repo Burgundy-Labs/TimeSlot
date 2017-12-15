@@ -3,8 +3,10 @@ package controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import controllers.Databases.AppointmentsDB;
 import controllers.Databases.AvailabilityDB;
+import controllers.Databases.UserDB;
 import models.AppointmentsModel;
 import models.AvailabilityModel;
+import models.UsersModel;
 import org.apache.commons.lang3.time.DateUtils;
 import org.joda.time.DateTime;
 import play.libs.Json;
@@ -41,12 +43,41 @@ public class AvailabilityController extends Controller {
     }
 
     public Result availableSlotsForAppointments(String userId) {
-        List<AvailabilityModel> availabilities = AvailabilityDB.getAvailabilitesForUser(userId);
-        List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsForUser("Coach", userId);
+        List<AvailabilityModel> availabilities = new ArrayList<>();
+        List<AppointmentsModel> appointments = new ArrayList<>();
+        if(userId.equals("any")) {
+            List<UsersModel> users = UserDB.getCoaches();
+            for (UsersModel u : users) {
+                availabilities = AvailabilityDB.getAvailabilitesForUser(u.getUid());
+                appointments = AppointmentsDB.getAppointmentsForUser("Coach", u.getUid());
+                makeAvailabilities(userId, availabilities);
+            }
+        }else{
+            availabilities = AvailabilityDB.getAvailabilitesForUser(userId);
+            appointments = AppointmentsDB.getAppointmentsForUser("Coach", userId);
+            makeAvailabilities(userId, availabilities);
+            }
+        ArrayList<AvailabilityModel> toRemove = new ArrayList<>();
+        for (AvailabilityModel av : availabilities) {
+            for (AppointmentsModel ap : appointments) {
+                Date availabilityStart = new DateTime(av.getStartDate()).toDate();
+                Date availabilityEnd = new DateTime(av.getEndDate()).toDate();
+                Date appointmentStart = new DateTime(ap.getStartDate()).toDate();
+                Date appointmentEnd = new DateTime(ap.getEndDate()).toDate();
+                if ((appointmentStart.before(availabilityStart) || appointmentStart.equals(availabilityStart)) && (appointmentEnd.after(availabilityEnd) || appointmentEnd.equals(availabilityEnd))) {
+                    toRemove.add(av);
+                }
+            }
+        }
+        availabilities.removeAll(toRemove);
+        return ok(Json.toJson(availabilities));
+    }
+
+    private void makeAvailabilities(String userId, List<AvailabilityModel> availabilities) {
         for (int j = 0; j < availabilities.size(); j++) {
             AvailabilityModel a = availabilities.get(j);
             Date startDate = new DateTime(a.getStartDate()).toDate();
-            Date endDate = new DateTime( a.getEndDate() ).toDate();
+            Date endDate = new DateTime(a.getEndDate()).toDate();
             long duration = endDate.getTime() - startDate.getTime();
             long diffInMinutes = TimeUnit.MILLISECONDS.toMinutes(duration);
             if (diffInMinutes / 30 != 1) {
@@ -63,20 +94,6 @@ public class AvailabilityController extends Controller {
                 j--;
             }
         }
-        ArrayList<AvailabilityModel> toRemove = new ArrayList<AvailabilityModel>();
-        for(AvailabilityModel av : availabilities) {
-            for(AppointmentsModel ap : appointments) {
-                Date availabilityStart = new DateTime( av.getStartDate() ).toDate();
-                Date availabilityEnd = new DateTime( av.getEndDate() ).toDate();
-                Date appointmentStart = new DateTime( ap.getStartDate() ).toDate();
-                Date appointmentEnd = new DateTime( ap.getEndDate() ).toDate();
-                if( (appointmentStart.before(availabilityStart) || appointmentStart.equals(availabilityStart)) && (appointmentEnd.after(availabilityEnd) || appointmentEnd.equals(availabilityEnd)) ) {
-                    toRemove.add(av);
-                }
-            }
-        }
-        availabilities.removeAll(toRemove);
-        return ok(Json.toJson(availabilities));
     }
 
     public Result removeAvailability() {
