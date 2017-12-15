@@ -27,7 +27,7 @@ public class ReportsController extends Controller {
     public Result appointmentTypeStatistics(Long reportStart, Long reportEnd) {
         Date start = new Date(reportStart);
         Date end = new Date(reportEnd);
-        List<AppointmentsModel> appointments = AppointmentsDB.getAppointments();
+        List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsByDate(start, end);
         List<AppointmentTypeModel> appointmentTypes = SettingsDB.getAppointmentTypes();
         Map<String, Integer> appointmentTypeCounts = appointmentTypes.stream().collect(Collectors.toMap(AppointmentTypeModel::getAppointmentType, i -> 0));
 

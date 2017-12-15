@@ -1,16 +1,8 @@
 <script type="text/javascript">
-    const csrfToken = $('input[name="csrfToken"]').attr('value');
-
     let selectedEvents = [];
     $(document).ready(function () {
         createMakeAppointmentCalendar();
         $(document).on("change", '#serviceType', function(e) {
-            const service = $(this).val();
-            $.ajaxSetup({
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('Csrf-Token', csrfToken);
-                }
-            });
             $.ajax({
                 url: '/getCoachesByService/' + service,
                 type: 'GET',
@@ -47,11 +39,6 @@
                 maxTime: moment('@SettingsController.getSettings.getEndTime.toInstant').format("HH:mm"),
                 events: function (start, end, timezone, callback) {
                     const coachId = $("#coachId :selected").val();
-                    $.ajaxSetup({
-                        beforeSend: function (xhr) {
-                            xhr.setRequestHeader('Csrf-Token', csrfToken);
-                        }
-                    });
                     $.ajax({
                         url: '/availableSlotsForAppointments/' + coachId,
                         type: 'GET',
@@ -76,9 +63,11 @@
                     eventElement.find("div.fc-content").prepend("<button onclick='removeAppointment(\"" + event.id + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
                 },
                 select: function (start, end, jsEvent, view) {
+                    var check = moment(start);
+                    var today = moment();
+                    if(check <= today) {return false;}
                     window['moment-range'].extendMoment(moment);
-                    const cal = $("#newAppointmentCalendar");
-                    const events = cal.fullCalendar('clientEvents');
+                    const events =  $("#newAppointmentCalendar").fullCalendar('clientEvents');
                     let selectedEvent = null;
                     for (let i in events) {
                         const range = moment().range(events[i].start, events[i].end);
@@ -213,17 +202,11 @@
                                 "</div>",
                                 theme: 'modern',
                                 buttons: {
-                                    yes: {
-                                        text: 'Create Appointment',
+                                    Weekly: {
+                                        text: 'Create Weekly Appointment',
                                         btnClass: 'btn-primary',
-                                        keys: ['enter', 'shift'],
                                         action: function () {
                                             /* Create appointment Here*/
-                                            $.ajaxSetup({
-                                                beforeSend: function (xhr) {
-                                                    xhr.setRequestHeader('Csrf-Token', csrfToken);
-                                                }
-                                            });
                                             $.ajax({
                                                 url: '/createAppointment',
                                                 type: 'POST',

@@ -38,6 +38,15 @@
       messagingSenderId: "267999688032"
   };
   firebase.initializeApp(config);
+
+  $(document).ready(function() {
+      const csrfToken = $('input[name="csrfToken"]').attr('value');
+      $.ajaxSetup({
+          beforeSend: function (xhr) {
+              xhr.setRequestHeader('Csrf-Token', csrfToken);
+          }
+      });
+  });
 </script>
 <script src="@routes.Assets.at("javascripts/firebaseAuth.js")" type="text/javascript"></script>
 <script src="@routes.Assets.at("javascripts/firebaseIdle.js")" type="text/javascript"></script>
