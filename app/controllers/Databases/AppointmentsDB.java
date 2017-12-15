@@ -188,7 +188,7 @@ public class AppointmentsDB {
     public static synchronized List<AppointmentsModel> getAppointmentsByDate(Date start, Date end) {
         List<AppointmentsModel> appointmentList = new ArrayList<>();
         /* Asynchronously retrieve all appointments */
-        ApiFuture<QuerySnapshot> query = FirestoreDB.getFirestoreDB().collection("appointments").whereGreaterThanOrEqualTo("startDate",start).whereLessThanOrEqualTo("endDate",end).get();
+        ApiFuture<QuerySnapshot> query = FirestoreDB.getFirestoreDB().collection("appointments").orderBy("start_date", Query.Direction.ASCENDING).whereGreaterThanOrEqualTo("start_date",start).get();
         QuerySnapshot querySnapshot = null;
         try {
             /* Attempt to get a list of all appointments - blocking */
@@ -200,6 +200,7 @@ public class AppointmentsDB {
         List<DocumentSnapshot> documents = querySnapshot.getDocuments();
         /* Iterate appointments and add them to a list for return */
         for (DocumentSnapshot document : documents) {
+            if(document.getDate("end_date").before(end)){
             AppointmentsModel appointment = new AppointmentsModel(
                     document.getId(),
                     document.getDate("start_date"),
@@ -218,6 +219,9 @@ public class AppointmentsDB {
                     document.getString("appointment_type"),
                     document.getString("service_type"));
             appointmentList.add(appointment);
+            } else {
+                break;
+            }
         }
         return appointmentList;
     }

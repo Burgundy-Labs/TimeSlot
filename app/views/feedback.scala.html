@@ -1,5 +1,4 @@
 @main("Feedback", "Feedback") {
-    @helper.CSRF.formField
     <div class="container dashCards">
         <div class="card">
             <div class="card-header">
@@ -57,12 +56,6 @@
                                     email: $('#email').val(),
                                     feedback: $('#feedback').val(),
                                 };
-                                const csrfToken = $('input[name="csrfToken"]').attr('value');
-                                $.ajaxSetup({
-                                    beforeSend: function (xhr) {
-                                        xhr.setRequestHeader('Csrf-Token', csrfToken);
-                                    }
-                                });
                                 $.ajax({
                                     url: '/sendFeedback',
                                     data: JSON.stringify(form),
