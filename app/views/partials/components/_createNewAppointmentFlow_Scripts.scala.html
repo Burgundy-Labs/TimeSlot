@@ -81,12 +81,13 @@
                     const events = cal.fullCalendar('clientEvents');
                     let selectedEvent = null;
                     for (let i in events) {
-                        const range = moment().range(moment(events[i].start).format(), moment(events[i].end).format());
+                        const range = moment().range(events[i].start, events[i].end);
                             if (range.contains(start) && range.contains(end)) {
                                 selectedEvent = events[i];
                                 break;
                             }
                     }
+                    selectedEvent = "f";
                     if(selectedEvent === null) {
                         return false;
                     }
@@ -208,7 +209,7 @@
                                 content: "<div class='appointmentDetails'>Your appointment details: <br/>" +
                                 "<b>Appointment Type:</b> " + appointmentType  + " <br/>" +
                                 "<b>Coach:</b> " + coachName + " <br/>" +
-                                "<b>Date:</b> " + moment(appointment.startDate).format('dddd, MMMM Do, YYYY h:mm A') + " -" + moment(appointment.endDate).format('h:mm A') + "<br/>" +
+                                "<b>Date:</b> " + moment(appointment.startDate).format('dddd, MMMM Do, YYYY h:mm A') + " - " + moment(appointment.endDate).format('h:mm A') + "<br/>" +
                                 "</div>",
                                 theme: 'modern',
                                 buttons: {
