@@ -9,83 +9,105 @@
 }
 @main("Site Settings", "Settings") {
         <p>Change site-level settings.</p>
-        <div class="row">
-            <div class="col-md-6">
+        <div class="row col-md-12">
+            <div class="col-md-4">
                 <form>
                     <div class="form-group">
                         <label for="universityName" class="col-sm-12 col-form-label">University Name</label>
-                        <div class="col-sm-4">
+                        <div class="col-sm-12">
                             <input type="text" class="form-control" id="universityName" value="@currentSettings.getUniversityName">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="centerName" class="col-sm-12 col-form-label">Center Name</label>
-                        <div class="col-sm-4">
+                        <div class="col-sm-12">
                             <input type="text" class="form-control" id="centerName" value="@currentSettings.getCenterName">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="semesterDates" class="col-sm-12 col-form-label">Semester Start Date</label>
-                        <div class="col-sm-4">
+                        <div class="col-sm-12">
                             <input id="semesterStart" class="form-control" type="date" name="semesterStart" value="@currentSettings.getSemesterStart.format("yyyy-MM-dd")">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="semesterDates" class="col-sm-12 col-form-label">Semester End Date</label>
-                        <div class="col-sm-4">
+                        <div class="col-sm-12">
                             <input id="semesterEnd" class="form-control" type="date" name="semesterEnd" value="@currentSettings.getSemesterEnd.format("yyyy-MM-dd")">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="startTime" class="col-sm-12 col-form-label">Learning Center Open Time</label>
-                        <div class="col-sm-4">
+                        <div class="col-sm-12">
                             <input id="startTime" class="form-control" type="time" name="startTime" value='@currentSettings.getStartTime.format("HH:mm")'>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="endTime" class="col-sm-12 col-form-label">Learning Center Close Time</label>
-                        <div class="col-sm-4">
+                        <div class="col-sm-12">
                             <input id="endTime" class="form-control" type="time" name="endTime" value='@currentSettings.getEndTime.format("HH:mm")'>
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="col-sm-4">
+                        <div class="col-sm-12">
                             <button type="submit" onclick="updateSettings()" class="btn btn-primary">
                                 Update Site Settings</button>
                         </div>
                     </div>
                 </form>
             </div>
-            <div class="col-md-6 row">
-                <div class="col-md-6">
-                    <ul class="list-group">
-                        <li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center">
-                            <h6 class="mb-1">Appointment Types</h6>
-                            <button class="btn btn-primary btn-success" onclick=createAppointmentType()><i class="material-icons md-18">
-                                add</i></button>
-                        </li>
+            <div class="col-md-4">
+                <div class="col-md-12">
+                    <table id="appointmentTypeTable">
+                        <thead>
+                            <tr>
+                                <td>
+                                    <h6 class="mb-1">Appointment Types</h6>
+                                </td>
+                                <td><button class="btn btn-primary btn-success" onclick=createAppointmentType()><i class="material-icons md-18">
+                                    add</i></button></td>
+                            </tr>
+                        </thead>
+                        <tbody>
                         @for(appointmentType <- SettingsController.getAppointmentTypes) {
-                            <li class="list-group-item d-flex justify-content-between align-items-center @appointmentType.getAppointmentTypeId">
+                            <tr>
+                            <td class="@appointmentType.getAppointmentTypeId">
                                 <h6 class="mb-1">@appointmentType.getAppointmentType</h6>
+                            </td>
+                            <td>
                                 <button class="btn btn-primary btn-danger" onclick="removeAppointmentType('@appointmentType.getAppointmentTypeId')">Remove</button>
-                            </li>
+                            </td>
+                            </tr>
                         }
-                    </ul>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="col-md-6">
-                    <ul class="list-group">
-                        <li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center">
-                            <h6 class="mb-1">Services</h6>
-                            <button class="btn btn-primary btn-success" onclick=createService()><i class="material-icons md-18">
-                                add</i></button>
-                        </li>
+            </div>
+            <div class="col-md-4">
+                <div class="col-md-12">
+                    <table id="serviceTable">
+                        <thead>
+                            <tr>
+                                <td>
+                                    <h6 class="mb-1">Services</h6>
+                                </td>
+                                <td><button class="btn btn-primary btn-success" onclick=createService()><i class="material-icons md-18">
+                                    add</i></button></td>
+                            </tr>
+                        </thead>
+                        <tbody>
                         @for(service <- SettingsController.getServices) {
-                            <li class="list-group-item d-flex justify-content-between align-items-center @service.getServiceId">
-                                <h6 class="mb-1">@service.getService</h6>
-                                <button class="btn btn-primary btn-danger" onclick="removeService('@service.getServiceId')">Remove</button>
-                            </li>
+                            <tr>
+                                <td class="@service.getServiceId">
+                                    <h6 class="mb-1">@service.getService</h6>
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary btn-danger" onclick="removeService('@service.getServiceId')">Remove</button>
+                                </td>
+                            </tr>
                         }
-                    </ul>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -154,6 +176,24 @@
                 }
 
                 $(document).ready(function () {
+                    $('#appointmentTypeTable').DataTable({
+                        scrollY: "300px",
+                        scrollCollapse: true,
+                        paging: false,
+                        info: false,
+                        dom: "<'row'<'col-sm-6'l><'col-sm-6'f>>" +
+                        "<'row'<'col-sm-12'tr>>" +
+                        "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                    });
+                    $('#serviceTable').DataTable({
+                        scrollY: "300px",
+                        scrollCollapse: true,
+                        paging: false,
+                        info: false,
+                        dom: "<'row'<'col-sm-6'l><'col-sm-6'f>>" +
+                        "<'row'<'col-sm-12'tr>>" +
+                        "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                    });
                     if (window.location.hash === "#success") {
                         createAlert("info", "Settings updated successfully!");
                         history.pushState("", document.title, window.location.pathname + window.location.search);
