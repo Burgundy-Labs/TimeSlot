@@ -5,6 +5,7 @@
     $(document).ready(function () {
         createMakeAppointmentCalendar();
         $(document).on("change", '#serviceType', function(e) {
+            const service = $(this).val();
             $.ajax({
                 url: '/getCoachesByService/' + service,
                 type: 'GET',
