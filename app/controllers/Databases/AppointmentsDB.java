@@ -185,6 +185,43 @@ public class AppointmentsDB {
         return appointmentList;
     }
 
+    public static synchronized List<AppointmentsModel> getAppointmentsByDate(Date start, Date end) {
+        List<AppointmentsModel> appointmentList = new ArrayList<>();
+        /* Asynchronously retrieve all appointments */
+        ApiFuture<QuerySnapshot> query = FirestoreDB.getFirestoreDB().collection("appointments").whereGreaterThanOrEqualTo("startDate",start).whereLessThanOrEqualTo("endDate",end).get();
+        QuerySnapshot querySnapshot = null;
+        try {
+            /* Attempt to get a list of all appointments - blocking */
+            querySnapshot = query.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        assert querySnapshot != null;
+        List<DocumentSnapshot> documents = querySnapshot.getDocuments();
+        /* Iterate appointments and add them to a list for return */
+        for (DocumentSnapshot document : documents) {
+            AppointmentsModel appointment = new AppointmentsModel(
+                    document.getId(),
+                    document.getDate("start_date"),
+                    document.getDate("end_date"),
+                    document.getString("studentId"),
+                    document.getString("studentName"),
+                    document.getString("studentEmail"),
+                    document.getString("studentPhoto"),
+                    document.getString("coachId"),
+                    document.getString("coachName"),
+                    document.getString("coachEmail"),
+                    document.getString("coachPhoto"),
+                    document.getString("appointment_notes"),
+                    document.getString("coach_notes"),
+                    document.getBoolean("present"),
+                    document.getString("appointment_type"),
+                    document.getString("service_type"));
+            appointmentList.add(appointment);
+        }
+        return appointmentList;
+    }
+
     public static synchronized List<AppointmentsModel> getAppointments() {
         List<AppointmentsModel> appointmentList = new ArrayList<>();
         /* Asynchronously retrieve all appointments */

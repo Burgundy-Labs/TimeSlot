@@ -2,7 +2,21 @@
 @main("Reports", "Reports") {
     @helper.CSRF.formField
 
-    <div class="row">
+    <div class="row col-md-12">
+        <div class="form-group col-md-6">
+            <label for="reportStart" class="col-sm-12 col-form-label">Start Date</label>
+            <div class="col-sm-12">
+                <input id="reportStart" class="form-control" type="date" name="reportStart" value="">
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="reportEnd" class="col-sm-12 col-form-label">End Date</label>
+            <div class="col-sm-12">
+                <input id="reportEnd" class="form-control" type="date" name="reportEnd" value="">
+            </div>
+        </div>
+    </div>
+    <div class="row col-md-12">
         <div class="col-md-4">
             <h1 class="center">Appointment Types</h1>
             <br/>
@@ -17,7 +31,11 @@
 
 
     <script type="text/javascript">
+            let reportStart = $('#reportStart');
+            let reportEnd = $('#reportEnd');
         $(document).ready(function() {
+            reportStart.val(moment().subtract(7, "days").format("YYYY-MM-DD"));
+            reportEnd.val(moment().format("YYYY-MM-DD"));
 
             /* Appointmenty Types Chart */
             const appointmentChart = document.getElementById('appointmentChart').getContext('2d');
@@ -40,7 +58,7 @@
                 }
             });
             $.ajax({
-                url: '/appointmentTypeStatistics',
+                url: '/appointmentTypeStatistics/' + moment(reportStart.val()).valueOf() + "/" + moment(reportEnd.val()).valueOf(),
                 type: 'GET',
                 success: function (response) {
                     $(response).each(function () {
@@ -52,40 +70,41 @@
                 }
             });
 
+
+            const serviceChart = document.getElementById('serviceChart').getContext('2d');
+            const servicesChart = new Chart(serviceChart, {
+                type: 'doughnut',
+                data : {
+                    datasets: [{
+                        data: [],
+                        backgroundColor: palette('tol', [10, 20, 30].length).map(function(hex) {
+                            return '#' + hex;
+                        })
+                    }],
+                    labels: [],
+                },
+            });
+            $.ajaxSetup({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Csrf-Token', csrfToken);
+                }
+            });
+            $.ajax({
+                url: '/serviceStatistics/' + moment(reportStart.val()).valueOf() + "/" + moment(reportEnd.val()).valueOf() ,
+                type: 'GET',
+                success: function (response) {
+                    $(response).each(function () {
+                        for(let i = 0; i < Object.getOwnPropertyNames(this).length; i++ ) {
+                            addData(servicesChart, Object.getOwnPropertyNames(this)[i], Object.values(this)[i]);
+                        }
+                        servicesChart.update();
+                    });
+                }
+            });
+
         });
 
 
-        const serviceChart = document.getElementById('serviceChart').getContext('2d');
-        const servicesChart = new Chart(serviceChart, {
-            type: 'doughnut',
-            data : {
-                datasets: [{
-                    data: [],
-                    backgroundColor: palette('tol', [10, 20, 30].length).map(function(hex) {
-                        return '#' + hex;
-                    })
-                }],
-                labels: [],
-            },
-        });
-        const csrfToken = $('input[name="csrfToken"]').attr('value');
-        $.ajaxSetup({
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader('Csrf-Token', csrfToken);
-            }
-        });
-        $.ajax({
-            url: '/serviceStatistics',
-            type: 'GET',
-            success: function (response) {
-                $(response).each(function () {
-                    for(let i = 0; i < Object.getOwnPropertyNames(this).length; i++ ) {
-                        addData(servicesChart, Object.getOwnPropertyNames(this)[i], Object.values(this)[i]);
-                    }
-                    servicesChart.update();
-                });
-            }
-        });
 
         function addData(chart, label, data){
             chart.data.labels.push(label);

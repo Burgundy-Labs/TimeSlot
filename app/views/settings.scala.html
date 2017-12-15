@@ -5,7 +5,6 @@
 }
 
 @main("Site Settings", "Settings") {
-    @if(currentUser.getRole.equals("Admin")) {
         @helper.CSRF.formField
         <p>Change site-level settings.</p>
         <div class="row">
@@ -315,11 +314,6 @@
                         }
                     });
                 }
-
         </script>
-    } else {
-        This page is for administrators only.
-        To do: Add user-level settings here (for non-admins) - or remove from sidebar.
-    }
 }
 

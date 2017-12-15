@@ -5,6 +5,7 @@ import controllers.Databases.SettingsDB;
 import models.AppointmentTypeModel;
 import models.ServiceModel;
 import models.SettingsModel;
+import models.UsersModel;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -19,7 +20,12 @@ import java.util.List;
 public class SettingsController extends Controller {
 
     public Result index() {
-        return ok(views.html.settings.render());
+        UsersModel currentUser = UserController.getCurrentUser();
+        if( currentUser ==  null || !currentUser.getRole().equals("Admin")){
+            return ok(views.html.dashboard.render());
+        } else {
+            return ok(views.html.settings.render());
+        }
     }
 
     public Result updateSettings() {
