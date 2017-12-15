@@ -1,3 +1,5 @@
+@currentUser = @{UserController.getCurrentUser}
+@currentSettings = @{SettingsController.getSettings}
 <script type="text/javascript">
     let selectedEvents = [];
     $(document).ready(function () {
@@ -35,8 +37,8 @@
                 weekends: false,
                 selectable: true,
                 /* TODO pull from open / close hours of operation in settings page */
-                minTime: moment('@SettingsController.getSettings.getStartTime.toInstant').format("HH:mm"),
-                maxTime: moment('@SettingsController.getSettings.getEndTime.toInstant').format("HH:mm"),
+                minTime: moment('@currentSettings.getStartTime.toInstant').format("HH:mm"),
+                maxTime: moment('@currentSettings.getEndTime.toInstant').format("HH:mm"),
                 events: function (start, end, timezone, callback) {
                     const coachId = $("#coachId :selected").val();
                     $.ajax({
@@ -107,7 +109,7 @@
                             title: "Appointment",
                             /* TODO If want to select more than 1 event, create unique id's */
                             id: 1,
-                            userId: '@UserController.getCurrentUser.getUid',
+                            userId: '@currentUser.getUid',
                             start: moment(start).format(),
                             end: moment(end).format(),
                             weekly: false
@@ -214,7 +216,7 @@
                                                 contentType: 'application/json',
                                                 success: function () {
                                                     let studentNotification = "New "+ form.appointmentType +" Appointment on " + moment(form.startDate).format("dddd, MMMM Do, h:mm A") + " - " + moment(form.endDate).format("h:mm A") + " with " + coachName;
-                                                    let coachNotification = "New "+ form.appointmentType +" Appointment on " + moment(form.startDate).format("dddd, MMMM Do, h:mm A") + " - " + moment(form.endDate).format("h:mm A") + " with " + "@UserController.getCurrentUser.getDisplayName";
+                                                    let coachNotification = "New "+ form.appointmentType +" Appointment on " + moment(form.startDate).format("dddd, MMMM Do, h:mm A") + " - " + moment(form.endDate).format("h:mm A") + " with " + "@currentUser.getDisplayName";
                                                     $.ajax({
                                                         url: '/addNotificationToUser',
                                                         type: 'POST',
