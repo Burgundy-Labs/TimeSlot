@@ -28,6 +28,21 @@ public class SettingsController extends Controller {
         }
     }
 
+    public Result appointmentTypeFrequency() {
+        JsonNode json = request().body().asJson();
+        String frequency = json.findPath("frequency").asText();
+        Boolean enabled = json.findPath("checked").asBoolean();
+        String appointmentTypeId = json.findPath("id").asText();
+        AppointmentTypeModel appointmentType = SettingsDB.getAppointmentType(appointmentTypeId);
+        if(frequency.equals("oneTime")) {
+            appointmentType.setOneTime(enabled);
+        } else if(frequency.equals("weekly")){
+            appointmentType.setWeekly(enabled);
+        }
+        SettingsDB.addAppointmentType(appointmentType);
+        return ok();
+    }
+
     public Result updateSettings() {
         /* Get user object from request */
         JsonNode json = request().body().asJson();
