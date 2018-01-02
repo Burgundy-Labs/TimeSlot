@@ -70,6 +70,8 @@ public class SettingsDB {
         }
         Map<String, Object> data = new HashMap<>();
         data.put("appointmentType", appointmentType.getAppointmentType());
+        data.put("weekly", appointmentType.getWeekly() == null ? false : appointmentType.getWeekly());
+        data.put("oneTime", appointmentType.getOneTime() == null ? false : appointmentType.getOneTime());
         ApiFuture<WriteResult> result = docRef.set(data);
         result.isDone();
     }
@@ -91,11 +93,34 @@ public class SettingsDB {
         for (DocumentSnapshot document : documents) {
                 AppointmentTypeModel appointmentType = new AppointmentTypeModel(
                         document.getId(),
-                        document.getString("appointmentType")
+                        document.getString("appointmentType"),
+                        document.getBoolean("weekly"),
+                        document.getBoolean("oneTime")
                 );
                 appointmentTypesList.add(appointmentType);
             }
         return appointmentTypesList;
+    }
+
+    public static synchronized AppointmentTypeModel getAppointmentType(String appointmentTypeId){
+        AppointmentTypeModel appointmentType = new AppointmentTypeModel();
+        /* Asynchronously retrieve all users */
+        ApiFuture<DocumentSnapshot> query = FirestoreDB.getFirestoreDB().collection("settings").document("settings").collection("appointmentTypes").document(appointmentTypeId).get();
+        DocumentSnapshot documentSnapshot = null;
+        try {
+            /* Attempt to get a list of all users - blocking */
+            documentSnapshot = query.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        assert documentSnapshot != null;
+            appointmentType = new AppointmentTypeModel(
+                    documentSnapshot.getId(),
+                    documentSnapshot.getString("appointmentType"),
+                    documentSnapshot.getBoolean("weekly"),
+                    documentSnapshot.getBoolean("oneTime")
+            );
+        return appointmentType;
     }
 
     public static synchronized void addService(ServiceModel service) {
