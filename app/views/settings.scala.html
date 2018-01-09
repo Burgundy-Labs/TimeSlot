@@ -64,6 +64,12 @@
                                 <td>
                                     <h6 class="mb-1">Appointment Types</h6>
                                 </td>
+                                <td>
+                                    One-Time
+                                </td>
+                                <td>
+                                    Weekly
+                                </td>
                                 <td><button class="btn btn-primary btn-success" onclick=createAppointmentType()><i class="material-icons md-18">
                                     add</i></button></td>
                             </tr>
@@ -74,6 +80,12 @@
                             <td class="@appointmentType.getAppointmentTypeId">
                                 <h6 class="mb-1">@appointmentType.getAppointmentType</h6>
                             </td>
+                                <td>
+                                    <input onclick="oneTimeCheck('@appointmentType.getAppointmentTypeId')" type="checkbox" class="form-check-input oneTime-@appointmentType.getAppointmentTypeId" title="one-time" @if(appointmentType.getOneTime){checked}>
+                                </td>
+                                <td>
+                                    <input  onclick="weeklyCheck('@appointmentType.getAppointmentTypeId')" type="checkbox" class="form-check-input weekly-@appointmentType.getAppointmentTypeId" title="weekly" @if(appointmentType.getWeekly){checked}>
+                                </td>
                             <td>
                                 <button class="btn btn-primary btn-danger" onclick="removeAppointmentType('@appointmentType.getAppointmentTypeId')">Remove</button>
                             </td>
@@ -112,7 +124,26 @@
             </div>
         </div>
         <script type="text/javascript">
-
+                function weeklyCheck(appointmentTypeId) {
+                    console.log($(this));
+                    let checked = $(".weekly-"+appointmentTypeId).is(':checked');
+                    let data = {frequency: "weekly", id: appointmentTypeId, checked: checked};
+                    $.ajax({
+                        url: '/appointmentTypeFrequency',
+                        type: 'POST',
+                        data: JSON.stringify(data),
+                        contentType: 'application/json',
+                        success: function () {
+                            createAlert("success", "Appointment Type Updated!");
+                        },
+                        error: function () {
+                            createAlert('danger', 'Appointment Type Change Failed.');
+                        }
+                    });
+                }
+                function oneTimeCheck(appointmentTypeId) {
+                    alert(appointmentTypeId);
+                }
                 function removeService(serviceId) {
                     $.confirm({
                         title: 'Remove Service',
