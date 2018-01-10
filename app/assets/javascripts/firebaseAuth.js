@@ -3,10 +3,6 @@ initApp = function () {
         if (user) {
             startTimeout();
             // User is signed in.
-            /* Make sure they're in the application - as defined by sidebar being displayed */
-
-
-
             $('#sign-out').show();
         } else {
             // User is signed out.

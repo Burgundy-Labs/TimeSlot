@@ -152,7 +152,7 @@ public class UserDB {
                     document.getBoolean("isCoach")
             );
         } else {
-            /* Log something */
+
         }
         return userFound;
     }
@@ -239,6 +239,11 @@ public class UserDB {
     }
 
     public static synchronized void addUser(UsersModel user) {
+        /* Set only user present to admin */
+        List<UsersModel> users = getUsers();
+        if(users.size() == 0) {
+            user.setRole(Roles.getRole("Admin"));
+        }
         /* Get DB instance */
         DocumentReference docRef = FirestoreDB.getFirestoreDB().collection("users").document(user.getUid());
         Map<String, Object> data = new HashMap<>();
