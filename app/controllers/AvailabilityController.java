@@ -42,7 +42,10 @@ public class AvailabilityController extends Controller {
         return ok(Json.toJson(availabilities));
     }
 
-    public Result availableSlotsForAppointments(String userId) {
+    public Result availableSlotsForAppointments(String userId, String start, String end) {
+        /*TODO use start/end to limit # of available slots returned */
+        Date startDate = DatatypeConverter.parseDateTime(start).getTime();
+        Date endDate = DatatypeConverter.parseDateTime(end).getTime();
         List<AvailabilityModel> availabilities = new ArrayList<>();
         List<AppointmentsModel> appointments = new ArrayList<>();
         if(userId.equals("any")) {

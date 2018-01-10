@@ -16,4 +16,5 @@ libraryDependencies ++= Seq(javaJdbc, ehcache, ws, javaWs, guice,
   "com.typesafe.play" %% "play-mailer-guice" % "6.0.1",
 )
 
-//unmanagedResourceDirectories in Test += baseDirectory ( _ /"target/web/public/test" )
+//unmanagedResourceDirectories in Te
+// st += baseDirectory ( _ /"target/web/public/test" )

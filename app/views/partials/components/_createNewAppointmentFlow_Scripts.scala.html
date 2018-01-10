@@ -37,13 +37,12 @@
                 editable: false,
                 weekends: false,
                 selectable: true,
-                /* TODO pull from open / close hours of operation in settings page */
                 minTime: moment('@currentSettings.getStartTime.toInstant').format("HH:mm"),
                 maxTime: moment('@currentSettings.getEndTime.toInstant').format("HH:mm"),
                 events: function (start, end, timezone, callback) {
                     const coachId = $("#coachId :selected").val();
                     $.ajax({
-                        url: '/availableSlotsForAppointments/' + coachId,
+                        url: '/availableSlotsForAppointments/' + coachId  + '/' + moment(start).toISOString() + '/' + moment(end).toISOString(),
                         type: 'GET',
                         success: function (response) {
                             const events = [];
@@ -51,8 +50,8 @@
                                 const event = {
                                     id: $(this).attr('availabilityId'),
                                     title: "One-Time",
-                                    start: moment($(this).attr('startDate')).format(),
-                                    end: moment($(this).attr('endDate')).format(),
+                                    start: moment($(this).attr('startDate')),
+                                    end: moment($(this).attr('endDate')),
                                     dow: [moment($(this).attr('startDate')).isoWeekday()],
                                     rendering: 'background'
                                 };
@@ -66,26 +65,27 @@
                     eventElement.find("div.fc-content").prepend("<button onclick='removeAppointment(\"" + event.id + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
                 },
                 select: function (start, end, jsEvent, view) {
-                    var check = moment(start);
-                    var today = moment();
-                    if(check <= today) {return false;}
-                    window['moment-range'].extendMoment(moment);
-                    const events =  $("#newAppointmentCalendar").fullCalendar('clientEvents');
-                    let selectedEvent = null;
-                    for (let i in events) {
-                        const range = moment().range(events[i].start, events[i].end);
-                            if (range.contains(start) && range.contains(end)) {
-                                selectedEvent = events[i];
-                                break;
-                            }
-                    }
-                    selectedEvent = "f";
-                    if(selectedEvent === null) {
-                        return false;
-                    }
+                    let valid = (function(){
+                        return $("#newAppointmentCalendar").fullCalendar('clientEvents', function (event) {
+
+                            return (event.rendering === "background" &&
+                                    (start.local().isAfter(event.start) || start.local().isSame(event.start,'minute')) &&
+                                    (end.local().isBefore(event.end) || end.local().isSame(event.end,'minute')));
+                        }).length > 0;
+                    })();
                     const duration = moment.duration(end.diff(start)).asHours();
-                    // TODO pull duration from DB - settings
-                    if (duration > .5) {
+                    // TODO pull duration from DB - settings + allow for greater than .5 selection
+                    if(!valid){
+                        $.alert({
+                        title: "Pick an appointment",
+                        content: "The green highlighted area indicates available appointment slots.",
+                        buttons: {
+                            ok: {
+                                text: "Okay"
+                            }
+                        }
+                    })}
+                    else if (duration > .5) {
                         $.alert({
                             title: "Hold on there",
                             content: "An appointment slot cannot be more than 30 minutes.",

@@ -6,13 +6,11 @@ import models.AppointmentTypeModel;
 import models.ServiceModel;
 import models.SettingsModel;
 import models.UsersModel;
-import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
 import javax.xml.bind.DatatypeConverter;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
