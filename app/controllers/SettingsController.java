@@ -83,6 +83,12 @@ public class SettingsController extends Controller {
         return SettingsDB.getAppointmentTypes();
     }
 
+    public static List<AppointmentTypeModel> getAvailableAppointmentTypes() {
+        List<AppointmentTypeModel> appointmentTypes = SettingsDB.getAppointmentTypes();
+        appointmentTypes.removeIf(a -> (!a.getOneTime() && !a.getWeekly()));
+        return appointmentTypes;
+    }
+
     public Result createService() {
         JsonNode json = request().body().asJson();
         String serviceName = json.findPath("serviceName").asText();

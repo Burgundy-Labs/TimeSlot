@@ -115,25 +115,8 @@
                             end: moment(end).format(),
                             weekly: false
                         };
-                        $.confirm({
-                            title: 'Confirm Appointment',
-                            content: 'Do you want to create an appointment for this time?',
-                            theme: 'modern',
-                            buttons: {
-                                yes: {
-                                    text: 'Yes, Create',
-                                    btnClass: 'btn-primary',
-                                    keys: ['enter', 'shift'],
-                                    action: function () {
-                                        $('#newAppointmentCalendar').fullCalendar('renderEvent', newAppointment, true);
-                                        selectedEvents.push(newAppointment);
-                                    }
-                                },
-                                cancel: {
-                                    text: 'No, Cancel.'
-                                }
-                            }
-                        });
+                        $('#newAppointmentCalendar').fullCalendar('renderEvent', newAppointment, true);
+                        selectedEvents.push(newAppointment);
                     }
                 },
                 selectOverlap: function (event) {

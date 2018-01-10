@@ -16,7 +16,7 @@
                     <br/>
                     <select id="appointmentType" name="appointmentType" required>
                         <option selected disabled hidden> Select an Appointment Type </option>
-                        @for(appointment <- SettingsController.getAppointmentTypes) {
+                        @for(appointment <- SettingsController.getAvailableAppointmentTypes) {
                             <option value="@appointment.getAppointmentTypeId">@appointment.getAppointmentType</option>
                         }
                         </select>
