@@ -1,12 +1,9 @@
 package modules;
 
-import com.google.cloud.firestore.Firestore;
 import com.google.inject.AbstractModule;
 import controllers.Application;
 import controllers.ApplicationComponents.Roles;
 import controllers.Databases.FirestoreDB;
-import play.Environment;
-import play.api.Play;
 
 public class StartupModule extends AbstractModule {
 

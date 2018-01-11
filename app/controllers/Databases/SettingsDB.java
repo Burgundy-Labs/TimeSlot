@@ -5,7 +5,6 @@ import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
-import com.google.inject.Inject;
 import models.AppointmentTypeModel;
 import models.ServiceModel;
 import models.SettingsModel;

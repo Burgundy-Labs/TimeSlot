@@ -5,10 +5,7 @@ import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
-import com.google.inject.Inject;
-import models.AppointmentsModel;
 import models.AvailabilityModel;
-import models.UsersModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;

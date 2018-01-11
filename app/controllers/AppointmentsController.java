@@ -1,11 +1,8 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import controllers.ApplicationComponents.AppointmentTypes;
 import controllers.Databases.AppointmentsDB;
-import controllers.Databases.AvailabilityDB;
 import models.AppointmentsModel;
-import models.AvailabilityModel;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;

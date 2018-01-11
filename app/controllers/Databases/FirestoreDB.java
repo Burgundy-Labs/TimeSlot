@@ -4,10 +4,7 @@ import com.google.cloud.firestore.Firestore;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import controllers.Application;
-import play.api.Environment;
 
 import java.io.File;
 import java.io.FileInputStream;

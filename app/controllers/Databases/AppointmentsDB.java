@@ -2,8 +2,6 @@ package controllers.Databases;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
-import com.google.inject.Inject;
-import controllers.MailerService;
 import models.AppointmentsModel;
 import models.UsersModel;
 

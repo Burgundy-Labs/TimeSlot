@@ -1,9 +1,7 @@
 package controllers.Databases;
 
-import com.google.api.Service;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
-import com.google.inject.Inject;
 import controllers.ApplicationComponents.Roles;
 import models.NotificationModel;
 import models.ServiceModel;
