@@ -2,6 +2,7 @@ package controllers.Databases;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
+import com.google.inject.Inject;
 import controllers.MailerService;
 import models.AppointmentsModel;
 import models.UsersModel;
@@ -13,11 +14,13 @@ import java.util.concurrent.ExecutionException;
 * AppointmentsDB works with AppointmentsModel to retrieve and remove appointments in the Firestore DB.*/
 public class AppointmentsDB {
 
+    @Inject static FirestoreDB firestoreDB;
+
     public static AppointmentsModel getAppointment(String appointmentId) {
         /* Return null appointment if none found */
         AppointmentsModel appointmentFound = null;
         /* Get the specific appointment reference from the DB*/
-        DocumentReference docRef = FirestoreDB.getFirestoreDB().collection("appointments").document(appointmentId);
+        DocumentReference docRef = firestoreDB.get().collection("appointments").document(appointmentId);
         ApiFuture<DocumentSnapshot> future = docRef.get();
         DocumentSnapshot document = null;
         try {
@@ -54,8 +57,8 @@ public class AppointmentsDB {
     public static synchronized List<AppointmentsModel> getAppointmentsForUser(String role, String userId) {
         List<AppointmentsModel> appointmentList = new ArrayList<>();
         /* Asynchronously retrieve all appointments */
-        ApiFuture<QuerySnapshot> coachQuery = FirestoreDB.getFirestoreDB().collection("appointments").orderBy("start_date", Query.Direction.ASCENDING).whereEqualTo("coachId",userId).get();
-        ApiFuture<QuerySnapshot> studentQuery = FirestoreDB.getFirestoreDB().collection("appointments").orderBy("start_date", Query.Direction.ASCENDING).whereEqualTo("studentId",userId).get();
+        ApiFuture<QuerySnapshot> coachQuery = firestoreDB.get().collection("appointments").orderBy("start_date", Query.Direction.ASCENDING).whereEqualTo("coachId",userId).get();
+        ApiFuture<QuerySnapshot> studentQuery = firestoreDB.get().collection("appointments").orderBy("start_date", Query.Direction.ASCENDING).whereEqualTo("studentId",userId).get();
 
         QuerySnapshot querySnapshotCoach = null;
         QuerySnapshot querySnapshotStudent = null;
@@ -117,8 +120,8 @@ public class AppointmentsDB {
     public static synchronized List<AppointmentsModel> getNextFiveAppointmentsForUser(String role, String userId) {
         List<AppointmentsModel> appointmentList = new ArrayList<>();
         /* Asynchronously retrieve all appointments */
-        ApiFuture<QuerySnapshot> coachQuery = FirestoreDB.getFirestoreDB().collection("appointments").whereGreaterThan("start_date",new Date()).orderBy("start_date", Query.Direction.ASCENDING).whereEqualTo("coachId",userId).limit(5).get();
-        ApiFuture<QuerySnapshot> studentQuery = FirestoreDB.getFirestoreDB().collection("appointments").whereGreaterThan("start_date",new Date()).orderBy("start_date", Query.Direction.ASCENDING).whereEqualTo("studentId",userId).limit(5).get();
+        ApiFuture<QuerySnapshot> coachQuery = firestoreDB.get().collection("appointments").whereGreaterThan("start_date",new Date()).orderBy("start_date", Query.Direction.ASCENDING).whereEqualTo("coachId",userId).limit(5).get();
+        ApiFuture<QuerySnapshot> studentQuery = firestoreDB.get().collection("appointments").whereGreaterThan("start_date",new Date()).orderBy("start_date", Query.Direction.ASCENDING).whereEqualTo("studentId",userId).limit(5).get();
 
         QuerySnapshot querySnapshotCoach = null;
         QuerySnapshot querySnapshotStudent = null;
@@ -188,7 +191,7 @@ public class AppointmentsDB {
     public static synchronized List<AppointmentsModel> getAppointmentsByDate(Date start, Date end) {
         List<AppointmentsModel> appointmentList = new ArrayList<>();
         /* Asynchronously retrieve all appointments */
-        ApiFuture<QuerySnapshot> query = FirestoreDB.getFirestoreDB().collection("appointments").orderBy("start_date", Query.Direction.ASCENDING).whereGreaterThanOrEqualTo("start_date",start).get();
+        ApiFuture<QuerySnapshot> query = firestoreDB.get().collection("appointments").orderBy("start_date", Query.Direction.ASCENDING).whereGreaterThanOrEqualTo("start_date",start).get();
         QuerySnapshot querySnapshot = null;
         try {
             /* Attempt to get a list of all appointments - blocking */
@@ -229,7 +232,7 @@ public class AppointmentsDB {
     public static synchronized List<AppointmentsModel> getAppointments() {
         List<AppointmentsModel> appointmentList = new ArrayList<>();
         /* Asynchronously retrieve all appointments */
-        ApiFuture<QuerySnapshot> query = FirestoreDB.getFirestoreDB().collection("appointments").get();
+        ApiFuture<QuerySnapshot> query = firestoreDB.get().collection("appointments").get();
         QuerySnapshot querySnapshot = null;
         try {
             /* Attempt to get a list of all appointments - blocking */
@@ -267,9 +270,9 @@ public class AppointmentsDB {
         /* Get DB instance */
         DocumentReference docRef;
         if(appointment.getAppointmentId() == null) {
-            docRef = FirestoreDB.getFirestoreDB().collection("appointments").document();
+            docRef = firestoreDB.get().collection("appointments").document();
         } else {
-            docRef = FirestoreDB.getFirestoreDB().collection("appointments").document(appointment.getAppointmentId());
+            docRef = firestoreDB.get().collection("appointments").document(appointment.getAppointmentId());
         }
         Map<String, Object> data = new HashMap<>();
         /* Create user model for DB insert */
@@ -305,7 +308,7 @@ public class AppointmentsDB {
     public static AppointmentsModel removeAppointment(String appointmentId){
         AppointmentsModel appointment = getAppointment(appointmentId);
         /* Asynchronously remove appointment from DB */
-        ApiFuture<WriteResult> writeResult = FirestoreDB.getFirestoreDB().collection("appointments").document(appointmentId).delete();
+        ApiFuture<WriteResult> writeResult = firestoreDB.get().collection("appointments").document(appointmentId).delete();
         return appointment;
     }
 }

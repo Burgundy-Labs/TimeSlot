@@ -1,20 +1,16 @@
 package modules;
 
+import com.google.cloud.firestore.Firestore;
 import com.google.inject.AbstractModule;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import controllers.ApplicationComponents.Roles;
 import controllers.Databases.FirestoreDB;
 
-import java.io.IOException;
-
-@Singleton
 public class StartupModule extends AbstractModule {
 
-    @Inject
     protected void configure() {
-        /* Start the database service */
-        bind(FirestoreDB.class).asEagerSingleton();
+     /* Start the database service */
+        bind(Firestore.class).toProvider(FirestoreDB.class).asEagerSingleton();
+        requestStaticInjection(FirestoreDB.class);
         /* Define default roles for project */
         new Roles("Coach");
         new Roles("Admin");
