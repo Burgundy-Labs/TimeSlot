@@ -3,16 +3,23 @@ package controllers;
 import com.google.inject.Inject;
 import com.typesafe.config.Config;
 import controllers.ApplicationComponents.MenuLinks;
+import play.Environment;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class Application {
     private static Config config;
+    private static Environment environment;
 
     @Inject
-    public Application(Config config){
+    public Application(Config config, Environment environment) {
         Application.config = config;
+        Application.environment = environment;
+    }
+
+    public static Environment getEnvironment(){
+        return environment;
     }
 
     public static Config getConfig(){

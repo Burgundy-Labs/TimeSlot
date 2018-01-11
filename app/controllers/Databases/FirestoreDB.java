@@ -6,6 +6,7 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import controllers.Application;
 import play.api.Environment;
 
 import java.io.File;
@@ -13,15 +14,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class FirestoreDB  {
-    private static Environment environment;
-
-    @Inject
-    public FirestoreDB(Environment environment){
-        FirestoreDB.environment = environment;
-    }
 
     public static Firestore get(){
-        File serviceAccount = environment.getFile("conf/credentials.json");
+        File serviceAccount = Application.getEnvironment().getFile("conf/credentials.json");
         GoogleCredentials credentials = null;
         try {
             credentials = GoogleCredentials.fromStream(new FileInputStream(serviceAccount));

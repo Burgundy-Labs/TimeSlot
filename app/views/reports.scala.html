@@ -51,7 +51,7 @@
                 data : {
                     datasets: [{
                         data: [],
-                        backgroundColor: palette('tol', [10, 20, 30].length).map(function(hex) {
+                        backgroundColor: palette('tol', data.length).map(function(hex) {
                             return '#' + hex;
                         })
                     }],
@@ -81,7 +81,7 @@
                     data : {
                         datasets: [{
                             data: [],
-                            backgroundColor: palette('tol', [10, 20, 30].length).map(function(hex) {
+                            backgroundColor: palette('tol', data.length).map(function(hex) {
                                 return '#' + hex;
                             })
                         }],

@@ -16,7 +16,7 @@
                     <ul class="list-group col-md-3">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <select id="selectedService" title="Services" class="col-md-9 form-control">
-                                <option value="" selected default hidden>
+                                <option value="" selected disabled hidden>
                                 Select A Service
                                 </option>
                             @for(service <- AccountController.getAvailableServices(currentUser.getUid)) {
@@ -38,9 +38,7 @@
                 </div>
         </div>
         <script>
-
             function removeService(serviceId) {
-
                 $.confirm({
                     title: 'Remove Service',
                     content: 'Are you sure you want to remove this service?',
@@ -132,9 +130,9 @@
                                 url: '/availableSlots/' + '@currentUser.getUid',
                                 type: 'GET',
                                 success: function (response) {
-                                    var events = [];
+                                    let events = [];
                                     $(response).each(function () {
-                                        var event = {
+                                        const event = {
                                             id: $(this).attr('availabilityId'),
                                             title: "One-Time",
                                             start: moment($(this).attr('startDate')),
@@ -166,7 +164,7 @@
                         navLinks: true,
                         eventLimit: false,
                         select: function (start, end, jsEvent, view) {
-                            var newAvailability = {
+                            const newAvailability = {
                                 userId: '@currentUser.getUid',
                                 startDate: moment(start).format(),
                                 endDate: moment(end).format(),
