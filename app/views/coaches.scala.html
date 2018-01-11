@@ -1,60 +1,37 @@
-@import controllers.Databases.UserDB
-@import controllers.ApplicationComponents.Roles
 @()
-@* TOOD pull "MTMC" from DB *@
 @currentUser = @{
     UserController.getCurrentUser
 }
 @main("Coaches", "Coaches") {
     <div class="container-fluid">
-        <div class="panel panel-default">
-            <table class="table table-responsive" id="usersTable">
-                <thead>
-                    <tr>
-                        <th>Profile Picture</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Roles</th>
-                        <th>Manage</th>
-                    </tr>
-                </thead>
-                <tbody>
-                @for(user <- if(!currentUser.getRole.equals("Admin")) UserDB.getCoaches else UserDB.getUsers) {
-                    <tr>
-                        <td>
-                            <img class="userAvatar" src="@user.getPhotoURL" alt="Card image cap">
-                        </td>
-                        <td>@user.getDisplayName</td>
-                        <td>@user.getEmail</td>
-                        <td>
-                            <label>
-                            @if(currentUser.getRole.equals("Admin")) {
-                                <select id='select' data-id="@user.getUid" class="custom-select">
-                                    <option selected>@user.getRole</option>
-                                    @for(role <- Roles.getRoles) {
-                                        @if(!Roles.getRole(user.getRole).equals(role)) {
-                                            <option value="@role.role()">@role.role()</option>
-                                        }
-                                    }
-                                </select>
-                            } else {
-                                @user.getRole
-                            }
-                            </label>
-                        </td>
-                        <td>
-                            <span class="mdl-list__item-secondary-content">
-                                <span class="action-primary">@partials.components._tooltipIconLink("mailto:" + user.getEmail, "email", "bottom", "Email User", 32)</span>
-                                <span class="action-secondary">@partials.components._tooltipIconLink("javascript:void(0)", "insert_invitation", "bottom", "Schedule Appointment", 32)</span>
-                                @if(currentUser.getRole.equals("Admin")) {
-                                    <span class="action-delete"><span id="@user.getUid" onclick="deleteUser(this)">@partials.components._tooltipIconLink("javascript:void(0)", "close", "bottom", "Remove User", 32)</span></span>
-                                }
-                            </span>
-                        </td>
-                    </tr>
-                }
-                </tbody>
-            </table>
+        <ul class="nav nav-pills mb-3" id="user-view-tab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link" id="admin-list-tab" data-toggle="pill" href="#admin-list" role="tab" aria-controls="admin-list" aria-expanded="false">
+                    Admins</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" id="coach-list-tab" data-toggle="pill" href="#coach-list" role="tab" aria-controls="coach-list" aria-expanded="true">
+                    Coaches</a>
+            </li>
+            @if(!currentUser.getRole.equals("Student")) {
+                <li class="nav-item">
+                    <a class="nav-link" id="student-list-tab" data-toggle="pill" href="#student-list" role="tab" aria-controls="student-list" aria-expanded="false">
+                        Students</a>
+                </li>
+            }
+        </ul>
+        <div class="tab-content" id="user-view-tabContent">
+            <div class="tab-pane fade" id="admin-list" role="tabpanel" aria-labelledby="admin-list-tab">
+                @partials.components._userList("Admin", currentUser)
+            </div>
+            <div class="tab-pane fade show active" id="coach-list" role="tabpanel" aria-labelledby="coach-list-tab">
+                @partials.components._userList("Coach", currentUser)
+            </div>
+            @if(!currentUser.getRole.equals("Student")) {
+                <div class="tab-pane fade" id="student-list" role="tabpanel" aria-labelledby="student-list-tab">
+                @partials.components._userList("Student", currentUser)
+                </div>
+            }
         </div>
     </div>
     <script type="text/javascript">
@@ -92,15 +69,6 @@
                     }
                 });
             }
-
-            $(document).ready(function () {
-                $('#usersTable').DataTable({
-                    "dom": "<'row'<'col-sm-10'l><'col-sm-2'f>>" +
-                    "<'row'<'col-sm-12'tr>>" +
-                    "<'row'<'col-sm-5'i><'col-sm-7'p>>"
-                });
-            });
-
             function deleteUser(user) {
                 $.confirm({
                     title: 'Delete User',

@@ -1,85 +1,62 @@
-@main("Help","Help"){
-    <div id="accordion" class="helpAccordion dashCards" role="tablist">
-        <div class="card">
-            <div class="card-header " role="tab" id="headingOne">
-                <h5 class="mb-0">
-                    <a class="collapsed" data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                        Creating an appointment
-                    </a>
-                </h5>
-            </div>
-
-            <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
-                <div class="card-body">
-                    <h4>Dashboard</h4>
-                    <p>
-                        Within the dashboard, both students and coaches can quickly create a new general appointment with the Quick-Schedule button located on top right corner of the dashboard.
-                    </p>
-                    <h4>Coach List</h4>
-                    <p>
-                        The coaches list will display all coaches and allow quick-scheduling to a specific coach via a button in the manage section of the page. Each coach will have a button corresponding to them.
-                    </p>
-                </div>
-            </div>
+@main("Help", "Help Documents") {
+    <div class="container row col-md-12">
+    <div class="col-md-3">
+        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <a class="nav-link active" id="creatingAppointmentsTab" data-toggle="pill" href="#creatingAppointmentsContent" role="tab" aria-controls="creatingAppointmentsContent" aria-selected="true">
+                Creating an appointment</a>
+            <a class="nav-link" id="managingAppointmentsTab" data-toggle="pill" href="#managingAppointmentsContent" role="tab" aria-controls="managingAppointmentsContent" aria-selected="false">
+                Managing Appointments</a>
+            <a class="nav-link" id="servicesAndAppointmentTypesTab" data-toggle="pill" href="#servicesAndAppointmentTypesContent" role="tab" aria-controls="servicesAndAppointmentTypesContent" aria-selected="false">
+                Services & Appointment Types</a>
         </div>
-        <div class="card">
-            <div class="card-header" role="tab" id="headingTwo">
-                <h5 class="mb-0">
-                    <a class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        Managing Appointments
-                    </a>
-                </h5>
+    </div>
+    <div class="col-md-9">
+        <div class="tab-content" id="tabContent">
+            <div class="tab-pane fade show active" id="creatingAppointmentsContent" role="tabpanel" aria-labelledby="creatingAppointmentsTab">
+                <h4>Dashboard</h4>
+                <p>
+                    Within the dashboard, both students and coaches can quickly create a new general appointment with the Quick-Schedule button located on top right corner of the dashboard.
+                </p>
+                <h4>Coach List</h4>
+                <p>
+                    The coaches list will display all coaches and allow quick-scheduling to a specific coach via a button in the manage section of the page. Each coach will have a button corresponding to them.
+                </p>
             </div>
-            <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion">
-                <div class="card-body">
-                    <h4>Dashboard</h4>
-                    <p>
-                        The dashboard will display your next 5 appointments, along with a week-view calendar of all appointments this week.
-                        The next 5 appointment list will also contain a button to view the appointment list.
-                    </p>
-                    <h4>Appointment List</h4>
-                    <p>
-                        Within the appointment list, coaches and students can access and alter important information around each appointment.
-                        <br/><br/>
-                        <b>Students:</b>
-                        Students can easily view all of their upcoming & past appointments, as well as cancel any upcoming ones using the appointment controls.
-                        An additional button will also allow students to email their coach quickly.
-                        <br/><br/>
-                        <b>Coaches:</b>
-                        In the appointment list coaches can quickly email students, cancel appointments, as well as add coach notes to each appointment.
-                        Coach notes are not visible by students, but are the equivalent to session logs, and allow coaches to stay on top of topics and review what was discussed
-                        or completed in previous appointments.
-                    </p>
-                </div>
+            <div class="tab-pane fade" id="managingAppointmentsContent" role="tabpanel" aria-labelledby="managingAppointmentsTab">
+                <h4>Dashboard</h4>
+                <p>
+                    The dashboard will display your next 5 appointments, along with a week-view calendar of all appointments this week.
+                    The next 5 appointment list will also contain a button to view the appointment list.
+                </p>
+                <h4>Appointment List</h4>
+                <p>
+                    Within the appointment list, coaches and students can access and alter important information around each appointment.
+                    <br/><br/>
+                    <b>Students:</b>
+                    Students can easily view all of their upcoming & past appointments, as well as cancel any upcoming ones using the appointment controls.
+                    An additional button will also allow students to email their coach quickly.
+                    <br/><br/>
+                    <b>Coaches:</b>
+                    In the appointment list coaches can quickly email students, cancel appointments, as well as add coach notes to each appointment.
+                    Coach notes are not visible by students, but are the equivalent to session logs, and allow coaches to stay on top of topics and review what was discussed
+                    or completed in previous appointments.
+                </p>
             </div>
-        </div>
-        <div class="card">
-            <div class="card-header" role="tab" id="headingThree">
-                <h5 class="mb-0">
-                    <a class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                        Services & Appointment Types
-                    </a>
-                </h5>
-            </div>
-            <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion">
-                <div class="card-body">
-                    <h4>Services</h4>
-                    <p>
-                        Services are defined by each individual learning center. They are custom attributes that can be attached to specific coaches, and used to filter available appointment slots.
-                        For example, a coach may be able to provide help with "Writing", where other coaches may not. This "Writing" service will appear in the dropdown "Service" for creating a new appointment.
-                        Another example may be to create classes as services, if coaches are able to provide help in a class such as CS3000, where other coaches may not have taken it yet.
-                    </p>
-                    <h4>Appointment Types</h4>
-                    <p>
-                        Like services, appointment types can be set by each individual learning center. The three most commonly used appointment types consist of One-Time and Weekly.
-                        Appointment types are used to determine what frequency or mode the appointment will take place. For instance, some appointment availabilities may only be created to facilitate a weekly spot.
-                        Another example may be Online appointments, where coaches can mark availability times to allow online submissions only.
-                    </p>
-                </div>
+            <div class="tab-pane fade" id="servicesAndAppointmentTypesContent" role="tabpanel" aria-labelledby="servicesAndAppointmentTypesTab">
+                <h4>Services</h4>
+                <p>
+                    Services are defined by each individual learning center. They are custom attributes that can be attached to specific coaches, and used to filter available appointment slots.
+                    For example, a coach may be able to provide help with "Writing", where other coaches may not. This "Writing" service will appear in the dropdown "Service" for creating a new appointment.
+                    Another example may be to create classes as services, if coaches are able to provide help in a class such as CS3000, where other coaches may not have taken it yet.
+                </p>
+                <h4>Appointment Types</h4>
+                <p>
+                    Like services, appointment types can be set by each individual learning center. The three most commonly used appointment types consist of One-Time and Weekly.
+                    Appointment types are used to determine what frequency or mode the appointment will take place. For instance, some appointment availabilities may only be created to facilitate a weekly spot.
+                    Another example may be Online appointments, where coaches can mark availability times to allow online submissions only.
+                </p>
             </div>
         </div>
     </div>
-
-
-
+    </div>
 }

@@ -225,6 +225,72 @@ public class UserDB {
         return userList;
     }
 
+    public static synchronized List<UsersModel> getAdmins() {
+        List<UsersModel> userList = new ArrayList<>();
+        /* Asynchronously retrieve all users */
+        ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("users").get();
+        QuerySnapshot querySnapshot = null;
+        try {
+            /* Attempt to get a list of all users - blocking */
+            querySnapshot = query.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        assert querySnapshot != null;
+        List<DocumentSnapshot> documents = querySnapshot.getDocuments();
+        /* Iterate users and add them to a list for return */
+        for (DocumentSnapshot document : documents) {
+            if (document.getString("role").equals("Admin"))
+            {
+                UsersModel user = new UsersModel(
+                        document.getString("display_name"),
+                        document.getString("email"),
+                        document.getBoolean("email_verified"),
+                        document.getString("photo_url"),
+                        document.getId(),
+                        document.getString("phone_number"),
+                        Roles.getRole(document.getString("role")),
+                        document.getBoolean("isCoach")
+                );
+                userList.add(user);
+            }
+        }
+        return userList;
+    }
+
+    public static synchronized List<UsersModel> getStudents() {
+        List<UsersModel> userList = new ArrayList<>();
+        /* Asynchronously retrieve all users */
+        ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("users").get();
+        QuerySnapshot querySnapshot = null;
+        try {
+            /* Attempt to get a list of all users - blocking */
+            querySnapshot = query.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        assert querySnapshot != null;
+        List<DocumentSnapshot> documents = querySnapshot.getDocuments();
+        /* Iterate users and add them to a list for return */
+        for (DocumentSnapshot document : documents) {
+            if (document.getString("role").equals("Student"))
+            {
+                UsersModel user = new UsersModel(
+                        document.getString("display_name"),
+                        document.getString("email"),
+                        document.getBoolean("email_verified"),
+                        document.getString("photo_url"),
+                        document.getId(),
+                        document.getString("phone_number"),
+                        Roles.getRole(document.getString("role")),
+                        document.getBoolean("isCoach")
+                );
+                userList.add(user);
+            }
+        }
+        return userList;
+    }
+
     public static List<UsersModel> getCoachesByService(String serviceId) {
         List<UsersModel> coachesWithService = new ArrayList<>();
         List<UsersModel> coaches = getCoaches();
