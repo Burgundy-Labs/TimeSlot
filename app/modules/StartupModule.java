@@ -9,8 +9,7 @@ public class StartupModule extends AbstractModule {
 
     protected void configure() {
      /* Start the database service */
-        bind(Firestore.class).toProvider(FirestoreDB.class).asEagerSingleton();
-        requestStaticInjection(FirestoreDB.class);
+        bind(FirestoreDB.class).asEagerSingleton();
         /* Define default roles for project */
         new Roles("Coach");
         new Roles("Admin");

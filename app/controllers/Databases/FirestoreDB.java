@@ -12,16 +12,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class FirestoreDB implements Provider<Firestore> {
-    private Environment environment;
+public class FirestoreDB  {
+    private static Environment environment;
 
     @Inject
     public FirestoreDB(Environment environment){
-        this.environment = environment;
+        FirestoreDB.environment = environment;
     }
 
-    @Override
-    public Firestore get() {
+    public static Firestore get(){
         File serviceAccount = environment.getFile("conf/credentials.json");
         GoogleCredentials credentials = null;
         try {
@@ -38,4 +37,5 @@ public class FirestoreDB implements Provider<Firestore> {
         }
         return FirestoreClient.getFirestore();
     }
-}
+    }
+

@@ -16,10 +16,10 @@ import java.util.concurrent.ExecutionException;
 /* DB classes contain the methods necessary to manage their corresponding models.
 * UserDB works with UsersModel to retrieve and remove users in the Firestore DB.*/
 public class UserDB {
-    @Inject static FirestoreDB firestoreDB;
+
     public static synchronized void addServiceToUser(String userId, ServiceModel service){
          /* Get DB instance */
-        DocumentReference docRef = firestoreDB.get().collection("users").document(userId).collection("services").document(service.getServiceId());
+        DocumentReference docRef = FirestoreDB.get().collection("users").document(userId).collection("services").document(service.getServiceId());
         Map<String, Object> data = new HashMap<>();
         /* Create user model for DB insert */
         data.put("service", service.getService());
@@ -31,7 +31,7 @@ public class UserDB {
     public static synchronized List<ServiceModel> getServicesForUser(String userId){
         List<ServiceModel> servicesList = new ArrayList<>();
         /* Asynchronously retrieve all users */
-        ApiFuture<QuerySnapshot> query = firestoreDB.get().collection("users").document(userId).collection("services").get();
+        ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("users").document(userId).collection("services").get();
         QuerySnapshot querySnapshot = null;
         try {
             /* Attempt to get a list of all users - blocking */
@@ -56,7 +56,7 @@ public class UserDB {
 
     public static boolean removeServiceFromUser(String userId, String serviceId) {
         /* Asynchronously remove user from DB */
-        ApiFuture<WriteResult> writeResult = firestoreDB.get().collection("users").document(userId).collection("services").document(serviceId).delete();
+        ApiFuture<WriteResult> writeResult = FirestoreDB.get().collection("users").document(userId).collection("services").document(serviceId).delete();
         try {
             /* Verify that action is complete */
             writeResult.get();
@@ -71,9 +71,9 @@ public class UserDB {
          /* Get DB instance */
         DocumentReference docRef = null;
          if(notificationModel.getNotificationId() == null) {
-             docRef = firestoreDB.get().collection("users").document(userId).collection("notifications").document();
+             docRef = FirestoreDB.get().collection("users").document(userId).collection("notifications").document();
          } else {
-             docRef = firestoreDB.get().collection("users").document(userId).collection("notifications").document(notificationModel.getNotificationId());
+             docRef = FirestoreDB.get().collection("users").document(userId).collection("notifications").document(notificationModel.getNotificationId());
          }
         Map<String, Object> data = new HashMap<>();
         /* Create user model for DB insert */
@@ -88,7 +88,7 @@ public class UserDB {
     public static synchronized List<NotificationModel> getNotificaitonsForUser(String userId){
         List<NotificationModel> notificationList = new ArrayList<>();
         /* Asynchronously retrieve all users */
-        ApiFuture<QuerySnapshot> query = firestoreDB.get().collection("users").document(userId).collection("notifications").orderBy("creationDate", Query.Direction.DESCENDING).limit(5).get();
+        ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("users").document(userId).collection("notifications").orderBy("creationDate", Query.Direction.DESCENDING).limit(5).get();
         QuerySnapshot querySnapshot = null;
         try {
             /* Attempt to get a list of all users - blocking */
@@ -116,7 +116,7 @@ public class UserDB {
 
     public static boolean removeNotification(String userId, String notificationId) {
         /* Asynchronously remove user from DB */
-        ApiFuture<WriteResult> writeResult = firestoreDB.get().collection("users").document(userId).collection("notifications").document(notificationId).delete();
+        ApiFuture<WriteResult> writeResult = FirestoreDB.get().collection("users").document(userId).collection("notifications").document(notificationId).delete();
         try {
             /* Verify that action is complete */
             writeResult.get();
@@ -131,7 +131,7 @@ public class UserDB {
         /* Return null user if none found */
         UsersModel userFound = null;
         /* Get the specific user reference from the DB*/
-        DocumentReference docRef = firestoreDB.get().collection("users").document(userId);
+        DocumentReference docRef = FirestoreDB.get().collection("users").document(userId);
         ApiFuture<DocumentSnapshot> future = docRef.get();
         DocumentSnapshot document = null;
         try {
@@ -161,7 +161,7 @@ public class UserDB {
     public static synchronized List<UsersModel> getUsers() {
         List<UsersModel> userList = new ArrayList<>();
         /* Asynchronously retrieve all users */
-        ApiFuture<QuerySnapshot> query = firestoreDB.get().collection("users").get();
+        ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("users").get();
         QuerySnapshot querySnapshot = null;
         try {
             /* Attempt to get a list of all users - blocking */
@@ -192,7 +192,7 @@ public class UserDB {
     public static synchronized List<UsersModel> getCoaches() {
         List<UsersModel> userList = new ArrayList<>();
         /* Asynchronously retrieve all users */
-        ApiFuture<QuerySnapshot> query = firestoreDB.get().collection("users").get();
+        ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("users").get();
         QuerySnapshot querySnapshot = null;
         try {
             /* Attempt to get a list of all users - blocking */
@@ -246,7 +246,7 @@ public class UserDB {
             user.setRole(Roles.getRole("Admin"));
         }
         /* Get DB instance */
-        DocumentReference docRef = firestoreDB.get().collection("users").document(user.getUid());
+        DocumentReference docRef = FirestoreDB.get().collection("users").document(user.getUid());
         Map<String, Object> data = new HashMap<>();
         /* Create user model for DB insert */
         data.put("display_name", user.getDisplayName());
@@ -268,7 +268,7 @@ public class UserDB {
 
     public static boolean removeUser(String userId) {
         /* Asynchronously remove user from DB */
-        ApiFuture<WriteResult> writeResult = firestoreDB.get().collection("users").document(userId).delete();
+        ApiFuture<WriteResult> writeResult = FirestoreDB.get().collection("users").document(userId).delete();
         try {
             /* Verify that action is complete */
             writeResult.get();
