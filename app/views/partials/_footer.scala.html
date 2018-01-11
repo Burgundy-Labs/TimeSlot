@@ -1,8 +1,10 @@
 <footer class="footer">
         <span class="centerName">
             @SettingsController.getSettings.getUniversityName
-            -
             @SettingsController.getSettings.getCenterName
+            <small>
+                <a href="https://github.com/MTUHIDE/Project_Burgundy" target="_blank">@Application.getConfig.getString("app.name")</a>
+            </small>
         </span>
         <ul>
             <li><a href="/Help">Help</a></li>

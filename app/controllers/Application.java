@@ -1,11 +1,23 @@
 package controllers;
 
+import com.google.inject.Inject;
+import com.typesafe.config.Config;
 import controllers.ApplicationComponents.MenuLinks;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class Application {
+    private static Config config;
+
+    @Inject
+    public Application(Config config){
+        Application.config = config;
+    }
+
+    public static Config getConfig(){
+        return config;
+    }
     public static List<MenuLinks> menuLinks = Arrays.asList(
             new MenuLinks("/Account", "Account", "account_circle", "Manage your account settings and preferences.", false),
             new MenuLinks("/Dashboard", "Dashboard", "dashboard", "Something about the dashboard.", false),
