@@ -131,6 +131,8 @@
                             /* TODO If want to select more than 1 event, create unique id's */
                             id: 1,
                             userId: '@currentUser.getUid',
+                            start: moment(start).format(),
+                            end: moment(end).format(),
                             startDate: moment(start).format(),
                             endDate: moment(end).format(),
                             canBeWeekly: canBes[0].canBeWeekly,
