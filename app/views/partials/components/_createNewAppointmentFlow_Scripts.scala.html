@@ -157,7 +157,8 @@
     function createNewAppointment() {
         let content = ` @{ partials.components._createNewAppointmentFlow() } `;
         $.confirm({
-            columnClass: 'col-md-12',
+            columnClass: 'xl',
+            containerFluid: true,
             title: "New Appointment",
             content: content,
             buttons: {
