@@ -5,12 +5,14 @@ public class MenuLinks {
     public String menuText;     /* NOTE: Should match the "Title" for the page it goes to. */
     public String mdlIcon;     /* https://material.io/icons/ */
     public String desc;
-    public boolean locked; // admin only
-    public MenuLinks(String href, String menuText, String mdlIcon, String desc, boolean locked) {
+    public boolean adminLocked; // admin only
+    public boolean coachLocked;
+    public MenuLinks(String href, String menuText, String mdlIcon, String desc, boolean adminLocked, boolean coachLocked) {
         this.href = href;
         this.menuText = menuText;
         this.mdlIcon = mdlIcon;
         this.desc = desc;
-        this.locked = locked;
+        this.adminLocked = adminLocked;
+        this.coachLocked = coachLocked;
     }
 }

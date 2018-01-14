@@ -46,5 +46,6 @@ POST        /createAvailability                                       controller
 POST        /removeAvailability                                       controllers.AvailabilityController.removeAvailability()
 POST        /sendFeedback                                             controllers.FeedbackController.sendFeedback()
 POST        /appointmentTypeFrequency                                 controllers.SettingsController.appointmentTypeFrequency()
+POST        /isCoachChecked                                           controllers.AccountController.isCoachChecked()
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                             controllers.Assets.at(path="/public", file)

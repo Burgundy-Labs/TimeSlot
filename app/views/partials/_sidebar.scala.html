@@ -6,7 +6,7 @@
                     <img src="@routes.Assets.at("images/husky-icon-resize.jpg")" class="col-sm-12">
                 </div>
                 @for(menuLink <- Application.menuLinks) {
-                    @if(currentUser == null || !currentUser.getRole.equals("Admin") && menuLink.locked) {
+                    @if(currentUser == null || !currentUser.getRole.equals("Admin") && menuLink.adminLocked || !currentUser.getRole.equals("Coach") && menuLink.coachLocked) {
                     } else {
                         <div @if(currentPage.equals(menuLink.menuText)) {
                             class="currentPage"}>@partials.components._tooltipIconLink(menuLink.href, menuLink.mdlIcon, "right", menuLink.menuText, 32)</div>
