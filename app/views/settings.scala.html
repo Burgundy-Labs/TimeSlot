@@ -143,7 +143,6 @@
     </div>
     <script type="text/javascript">
             function weeklyCheck(appointmentTypeId) {
-                console.log($(this));
                 let checked = $(".weekly-" + appointmentTypeId).is(':checked');
                 let data = {frequency: "weekly", id: appointmentTypeId, checked: checked};
                 $.ajax({
@@ -161,7 +160,20 @@
             }
 
             function oneTimeCheck(appointmentTypeId) {
-                alert(appointmentTypeId);
+                let checked = $(".weekly-" + appointmentTypeId).is(':checked');
+                let data = {frequency: "oneTime", id: appointmentTypeId, checked: checked};
+                $.ajax({
+                    url: '/appointmentTypeFrequency',
+                    type: 'POST',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    success: function () {
+                        createAlert("success", "Appointment Type Updated!");
+                    },
+                    error: function () {
+                        createAlert('danger', 'Appointment Type Change Failed.');
+                    }
+                });
             }
 
             function removeService(serviceId) {
