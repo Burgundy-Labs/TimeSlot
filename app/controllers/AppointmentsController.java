@@ -53,7 +53,7 @@ public class AppointmentsController extends Controller {
         JsonNode json = request().body().asJson();
         String appointmentId = json.findPath("appointmentId").textValue();
         AppointmentsModel appointment = AppointmentsDB.removeAppointment(appointmentId);
-        MailerService.sendAppointmentCancellation(appointment);
+        new Thread(() -> MailerService.sendAppointmentCancellation(appointment)).start();
         return ok();
     }
 
