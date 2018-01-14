@@ -87,11 +87,6 @@ public class AvailabilityController extends Controller {
                 Calendar availabilityDate = Calendar.getInstance();
                 availabilityDate.setTime(av.getStartDate());
 
-
-                if(ap.isWeekly() && ap.getStartDate().after(av.getStartDate()) || ap.getStartDate().equals(av.getStartDate())) {
-                    toRemove.add(av);
-                }
-                
                 if (appointmentStart.before(availabilityStart) || appointmentStart.equals(availabilityStart)) {
                     if (appointmentDate.get(Calendar.DAY_OF_WEEK) == availabilityDate.get(Calendar.DAY_OF_WEEK)
                             && appointmentDate.get(Calendar.HOUR) == availabilityDate.get(Calendar.HOUR)
