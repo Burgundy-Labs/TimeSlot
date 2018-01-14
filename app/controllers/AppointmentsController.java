@@ -27,6 +27,7 @@ public class AppointmentsController extends Controller {
         AppointmentsDB.addAppointment(appointment);
         return ok();
     }
+
     public Result createAppointment() {
         /* Get user object from request */
         JsonNode json = request().body().asJson();
