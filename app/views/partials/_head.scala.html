@@ -31,11 +31,12 @@
 <script src="https://cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.js"></script>
 <script>
   var config = {
-
+ 
   };
   firebase.initializeApp(config);
 
   $(document).ready(function() {
+      console.log('@Application.getConfig.getString("app.name")');
       const csrfToken = $('input[name="csrfToken"]').attr('value');
       $.ajaxSetup({
           beforeSend: function (xhr) {
