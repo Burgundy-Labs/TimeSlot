@@ -127,7 +127,7 @@
                         maxTime: moment('@SettingsController.getSettings.getEndTime.toInstant').format("HH:mm"),
                         events: function (start, end, timezone, callback) {
                             $.ajax({
-                                url: '/availableSlots/' + '@currentUser.getUid',
+                                url: '/availableSlots/' + '@currentUser.getUid' + '/' + moment(start).toISOString() + '/' + moment(end).toISOString(),
                                 type: 'GET',
                                 success: function (response) {
                                     let events = [];
