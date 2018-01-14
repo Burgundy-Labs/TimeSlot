@@ -17,4 +17,3 @@ server.pid
 /.idea
 /conf/application.conf
 /conf/credentials.json
-app/views/partials/components/_loginAuth.scala.html
