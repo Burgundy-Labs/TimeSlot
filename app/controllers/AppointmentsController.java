@@ -40,6 +40,7 @@ public class AppointmentsController extends Controller {
         appointment.setAppointmentNotes(json.findPath("appointmentNotes").textValue());
         appointment.setPresent(Boolean.getBoolean(json.findPath("present").textValue()));
         appointment.setServiceType(json.findPath("serviceType").textValue());
+        appointment.setWeekly(json.findPath("weekly").asBoolean());
         /* Check if user is in DB */
         appointment = AppointmentsDB.addAppointment(appointment);
         AppointmentsModel finalAppointment = appointment;

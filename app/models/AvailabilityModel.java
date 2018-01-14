@@ -8,6 +8,8 @@ public class AvailabilityModel {
     private Date startDate;
     private Date endDate;
     private Boolean weekly;
+    private Boolean canBeWeekly; // Are not in DB
+    private Boolean canBeOneTime; // Are not in DB
 
     public AvailabilityModel(){}
 
@@ -57,5 +59,21 @@ public class AvailabilityModel {
 
     public void setavailabilityId(String appointmentId) {
         this.availabilityId = appointmentId;
+    }
+
+    public Boolean getCanBeWeekly() {
+        return canBeWeekly;
+    }
+
+    public void setCanBeWeekly(Boolean canBeWeekly) {
+        this.canBeWeekly = canBeWeekly;
+    }
+
+    public Boolean getCanBeOneTime() {
+        return canBeOneTime;
+    }
+
+    public void setCanBeOneTime(Boolean canBeOneTime) {
+        this.canBeOneTime = canBeOneTime;
     }
 }

@@ -41,9 +41,10 @@ public class AppointmentsDB {
                     document.getString("coachPhoto"),
                     document.getString("appointment_notes"),
                     document.getString("coach_notes"),
-                    Boolean.valueOf(document.getBoolean("present")),
+                    document.getBoolean("present"),
                     document.getString("appointment_type"),
-                    document.getString("service_type"));
+                    document.getString("service_type"),
+                    document.getBoolean("weekly"));
         } else {
             /* Log something */
         }
@@ -87,7 +88,8 @@ public class AppointmentsDB {
                     document.getString("coach_notes"),
                     document.getBoolean("present"),
                     document.getString("appointment_type"),
-                    document.getString("service_type"));
+                    document.getString("service_type"),
+                    document.getBoolean("weekly"));
             appointmentList.add(appointment);
         }
         for (DocumentSnapshot document : documentsStudent) {
@@ -107,7 +109,8 @@ public class AppointmentsDB {
                     document.getString("coach_notes"),
                     document.getBoolean("present"),
                     document.getString("appointment_type"),
-                    document.getString("service_type"));
+                    document.getString("service_type"),
+                    document.getBoolean("weekly"));
             appointmentList.add(appointment);
         }
         return appointmentList;
@@ -150,7 +153,8 @@ public class AppointmentsDB {
                     document.getString("coach_notes"),
                     document.getBoolean("present"),
                     document.getString("appointment_type"),
-                    document.getString("service_type"));
+                    document.getString("service_type"),
+                    document.getBoolean("weekly"));
             appointmentList.add(appointment);
         }
         for (DocumentSnapshot document : documentsStudent) {
@@ -170,7 +174,8 @@ public class AppointmentsDB {
                     document.getString("coach_notes"),
                     document.getBoolean("present"),
                     document.getString("appointment_type"),
-                    document.getString("service_type"));
+                    document.getString("service_type"),
+                    document.getBoolean("weekly"));
             appointmentList.add(appointment);
         }
         Collections.sort(appointmentList, new Comparator<AppointmentsModel>() {
@@ -216,7 +221,8 @@ public class AppointmentsDB {
                     document.getString("coach_notes"),
                     document.getBoolean("present"),
                     document.getString("appointment_type"),
-                    document.getString("service_type"));
+                    document.getString("service_type"),
+                    document.getBoolean("weekly"));
             appointmentList.add(appointment);
             } else {
                 break;
@@ -256,7 +262,8 @@ public class AppointmentsDB {
                     document.getString("coach_notes"),
                     document.getBoolean("present"),
                     document.getString("appointment_type"),
-                    document.getString("service_type"));
+                    document.getString("service_type"),
+                    document.getBoolean("weekly"));
             appointmentList.add(appointment);
         }
         return appointmentList;
@@ -289,7 +296,7 @@ public class AppointmentsDB {
         data.put("present", appointment.getPresent());
         data.put("appointment_type", appointment.getAppointmentType());
         data.put("service_type",appointment.getServiceType());
-
+        data.put("weekly", appointment.isWeekly());
         /* Asynchronously write appointment into DB */
         ApiFuture<WriteResult> result = docRef.set(data);
 

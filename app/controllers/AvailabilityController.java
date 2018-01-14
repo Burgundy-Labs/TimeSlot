@@ -3,6 +3,7 @@ package controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import controllers.Databases.AppointmentsDB;
 import controllers.Databases.AvailabilityDB;
+import controllers.Databases.SettingsDB;
 import controllers.Databases.UserDB;
 import models.AppointmentsModel;
 import models.AvailabilityModel;
@@ -15,6 +16,7 @@ import play.mvc.Result;
 
 import javax.xml.bind.DatatypeConverter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +46,6 @@ public class AvailabilityController extends Controller {
     }
 
     public Result availableSlotsForAppointments(String userId, String start, String end) {
-        /*TODO use start/end to limit # of available slots returned */
         Date startDate = DatatypeConverter.parseDateTime(start).getTime();
         Date endDate = DatatypeConverter.parseDateTime(end).getTime();
         List<AvailabilityModel> availabilities = new ArrayList<>();
@@ -56,11 +57,13 @@ public class AvailabilityController extends Controller {
                 appointments = AppointmentsDB.getAppointmentsForUser("Coach", u.getUid());
                 makeAvailabilities(userId, availabilities);
             }
+
         } else {
             availabilities = AvailabilityDB.getAvailabilitesForUser(userId, startDate, endDate);
             appointments = AppointmentsDB.getAppointmentsForUser("Coach", userId);
             makeAvailabilities(userId, availabilities);
         }
+        /* Remove all taken availabilities */
         ArrayList<AvailabilityModel> toRemove = new ArrayList<>();
         for (AvailabilityModel av : availabilities) {
             for (AppointmentsModel ap : appointments) {
@@ -71,9 +74,50 @@ public class AvailabilityController extends Controller {
                 if ((appointmentStart.before(availabilityStart) || appointmentStart.equals(availabilityStart)) && (appointmentEnd.after(availabilityEnd) || appointmentEnd.equals(availabilityEnd))) {
                     toRemove.add(av);
                 }
+
+                Calendar appointmentDate = Calendar.getInstance();
+                appointmentDate.setTime(ap.getStartDate());
+                Calendar availabilityDate = Calendar.getInstance();
+                availabilityDate.setTime(av.getStartDate());
+
+                if (appointmentStart.before(availabilityStart) || appointmentStart.equals(availabilityStart)) {
+                    if (appointmentDate.get(Calendar.DAY_OF_WEEK) == availabilityDate.get(Calendar.DAY_OF_WEEK)
+                            && appointmentDate.get(Calendar.HOUR) == availabilityDate.get(Calendar.HOUR)
+                            && appointmentDate.get(Calendar.MINUTE) == availabilityDate.get(Calendar.MINUTE) && ap.isWeekly()) {
+                        toRemove.add(av);
+                    }
+                }
             }
         }
         availabilities.removeAll(toRemove);
+
+        /* Apply attributes for available slots */
+        for (AvailabilityModel av : availabilities) {
+            /* If the availability slot is one-time - prevent weekly appointments */
+            if (!av.getWeekly()) {
+                av.setCanBeWeekly(false);
+                av.setCanBeOneTime(true);
+            } else {
+                av.setCanBeOneTime(true);
+                av.setCanBeWeekly(true);
+            }
+            /* If any appointments exist after the availability - block weekly appointments */
+            for (AppointmentsModel ap : appointments) {
+                Calendar appointmentDate = Calendar.getInstance();
+                appointmentDate.setTime(ap.getStartDate());
+                Calendar availabilityDate = Calendar.getInstance();
+                availabilityDate.setTime(av.getStartDate());
+                if (ap.getStartDate().equals(av.getStartDate()) || ap.getStartDate().after(av.getStartDate())) {
+                    if (appointmentDate.get(Calendar.DAY_OF_WEEK) == availabilityDate.get(Calendar.DAY_OF_WEEK)
+                            && appointmentDate.get(Calendar.HOUR) == availabilityDate.get(Calendar.HOUR)
+                            && appointmentDate.get(Calendar.MINUTE) == availabilityDate.get(Calendar.MINUTE)) {
+                        av.setCanBeWeekly(false);
+                        av.setCanBeOneTime(true);
+                    }
+                }
+            }
+        }
+
         return ok(Json.toJson(availabilities));
     }
 

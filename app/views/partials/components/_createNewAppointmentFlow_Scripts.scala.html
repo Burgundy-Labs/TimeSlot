@@ -53,13 +53,20 @@
                                     start: moment($(this).attr('startDate')),
                                     end: moment($(this).attr('endDate')),
                                     dow: [moment($(this).attr('startDate')).isoWeekday()],
-                                    rendering: 'background'
+                                    rendering: 'background',
+                                    backgroundColor: "red",
+                                    canBeWeekly: $(this).attr("canBeWeekly"),
+                                    canBeOneTime: $(this).attr("canBeOneTime"),
                                 };
                                 if ($(this).attr("weekly") === true) {
                                     event.title = "Weekly";
                                     event.dow = [moment($(this).attr('startDate')).isoWeekday()];
                                     event.start = moment($(this).attr('startDate')).format("HH:mm");
                                     event.end = moment($(this).attr('endDate')).format("HH:mm");
+                                    event.backgroundColor = "blue";
+                                }
+                                if(event.canBeOneTime && event.canBeWeekly) {
+                                    event.backgroundColor = "purple";
                                 }
                                 events.push(event);
                             });
@@ -73,25 +80,14 @@
                 select: function (start, end, jsEvent, view) {
                     let valid = (function(){
                         return $("#newAppointmentCalendar").fullCalendar('clientEvents', function (event) {
-
                             return (event.rendering === "background" &&
-                                    (start.local().isAfter(event.start) || start.local().isSame(event.start,'minute')) &&
-                                    (end.local().isBefore(event.end) || end.local().isSame(event.end,'minute')));
+                                    (start.local().isAfter(event.start.local()) || start.local().isSame(event.start.local(),'minute')) &&
+                                    (end.local().isBefore(event.end.local()) || end.local().isSame(event.end.local(), 'minute')));
                         }).length > 0;
                     })();
                     const duration = moment.duration(end.diff(start)).asHours();
                     // TODO pull duration from DB - settings + allow for greater than .5 selection
-                    if(!valid){
-                        $.alert({
-                        title: "Pick an appointment",
-                        content: "The green highlighted area indicates available appointment slots.",
-                        buttons: {
-                            ok: {
-                                text: "Okay"
-                            }
-                        }
-                    })}
-                    else if (duration > .5) {
+                    if (duration > .5) {
                         $.alert({
                             title: "Hold on there",
                             content: "An appointment slot cannot be more than 30 minutes.",
@@ -101,7 +97,18 @@
                                 }
                             }
                         })
-                    } else if (($("#newAppointmentCalendar").fullCalendar('clientEvents', [1])).length > 0) {
+                    }
+                    else if(!valid){
+                        $.alert({
+                        title: "Pick an appointment",
+                        content: "The green highlighted area indicates available appointment slots.",
+                        buttons: {
+                            ok: {
+                                text: "Okay"
+                            }
+                        }
+                    })}
+                    else if (($("#newAppointmentCalendar").fullCalendar('clientEvents', [1])).length > 0) {
                         $.alert({
                             title: "Hold on there",
                             content: "You already have an appointment slot selected, cancel the current one to change your time.",
@@ -112,6 +119,13 @@
                             }
                         })
                     } else {
+                        let canBes = (function(){
+                            return $("#newAppointmentCalendar").fullCalendar('clientEvents', function (event) {
+                                if (event.rendering === "background" && (start.local().isAfter(event.start.local()) || start.local().isSame(event.start.local(),'minute')) &&
+                                        (end.local().isBefore(event.end.local()) || end.local().isSame(event.end.local(), 'minute'))) {
+                                return {canBeOneTime: event.canBeOneTime, canBeWeekly: event.canBeWeekly};
+                            }
+                        })})();
                         const newAppointment = {
                             title: "Appointment",
                             /* TODO If want to select more than 1 event, create unique id's */
@@ -119,7 +133,8 @@
                             userId: '@currentUser.getUid',
                             start: moment(start).format(),
                             end: moment(end).format(),
-                            weekly: false
+                            canBeWeekly: canBes[0].canBeWeekly,
+                            canBeOneTime: canBes[0].canBeOneTime
                         };
                         $('#newAppointmentCalendar').fullCalendar('renderEvent', newAppointment, true);
                         selectedEvents.push(newAppointment);
@@ -166,12 +181,7 @@
                             });
                             return false;
                         } else {
-                            const appointment = {
-                                /* TOOD: If desired to allow multiple events - change this*/
-                                id: selectedEvents[0].id,
-                                startDate: selectedEvents[0].start,
-                                endDate: selectedEvents[0].end
-                            };
+                            const appointment = selectedEvents[0];
                             const form = {
                                 appointmentType: $('#appointmentType option:selected').text(),
                                 serviceType: $('#serviceType option:selected').text(),
@@ -180,7 +190,7 @@
                                 startDate: appointment.startDate,
                                 endDate: appointment.endDate,
                                 appointmentNotes: $('#appointmentNotes').val(),
-                                present: false
+                                present: false,
                             };
                             let coachName = $('#coachId option:selected').text();
                             let appointmentType = $('#appointmentType option:selected').text();
@@ -196,8 +206,44 @@
                                 buttons: {
                                     Weekly: {
                                         text: 'Create Weekly Appointment',
-                                        btnClass: 'btn-primary',
+                                        btnClass: 'btn-primary col-12',
                                         action: function () {
+                                            form.weekly = true;
+                                            /* Create appointment Here*/
+                                            $.ajax({
+                                                url: '/createAppointment',
+                                                type: 'POST',
+                                                data: JSON.stringify(form),
+                                                contentType: 'application/json',
+                                                success: function () {
+                                                    let studentNotification = "New weekly "+ form.appointmentType +" Appointment on " + moment(form.startDate).format("dddd, MMMM Do, h:mm A") + " - " + moment(form.endDate).format("h:mm A") + " with " + coachName;
+                                                    let coachNotification = "New weekly "+ form.appointmentType +" Appointment on " + moment(form.startDate).format("dddd, MMMM Do, h:mm A") + " - " + moment(form.endDate).format("h:mm A") + " with " + "@currentUser.getDisplayName";
+                                                    $.ajax({
+                                                        url: '/addNotificationToUser',
+                                                        type: 'POST',
+                                                        data: JSON.stringify({userId: form.coachId, notificationContent: coachNotification}),
+                                                        contentType: 'application/json',
+                                                    });
+                                                    $.ajax({
+                                                        url: '/addNotificationToUser',
+                                                        type: 'POST',
+                                                        data: JSON.stringify({userId: form.studentId, notificationContent: studentNotification}),
+                                                        contentType: 'application/json',
+                                                    });
+                                                    createAlert("success", "Appointment Created!");
+                                                    location.reload();
+                                                },
+                                                error: function () {
+                                                    createAlert('danger', 'Appointment creation failed.');
+                                                }
+                                            });
+                                        }
+                                    },
+                                    OneTime: {
+                                        text: 'Create One-Time Appointment',
+                                        btnClass: 'btn-primary col-12',
+                                        action: function () {
+                                            form.weekly = false;
                                             /* Create appointment Here*/
                                             $.ajax({
                                                 url: '/createAppointment',
@@ -230,12 +276,19 @@
                                     },
                                     no: {
                                         text: 'Cancel Appointment',
+                                        btnClass: "col-12",
                                         action: function () {
                                             createAlert("warning", "Appointment Not Created");
                                             selectedEvents = [];
+                                            /* TODO have calendar  re-fetch on re-open */
+                                            location.reload();
                                         }
                                     }
-                                }
+                                },
+                                onOpenBefore: function () {
+                                    if(!appointment.canBeWeekly){this.buttons.Weekly.hide()}
+                                    if(!appointment.canBeOneTime){this.buttons.OneTime.hide()}
+                                },
                             });
                         }
                     }

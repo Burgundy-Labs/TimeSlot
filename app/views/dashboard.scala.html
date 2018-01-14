@@ -14,7 +14,7 @@
                         } </h4>
                     </div>
                     <div class="card-block">
-                        <div class="row">
+                        <div class="row col-12">
                             <img src="@currentUser.getPhotoURL" class="mdl-list__item-avatar"/>
                            <span class="appointmentCount"></span>
                         </div>
@@ -101,6 +101,7 @@
 
                 $('.clearAll').on('click', function () {
                     $('.deleteNotification').click();
+                    this.html("There are currently no notifications to display.");
                 });
 
                 $('#appointmentCalendar').fullCalendar({
