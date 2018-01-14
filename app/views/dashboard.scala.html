@@ -14,7 +14,12 @@
                         } </h4>
                     </div>
                     <div class="card-block">
-                        <div class="col-lg-6">
+                        <div class="row">
+                        <div class="col-4">
+                            <img src="@currentUser.getPhotoURL" class="mdl-list__item-avatar"/>
+                           <span class="appointmentCount"></span>
+                        </div>
+                        <div class="col-6">
                             <h6>Notifications:</h6>
                             <ul class="list-group" id="notifications">
                             @if(UserDB.getNotificaitonsForUser(currentUser.getUid).size() == 0) {
@@ -26,6 +31,7 @@
                                 <button class="clearAll no-button" id="notificationButton">Clear All</button>
                             }
                             </ul>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -87,6 +93,7 @@
             }
 
             $(document).ready(function () {
+
                 $('.clearAll').on('click', function () {
                     $('.deleteNotification').click();
                 });
@@ -121,12 +128,15 @@
                                 };
                                     events.push(event);
                                 });
+                                $(".appointmentCount").html("You have " + events.length + (events.length === 1 ? " appointment this week." : " appointments this week."));
                                 callback(events);
                             }
                         })
                     },
                 });
             });
+
+
     </script>
     @partials.components._createNewAppointmentFlow_Scripts()
 }
