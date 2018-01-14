@@ -63,15 +63,21 @@ public class AvailabilityController extends Controller {
             appointments = AppointmentsDB.getAppointmentsForUser("Coach", userId);
             makeAvailabilities(userId, availabilities);
         }
+        List<AppointmentsModel> weekAppointments = new ArrayList<>();
+        for ( AppointmentsModel ap : appointments ) {
+            if ( ((ap.getStartDate().after(startDate) || ap.getStartDate().equals(startDate)) && (ap.getEndDate().before(endDate) || ap.getEndDate().equals(endDate))) || ap.isWeekly() ) {
+                weekAppointments.add(ap);
+            }
+        }
         /* Remove all taken availabilities */
         ArrayList<AvailabilityModel> toRemove = new ArrayList<>();
         for (AvailabilityModel av : availabilities) {
-            for (AppointmentsModel ap : appointments) {
+            for (AppointmentsModel ap : weekAppointments) {
                 Date availabilityStart = new DateTime(av.getStartDate()).toDate();
                 Date availabilityEnd = new DateTime(av.getEndDate()).toDate();
                 Date appointmentStart = new DateTime(ap.getStartDate()).toDate();
                 Date appointmentEnd = new DateTime(ap.getEndDate()).toDate();
-                if ((appointmentStart.before(availabilityStart) || appointmentStart.equals(availabilityStart)) && (appointmentEnd.after(availabilityEnd) || appointmentEnd.equals(availabilityEnd))) {
+                if ( !ap.isWeekly() && ((appointmentStart.before(availabilityStart) || appointmentStart.equals(availabilityStart)) && (appointmentEnd.after(availabilityEnd) || appointmentEnd.equals(availabilityEnd)))) {
                     toRemove.add(av);
                 }
 
