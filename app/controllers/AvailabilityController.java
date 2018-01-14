@@ -36,8 +36,10 @@ public class AvailabilityController extends Controller {
         return ok();
     }
 
-    public Result availableSlots(String userId) {
-        List<AvailabilityModel> availabilities = AvailabilityDB.getAvailabilitesForUser(userId);
+    public Result availableSlots(String userId, String start, String end) {
+        Date startDate = DatatypeConverter.parseDateTime(start).getTime();
+        Date endDate = DatatypeConverter.parseDateTime(end).getTime();
+        List<AvailabilityModel> availabilities = AvailabilityDB.getAvailabilitesForUser(userId, startDate, endDate);
         return ok(Json.toJson(availabilities));
     }
 
@@ -47,18 +49,18 @@ public class AvailabilityController extends Controller {
         Date endDate = DatatypeConverter.parseDateTime(end).getTime();
         List<AvailabilityModel> availabilities = new ArrayList<>();
         List<AppointmentsModel> appointments = new ArrayList<>();
-        if(userId.equals("any")) {
+        if (userId.equals("any")) {
             List<UsersModel> users = UserDB.getCoaches();
             for (UsersModel u : users) {
-                availabilities = AvailabilityDB.getAvailabilitesForUser(u.getUid());
+                availabilities = AvailabilityDB.getAvailabilitesForUser(u.getUid(), startDate, endDate);
                 appointments = AppointmentsDB.getAppointmentsForUser("Coach", u.getUid());
                 makeAvailabilities(userId, availabilities);
             }
-        }else{
-            availabilities = AvailabilityDB.getAvailabilitesForUser(userId);
+        } else {
+            availabilities = AvailabilityDB.getAvailabilitesForUser(userId, startDate, endDate);
             appointments = AppointmentsDB.getAppointmentsForUser("Coach", userId);
             makeAvailabilities(userId, availabilities);
-            }
+        }
         ArrayList<AvailabilityModel> toRemove = new ArrayList<>();
         for (AvailabilityModel av : availabilities) {
             for (AppointmentsModel ap : appointments) {
