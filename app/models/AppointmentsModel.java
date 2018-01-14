@@ -192,7 +192,7 @@ public class AppointmentsModel {
                 + "\n" +
                 "Type: " + appointmentType
                 + "\n" +
-                "Weekly: " + weekly
+                "Weekly: " + (weekly ? "Yes" : "No")
                 + "\n" +
                 "Service: " + serviceType
                 + "\n" +
@@ -209,7 +209,7 @@ public class AppointmentsModel {
                 + "<br/>" +
                 "Type: " + appointmentType
                 + "<br/>" +
-                "Weekly: " + weekly
+                "Weekly: " + (weekly ? "Yes" : "No")
                 + "<br/> " +
                 "Service: " + serviceType
                 + "<br/>" +
