@@ -9,32 +9,46 @@
             </div>
         </div>
         <br/>
-        <div class="row">
-            <div class="col-md-12">
-                <h1>Assigned Services</h1>
-                <br/>
-                    <ul class="list-group col-md-3">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <select id="selectedService" title="Services" class="col-md-9 form-control">
-                                <option value="" selected disabled hidden>
-                                Select A Service
-                                </option>
-                            @for(service <- AccountController.getAvailableServices(currentUser.getUid)) {
-                                <option value="@service.getServiceId">
-                                    @service.getService
-                                </option>
-                            }
-                        </select>
-                        <button class="btn btn-primary btn-success" onclick=createService()><i class="material-icons md-18">
-                            add</i></button>
-                        </li>
-                        @for( service <- AccountController.getServicesForUser(currentUser.getUid)) {
-                        <li class="list-group-item d-flex justify-content-between align-items-center @service.getServiceId">
-                            <h6 class="mb-1">@service.getService</h6>
-                            <button class="btn btn-primary btn-danger" onclick="removeService('@service.getServiceId')">Remove</button>
-                        </li>
-                    }
-                    </ul>
+        <div class="dashCards row col-12">
+            <div class="col-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Assigned Services</h4>
+                        </div>
+                        <div class="card-block">
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <select id="selectedService" title="Services" class="col-md-9 form-control">
+                                        <option value="" selected disabled hidden>
+                                            Select A Service
+                                        </option>
+                                        @for(service <- AccountController.getAvailableServices(currentUser.getUid)) {
+                                            <option value="@service.getServiceId">
+                                            @service.getService
+                                            </option>
+                                        }
+                                    </select>
+                                    <button class="btn btn-primary btn-success" onclick=createService()>Add Service</button>
+                                </li>
+                                @for( service <- AccountController.getServicesForUser(currentUser.getUid)) {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center @service.getServiceId">
+                                        <h6 class="mb-1">@service.getService</h6>
+                                        <button class="btn btn-primary btn-danger" onclick="removeService('@service.getServiceId')">Remove</button>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+            </div>
+                <div class="col-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Account Settings</h4>
+                        </div>
+                        <div class="card-block">
+                
+                        </div>
+                    </div>
                 </div>
         </div>
         <script>

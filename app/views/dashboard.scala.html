@@ -5,8 +5,8 @@
     }
 @main("Dashboard", "Your Dashboard") {
     <div class="dashCards">
-        <div class="row">
-            <div class="col-lg-10">
+        <div class="row col-12">
+            <div class="col-4">
                 <div class="card">
                     <div class="card-header">
                         <h4>Hello, @{
@@ -15,28 +15,33 @@
                     </div>
                     <div class="card-block">
                         <div class="row">
-                        <div class="col-4">
                             <img src="@currentUser.getPhotoURL" class="mdl-list__item-avatar"/>
                            <span class="appointmentCount"></span>
-                        </div>
-                        <div class="col-6">
-                            <h6>Notifications:</h6>
-                            <ul class="list-group" id="notifications">
-                            @if(UserDB.getNotificaitonsForUser(currentUser.getUid).size() == 0) {
-                                There are currently no notifications to display.
-                            } else {
-                                @for(notification <- UserDB.getNotificaitonsForUser(currentUser.getUid)) {
-                                    <li class="list-group-item @notification.getNotificationId">@notification.getNotificationContent <button onclick="deleteNotification('@notification.getNotificationId')" class="no-button deleteNotification"><i class="material-icons md-18">backspace</i></button></li>
-                                }
-                                <button class="clearAll no-button" id="notificationButton">Clear All</button>
-                            }
-                            </ul>
-                        </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-2">
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Stay up to date</h4>
+                    </div>
+                    <div class="card-block">
+                                <h6>Notifications:</h6>
+                                <ul class="list-group" id="notifications">
+                                @if(UserDB.getNotificaitonsForUser(currentUser.getUid).size() == 0) {
+                                    There are currently no notifications to display.
+                                } else {
+                                    @for(notification <- UserDB.getNotificaitonsForUser(currentUser.getUid)) {
+                                        <li class="list-group-item @notification.getNotificationId">@notification.getNotificationContent <button onclick="deleteNotification('@notification.getNotificationId')" class="no-button deleteNotification"><i class="material-icons md-18">backspace</i></button></li>
+                                    }
+                                    <button class="clearAll no-button" id="notificationButton">Clear All</button>
+                                }
+                                </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
                 <div class="card text-center">
                     <div class="card-header">
                         <h4>Quick-Schedule</h4>
