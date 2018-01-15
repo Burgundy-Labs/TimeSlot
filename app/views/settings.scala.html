@@ -49,7 +49,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-12">
-                        <button type="submit" onclick="updateSettings()" class="btn btn-primary">
+                        <button type="submit" onclick="return updateSettings()" class="btn btn-primary">
                             Update Site Settings</button>
                     </div>
                 </div>
@@ -270,19 +270,47 @@
                     startTime: $('#startTime').val(),
                     endTime: $('#endTime').val()
                 };
-                $.ajax({
-                    url: '/updateSettings',
-                    type: 'POST',
-                    data: JSON.stringify(settings),
-                    contentType: 'application/json',
-                    success: function () {
-                        window.location.hash = "#success";
-                        location.reload();
-                    },
-                    error: function () {
-                        createAlert('warning', 'Settings not updated!');
-                    }
-                });
+                if ( Date.parse(settings.semesterStart) >= Date.parse(settings.semesterEnd) ) {
+                    $.alert({
+                        title: 'Alert',
+                        content: 'The semester end date must be after the semester start date.',
+                        buttons: {
+                            confirm: {
+                                keys: ['enter'],
+                                text: "Okay",
+                                btnClass: "btn-primary",
+                            }
+                        }
+                    });
+                    return false;
+                } else if ( Date.parse('1970-01-01T' + settings.startTime + 'Z') >= Date.parse('1970-01-01T' + settings.endTime + 'Z')) {
+                    $.alert({
+                        title: 'Alert',
+                        content: 'The center end time must be after the center start time.',
+                        buttons: {
+                            confirm: {
+                                keys: ['enter'],
+                                text: "Okay",
+                                btnClass: "btn-primary",
+                            }
+                        }
+                    });
+                    return false;
+                } else {
+                    $.ajax({
+                        url: '/updateSettings',
+                        type: 'POST',
+                        data: JSON.stringify(settings),
+                        contentType: 'application/json',
+                        success: function () {
+                            window.location.hash = "#success";
+                            location.reload();
+                        },
+                        error: function () {
+                            createAlert('warning', 'Settings not updated!');
+                        }
+                    });
+                }
             }
 
             function createAppointmentType() {
