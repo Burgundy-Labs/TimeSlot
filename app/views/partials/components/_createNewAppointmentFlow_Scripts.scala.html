@@ -164,6 +164,7 @@
             columnClass: 'xl',
             containerFluid: true,
             title: "New Appointment",
+            escapeKey: 'cancel',
             content: content,
             buttons: {
                 cancel: {
@@ -177,6 +178,7 @@
                 submit: {
                     text: 'Create Appointment',
                     btnClass: 'btn-primary',
+                    keys: ['enter'],
                     action: function () {
                         if (selectedEvents.length <= 0) {
                             $.alert({
@@ -208,6 +210,7 @@
                                 "<b>Date:</b> " + moment(appointment.startDate).format('dddd, MMMM Do, YYYY h:mm A') + " - " + moment(appointment.endDate).format('h:mm A') + "<br/>" +
                                 "</div>",
                                 theme: 'modern',
+                                escapeKey: 'no',
                                 buttons: {
                                     Weekly: {
                                         text: 'Create Weekly Appointment',

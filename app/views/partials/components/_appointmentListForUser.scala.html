@@ -68,10 +68,12 @@
             '<textarea cols="50" rows="10" class="coachNotes form-control" required>' + coachNotes +'</textarea>' +
             '</div>' +
             '</form>',
+            escapeKey: true,
             buttons: {
                 updateNotes: {
                     text: 'Update Coach Notes',
                     btnClass: 'btn-primary',
+                    keys: ['enter'],
                     action: function () {
                         coachNotes = this.$content.find('.coachNotes').val();
                         $.ajax({
@@ -106,12 +108,14 @@
         $.confirm({
             title: 'Cancel Appointment',
             content: 'Are you sure you want to cancel this appointment?',
+            escapeKey: 'cancel',
             buttons: {
                 cancel: {
                     text: "Nevermind",
                     btClass: "btn"
                 },
-                updateNotes: {
+                delete: {
+                    keys: ['enter'],
                     text: 'Cancel Appointment',
                     btnClass: 'btn-primary',
                     action: function () {

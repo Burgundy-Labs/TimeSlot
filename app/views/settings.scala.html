@@ -180,10 +180,12 @@
                 $.confirm({
                     title: 'Remove Service',
                     content: 'Are you sure you want to remove this service?',
+                    escapeKey: 'cancel',
                     buttons: {
                         confirm: {
                             text: 'Remove Service',
                             btnClass: "btn btn-primary",
+                            keys: ['enter'],
                             action: function () {
                                 $.ajax({
                                     url: '/removeService',
@@ -211,8 +213,10 @@
                 $.confirm({
                     title: 'Remove Appointment Type',
                     content: 'Are you sure you want to remove this Appointment Type?',
+                    escapeKey: 'cancel',
                     buttons: {
                         confirm: {
+                            keys: ['enter'],
                             text: 'Remove Appointment Type',
                             btnClass: "btn btn-primary",
                             action: function () {
@@ -285,7 +289,6 @@
                 $.confirm({
                     title: 'New Appointment Type',
                     columnClass: 'col-md-4',
-                    keys: ['enter'],
                     content: '' +
                     '<form action="" class="formName">' +
                     '<div class="form-group">' +
@@ -293,11 +296,12 @@
                     '<input id="appointmentTypeName" type="text" class="name form-control" required />' +
                     '</div>' +
                     '</form>',
+                    escapeKey: 'cancel',
                     buttons: {
                         confirm: {
+                            keys: ['enter'],
                             text: 'Confirm',
                             btnClass: 'btn btn-primary',
-                            keys: ['enter'],
                             action: function () {
                                 if ($('#appointmentTypeName').val() === '') {
                                     $.alert({
@@ -337,7 +341,6 @@
                 $.confirm({
                     title: 'New Service',
                     columnClass: 'col-md-4',
-                    keys: ['enter'],
                     content: '' +
                     '<form action="" class="formName">' +
                     '<div class="form-group">' +
@@ -345,6 +348,7 @@
                     '<input id="serviceName" type="text" class="name form-control" required />' +
                     '</div>' +
                     '</form>',
+                    escapeKey: 'cancel',
                     buttons: {
                         confirm: {
                             text: 'Confirm',

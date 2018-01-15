@@ -20,7 +20,7 @@
                     <div class="card-block">
                         <ul class="list-group">
                             <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <select id="selectedService" title="Services" class="col-md-9 form-control">
+                                <select id="selectedService" title="Services" class="col-md-8 form-control">
                                     <option value="" selected disabled hidden>
                                         Select A Service
                                     </option>
@@ -81,6 +81,7 @@
                     $.confirm({
                         title: 'Remove Service',
                         content: 'Are you sure you want to remove this service?',
+                        escapeKey: 'cancel',
                         buttons: {
                             confirm: {
                                 text: 'Yes, Remove',
@@ -126,6 +127,7 @@
                         $.confirm({
                             title: 'Add Service',
                             content: 'Do you want add ' + selectedServiceText + ' as a service you provide?',
+                            escapeKey: 'cancel',
                             buttons: {
                                 confirm: {
                                     text: 'Confirm',
@@ -214,11 +216,11 @@
                                 title: 'Availability',
                                 content: 'Is this available slot weekly?',
                                 theme: 'modern',
+                                escapeKey: 'cancel',
                                 buttons: {
                                     yes: {
                                         text: 'Yes, weekly',
                                         btnClass: 'btn-primary',
-                                        keys: ['enter', 'shift'],
                                         action: function () {
                                             newAvailability.weekly = true;
                                             createAvailability(newAvailability);
@@ -247,11 +249,12 @@
                         title: 'Remove Availability?',
                         content: 'Do you want to remove this availability slot?',
                         theme: 'modern',
+                        escapeKey: 'cancel',
                         buttons: {
                             yes: {
                                 text: 'Remove',
                                 btnClass: 'btn-primary',
-                                keys: ['enter', 'shift'],
+                                keys: ['enter'],
                                 action: function () {
                                     $.ajax({
                                         url: '/removeAvailability',

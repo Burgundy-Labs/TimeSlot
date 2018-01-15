@@ -42,6 +42,7 @@
                 $.confirm({
                     title: 'Submit Feedback',
                     content: 'Do you want to submit this feedback to us?',
+                    escapeKey: 'cancel',
                     buttons: {
                         cancel: {
                             text: "No, cancel",
@@ -50,6 +51,7 @@
                         submit: {
                             text: 'Yes, submit',
                             btnClass: 'btn btn-primary',
+                            keys: ['enter'],
                             action: function () {
                                 let form = {
                                     name: $('#name').val(),
