@@ -44,7 +44,8 @@
                 /* Create user object with altered role + content from userDB */
                 const user = {
                     uid: $(this).data('id'),
-                    role: newRole
+                    role: newRole,
+                    displayName: $(this).data("displayname"),
                 };
                 changeRole(user, newRole);
             });
@@ -52,7 +53,7 @@
             function changeRole(user, newRole) {
                 $.confirm({
                     title: 'Change Role',
-                    content: "Are you sure you want to change " + "'s role to " + newRole + "?",
+                    content: "Are you sure you want to change " + user.displayName + "'s role to " + newRole + "?",
                     escapeKey: 'cancel',
                     buttons: {
                         confirm: {
@@ -66,7 +67,7 @@
                                     data: JSON.stringify(user),
                                     contentType: 'application/json',
                                     success: function () {
-                                        createAlert('info', "'s role changed to: " + newRole);
+                                        createAlert('info', user.displayName + "'s role changed to: " + newRole);
                                         location.reload();
                                     },
                                     error: function (err) {

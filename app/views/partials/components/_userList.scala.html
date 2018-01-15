@@ -23,7 +23,7 @@
                     <td>
                         <label>
                         @if(currentUser.getRole.equals("Admin")) {
-                            <select id='select' data-id="@user.getUid" class="custom-select">
+                            <select id='select' data-id="@user.getUid" data-displayName="@user.getDisplayName" class="custom-select">
                                 <option selected>@user.getRole</option>
                                 @for(role <- Roles.getRoles) {
                                     @if(!Roles.getRole(user.getRole).equals(role)) {

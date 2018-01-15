@@ -15,7 +15,7 @@ import java.util.List;
 
 public class UserController extends Controller {
     public Result index() {
-        return ok(views.html.coaches.render());
+        return ok(views.html.users.render());
     }
 
     public Result updateUser() {
