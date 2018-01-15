@@ -41,10 +41,6 @@
 
             $(document).on('change', '#select', function () {
                 const newRole = $(this).val();
-                if (!confirm("Are you sure you want to change this user's role to " + newRole + "?")) {
-                    $(this).val($.data(this, 'prev'));
-                    return;
-                }
                 /* Create user object with altered role + content from userDB */
                 const user = {
                     uid: $(this).data('id'),
@@ -54,17 +50,35 @@
             });
 
             function changeRole(user, newRole) {
-                $.ajax({
-                    url: '/updateUserRole',
-                    type: 'POST',
-                    data: JSON.stringify(user),
-                    contentType: 'application/json',
-                    success: function () {
-                        createAlert('info', user.displayName + "'s role changed to: " + newRole);
+                $.confirm({
+                    title: 'Change Role',
+                    content: "Are you sure you want to change " + "'s role to " + newRole + "?",
+                    escapeKey: 'cancel',
+                    buttons: {
+                        confirm: {
+                            keys: ['enter'],
+                            text: 'Change Role',
+                            btnClass: "btn btn-primary",
+                            action: function () {
+                                $.ajax({
+                                    url: '/updateUserRole',
+                                    type: 'POST',
+                                    data: JSON.stringify(user),
+                                    contentType: 'application/json',
+                                    success: function () {
+                                        createAlert('info', "'s role changed to: " + newRole);
+                                        location.reload();
+                                    },
+                                    error: function (err) {
+                                        createAlert('warning', 'Error changing role!');
+                                        console.log(err);
+                                    }
+                                });
+                            }
+                        }
                     },
-                    error: function (err) {
-                        createAlert('warning', 'Error changing role!');
-                        console.log(err);
+                    cancel: {
+                        text: 'Cancel'
                     }
                 });
             }
