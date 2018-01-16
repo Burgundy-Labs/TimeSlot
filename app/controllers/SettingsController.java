@@ -40,6 +40,14 @@ public class SettingsController extends Controller {
         SettingsDB.addAppointmentType(appointmentType);
         return ok();
     }
+    public Result changeSiteAlert(){
+        JsonNode json = request().body().asJson();
+        String siteAlert = json.findPath("siteAlert").asText();
+        SettingsModel s = SettingsDB.getSettings();
+        s.setSiteAlert(siteAlert);
+        SettingsDB.changeSettings(s);
+        return ok();
+    }
 
     public Result updateSettings() {
         /* Get user object from request */

@@ -75,19 +75,17 @@
                                     </div>
                                 </form>
                             </div>
-                            <div class="mb-3 col-md-6">
+                            <div class="mb-3 col-md-4 offset-1">
                                 <div class="dashCards card">
                                     <div class="card-header">
                                         Site Alert
                                     </div>
                                     <div class="card-block">
-                                        <div class="input-group mb-3">
-                                            <input type="text" class="form-control" placeholder="" aria-label="">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-outline-primary" type="button">
-                                                    Change Site Alert</button>
-                                            </div>
-                                        </div>
+                                            <textarea type="text" class="form-control" id="siteAlert" placeholder="@if(currentSettings.getSiteAlert.equals("")){ Enter a site alert } else{ @currentSettings.getSiteAlert}" aria-label="@currentSettings.getSiteAlert"></textarea>
+                                            <br/>
+                                            <button onclick="changeSiteAlert()" class="btn btn-primary col-md-12 type="button">
+                                                Change Site Alert</button>
+                                            <button onclick="clearAlert()" class="btn btn col-md-12 type="button">Clear Alert</button>
                                     </div>
                                 </div>
                             </div>
@@ -105,7 +103,7 @@
                                             Add Appointment Type</button>
                                     </div>
                                     <div class="card-block">
-                                        <table class="table" id="appointmentTypeTable" cellspacing="0" width="100%">
+                                        <table class="table" id="appointmentTypeTable">
                                             <thead>
                                                 <tr>
                                                     <td>
@@ -130,11 +128,11 @@
                                                     </td>
                                                     <td>
                                                         <input onclick="oneTimeCheck('@appointmentType.getAppointmentTypeId')" type="checkbox" class="form-check-input oneTime-@appointmentType.getAppointmentTypeId" title="one-time"
-                                                        @if(appointmentType.getOneTime) {checked}>
+                                                        @if(appointmentType.getOneTime) {checked}/>
                                                     </td>
                                                     <td>
                                                         <input onclick="weeklyCheck('@appointmentType.getAppointmentTypeId')" type="checkbox" class="form-check-input weekly-@appointmentType.getAppointmentTypeId" title="weekly"
-                                                        @if(appointmentType.getWeekly) {checked}>
+                                                        @if(appointmentType.getWeekly) {checked}/>
                                                     </td>
                                                     <td>
                                                         <button class="btn btn-primary btn-danger" onclick="removeAppointmentType('@appointmentType.getAppointmentTypeId')">Remove</button>
@@ -203,6 +201,28 @@
                         },
                         error: function () {
                             createAlert('danger', 'Appointment Type Change Failed.');
+                        }
+                    });
+                }
+
+                function clearAlert(){
+                    $("#siteAlert").val("");
+                    changeSiteAlert();
+                }
+
+                function changeSiteAlert() {
+                    let siteAlert = $("#siteAlert").val();
+                    $.ajax({
+                        url: '/changeSiteAlert',
+                        type: 'POST',
+                        data: JSON.stringify({siteAlert: siteAlert}),
+                        contentType: 'application/json',
+                        success: function () {
+                            createAlert("success", "Site Alert Changed");
+                            location.reload();
+                        },
+                        error: function () {
+                            createAlert('danger', 'Failed to change Site Alert.');
                         }
                     });
                 }

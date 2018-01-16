@@ -178,6 +178,7 @@ public class SettingsDB {
         data.put("semesterEnd", settings.getSemesterEnd());
         data.put("startTime", settings.getStartTime());
         data.put("endTime", settings.getEndTime());
+        data.put("siteAlert", settings.getSiteAlert());
         /* Write settings to DB */
         ApiFuture<WriteResult> result = docRef.set(data);
         result.isDone();

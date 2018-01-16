@@ -1,25 +1,46 @@
 @(title: String, pageHead: String)(content: Html)
+    @currentSettings = @{
+        SettingsController.getSettings
+    }
+
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>@title</title>
-        @partials._head()
-    </head>
-    <body>
-        <main>
-            @partials._sidebar(title)
-            @helper.CSRF.formField
-        <div class="page-content">
-            <div class="page-title">
-                <h3>@pageHead</h3></div>
-            <div class="container-fluid content">
-                <br/>
-                <div class="row">
-                @content
+    <html>
+        <head>
+            <title>@title</title>
+            @partials._head()
+        </head>
+        <body>
+            <main>
+                @partials._sidebar(title)
+                @helper.CSRF.formField
+            <div class="page-content">
+                <div class="page-title">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h3>@pageHead</h3>
+                        </div>
+                        @if(!currentSettings.getSiteAlert.equals("")) {
+                            <div class="col-md-4 col-md-auto site-alert">
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <i class="material-icons md-32">error</i>
+                                    </div>
+                                    <div class="col-md-11">
+                                        <div>@currentSettings.getSiteAlert</div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
                 </div>
-            </div>
-            @partials._footer()
-        </div>
-        </main>
-    </body>
-</html>
+                    <div class="container-fluid content">
+                        <br/>
+                        <div class="row">
+                        @content
+                        </div>
+                    </div>
+                    @partials._footer()
+                </div>
+            </main>
+        </body>
+    </html>
