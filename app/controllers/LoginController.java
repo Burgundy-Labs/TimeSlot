@@ -21,16 +21,17 @@ public class LoginController extends Controller {
         JsonNode json = request().body().asJson();
         /* Get user from json request */
         UsersModel user = Json.fromJson(json, UsersModel.class);
-        /* Store UID in Session */
         /* Check if user is in DB */
         UsersModel u = UserDB.getUser(user.getUid());
         if (u == null) {
             user.setRole(Roles.getRole("Student"));
             UserDB.addUser(user);
+            session("newUser", "true");
         } else {
             user = u;
         }
         UserDB.addUser(user);
+        /* Store UID in Session */
         session("currentUser", user.getUid());
         /* Add user to DB with 'student' role (default) */
         return ok();

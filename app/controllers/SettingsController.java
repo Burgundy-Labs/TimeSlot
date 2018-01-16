@@ -7,6 +7,7 @@ import models.ServiceModel;
 import models.SettingsModel;
 import models.UsersModel;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 
 import javax.xml.bind.DatatypeConverter;
@@ -20,7 +21,11 @@ public class SettingsController extends Controller {
     public Result index() {
         UsersModel currentUser = UserController.getCurrentUser();
         if( currentUser ==  null || !currentUser.getRole().equals("Admin")){
-            return ok(views.html.dashboard.render());
+            if(session("newUser") != null && session("newUser").equals("true")){
+                return ok(views.html.dashboard.render()).withCookies(Http.Cookie.builder("newUser", "true").build());
+            } else {
+                return ok(views.html.dashboard.render());
+            }
         } else {
             return ok(views.html.settings.render());
         }
