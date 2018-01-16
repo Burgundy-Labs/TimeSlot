@@ -13,6 +13,7 @@ import org.joda.time.DateTime;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+import sun.security.x509.AVA;
 
 import javax.xml.bind.DatatypeConverter;
 import java.util.ArrayList;
@@ -49,8 +50,8 @@ public class AvailabilityController extends Controller {
         Date startDate = DatatypeConverter.parseDateTime(start).getTime();
         Date endDate = DatatypeConverter.parseDateTime(end).getTime();
 
-        List<AvailabilityModel> avails = new ArrayList<>();
-        if ( userId == "any" ) {
+        List<AvailabilityModel> avails;
+        if ( userId.equals("any") ) {
             avails = availableSlotsForAny(startDate, endDate, serviceId);
         } else {
             avails = availableSlotsForCoach(userId, startDate, endDate);
@@ -65,10 +66,37 @@ public class AvailabilityController extends Controller {
         for ( UsersModel coach : coaches ) {
             availabilities.addAll(availableSlotsForCoach(coach.getUid(), startDate, endDate));
         }
-//        for ( int i = 0; i < availabilities.size(); i++ ) {
-//            for ( int j = i; j < )
-//        }
-        return null;
+        List<AvailabilityModel> newAvailabilites = new ArrayList<>();
+
+        for ( int i = 0; i < availabilities.size(); i++ ) {
+            AvailabilityModel newAv = new AvailabilityModel(null, "any", availabilities.get(i).getStartDate(), availabilities.get(i).getEndDate(), false);
+            for ( int j = i; j < availabilities.size(); j++ ) {
+                AvailabilityModel currentAv = availabilities.get(j);
+                if ( currentAv.getStartDate().equals(newAv.getStartDate()) ) {
+                    if ( currentAv.getCanBeOneTime() && !currentAv.getCanBeWeekly() ) {
+                        newAv.addOneTimeUser(currentAv.getUserid());
+                    } else {
+                        newAv.addWeeklyUser(currentAv.getUserid());
+                    }
+                    availabilities.remove(j);
+                    j--;
+                }
+            }
+            i--;
+            for ( String uId : newAv.getWeeklyUsers() ) {
+                newAv.addOneTimeUser(uId);
+            }
+            if ( !newAv.getWeeklyUsers().isEmpty() ) {
+                newAv.setCanBeWeekly(true);
+                newAv.setCanBeOneTime(true);
+            } else {
+                newAv.setCanBeOneTime(true);
+                newAv.setCanBeWeekly(false);
+            }
+            newAvailabilites.add(newAv);
+        }
+
+        return newAvailabilites;
     }
 
     private List<AvailabilityModel> availableSlotsForCoach(String userId, Date startDate, Date endDate) {

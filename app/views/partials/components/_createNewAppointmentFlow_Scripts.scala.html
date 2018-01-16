@@ -58,6 +58,8 @@
                                     backgroundColor: "red",
                                     canBeWeekly: $(this).attr("canBeWeekly"),
                                     canBeOneTime: $(this).attr("canBeOneTime"),
+                                    oneTimeUsers: $(this).attr("oneTimeUsers"),
+                                    weeklyUsers: $(this).attr("weeklyUsers")
                                 };
                                 if ($(this).attr("weekly") === true) {
                                     event.title = "Weekly";
@@ -126,7 +128,7 @@
                             return $("#newAppointmentCalendar").fullCalendar('clientEvents', function (event) {
                                 if (event.rendering === "background" && (start.local().isAfter(event.start.local()) || start.local().isSame(event.start.local(),'minute')) &&
                                         (end.local().isBefore(event.end.local()) || end.local().isSame(event.end.local(), 'minute'))) {
-                                return {canBeOneTime: event.canBeOneTime, canBeWeekly: event.canBeWeekly};
+                                return {canBeOneTime: event.canBeOneTime, canBeWeekly: event.canBeWeekly, weeklyUsers: event.weeklyUsers, oneTimeUsers: event.oneTimeUsers};
                             }
                         })})();
                         const newAppointment = {
@@ -138,8 +140,10 @@
                             end: moment(end).format(),
                             startDate: moment(start).format(),
                             endDate: moment(end).format(),
+                            canBeOneTime: canBes[0].canBeOneTime,
                             canBeWeekly: canBes[0].canBeWeekly,
-                            canBeOneTime: canBes[0].canBeOneTime
+                            weeklyUsers: canBes[0].weeklyUsers,
+                            oneTimeUsers: canBes[0].oneTimeUsers
                         };
                         $('#newAppointmentCalendar').fullCalendar('renderEvent', newAppointment, true);
                         selectedEvents.push(newAppointment);
@@ -218,6 +222,9 @@
                                         btnClass: 'btn-primary mb-3 col-md-12',
                                         action: function () {
                                             form.weekly = true;
+                                            if ( form.coachId === "any" ) {
+                                                form.coachId = appointment.weeklyUsers[0];
+                                            }
                                             /* Create appointment Here*/
                                             $.ajax({
                                                 url: '/createAppointment',
@@ -254,6 +261,11 @@
                                         btnClass: 'btn-primary mb-3 col-md-12',
                                         action: function () {
                                             form.weekly = false;
+                                            console.log(appointment);
+                                            if ( form.coachId === "any" ) {
+                                                form.coachId = appointment.oneTimeUsers[0];
+                                                console.log(appointment.coachId);
+                                            }
                                             /* Create appointment Here*/
                                             $.ajax({
                                                 url: '/createAppointment',
