@@ -45,10 +45,33 @@ public class AvailabilityController extends Controller {
         return ok(Json.toJson(availabilities));
     }
 
-    public Result availableSlotsForAppointments(String userId, String start, String end) {
+    public Result availableSlotsForAppointments(String userId, String start, String end, String serviceId) {
         Date startDate = DatatypeConverter.parseDateTime(start).getTime();
         Date endDate = DatatypeConverter.parseDateTime(end).getTime();
 
+        List<AvailabilityModel> avails = new ArrayList<>();
+        if ( userId == "any" ) {
+            avails = availableSlotsForAny(startDate, endDate, serviceId);
+        } else {
+            avails = availableSlotsForCoach(userId, startDate, endDate);
+        }
+
+        return ok(Json.toJson(avails));
+    }
+
+    private List<AvailabilityModel> availableSlotsForAny(Date startDate, Date endDate, String serviceId) {
+        List<UsersModel> coaches = UserDB.getCoachesByService(serviceId);
+        List<AvailabilityModel> availabilities = new ArrayList<>();
+        for ( UsersModel coach : coaches ) {
+            availabilities.addAll(availableSlotsForCoach(coach.getUid(), startDate, endDate));
+        }
+//        for ( int i = 0; i < availabilities.size(); i++ ) {
+//            for ( int j = i; j < )
+//        }
+        return null;
+    }
+
+    private List<AvailabilityModel> availableSlotsForCoach(String userId, Date startDate, Date endDate) {
         List<AvailabilityModel> availabilities = new ArrayList<>();
         List<AppointmentsModel> appointments = new ArrayList<>();
 
@@ -139,8 +162,7 @@ public class AvailabilityController extends Controller {
         List<AvailabilityModel> avails = new ArrayList<>();
         avails.addAll(weeklyAvail);
         avails.addAll(oneAvail);
-
-        return ok(Json.toJson(avails));
+        return avails;
     }
 
     private void makeAvailabilities(String userId, List<AvailabilityModel> availabilities) {

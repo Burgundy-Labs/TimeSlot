@@ -1,6 +1,8 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class AvailabilityModel {
     private String availabilityId;
@@ -10,6 +12,8 @@ public class AvailabilityModel {
     private Boolean weekly;
     private Boolean canBeWeekly; // Are not in DB
     private Boolean canBeOneTime; // Are not in DB
+    private List<UsersModel> oneTimeUsers = new ArrayList<>(); // Are not in DB
+    private List<UsersModel> weeklyUsers = new ArrayList<>(); // Are not in DB
 
     public AvailabilityModel(){}
 
@@ -76,4 +80,16 @@ public class AvailabilityModel {
     public void setCanBeOneTime(Boolean canBeOneTime) {
         this.canBeOneTime = canBeOneTime;
     }
+
+    public List<UsersModel> getOneTimeUsers() { return oneTimeUsers; }
+
+    public void setOneTimeUsers(List<UsersModel> oneTimeUsers) { this.oneTimeUsers = oneTimeUsers; }
+
+    public List<UsersModel> getWeeklyUsers() { return weeklyUsers; }
+
+    public void setWeeklyUsers(List<UsersModel> weeklyUsers) { this.weeklyUsers = weeklyUsers; }
+
+    public void addOneTimeUser(UsersModel user) { oneTimeUsers.add(user); }
+
+    public void addWeeklyUser(UsersModel user) { weeklyUsers.add(user); }
 }

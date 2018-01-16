@@ -18,7 +18,7 @@ GET         /Terms                                                    controller
 GET         /Feedback                                                 controllers.FeedbackController.feedback
 GET         /MakeAppointment                                          controllers.AppointmentsController.makeAppointment
 GET         /availableSlots/:userId/:start/:end                       controllers.AvailabilityController.availableSlots(userId: String, start: String, end: String)
-GET         /availableSlotsForAppointments/:userId/:start/:end        controllers.AvailabilityController.availableSlotsForAppointments(userId: String, start: String, end: String)
+GET         /availableSlotsForAppointments/:userId/:start/:end/:serviceId       controllers.AvailabilityController.availableSlotsForAppointments(userId: String, start: String, end: String, serviceId: String)
 GET         /appointmentsForUser/:role/:userId                        controllers.AppointmentsController.appointmentsForUser(role: String, userId: String)
 GET         /Reports                                                  controllers.ReportsController.index
 GET         /appointmentTypeStatistics/:reportStart/:reportEnd        controllers.ReportsController.appointmentTypeStatistics(reportStart: Long, reportEnd: Long)
