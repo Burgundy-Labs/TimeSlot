@@ -225,7 +225,7 @@
                                         action: function () {
                                             form.weekly = true;
                                             if ( form.coachId === "any" ) {
-                                                form.coachId = appointment.weeklyUsers[0];
+                                                form.coachId = appointment.weeklyUsers[Math.floor(Math.random()*appointment.weeklyUsers.length))];
                                             }
                                             /* Create appointment Here*/
                                             $.ajax({
@@ -265,8 +265,7 @@
                                             form.weekly = false;
                                             console.log(appointment);
                                             if ( form.coachId === "any" ) {
-                                                form.coachId = appointment.oneTimeUsers[0];
-                                                console.log(appointment.coachId);
+                                                form.coachId = appointment.oneTimeUsers[Math.floor(Math.random()*appointment.oneTimeUsers.length)];
                                             }
                                             /* Create appointment Here*/
                                             $.ajax({
