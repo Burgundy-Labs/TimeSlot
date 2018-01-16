@@ -14,8 +14,10 @@
                     coachDropdown.empty(); // remove old options
                     let count = 0;
                     $.each(json, function(key, value) {
+                        if('@currentUser.getUid' !== value.uid) {
                         coachDropdown.append("<option value='"+value.uid+"'>" + value.displayName + "</option>");
                         count++;
+                        }
                     });
                     if(count === 0) {
                         coachDropdown.prepend("<option selected value disabled hidden'>No Coaches Found</option>");
@@ -166,7 +168,7 @@
     function createNewAppointment() {
         let content = ` @{ partials.components._createNewAppointmentFlow() } `;
         $.confirm({
-            columnClass: 'xl',
+            columnClass: 'col-11',
             containerFluid: true,
             title: "New Appointment",
             escapeKey: 'cancel',

@@ -1,5 +1,6 @@
 package controllers;
 
+import com.google.inject.Inject;
 import models.AppointmentsModel;
 import models.SettingsModel;
 import play.api.Play;
@@ -10,16 +11,23 @@ import java.text.DateFormat;
 
 public class MailerService {
 
-    public static void sendEmail(String subject, String fromName, String fromEmail, String toName, String toEmail, String bodyHtml) {
+    private static MailerClient mailerClient;
+
+    @Inject
+    MailerService(MailerClient mailerClient){
+        MailerService.mailerClient = mailerClient;
+    }
+
+    static void sendEmail(String subject, String fromName, String fromEmail, String toName, String toEmail, String bodyHtml) {
         Email email = new Email()
                 .setSubject(subject)
                 .setFrom(fromName +"<"+fromEmail+">")
                 .addTo(toName + "<"+toEmail+">")
                 .setBodyHtml(bodyHtml);
-        Play.current().injector().instanceOf(MailerClient.class).send(email);
+       mailerClient.send(email);
     }
 
-    public static void sendAppointmentConfirmation(AppointmentsModel appointment) {
+    static void sendAppointmentConfirmation(AppointmentsModel appointment) {
         SettingsModel settings = SettingsController.getSettings();
         /* Coach Email */
         Email email = new Email()
@@ -40,7 +48,7 @@ public class MailerService {
                         "&sf=true" +
                         "&output=xml\"" +
                         "target=\"_blank\" rel=\"nofollow\">Add to my calendar</a> <br/>");
-        Play.current().injector().instanceOf(MailerClient.class).send(email);
+        mailerClient.send(email);
         /* Student Email */
         email = new Email()
                 .setSubject("New Appointment With " + appointment.getCoachName() + " on " + DateFormat.getDateTimeInstance().format(appointment.getStartDate()) + " at the " + settings.getCenterName())
@@ -60,10 +68,10 @@ public class MailerService {
                         "&sf=true" +
                         "&output=xml\"" +
                         "target=\"_blank\" rel=\"nofollow\">Add to my calendar</a> <br/>");
-        Play.current().injector().instanceOf(MailerClient.class).send(email);
+        mailerClient.send(email);
     }
 
-    public static void sendAppointmentCancellation(AppointmentsModel appointment) {
+    static void sendAppointmentCancellation(AppointmentsModel appointment) {
         SettingsModel settings = SettingsController.getSettings();
         /* Coach Email */
         Email email = new Email()
@@ -77,7 +85,7 @@ public class MailerService {
                         "<br/>" +
                         "<a style=\"background-color:#0067F4; color: white; border-radius: 4px; padding: 10px; margin:0 auto; display:block; width: 90%; text-align: center; font-size: 18px; text-decoration:none; \" " +
                         "href=\"PUT URL HERE\">Schedule a new appointment</a> <br/>");
-        Play.current().injector().instanceOf(MailerClient.class).send(email);
+        mailerClient.send(email);
         /* Student Email */
         email = new Email()
                 .setSubject("Appointment With " + appointment.getCoachName()+ " on " + DateFormat.getDateTimeInstance().format(appointment.getStartDate()) + " at the " + settings.getCenterName() + " CANCELLED")
@@ -90,6 +98,6 @@ public class MailerService {
                         "<br/>" +
                         "<a style=\"background-color:#0067F4; color: white; border-radius: 4px; padding: 10px; margin:0 auto; display:block; width: 90%; text-align: center; font-size: 18px; text-decoration:none; \" " +
                         "href=\"http://scheduling.mtmc.mtu.edu\">Schedule a new appointment</a> <br/>");
-        Play.current().injector().instanceOf(MailerClient.class).send(email);
+        mailerClient.send(email);
     }
 }
