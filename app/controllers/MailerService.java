@@ -89,7 +89,7 @@ public class MailerService {
                         "</div>" +
                         "<br/>" +
                         "<a style=\"background-color:#0067F4; color: white; border-radius: 4px; padding: 10px; margin:0 auto; display:block; width: 90%; text-align: center; font-size: 18px; text-decoration:none; \" " +
-                        "href=\"PUT URL HERE\">Schedule a new appointment</a> <br/>");
+                        "href=\"http://scheduling.mtmc.mtu.edu\">Schedule a new appointment</a> <br/>");
         Play.current().injector().instanceOf(MailerClient.class).send(email);
     }
 }

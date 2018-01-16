@@ -310,6 +310,21 @@
                     });
                 }
 
+                $("#appointmentServicesTab").onclick(function() {
+                    $('#appointmentTypeTable').DataTable({
+                        scrollY: "300px",
+                        scrollCollapse: true,
+                        lengthChange: false,
+                        ordering: false,
+                    });
+                    $('#serviceTable').DataTable({
+                        scrollY: "300px",
+                        scrollCollapse: true,
+                        lengthChange: false,
+                        ordering: false,
+                    });
+                });
+
                 $(document).ready(function () {
                     $('#appointmentTypeTable').DataTable({
                         scrollY: "300px",
