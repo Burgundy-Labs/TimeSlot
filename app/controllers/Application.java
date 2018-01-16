@@ -7,6 +7,7 @@ import play.Environment;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Application {
     private static Config config;
@@ -36,6 +37,9 @@ public class Application {
             new MenuLinks("/Reports", "Reports", "assessment", "View reports and statistics about the center", true, false)
     );
 
+    public static int getRandomSeed() {
+        return ThreadLocalRandom.current().nextInt(0, 10000);
+    }
 }
 
 

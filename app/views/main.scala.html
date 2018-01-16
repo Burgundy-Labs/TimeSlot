@@ -14,13 +14,12 @@
                 @partials._sidebar(title)
                 @helper.CSRF.formField
             <div class="page-content">
-                <div class="page-title">
-                    <div class="row">
+                    <div class="row page-title">
                         <div class="col-md-8">
                             <h3>@pageHead</h3>
                         </div>
                         @if(!currentSettings.getSiteAlert.equals("")) {
-                            <div class="col-md-4 col-md-auto site-alert">
+                            <div class="col-md-4 site-alert">
                                 <div class="row">
                                     <div class="col-md-1">
                                         <i class="material-icons md-32">error</i>
@@ -32,7 +31,6 @@
                             </div>
                         }
                     </div>
-                </div>
                     <div class="container-fluid content">
                         <br/>
                         <div class="row">
