@@ -3,146 +3,155 @@
     @currentUser = @{
         UserController.getCurrentUser
     }
-@main("Dashboard", "Your Dashboard") {
-    <div class="dashCards">
-        <div class="row col-12">
-            <div class="col-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Hello, @{
-                            UserController.getCurrentUser.getDisplayName
-                        } </h4>
+
+    @main("Dashboard", "Your Dashboard") {
+        <div class="mb-3 col-md-12 dashCards">
+            <div class="row">
+                <div class="mb-3 col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Hello, @{
+                                UserController.getCurrentUser.getDisplayName
+                            } </h4>
+                        </div>
+                        <div class="card-block">
+                            <div class="row mb-3 col-md-12">
+                                <img src="@currentUser.getPhotoURL" class="mdl-list__item-avatar mb-2"/>
+                                <span class="appointmentCount"></span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-block">
-                        <div class="row col-12">
-                            <img src="@currentUser.getPhotoURL" class="mdl-list__item-avatar"/>
-                           <span class="appointmentCount"></span>
+                </div>
+                <div class="mb-3 col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Stay up to date</h4>
+                        </div>
+                        <div class="card-block">
+                            <h6>Notifications:</h6>
+                            <ul class="list-group" id="notifications">
+                            @if(UserDB.getNotificaitonsForUser(currentUser.getUid).size() == 0) {
+                                There are currently no notifications to display.
+                            } else {
+                                @for(notification <- UserDB.getNotificaitonsForUser(currentUser.getUid)) {
+                                    <li class="list-group-item @notification.getNotificationId">@notification.getNotificationContent <button onclick="deleteNotification('@notification.getNotificationId')" class="no-button deleteNotification"><i class="material-icons md-18">backspace</i></button></li>
+                                }
+                                <button class="clearAll no-button" id="notificationButton">Clear All</button>
+                            }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 col-md-4">
+                    <div class="card text-center">
+                        <div class="card-header">
+                            <h4>Quick-Schedule</h4>
+                        </div>
+                        <div class="card-block">
+                            <button onclick="createNewAppointment()" class="btn btn-primary mb-3 col-12">
+                                Schedule New Appointment
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Stay up to date</h4>
+            <br/>
+            <div class="row">
+                <div class="mb-3 col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Appointment Calendar</h4>
+                        </div>
+                        <div>
+                            <div id="appointmentCalendar"></div>
+                        </div>
                     </div>
-                    <div class="card-block">
-                                <h6>Notifications:</h6>
-                                <ul class="list-group" id="notifications">
-                                @if(UserDB.getNotificaitonsForUser(currentUser.getUid).size() == 0) {
-                                    There are currently no notifications to display.
-                                } else {
-                                    @for(notification <- UserDB.getNotificaitonsForUser(currentUser.getUid)) {
-                                        <li class="list-group-item @notification.getNotificationId">@notification.getNotificationContent <button onclick="deleteNotification('@notification.getNotificationId')" class="no-button deleteNotification"><i class="material-icons md-18">backspace</i></button></li>
-                                    }
-                                    <button class="clearAll no-button" id="notificationButton">Clear All</button>
+                </div>
+                <div class="mb-3 col-md-6">
+                    <div class="card nextFiveAppointments">
+                        <div class="card-header">
+                            <h4 class="float-left">Next Five Appointments</h4>
+                            <a href="/Appointments" class="btn btn-outline-light float-right align-middle">
+                                View Appointment List</a>
+                        </div>
+                        @partials.components._nextFiveAppointments()
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+
+                function deleteNotification(notificationId) {
+                    $.ajax({
+                        url: '/removeNotificationFromUser',
+                        data: JSON.stringify({
+                            userId: '@currentUser.getUid',
+                            notificationId: notificationId
+                        }),
+                        contentType: 'application/json',
+                        type: 'POST',
+                        success: function (response) {
+                            /* TODO load from AJAX so we don't have to reload or hide element from */
+                            createAlert("success", "Notification Removed.");
+                            $('.' + notificationId).hide();
+                        }
+                    })
+                }
+
+                $(document).ready(function () {
+
+                    $('.clearAll').on('click', function () {
+                        $('.deleteNotification').click();
+                        $(this).html("There are currently no notifications to display.");
+                    });
+
+                    $('#appointmentCalendar').fullCalendar({
+                        header: false,
+                        defaultView: 'agendaWeek',
+                        height: 'auto',
+                        editable: false,
+                        weekends: false,
+                        minTime: moment('@SettingsController.getSettings.getStartTime.toInstant').format("HH:mm"),
+                        maxTime: moment('@SettingsController.getSettings.getEndTime.toInstant').format("HH:mm"),
+                        allDaySlot: false,
+                        selectable: false,
+                        events: function (start, end, timezone, callback) {
+                            $.ajax({
+                                url: '/appointmentsForUser/' + '@currentUser.getRole' + "/" + '@currentUser.getUid',
+                                type: 'GET',
+                                success: function (response) {
+                                    const events = [];
+                                    $(response).each(function () {
+                                        var userID = '@currentUser.getUid';
+                                        var role = '@currentUser.getRole';
+                                        var title = "";
+                                        if (userID === $(this).attr("studentId")) {
+                                            if (role !== "Student") {
+                                                title = $(this).attr("studentName")
+                                            } else {
+                                                title = $(this).attr("coachName")
+                                            }
+                                        } else {
+                                            title = $(this).attr("studentName")
+                                        }
+                                        const event = {
+                                            id: $(this).attr('availabilityId'),
+                                            title: title,
+                                            start: moment($(this).attr('startDate')),
+                                            end: moment($(this).attr('endDate')),
+                                            dow: [],
+                                        };
+                                        events.push(event);
+                                    });
+                                    $(".appointmentCount").html("You have " + events.length + (events.length === 1 ? " appointment this week." : " appointments this week."));
+                                    callback(events);
                                 }
-                                </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="col-4">
-                <div class="card text-center">
-                    <div class="card-header">
-                        <h4>Quick-Schedule</h4>
-                    </div>
-                    <div class="card-block">
-                        <button onclick="createNewAppointment()" class="btn btn-primary col-lg-12">
-                            Schedule New Appointment
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <br/>
-        <div class="row">
-            <div class="col-lg-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Appointment Calendar</h4>
-                    </div>
-                    <div>
-                        <div id="appointmentCalendar"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-8">
-                <div class="card nextFiveAppointments">
-                    <div class="card-header">
-                        <h4 class="float-left">Next Five Appointments</h4>
-                        <a href="/Appointments" class="btn btn-outline-light float-right align-middle">
-                            View Appointment List</a>
-                    </div>
-                    @partials.components._nextFiveAppointments()
-                </div>
-            </div>
-        </div>
-    </div>
-    <script type="text/javascript">
-
-            function deleteNotification(notificationId) {
-                $.ajax({
-                    url: '/removeNotificationFromUser',
-                    data: JSON.stringify({
-                        userId: '@currentUser.getUid',
-                        notificationId: notificationId
-                    }),
-                    contentType: 'application/json',
-                    type: 'POST',
-                    success: function (response) {
-                        /* TODO load from AJAX so we don't have to reload or hide element from */
-                        createAlert("success","Notification Removed.");
-                        $('.'+notificationId).hide();
-                    }
-                })
-            }
-
-            $(document).ready(function () {
-
-                $('.clearAll').on('click', function () {
-                    $('.deleteNotification').click();
-                    $(this).html("There are currently no notifications to display.");
+                            })
+                        },
+                    });
                 });
 
-                $('#appointmentCalendar').fullCalendar({
-                    header: false,
-                    defaultView: 'agendaWeek',
-                    height: 'auto',
-                    editable: false,
-                    weekends: false,
-                    minTime: moment('@SettingsController.getSettings.getStartTime.toInstant').format("HH:mm"),
-                    maxTime: moment('@SettingsController.getSettings.getEndTime.toInstant').format("HH:mm"),
-                    allDaySlot: false,
-                    selectable: false,
-                    events: function (start, end, timezone, callback) {
-                        $.ajax({
-                            url: '/appointmentsForUser/' + '@currentUser.getRole' + "/" + '@currentUser.getUid',
-                            type: 'GET',
-                            success: function (response) {
-                                const events = [];
-                                $(response).each(function () {
-                                    var userID = '@currentUser.getUid';
-                                    var role = '@currentUser.getRole';
-                                    var title = "";
-                                    if ( userID === $(this).attr("studentId") ) { if ( role !== "Student" ) { title = $(this).attr("studentName") } else {title = $(this).attr("coachName")}}else{title = $(this).attr("studentName")}
-                                    const event = {
-                                        id: $(this).attr('availabilityId'),
-                                        title: title,
-                                        start: moment($(this).attr('startDate')),
-                                        end: moment($(this).attr('endDate')),
-                                        dow:[],
-                                };
-                                    events.push(event);
-                                });
-                                $(".appointmentCount").html("You have " + events.length + (events.length === 1 ? " appointment this week." : " appointments this week."));
-                                callback(events);
-                            }
-                        })
-                    },
-                });
-            });
 
-
-    </script>
-    @partials.components._createNewAppointmentFlow_Scripts()
-}
+        </script>
+        @partials.components._createNewAppointmentFlow_Scripts()
+    }

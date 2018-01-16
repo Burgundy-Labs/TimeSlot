@@ -9,17 +9,17 @@
         <main>
             @partials._sidebar(title)
             @helper.CSRF.formField
-        <div class="row">
-            <div class="page-content">
-                <div class="page-title"><h3>@pageHead</h3></div>
-                <div class="container-fluid content">
-                    <br/>
-                    @content
+        <div class="page-content">
+            <div class="page-title">
+                <h3>@pageHead</h3></div>
+            <div class="container-fluid content">
+                <br/>
+                <div class="row">
+                @content
                 </div>
-
             </div>
+            @partials._footer()
         </div>
         </main>
-        @partials._footer()
     </body>
 </html>

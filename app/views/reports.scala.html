@@ -1,32 +1,33 @@
 @()
 @main("Reports", "Reports") {
-    <div class="row col-md-12">
-        <div class="form-group col-md-6">
-            <label for="reportStart" class="col-sm-12 col-form-label">Start Date</label>
-            <div class="col-sm-12">
-                <input id="reportStart" class="form-control" type="date" name="reportStart" value="" onchange="createCharts()">
+    <div class="col-12">
+        <div class="row">
+            <div class="form-group mb-3 col-md-6">
+                <label for="reportStart" class="mb-3 col-md-12 mb-3 col-md-form-label">Start Date</label>
+                <div class="mb-3 col-md-12">
+                    <input id="reportStart" class="form-control" type="date" name="reportStart" value="" onchange="createCharts()">
+                </div>
+            </div>
+            <div class="form-group mb-3 col-md-6">
+                <label for="reportEnd" class="mb-3 col-md-12 mb-3 col-md-form-label">End Date</label>
+                <div class="mb-3 col-md-12">
+                    <input id="reportEnd" class="form-control" type="date" name="reportEnd" value="" onchange="createCharts()">
+                </div>
             </div>
         </div>
-        <div class="form-group col-md-6">
-            <label for="reportEnd" class="col-sm-12 col-form-label">End Date</label>
-            <div class="col-sm-12">
-                <input id="reportEnd" class="form-control" type="date" name="reportEnd" value="" onchange="createCharts()">
+        <div class="row">
+            <div class="mb-3 col-md-4">
+                <h1 class="center">Appointment Types</h1>
+                <br/>
+                <canvas id="appointmentChart"></canvas>
+            </div>
+            <div class="mb-3 col-md-4">
+                <h1 class="center">Services</h1>
+                <br/>
+                <canvas id="serviceChart"></canvas>
             </div>
         </div>
     </div>
-    <div class="row col-md-12">
-        <div class="col-md-4">
-            <h1 class="center">Appointment Types</h1>
-            <br/>
-            <canvas id="appointmentChart"></canvas>
-        </div>
-        <div class="col-md-4">
-            <h1 class="center">Services</h1>
-            <br/>
-            <canvas id="serviceChart"></canvas>
-        </div>
-    </div>
-
 
     <script type="text/javascript">
             let reportStart = $('#reportStart');
@@ -115,8 +116,6 @@
                 chart.data.datasets.forEach((dataset) => {
                     dataset.data.push(data);
                 });
-                return d;
-
             }
     </script>
 

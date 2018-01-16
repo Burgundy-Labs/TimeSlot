@@ -1,9 +1,9 @@
 @(currentPage: String)
 @currentUser = @{UserController.getCurrentUser}
-    <div class="sidebar primary-background">
+    <div class="sidebar">
             <nav class="sidebar-navigation">
                 <div>
-                    <img src="@routes.Assets.at("images/husky-icon-resize.jpg")" class="col-sm-12">
+                    <img src="@routes.Assets.at("images/husky.png")" width="80%">
                 </div>
                 @for(menuLink <- Application.menuLinks) {
                     @if( (!menuLink.adminLocked && !menuLink.coachLocked) || (menuLink.coachLocked && currentUser.getRole.equals("Coach")) || (menuLink.adminLocked && currentUser.getRole.equals("Admin")) ) {
