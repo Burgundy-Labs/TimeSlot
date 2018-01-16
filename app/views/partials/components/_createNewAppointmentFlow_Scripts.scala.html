@@ -180,6 +180,7 @@
                     action: function() {
                        $('#newAppointmentCalendar').hide();
                         createMakeAppointmentCalendar();
+                        location.reload();
                     }
                 },
                 submit: {
@@ -234,7 +235,12 @@
                                                 data: JSON.stringify(form),
                                                 contentType: 'application/json',
                                                 success: function () {
-                                                    let studentNotification = "New weekly "+ form.appointmentType +" Appointment on " + moment(form.startDate).format("dddd, MMMM Do, h:mm A") + " - " + moment(form.endDate).format("h:mm A") + " with " + coachName;
+                                                    var studentNotification;
+                                                    if ( coachName != "Any Coach" ) {
+                                                        studentNotification = "New weekly " + form.appointmentType + " Appointment on " + moment(form.startDate).format("dddd, MMMM Do, h:mm A") + " - " + moment(form.endDate).format("h:mm A") + " with " + coachName;
+                                                    } else {
+                                                        studentNotification = "New weekly " + form.appointmentType + " Appointment on " + moment(form.startDate).format("dddd, MMMM Do, h:mm A") + " - " + moment(form.endDate).format("h:mm A");
+                                                    }
                                                     let coachNotification = "New weekly "+ form.appointmentType +" Appointment on " + moment(form.startDate).format("dddd, MMMM Do, h:mm A") + " - " + moment(form.endDate).format("h:mm A") + " with " + "@currentUser.getDisplayName";
                                                     $.ajax({
                                                         url: '/addNotificationToUser',

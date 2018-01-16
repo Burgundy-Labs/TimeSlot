@@ -3,8 +3,25 @@
     @currentUser = @{
         UserController.getCurrentUser
     }
-
     @main("Dashboard", "Your Dashboard") {
+
+            <script type="text/javascript">
+                $(document).ready(function(){
+                    if (Cookies.get('newUser') === "true") {
+                        Cookies.remove('newUser');
+                        $(document).ready(function () {
+                            $.alert({
+                                title: "Welcome to Project Burgundy!",
+                                content: "Project Burgundy is a <b>beta</b> web app to handle appointment scheduling at learning centers <br/><br/>" +
+                                "We're MTU students who are constantly working to improve this application and provide a great scheduling experience for students. <br/><br/>" +
+                                "If you find <b>any</b> bugs or have any feature requests, please click on \"Feedback\" in the footer and send us a note! <br/><br/>" +
+                                "<b>Thank you</b> <br/>" +
+                                " - The Project Burgundy Team"
+                            });
+                        });
+                    }
+                });
+            </script>
         <div class="mb-3 col-md-12 dashCards">
             <div class="row">
                 <div class="mb-3 col-md-4">
