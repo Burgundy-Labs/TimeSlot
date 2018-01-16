@@ -12,8 +12,8 @@ public class AvailabilityModel {
     private Boolean weekly;
     private Boolean canBeWeekly; // Are not in DB
     private Boolean canBeOneTime; // Are not in DB
-    private List<UsersModel> oneTimeUsers = new ArrayList<>(); // Are not in DB
-    private List<UsersModel> weeklyUsers = new ArrayList<>(); // Are not in DB
+    private List<String> oneTimeUsers = new ArrayList<>(); // Are not in DB
+    private List<String> weeklyUsers = new ArrayList<>(); // Are not in DB
 
     public AvailabilityModel(){}
 
@@ -81,15 +81,15 @@ public class AvailabilityModel {
         this.canBeOneTime = canBeOneTime;
     }
 
-    public List<UsersModel> getOneTimeUsers() { return oneTimeUsers; }
+    public List<String> getOneTimeUsers() { return oneTimeUsers; }
 
-    public void setOneTimeUsers(List<UsersModel> oneTimeUsers) { this.oneTimeUsers = oneTimeUsers; }
+    public void setOneTimeUsers(List<String> oneTimeUsers) { this.oneTimeUsers = oneTimeUsers; }
 
-    public List<UsersModel> getWeeklyUsers() { return weeklyUsers; }
+    public List<String> getWeeklyUsers() { return weeklyUsers; }
 
-    public void setWeeklyUsers(List<UsersModel> weeklyUsers) { this.weeklyUsers = weeklyUsers; }
+    public void setWeeklyUsers(List<String> weeklyUsers) { this.weeklyUsers = weeklyUsers; }
 
-    public void addOneTimeUser(UsersModel user) { oneTimeUsers.add(user); }
+    public void addOneTimeUser(String user) { oneTimeUsers.add(user); }
 
-    public void addWeeklyUser(UsersModel user) { weeklyUsers.add(user); }
+    public void addWeeklyUser(String user) { weeklyUsers.add(user); }
 }
