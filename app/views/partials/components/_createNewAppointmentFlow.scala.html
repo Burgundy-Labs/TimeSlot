@@ -14,7 +14,7 @@
                     <label for="appointmentType">Type of appointment</label>
                     <br/>
                     <select id="appointmentType" name="appointmentType" required>
-                        <option selected disabled hidden> Select an Appointment Type </option>
+                        <option selected disabled hidden> Select an appointment type </option>
                         @for(appointment <- SettingsController.getAvailableAppointmentTypes) {
                             <option value="@appointment.getAppointmentTypeId">@appointment.getAppointmentType</option>
                         }
