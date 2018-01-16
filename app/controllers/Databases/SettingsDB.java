@@ -1,33 +1,26 @@
 package controllers.Databases;
 
-import com.google.api.Service;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 import com.google.cloud.firestore.WriteResult;
-import controllers.ApplicationComponents.Roles;
 import models.AppointmentTypeModel;
 import models.ServiceModel;
 import models.SettingsModel;
-import models.UsersModel;
-import play.api.Play;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /* DB classes contain the methods necessary to manage their corresponding models.
 * UserDB works with UsersModel to retrieve and remove users in the Firestore DB.*/
 public class SettingsDB {
 
-
     public static synchronized SettingsModel getSettings() {
-        DocumentReference docRef = FirestoreDB.getFirestoreDB().collection("settings").document("settings");
+        DocumentReference docRef = FirestoreDB.get().collection("settings").document("settings");
         ApiFuture<DocumentSnapshot> future = docRef.get();
         DocumentSnapshot document = null;
         try {
@@ -46,7 +39,7 @@ public class SettingsDB {
 
     public static boolean removeAppointmentType(String appointmentTypeId) {
         /* Asynchronously remove user from DB */
-        ApiFuture<WriteResult> writeResult = FirestoreDB.getFirestoreDB()
+        ApiFuture<WriteResult> writeResult = FirestoreDB.get()
                 .collection("settings")
                 .document("settings")
                 .collection("appointmentTypes")
@@ -64,9 +57,9 @@ public class SettingsDB {
     public static synchronized void addAppointmentType(AppointmentTypeModel appointmentType){
         DocumentReference docRef;
         if(appointmentType.getAppointmentTypeId() == null) {
-            docRef = FirestoreDB.getFirestoreDB().collection("settings").document("settings").collection("appointmentTypes").document();
+            docRef = FirestoreDB.get().collection("settings").document("settings").collection("appointmentTypes").document();
         } else {
-            docRef = FirestoreDB.getFirestoreDB().collection("settings").document("settings").collection("appointmentTypes").document(appointmentType.getAppointmentTypeId());
+            docRef = FirestoreDB.get().collection("settings").document("settings").collection("appointmentTypes").document(appointmentType.getAppointmentTypeId());
         }
         Map<String, Object> data = new HashMap<>();
         data.put("appointmentType", appointmentType.getAppointmentType());
@@ -79,7 +72,7 @@ public class SettingsDB {
     public static synchronized List<AppointmentTypeModel> getAppointmentTypes(){
         List<AppointmentTypeModel> appointmentTypesList = new ArrayList<>();
         /* Asynchronously retrieve all users */
-        ApiFuture<QuerySnapshot> query = FirestoreDB.getFirestoreDB().collection("settings").document("settings").collection("appointmentTypes").get();
+        ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("settings").document("settings").collection("appointmentTypes").get();
         QuerySnapshot querySnapshot = null;
         try {
             /* Attempt to get a list of all users - blocking */
@@ -103,9 +96,9 @@ public class SettingsDB {
     }
 
     public static synchronized AppointmentTypeModel getAppointmentType(String appointmentTypeId){
-        AppointmentTypeModel appointmentType = new AppointmentTypeModel();
+        AppointmentTypeModel appointmentType;
         /* Asynchronously retrieve all users */
-        ApiFuture<DocumentSnapshot> query = FirestoreDB.getFirestoreDB().collection("settings").document("settings").collection("appointmentTypes").document(appointmentTypeId).get();
+        ApiFuture<DocumentSnapshot> query = FirestoreDB.get().collection("settings").document("settings").collection("appointmentTypes").document(appointmentTypeId).get();
         DocumentSnapshot documentSnapshot = null;
         try {
             /* Attempt to get a list of all users - blocking */
@@ -126,9 +119,9 @@ public class SettingsDB {
     public static synchronized void addService(ServiceModel service) {
         DocumentReference docRef;
         if(service.getServiceId() == null) {
-            docRef = FirestoreDB.getFirestoreDB().collection("settings").document("settings").collection("services").document();
+            docRef = FirestoreDB.get().collection("settings").document("settings").collection("services").document();
         } else {
-            docRef = FirestoreDB.getFirestoreDB().collection("settings").document("settings").collection("services").document(service.getServiceId());
+            docRef = FirestoreDB.get().collection("settings").document("settings").collection("services").document(service.getServiceId());
         }
         Map<String, Object> data = new HashMap<>();
         data.put("service", service.getService());
@@ -137,7 +130,7 @@ public class SettingsDB {
     }
 
     public static synchronized boolean removeService(String serviceID) {
-        ApiFuture<WriteResult> writeResult = FirestoreDB.getFirestoreDB()
+        ApiFuture<WriteResult> writeResult = FirestoreDB.get()
                 .collection("settings")
                 .document("settings")
                 .collection("services")
@@ -155,7 +148,7 @@ public class SettingsDB {
     public static synchronized List<ServiceModel> getServices(){
         List<ServiceModel> serviceModel = new ArrayList<>();
         /* Asynchronously retrieve all users */
-        ApiFuture<QuerySnapshot> query = FirestoreDB.getFirestoreDB().collection("settings").document("settings").collection("services").get();
+        ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("settings").document("settings").collection("services").get();
         QuerySnapshot querySnapshot = null;
         try {
             /* Attempt to get a list of all users - blocking */
@@ -177,7 +170,7 @@ public class SettingsDB {
     }
 
     public static synchronized void changeSettings(SettingsModel settings) {
-        DocumentReference docRef = FirestoreDB.getFirestoreDB().collection("settings").document("settings");
+        DocumentReference docRef = FirestoreDB.get().collection("settings").document("settings");
         Map<String, Object> data = new HashMap<>();
         data.put("universityName", settings.getUniversityName());
         data.put("centerName", settings.getCenterName());
@@ -185,6 +178,7 @@ public class SettingsDB {
         data.put("semesterEnd", settings.getSemesterEnd());
         data.put("startTime", settings.getStartTime());
         data.put("endTime", settings.getEndTime());
+        data.put("siteAlert", settings.getSiteAlert());
         /* Write settings to DB */
         ApiFuture<WriteResult> result = docRef.set(data);
         result.isDone();

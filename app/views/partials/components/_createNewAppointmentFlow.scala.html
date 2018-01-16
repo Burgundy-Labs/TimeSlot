@@ -1,4 +1,3 @@
-@import controllers.Databases.UserDB
 @()
 <div id="createNewAppointmentForm">
     <div class="step-app">
@@ -16,7 +15,7 @@
                     <br/>
                     <select id="appointmentType" name="appointmentType" required>
                         <option selected disabled hidden> Select an Appointment Type </option>
-                        @for(appointment <- SettingsController.getAppointmentTypes) {
+                        @for(appointment <- SettingsController.getAvailableAppointmentTypes) {
                             <option value="@appointment.getAppointmentTypeId">@appointment.getAppointmentType</option>
                         }
                         </select>
@@ -53,8 +52,9 @@
             </div>
             <div class="step-tab-panel" id="step4">
                 <div>
-                    <div class="row">
-                        <div class="col-md-12" id="calendarContainer">
+                    <div class="row mb-3 col-md-12">
+                        <div class="center"><span class="badge" style="background-color:#FFB3B3">One-Time Availability</span> <span class="badge" style="background-color:#B3B3FF">Weekly Availability</span> <span class="badge" style="background-color:#D9B3D9">Both One-Time and Weekly Availability</span></div>
+                        <div class="mb-3 col-md-12" id="calendarContainer">
                             <div id="newAppointmentCalendar"></div>
                         </div>
                     </div>

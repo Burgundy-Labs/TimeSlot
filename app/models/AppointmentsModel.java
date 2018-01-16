@@ -20,6 +20,7 @@ public class AppointmentsModel {
     private boolean present;
     private String appointmentType;
     private String serviceType;
+    private boolean weekly;
 
     public AppointmentsModel( ) {
 
@@ -41,7 +42,8 @@ public class AppointmentsModel {
             String coachNotes,
             boolean present,
             String appointmentType,
-            String serviceType) {
+            String serviceType,
+            boolean weekly) {
         this.appointmentId = appointmentId;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -58,6 +60,7 @@ public class AppointmentsModel {
         this.present = present;
         this.appointmentType = appointmentType;
         this.serviceType = serviceType;
+        this.weekly = weekly;
     }
 
     public String getAppointmentId() {
@@ -189,13 +192,15 @@ public class AppointmentsModel {
                 + "\n" +
                 "Type: " + appointmentType
                 + "\n" +
+                "Weekly: " + (weekly ? "Yes" : "No")
+                + "\n" +
                 "Service: " + serviceType
                 + "\n" +
                 "Start Date: " + DateFormat.getDateTimeInstance().format(startDate)
                 + "\n" +
                 "End Date: " + DateFormat.getDateTimeInstance().format(endDate)
                 + "\n" +
-                "Student Notes: " + appointmentNotes + "";
+                "Student Notes: " + appointmentNotes;
     }
     public String toHTMLString() {
         return "Coach: " + coachName
@@ -204,6 +209,8 @@ public class AppointmentsModel {
                 + "<br/>" +
                 "Type: " + appointmentType
                 + "<br/>" +
+                "Weekly: " + (weekly ? "Yes" : "No")
+                + "<br/> " +
                 "Service: " + serviceType
                 + "<br/>" +
                 "Start Date: " + DateFormat.getDateTimeInstance().format(startDate)
@@ -211,5 +218,13 @@ public class AppointmentsModel {
                 "End Date: " +  DateFormat.getDateTimeInstance().format(endDate)
                 + "<br/>" +
                 "Student Notes: " + appointmentNotes + "";
+    }
+
+    public boolean isWeekly() {
+        return weekly;
+    }
+
+    public void setWeekly(boolean weekly) {
+        this.weekly = weekly;
     }
 }

@@ -15,7 +15,7 @@ import java.util.List;
 
 public class UserController extends Controller {
     public Result index() {
-        return ok(views.html.coaches.render());
+        return ok(views.html.users.render());
     }
 
     public Result updateUser() {
@@ -98,6 +98,11 @@ public class UserController extends Controller {
 
     public static UsersModel getCurrentUser() {
         String s = session("currentUser");
+        if(s == null || s.isEmpty()) {
+            UsersModel u = new UsersModel();
+            u.setRole(Roles.getRole("Student"));
+            return u;
+    }
         return UserDB.getUser(s);
     }
 }

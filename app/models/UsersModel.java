@@ -90,4 +90,5 @@ public class UsersModel {
     public void setIsCoach(Boolean coach) {
         isCoach = coach;
     }
+
 }

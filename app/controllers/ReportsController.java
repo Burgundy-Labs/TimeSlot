@@ -31,6 +31,7 @@ public class ReportsController extends Controller {
         List<AppointmentTypeModel> appointmentTypes = SettingsDB.getAppointmentTypes();
         Map<String, Integer> appointmentTypeCounts = appointmentTypes.stream().collect(Collectors.toMap(AppointmentTypeModel::getAppointmentType, i -> 0));
         for (AppointmentsModel a: appointments ) {
+            appointmentTypeCounts.putIfAbsent(a.getAppointmentType(), 0);
             appointmentTypeCounts.put(a.getAppointmentType(), appointmentTypeCounts.get(a.getAppointmentType()) + 1);
         }
         return ok(Json.toJson(appointmentTypeCounts));
@@ -43,6 +44,7 @@ public class ReportsController extends Controller {
         List<ServiceModel> services = SettingsDB.getServices();
         Map<String, Integer> serviceCounts = services.stream().collect(Collectors.toMap(ServiceModel::getService, i -> 0));
         for (AppointmentsModel a: appointments ) {
+            serviceCounts.putIfAbsent(a.getServiceType(), 0);
             serviceCounts.put(a.getServiceType(), serviceCounts.get(a.getServiceType()) + 1);
         }
         return ok(Json.toJson(serviceCounts));

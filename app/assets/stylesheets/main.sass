@@ -24,18 +24,33 @@ p
 a
   color: $application-primary
 
+.mainContainer
+  padding: 0
+  margin: 0
+
 .center
   text-align: center
   margin: 0 auto
 
 .page-title
   color: #535353
-  padding: 10px
   background-color: #F8F8F8
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)
+  margin-left: 0
+  margin-right: 0
+  h3
+    padding: 10px
+
+.site-alert
+  background-color: #D9534F
+  color: white
+  padding: 10px
+  .row
+    margin-left: 10px
+    margin-right: 0
 
 .page-content
-  width: 100%
+  margin-left: 65px
   height: 100vh
   overflow-y: scroll
   border-radius: 4px
@@ -191,7 +206,7 @@ button
     opacity: 1
     -webkit-backface-visibility: hidden
 
-#usersTable, #appointmentList
+.userTable, #appointmentList
   thead
     background-color: $application-primary
     color: white
@@ -219,6 +234,16 @@ button
 
 .appointmentDetails
   text-align: left
+
+.versionInfo a
+  color: #333
+  float: right
+
+.nextFiveAppointments
+  height: 100%
+
+.appointmentCount
+  margin: 10px
 
 // Custom Scrollbar
 ::-webkit-scrollbar

@@ -1,63 +1,68 @@
 @import controllers.Databases.AppointmentsDB
 @import java.time.format.DateTimeFormatter
 @import java.time.ZoneOffset
-@currentUser = @{UserController.getCurrentUser}
-<table class="table table-responsive appointmentList" id="appointmentList">
-    <thead>
-        <tr>
-            <th></th>
-            <th>Student</th>
-            <th>Coach</th>
-            <th>Type</th>
-            <th>Service</th>
-            <th>Start</th>
-            <th>End</th>
-            <th>Attendance</th>
-            <th>Student's Notes</th>
-            <th>Manage</th>
-        </tr>
-    </thead>
-    <tbody>
-    @for(appointment <- AppointmentsDB.getAppointments) {
-        <tr class="@appointment.getAppointmentId">
-            <td>
-                <img src="@appointment.getStudentPhoto" class="userAvatar"/>
-            </td>
-            <td>
-            @appointment.getStudentName
-            </td>
-            <td>
-            @appointment.getCoachName
-            </td>
-            <td>@appointment.getAppointmentType</td>
-            <td>@appointment.getServiceType</td>
-            <td class="date"> @DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mmX").withZone(ZoneOffset.UTC).format(appointment.getStartDate.toInstant)</td>
-            <td class="date"> @DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mmX").withZone(ZoneOffset.UTC).format(appointment.getEndDate.toInstant)</td>
-            <td class="attendance">@partials.components._appointmentAttendanceDropdown(appointment, currentUser)</td>
-            <td class="appointmentNotes">@appointment.getAppointmentNotes</td>
-            <td>
-                <span class="mdl-list__item-secondary-content">
-                    @if(currentUser.getRole.equals("Student")){
-                        <button class="no-button"> <span class="action-primary">@partials.components._tooltipIconLink("mailto:" + appointment.getCoachEmail, "email", "bottom", "Email Coach", 32)</span></button>
-                    } else {
-                        <button class="no-button"> <span class="action-primary">@partials.components._tooltipIconLink("mailto:" + appointment.getStudentEmail, "email", "bottom", "Email Student", 32)</span></button>
-                    }
-                    @if(appointment.getCoachNotes.equals("")){
-                        <button id="notesFor-@appointment.getAppointmentId" class="no-button" onclick="updateCoachNotes('@appointment.getAppointmentId','@appointment.getCoachNotes')"><span class="action-black" id="appointmentNotes">@partials.components._tooltipIconLink("javascript:void(0)", "assignment", "bottom", "Session Notes", 32)</span></button>
-                    } else {
-                        <button id="notesFor-@appointment.getAppointmentId" class="no-button" onclick="updateCoachNotes('@appointment.getAppointmentId','@appointment.getCoachNotes')"><span class="action-secondary" id="appointmentNotes">@partials.components._tooltipIconLink("javascript:void(0)", "assignment", "bottom", "Session Notes", 32)</span></button>
-                    }
+    @currentUser = @{
+    UserController.getCurrentUser
+}
+<div class="table-responsive">
+    <table class="table table-striped appointmentList" cellspacing="0" width="100%" id="appointmentList">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Student</th>
+                <th>Coach</th>
+                <th>Type</th>
+                <th>Service</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Attendance</th>
+                <th>Student's Notes</th>
+                <th>Manage</th>
+            </tr>
+        </thead>
+        <tbody>
+        @for(appointment <- AppointmentsDB.getAppointmentsForUser(currentUser.getRole, currentUser.getUid)) {
+            <tr class="@appointment.getAppointmentId">
+                <td>
+                    <img src="@appointment.getStudentPhoto" class="userAvatar"/>
+                </td>
+                <td>
+                @appointment.getStudentName
+                </td>
+                <td>
+                @appointment.getCoachName
+                </td>
+                <td>@appointment.getAppointmentType</td>
+                <td>@appointment.getServiceType</td>
+                <td class="date"> @DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mmX").withZone(ZoneOffset.UTC).format(appointment.getStartDate.toInstant)</td>
+                <td class="date"> @DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mmX").withZone(ZoneOffset.UTC).format(appointment.getEndDate.toInstant)</td>
+                <td class="attendance">@partials.components._appointmentAttendanceDropdown(appointment, currentUser)</td>
+                <td class="appointmentNotes">@appointment.getAppointmentNotes</td>
+                <td>
+                    <span class="mdl-list__item-secondary-content">
+                        @if(currentUser.getRole.equals("Student")) {
+                            <button class="no-button"> <span class="action-primary">@partials.components._tooltipIconLink("mailto:" + appointment.getCoachEmail, "email", "bottom", "Email Coach", 32)</span></button>
+                        } else {
+                            <button class="no-button"> <span class="action-primary">@partials.components._tooltipIconLink("mailto:" + appointment.getStudentEmail, "email", "bottom", "Email Student", 32)</span></button>
+                        }
+                        @if(currentUser.getRole.equals("Coach") || currentUser.isCoach){
+                            @if(appointment.getCoachNotes.equals("")) {
+                                <button id="notesFor-@appointment.getAppointmentId" class="no-button" onclick="updateCoachNotes('@appointment.getAppointmentId', '@appointment.getCoachNotes')"><span class="action-black" id="appointmentNotes">@partials.components._tooltipIconLink("javascript:void(0)", "assignment", "bottom", "Session Notes", 32)</span></button>
+                            } else {
+                                <button id="notesFor-@appointment.getAppointmentId" class="no-button" onclick="updateCoachNotes('@appointment.getAppointmentId', '@appointment.getCoachNotes')"><span class="action-secondary" id="appointmentNotes">@partials.components._tooltipIconLink("javascript:void(0)", "assignment", "bottom", "Session Notes", 32)</span></button>
+                            }
+                        }
                     <button class="no-button" onclick="cancelAppointment('@appointment.getAppointmentId')"><span class="action-delete">@partials.components._tooltipIconLink("javascript:void(0)", "close", "bottom", "Cancel", 32)</span>
                     </button>
-                </span>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
-
+                    </span>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
 <script type="text/javascript">
-    function updateCoachNotes(appointmentId, coachNotes){
+    function updateCoachNotes(appointmentId, coachNotes) {
         $.confirm({
             closeIcon: true,
             title: 'Session Notes',
@@ -65,25 +70,27 @@
             '<form action="" class="coachNoteForm">' +
             '<div class="form-group">' +
             '<label>Enter notes about the appointment here. </label>' +
-            '<textarea cols="50" rows="10" class="coachNotes form-control" required>' + coachNotes +'</textarea>' +
+            '<textarea cols="50" rows="10" class="coachNotes form-control" required>' + coachNotes + '</textarea>' +
             '</div>' +
             '</form>',
+            escapeKey: true,
             buttons: {
                 updateNotes: {
                     text: 'Update Coach Notes',
                     btnClass: 'btn-primary',
+                    keys: ['enter'],
                     action: function () {
                         coachNotes = this.$content.find('.coachNotes').val();
                         $.ajax({
                             url: '/updateCoachNotes',
                             type: 'POST',
-                            data: JSON.stringify({appointmentId: appointmentId, coachNotes: coachNotes }),
+                            data: JSON.stringify({appointmentId: appointmentId, coachNotes: coachNotes}),
                             contentType: 'application/json',
                             success: function () {
-                                $('#notesFor-'+appointmentId).attr("onclick",'updateCoachNotes("'+appointmentId+'", "'+coachNotes +'")');
+                                $('#notesFor-' + appointmentId).attr("onclick", 'updateCoachNotes("' + appointmentId + '", "' + coachNotes + '")');
                                 $().val(coachNotes);
-                                let spanIcon = $('#notesFor-'+appointmentId+' span');
-                                if(coachNotes === '' || coachNotes === null) {
+                                let spanIcon = $('#notesFor-' + appointmentId + ' span');
+                                if (coachNotes === '' || coachNotes === null) {
                                     spanIcon.removeClass('action-secondary');
                                     spanIcon.addClass('action-black');
                                 } else {
@@ -93,7 +100,7 @@
                                 }
                             },
                             error: function (err) {
-                                createAlert("danger","There was an error updating coach notes");
+                                createAlert("danger", "There was an error updating coach notes");
                             }
                         });
                     }
@@ -106,12 +113,14 @@
         $.confirm({
             title: 'Cancel Appointment',
             content: 'Are you sure you want to cancel this appointment?',
+            escapeKey: 'cancel',
             buttons: {
                 cancel: {
                     text: "Nevermind",
                     btClass: "btn"
                 },
-                updateNotes: {
+                delete: {
+                    keys: ['enter'],
                     text: 'Cancel Appointment',
                     btnClass: 'btn-primary',
                     action: function () {
@@ -121,7 +130,7 @@
                             data: JSON.stringify({appointmentId: appointmentId}),
                             contentType: 'application/json',
                             success: function () {
-                                $('.'+appointmentId).hide();
+                                $('.' + appointmentId).hide();
                                 createAlert("success", "Appointment cancelled.");
                             },
                             error: function (err) {
@@ -143,10 +152,9 @@
         $('.appointmentNotes').shorten({
             showChars: 150
         });
+
         $('#appointmentList').DataTable({
-            "dom": "<'row'<'col-sm-10'l><'col-sm-2'f>>" +
-            "<'row'<'col-sm-12'tr>>" +
-            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+            dom: 'frtlip',
             responsive: true
         });
     });

@@ -1,0 +1,60 @@
+@import controllers.Databases.UserDB
+@import controllers.ApplicationComponents.Roles
+@(role: String, currentUser: UsersModel)
+<div class="panel panel-default table-responsive">
+    <table class="table table-striped userTable" cellspacing="0" width="100%" id="@role-Table">
+        <thead>
+            <tr>
+                <th>Profile Picture</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Manage</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(user <- if(role.equals("Admin")) UserDB.getAdmins else if (role.equals("Coach")) UserDB.getCoaches else UserDB.getStudents) {
+                <tr>
+                    <td>
+                        <img class="userAvatar" src="@user.getPhotoURL" alt="Card image cap">
+                    </td>
+                    <td>@user.getDisplayName</td>
+                    <td>@user.getEmail</td>
+                    <td>
+                        <label>
+                        @if(currentUser.getRole.equals("Admin")) {
+                            <select id='select' data-id="@user.getUid" data-displayName="@user.getDisplayName" class="custom-select">
+                                <option selected>@user.getRole</option>
+                                @for(role <- Roles.getRoles) {
+                                    @if(!Roles.getRole(user.getRole).equals(role)) {
+                                        <option value="@role.role()">@role.role()</option>
+                                    }
+                                }
+                            </select>
+                        } else {
+                            @user.getRole
+                        }
+                        </label>
+                    </td>
+                    <td>
+                        <span class="mdl-list__item-secondary-content">
+                            <span class="action-primary">@partials.components._tooltipIconLink("mailto:" + user.getEmail, "email", "bottom", "Email User", 32)</span>
+                            <span class="action-secondary">@partials.components._tooltipIconLink("javascript:void(0)", "insert_invitation", "bottom", "Schedule Appointment", 32)</span>
+                            @if(currentUser.getRole.equals("Admin")) {
+                                <span class="action-delete"><span id="@user.getUid" onclick="deleteUser(this)">@partials.components._tooltipIconLink("javascript:void(0)", "close", "bottom", "Remove User", 32)</span></span>
+                            }
+                        </span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+        $(document).ready(function () {
+            $('#@role-Table').DataTable({
+                dom: 'frtlip',
+            });
+        });
+</script>

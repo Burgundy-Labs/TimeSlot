@@ -9,16 +9,18 @@ public class SettingsModel {
     private Date semesterEnd;
     private Date startTime;
     private Date endTime;
+    private String siteAlert;
 
     public static SettingsModel replaceNull(SettingsModel settings) {
         if(settings == null) settings = new SettingsModel();
-        if(settings.getUniversityName() == null) settings.setUniversityName("NOT SET");
-        if(settings.getCenterName() == null) settings.setCenterName("NOT SET");
+        if(settings.getUniversityName() == null) settings.setUniversityName("CHANGE IN SETTINGS");
+        if(settings.getCenterName() == null) settings.setCenterName("CHANGE IN SETTINGS");
         /* Verify that color exists - if not set to white and black */
         if(settings.getSemesterStart() == null) settings.setSemesterStart(new Date());
         if(settings.getSemesterEnd() == null) settings.setSemesterEnd(new Date());
         if(settings.getStartTime() == null) settings.setStartTime(new Date());
         if(settings.getEndTime() == null) settings.setEndTime(new Date());
+        if(settings.getSiteAlert() == null) settings.setSiteAlert("");
         return settings;
     }
 
@@ -51,4 +53,12 @@ public class SettingsModel {
     public Date getEndTime() { return endTime; }
 
     public void setEndTime(Date endTime) { this.endTime = endTime; }
+
+    public String getSiteAlert() {
+        return siteAlert;
+    }
+
+    public void setSiteAlert(String siteAlert) {
+        this.siteAlert = siteAlert;
+    }
 }

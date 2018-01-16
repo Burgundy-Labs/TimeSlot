@@ -1,18 +1,16 @@
 @(currentPage: String)
 @currentUser = @{UserController.getCurrentUser}
-    <div class="sidebar primary-background">
+    <div class="sidebar">
             <nav class="sidebar-navigation">
                 <div>
-                    <img src="assets/images/husky-icon-resize.jpg" class="col-sm-12">
+                    <img src="@routes.Assets.at("images/husky.png")" width="80%">
                 </div>
                 @for(menuLink <- Application.menuLinks) {
-                    @if(currentUser == null || !currentUser.getRole.equals("Admin") && menuLink.locked) {
-
-                    } else {
+                    @if( (!menuLink.adminLocked && !menuLink.coachLocked) || (menuLink.coachLocked && currentUser.getRole.equals("Coach")) || (menuLink.adminLocked && currentUser.getRole.equals("Admin")) ) {
                         <div @if(currentPage.equals(menuLink.menuText)) {
                             class="currentPage"}>@partials.components._tooltipIconLink(menuLink.href, menuLink.mdlIcon, "right", menuLink.menuText, 32)</div>
                     }
                 }
-                    <div id="sign-out">@partials.components._tooltipIconLink("", "exit_to_app", "right", "Sign Out",32)</div>
+                <div id="sign-out">@partials.components._tooltipIconLink("", "exit_to_app", "right", "Sign Out",32)</div>
         </nav>
     </div>

@@ -1,6 +1,7 @@
 @import controllers.Databases.AppointmentsDB
 @currentUser = @{UserController.getCurrentUser}
-<table class="table table-responsive appointmentList" id="next5Appointments">
+<div class="table-responsive">
+<table class="table table-striped appointmentList" cellspacing="0" width="100%" id="next5Appointments">
     <thead>
         <tr>
             <th></th>
@@ -10,7 +11,7 @@
             <th>Time</th>
         </tr>
     </thead>
-    <tbody class="col-lg-12">
+    <tbody class="mb-3 col-md-12">
     @for(appointment <- AppointmentsDB.getNextFiveAppointmentsForUser(currentUser.getRole, currentUser.getUid)) {
         <tr>
             <td>
@@ -26,6 +27,7 @@
     }
     </tbody>
 </table>
+</div>
 
 <script type="text/javascript">
     $(document).ready(function () {

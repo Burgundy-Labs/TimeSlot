@@ -1,6 +1,5 @@
 package controllers.Databases;
 
-import com.google.api.Service;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import controllers.ApplicationComponents.Roles;
@@ -18,7 +17,7 @@ public class UserDB {
 
     public static synchronized void addServiceToUser(String userId, ServiceModel service){
          /* Get DB instance */
-        DocumentReference docRef = FirestoreDB.getFirestoreDB().collection("users").document(userId).collection("services").document(service.getServiceId());
+        DocumentReference docRef = FirestoreDB.get().collection("users").document(userId).collection("services").document(service.getServiceId());
         Map<String, Object> data = new HashMap<>();
         /* Create user model for DB insert */
         data.put("service", service.getService());
@@ -30,7 +29,7 @@ public class UserDB {
     public static synchronized List<ServiceModel> getServicesForUser(String userId){
         List<ServiceModel> servicesList = new ArrayList<>();
         /* Asynchronously retrieve all users */
-        ApiFuture<QuerySnapshot> query = FirestoreDB.getFirestoreDB().collection("users").document(userId).collection("services").get();
+        ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("users").document(userId).collection("services").get();
         QuerySnapshot querySnapshot = null;
         try {
             /* Attempt to get a list of all users - blocking */
@@ -55,7 +54,7 @@ public class UserDB {
 
     public static boolean removeServiceFromUser(String userId, String serviceId) {
         /* Asynchronously remove user from DB */
-        ApiFuture<WriteResult> writeResult = FirestoreDB.getFirestoreDB().collection("users").document(userId).collection("services").document(serviceId).delete();
+        ApiFuture<WriteResult> writeResult = FirestoreDB.get().collection("users").document(userId).collection("services").document(serviceId).delete();
         try {
             /* Verify that action is complete */
             writeResult.get();
@@ -70,9 +69,9 @@ public class UserDB {
          /* Get DB instance */
         DocumentReference docRef = null;
          if(notificationModel.getNotificationId() == null) {
-             docRef = FirestoreDB.getFirestoreDB().collection("users").document(userId).collection("notifications").document();
+             docRef = FirestoreDB.get().collection("users").document(userId).collection("notifications").document();
          } else {
-             docRef = FirestoreDB.getFirestoreDB().collection("users").document(userId).collection("notifications").document(notificationModel.getNotificationId());
+             docRef = FirestoreDB.get().collection("users").document(userId).collection("notifications").document(notificationModel.getNotificationId());
          }
         Map<String, Object> data = new HashMap<>();
         /* Create user model for DB insert */
@@ -87,7 +86,7 @@ public class UserDB {
     public static synchronized List<NotificationModel> getNotificaitonsForUser(String userId){
         List<NotificationModel> notificationList = new ArrayList<>();
         /* Asynchronously retrieve all users */
-        ApiFuture<QuerySnapshot> query = FirestoreDB.getFirestoreDB().collection("users").document(userId).collection("notifications").orderBy("creationDate", Query.Direction.DESCENDING).limit(5).get();
+        ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("users").document(userId).collection("notifications").orderBy("creationDate", Query.Direction.DESCENDING).limit(5).get();
         QuerySnapshot querySnapshot = null;
         try {
             /* Attempt to get a list of all users - blocking */
@@ -115,7 +114,7 @@ public class UserDB {
 
     public static boolean removeNotification(String userId, String notificationId) {
         /* Asynchronously remove user from DB */
-        ApiFuture<WriteResult> writeResult = FirestoreDB.getFirestoreDB().collection("users").document(userId).collection("notifications").document(notificationId).delete();
+        ApiFuture<WriteResult> writeResult = FirestoreDB.get().collection("users").document(userId).collection("notifications").document(notificationId).delete();
         try {
             /* Verify that action is complete */
             writeResult.get();
@@ -130,7 +129,7 @@ public class UserDB {
         /* Return null user if none found */
         UsersModel userFound = null;
         /* Get the specific user reference from the DB*/
-        DocumentReference docRef = FirestoreDB.getFirestoreDB().collection("users").document(userId);
+        DocumentReference docRef = FirestoreDB.get().collection("users").document(userId);
         ApiFuture<DocumentSnapshot> future = docRef.get();
         DocumentSnapshot document = null;
         try {
@@ -152,7 +151,7 @@ public class UserDB {
                     document.getBoolean("isCoach")
             );
         } else {
-            /* Log something */
+
         }
         return userFound;
     }
@@ -160,7 +159,7 @@ public class UserDB {
     public static synchronized List<UsersModel> getUsers() {
         List<UsersModel> userList = new ArrayList<>();
         /* Asynchronously retrieve all users */
-        ApiFuture<QuerySnapshot> query = FirestoreDB.getFirestoreDB().collection("users").get();
+        ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("users").get();
         QuerySnapshot querySnapshot = null;
         try {
             /* Attempt to get a list of all users - blocking */
@@ -191,7 +190,7 @@ public class UserDB {
     public static synchronized List<UsersModel> getCoaches() {
         List<UsersModel> userList = new ArrayList<>();
         /* Asynchronously retrieve all users */
-        ApiFuture<QuerySnapshot> query = FirestoreDB.getFirestoreDB().collection("users").get();
+        ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("users").get();
         QuerySnapshot querySnapshot = null;
         try {
             /* Attempt to get a list of all users - blocking */
@@ -224,6 +223,72 @@ public class UserDB {
         return userList;
     }
 
+    public static synchronized List<UsersModel> getAdmins() {
+        List<UsersModel> userList = new ArrayList<>();
+        /* Asynchronously retrieve all users */
+        ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("users").get();
+        QuerySnapshot querySnapshot = null;
+        try {
+            /* Attempt to get a list of all users - blocking */
+            querySnapshot = query.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        assert querySnapshot != null;
+        List<DocumentSnapshot> documents = querySnapshot.getDocuments();
+        /* Iterate users and add them to a list for return */
+        for (DocumentSnapshot document : documents) {
+            if (document.getString("role").equals("Admin"))
+            {
+                UsersModel user = new UsersModel(
+                        document.getString("display_name"),
+                        document.getString("email"),
+                        document.getBoolean("email_verified"),
+                        document.getString("photo_url"),
+                        document.getId(),
+                        document.getString("phone_number"),
+                        Roles.getRole(document.getString("role")),
+                        document.getBoolean("isCoach")
+                );
+                userList.add(user);
+            }
+        }
+        return userList;
+    }
+
+    public static synchronized List<UsersModel> getStudents() {
+        List<UsersModel> userList = new ArrayList<>();
+        /* Asynchronously retrieve all users */
+        ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("users").get();
+        QuerySnapshot querySnapshot = null;
+        try {
+            /* Attempt to get a list of all users - blocking */
+            querySnapshot = query.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        assert querySnapshot != null;
+        List<DocumentSnapshot> documents = querySnapshot.getDocuments();
+        /* Iterate users and add them to a list for return */
+        for (DocumentSnapshot document : documents) {
+            if (document.getString("role").equals("Student"))
+            {
+                UsersModel user = new UsersModel(
+                        document.getString("display_name"),
+                        document.getString("email"),
+                        document.getBoolean("email_verified"),
+                        document.getString("photo_url"),
+                        document.getId(),
+                        document.getString("phone_number"),
+                        Roles.getRole(document.getString("role")),
+                        document.getBoolean("isCoach")
+                );
+                userList.add(user);
+            }
+        }
+        return userList;
+    }
+
     public static List<UsersModel> getCoachesByService(String serviceId) {
         List<UsersModel> coachesWithService = new ArrayList<>();
         List<UsersModel> coaches = getCoaches();
@@ -239,8 +304,13 @@ public class UserDB {
     }
 
     public static synchronized void addUser(UsersModel user) {
+        /* Set only user present to admin */
+        List<UsersModel> users = getUsers();
+        if(users.size() == 0) {
+            user.setRole(Roles.getRole("Admin"));
+        }
         /* Get DB instance */
-        DocumentReference docRef = FirestoreDB.getFirestoreDB().collection("users").document(user.getUid());
+        DocumentReference docRef = FirestoreDB.get().collection("users").document(user.getUid());
         Map<String, Object> data = new HashMap<>();
         /* Create user model for DB insert */
         data.put("display_name", user.getDisplayName());
@@ -262,7 +332,7 @@ public class UserDB {
 
     public static boolean removeUser(String userId) {
         /* Asynchronously remove user from DB */
-        ApiFuture<WriteResult> writeResult = FirestoreDB.getFirestoreDB().collection("users").document(userId).delete();
+        ApiFuture<WriteResult> writeResult = FirestoreDB.get().collection("users").document(userId).delete();
         try {
             /* Verify that action is complete */
             writeResult.get();

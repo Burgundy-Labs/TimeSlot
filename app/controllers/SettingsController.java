@@ -6,13 +6,11 @@ import models.AppointmentTypeModel;
 import models.ServiceModel;
 import models.SettingsModel;
 import models.UsersModel;
-import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
 import javax.xml.bind.DatatypeConverter;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -40,6 +38,14 @@ public class SettingsController extends Controller {
             appointmentType.setWeekly(enabled);
         }
         SettingsDB.addAppointmentType(appointmentType);
+        return ok();
+    }
+    public Result changeSiteAlert(){
+        JsonNode json = request().body().asJson();
+        String siteAlert = json.findPath("siteAlert").asText();
+        SettingsModel s = SettingsDB.getSettings();
+        s.setSiteAlert(siteAlert);
+        SettingsDB.changeSettings(s);
         return ok();
     }
 
@@ -83,6 +89,12 @@ public class SettingsController extends Controller {
 
     public static List<AppointmentTypeModel> getAppointmentTypes() {
         return SettingsDB.getAppointmentTypes();
+    }
+
+    public static List<AppointmentTypeModel> getAvailableAppointmentTypes() {
+        List<AppointmentTypeModel> appointmentTypes = SettingsDB.getAppointmentTypes();
+        appointmentTypes.removeIf(a -> (!a.getOneTime() && !a.getWeekly()));
+        return appointmentTypes;
     }
 
     public Result createService() {

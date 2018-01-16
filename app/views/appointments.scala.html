@@ -1,20 +1,23 @@
-
 @main("Appointments", "Your Appointments") {
-    <div class="container-fluid">
-    <ul class="nav nav-pills mb-3" id="appointment-view-tab" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" id="appointment-list-tab" data-toggle="pill" href="#appointment-list" role="tab" aria-controls="appointment-list" aria-expanded="true">List View</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="appointment-calendar-tab" data-toggle="pill" href="#appointment-calendar" role="tab" aria-controls="appointment-calendar" aria-expanded="true">Calendar View</a>
-        </li>
-         </ul>
-    <div class="tab-content" id="appointment-view-tabContent">
-        <div class="tab-pane fade show active" id="appointment-list" role="tabpanel" aria-labelledby="appointment-list-tab">
-        @partials.components._appointmentListForUser()
+    <div class="col-md-12">
+        <ul class="nav nav-pills mb-3" id="appointment-view-tab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="appointment-list-tab" data-toggle="pill" href="#appointment-list" role="tab" aria-controls="appointment-list" aria-expanded="true">
+                    List View</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="appointment-calendar-tab" data-toggle="pill" href="#appointment-calendar" role="tab" aria-controls="appointment-calendar" aria-expanded="true">
+                    Calendar View</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="appointment-view-tabContent">
+            <div class="tab-pane fade show active" id="appointment-list" role="tabpanel" aria-labelledby="appointment-list-tab">
+            @partials.components._appointmentListForUser()
+            </div>
+            <div class="tab-pane fade" id="appointment-calendar" role="tabpanel" aria-labelledby="appointment-calendar-tab">
+                <h1>Coming soon!</h1>
+                <p>In a future update, you will be able to view your upcoming appointments in a calendar.</p>
+            </div>
         </div>
-        <div class="tab-pane fade" id="appointment-calendar" role="tabpanel" aria-labelledby="appointment-calendar-tab">
-        </div>
-    </div>
     </div>
 }

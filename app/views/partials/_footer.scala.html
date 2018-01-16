@@ -1,16 +1,21 @@
-<footer class="footer">
-        <span class="centerName">
-            @SettingsController.getSettings.getUniversityName
-            -
-            @SettingsController.getSettings.getCenterName
-        </span>
-        <ul>
-            <li><a href="/Help">Help</a></li>
-            <li><a href="/Feedback">Feedback</a></li>
-            <li><a href="/Terms">Privacy & Terms</a></li>
-        </ul>
+<footer class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <span class="centerName">
+                    @SettingsController.getSettings.getUniversityName
+                    |
+                    @SettingsController.getSettings.getCenterName
+                </span>
+            </div>
+            <div class="col-md-6">
+                <ul>
+                    <li><a href="/Help">Help</a></li>
+                    <li><a href="/Feedback">Feedback</a></li>
+                    <li><a href="/Terms">Privacy & Terms</a></li>
+                </ul>
+            </div>
+        </div>
 </footer>
-
 @* Insert javascripts *@
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@@1.17.0/dist/jquery.validate.min.js"></script>
 <script src="@routes.Assets.at("third_party/steps/jquery-steps.min.js")"></script>
@@ -22,4 +27,4 @@
 <script src="https://cdn.rawgit.com/viralpatel/jquery.shorten/master/src/jquery.shorten.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 @* Insert new scripts above this line *@
-<script src="@routes.Assets.at("javascripts/main.js")"></script>
+<script src="@routes.Assets.at("javascripts/main.js")?@Application.getRandomSeed"></script>

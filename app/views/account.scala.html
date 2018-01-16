@@ -1,115 +1,115 @@
 @()
-@currentUser = @{UserController.getCurrentUser}
+@currentUser = @{
+    UserController.getCurrentUser
+}
 @main("Account", "Manage Account") {
     @if(!currentUser.getRole.equals("Student")) {
-        <h1>Availability Schedule</h1>
-        <div class="row">
-            <div class="col-md-12">
-                <div id='availabilitySchedule'></div>
-            </div>
-        </div>
-        <br/>
-        <div class="row">
-            <div class="col-md-12">
-                <h1>Assigned Services</h1>
-                <br/>
-                    <ul class="list-group col-md-3">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <select id="selectedService" title="Services" class="col-md-9 form-control">
-                                <option value="" selected default hidden>
-                                Select A Service
-                                </option>
-                            @for(service <- AccountController.getAvailableServices(currentUser.getUid)) {
-                                <option value="@service.getServiceId">
-                                    @service.getService
-                                </option>
-                            }
-                        </select>
-                        <button class="btn btn-primary btn-success" onclick=createService()><i class="material-icons md-18">
-                            add</i></button>
-                        </li>
-                        @for( service <- AccountController.getServicesForUser(currentUser.getUid)) {
-                        <li class="list-group-item d-flex justify-content-between align-items-center @service.getServiceId">
-                            <h6 class="mb-1">@service.getService</h6>
-                            <button class="btn btn-primary btn-danger" onclick="removeService('@service.getServiceId')">Remove</button>
-                        </li>
-                    }
-                    </ul>
+        <div class="mb-3 col-md-12">
+            <h1>Availability Schedule</h1>
+            <div class="row">
+                <div class="mb-3 col-md-12">
+                    <div id='availabilitySchedule'></div>
                 </div>
+            </div>
+            <br/>
+            <div class="dashCards row">
+                <div class="mb-3 col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Account Settings</h4>
+                        </div>
+                        <div class="card-block row">
+                            <div class="mb-3 col-md-4">
+                                <h4>Assigned Services</h4>
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <div class="container-fluid">
+                                            <div class="row">
+                                                <select id="selectedService" title="Services" class="mb-1 col-lg-7 form-control">
+                                                    <option value="" selected disabled hidden>
+                                                        Select A Service
+                                                    </option>
+                                                    @for(service <- AccountController.getAvailableServices(currentUser.getUid)) {
+                                                        <option value="@service.getServiceId">
+                                                        @service.getService
+                                                        </option>
+                                                    }
+                                                </select>
+                                                <div class="col-lg-5 mb-1">
+                                                    <button class="btn btn-primary btn-success" onclick=createService()>
+                                                        Add Service</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    @for(service <- AccountController.getServicesForUser(currentUser.getUid)) {
+                                        <li class="list-group-item d-flex justify-content-between align-items-center @service.getServiceId">
+                                            <h6 class="mb-1">@service.getService</h6>
+                                            <button class="btn btn-primary btn-danger" onclick="removeService('@service.getServiceId')">Remove</button>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                            @if(currentUser.getRole.equals("Admin")) {
+                                <div class="mb-3 col-md-4">
+                                    <h4>Account Settings</h4>
+                                    <div class="input-group container">
+                                        <input onclick="isCoachCheck()" type="checkbox" class="form-check-input" @if(currentUser.isCoach) {checked} id="isCoachCheck">
+                                        <label class="form-check-label" for="isCoachCheck">Act as coach</label>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <script>
 
-            function removeService(serviceId) {
-
-                $.confirm({
-                    title: 'Remove Service',
-                    content: 'Are you sure you want to remove this service?',
-                    buttons: {
-                        confirm: {
-                            text: 'Yes, Remove',
-                            btnClass: "btn btn-primary",
-                            keys: ['enter'],
-                            action: function () {
-                                const form = {
-                                    userId: '@currentUser.getUid',
-                                    serviceId: serviceId
-                                };
-                                $.ajax({
-                                    url: '/removeServiceFromCoach',
-                                    type: 'POST',
-                                    data: JSON.stringify(form),
-                                    contentType: 'application/json',
-                                    success: function () {
-                                        createAlert("success", "Service Removed!");
-                                        location.reload();
-                                    },
-                                    error: function () {
-                                        createAlert('danger', 'Removing service failed.');
-                                    }
-                                });
-                            }
+                function isCoachCheck() {
+                    let checked = $("#isCoachCheck").is(':checked');
+                    let userId = '@currentUser.getUid';
+                    data = {checked: checked, userId: userId};
+                    $.ajax({
+                        url: '/isCoachChecked',
+                        type: 'POST',
+                        data: JSON.stringify(data),
+                        contentType: 'application/json',
+                        success: function () {
+                            createAlert("success", "Coach status updated!");
                         },
-                        cancel: {
-                            text: 'Cancel'
+                        error: function () {
+                            createAlert('danger', 'Coach status change failed.');
                         }
-                    }
-                });
-            }
-            function createService() {
-                let selectedService = $('#selectedService :selected');
-                let selectedServiceText = selectedService.text();
-                let selectedServiceId = selectedService.val();
-                if(selectedServiceId === "" || selectedServiceId === null) {
-                    $.alert({
-                        title: "Select Service",
-                        content: "Please select a service to add."
-                    })
-                } else {
+                    });
+                }
+
+                function removeService(serviceId) {
                     $.confirm({
-                        title: 'Add Service',
-                        content: 'Do you want add ' + selectedServiceText + ' as a service you provide?',
+                        title: 'Remove Service',
+                        content: 'Are you sure you want to remove this service?',
+                        escapeKey: 'cancel',
                         buttons: {
                             confirm: {
-                                text: 'Confirm',
+                                text: 'Yes, Remove',
                                 btnClass: "btn btn-primary",
                                 keys: ['enter'],
                                 action: function () {
                                     const form = {
                                         userId: '@currentUser.getUid',
-                                        serviceName: selectedServiceText,
-                                        serviceId: selectedServiceId
+                                        serviceId: serviceId
                                     };
                                     $.ajax({
-                                        url: '/addServiceToCoach',
+                                        url: '/removeServiceFromCoach',
                                         type: 'POST',
                                         data: JSON.stringify(form),
                                         contentType: 'application/json',
                                         success: function () {
-                                            createAlert("success", "Service Added!");
+                                            createAlert("success", "Service Removed!");
                                             location.reload();
                                         },
                                         error: function () {
-                                            createAlert('danger', 'Adding service failed.');
+                                            createAlert('danger', 'Removing service failed.');
                                         }
                                     });
                                 }
@@ -120,7 +120,55 @@
                         }
                     });
                 }
-            }
+
+                function createService() {
+                    let selectedService = $('#selectedService :selected');
+                    let selectedServiceText = selectedService.text();
+                    let selectedServiceId = selectedService.val();
+                    if (selectedServiceId === "" || selectedServiceId === null) {
+                        $.alert({
+                            title: "Select Service",
+                            content: "Please select a service to add."
+                        })
+                    } else {
+                        $.confirm({
+                            title: 'Add Service',
+                            content: 'Do you want add ' + selectedServiceText + ' as a service you provide?',
+                            escapeKey: 'cancel',
+                            buttons: {
+                                confirm: {
+                                    text: 'Confirm',
+                                    btnClass: "btn btn-primary",
+                                    keys: ['enter'],
+                                    action: function () {
+                                        const form = {
+                                            userId: '@currentUser.getUid',
+                                            serviceName: selectedServiceText,
+                                            serviceId: selectedServiceId
+                                        };
+                                        $.ajax({
+                                            url: '/addServiceToCoach',
+                                            type: 'POST',
+                                            data: JSON.stringify(form),
+                                            contentType: 'application/json',
+                                            success: function () {
+                                                createAlert("success", "Service Added!");
+                                                location.reload();
+                                            },
+                                            error: function () {
+                                                createAlert('danger', 'Adding service failed.');
+                                            }
+                                        });
+                                    }
+                                },
+                                cancel: {
+                                    text: 'Cancel'
+                                }
+                            }
+                        });
+                    }
+                }
+
                 $(document).ready(function () {
                     $('#availabilitySchedule').fullCalendar({
                         height: 'auto',
@@ -129,12 +177,12 @@
                         maxTime: moment('@SettingsController.getSettings.getEndTime.toInstant').format("HH:mm"),
                         events: function (start, end, timezone, callback) {
                             $.ajax({
-                                url: '/availableSlots/' + '@currentUser.getUid',
+                                url: '/availableSlots/' + '@currentUser.getUid' + '/' + moment(start).toISOString() + '/' + moment(end).toISOString(),
                                 type: 'GET',
                                 success: function (response) {
-                                    var events = [];
+                                    let events = [];
                                     $(response).each(function () {
-                                        var event = {
+                                        const event = {
                                             id: $(this).attr('availabilityId'),
                                             title: "One-Time",
                                             start: moment($(this).attr('startDate')),
@@ -159,14 +207,13 @@
                         eventRender: function (event, eventElement) {
                             eventElement.find("div.fc-content").prepend("<button onclick='removeAvailability(\"" + event.id + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
                         },
-                        /* TODO pull from open / close hours of operation in settings page */
                         weekends: false,
                         selectable: true,
                         defaultView: 'agendaWeek',
                         navLinks: true,
                         eventLimit: false,
                         select: function (start, end, jsEvent, view) {
-                            var newAvailability = {
+                            const newAvailability = {
                                 userId: '@currentUser.getUid',
                                 startDate: moment(start).format(),
                                 endDate: moment(end).format(),
@@ -174,13 +221,13 @@
                             };
                             $.confirm({
                                 title: 'Availability',
-                                content: 'Is this available slot weekly?',
+                                content: 'Is this slot available weekly?',
                                 theme: 'modern',
+                                escapeKey: 'cancel',
                                 buttons: {
                                     yes: {
                                         text: 'Yes, weekly',
                                         btnClass: 'btn-primary',
-                                        keys: ['enter', 'shift'],
                                         action: function () {
                                             newAvailability.weekly = true;
                                             createAvailability(newAvailability);
@@ -209,11 +256,12 @@
                         title: 'Remove Availability?',
                         content: 'Do you want to remove this availability slot?',
                         theme: 'modern',
+                        escapeKey: 'cancel',
                         buttons: {
                             yes: {
                                 text: 'Remove',
                                 btnClass: 'btn-primary',
-                                keys: ['enter', 'shift'],
+                                keys: ['enter'],
                                 action: function () {
                                     $.ajax({
                                         url: '/removeAvailability',

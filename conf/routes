@@ -17,8 +17,8 @@ GET         /Help                                                     controller
 GET         /Terms                                                    controllers.StaticController.terms
 GET         /Feedback                                                 controllers.FeedbackController.feedback
 GET         /MakeAppointment                                          controllers.AppointmentsController.makeAppointment
-GET         /availableSlots/:userId                                   controllers.AvailabilityController.availableSlots(userId: String)
-GET         /availableSlotsForAppointments/:userId                    controllers.AvailabilityController.availableSlotsForAppointments(userId: String)
+GET         /availableSlots/:userId/:start/:end                       controllers.AvailabilityController.availableSlots(userId: String, start: String, end: String)
+GET         /availableSlotsForAppointments/:userId/:start/:end/:serviceId       controllers.AvailabilityController.availableSlotsForAppointments(userId: String, start: String, end: String, serviceId: String)
 GET         /appointmentsForUser/:role/:userId                        controllers.AppointmentsController.appointmentsForUser(role: String, userId: String)
 GET         /Reports                                                  controllers.ReportsController.index
 GET         /appointmentTypeStatistics/:reportStart/:reportEnd        controllers.ReportsController.appointmentTypeStatistics(reportStart: Long, reportEnd: Long)
@@ -46,5 +46,8 @@ POST        /createAvailability                                       controller
 POST        /removeAvailability                                       controllers.AvailabilityController.removeAvailability()
 POST        /sendFeedback                                             controllers.FeedbackController.sendFeedback()
 POST        /appointmentTypeFrequency                                 controllers.SettingsController.appointmentTypeFrequency()
+POST        /isCoachChecked                                           controllers.AccountController.isCoachChecked()
+POST        /changeSiteAlert                                          controllers.SettingsController.changeSiteAlert()
+
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                             controllers.Assets.at(path="/public", file)

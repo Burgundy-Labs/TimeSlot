@@ -1,11 +1,8 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import controllers.ApplicationComponents.AppointmentTypes;
 import controllers.Databases.AppointmentsDB;
-import controllers.Databases.AvailabilityDB;
 import models.AppointmentsModel;
-import models.AvailabilityModel;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -30,6 +27,7 @@ public class AppointmentsController extends Controller {
         AppointmentsDB.addAppointment(appointment);
         return ok();
     }
+
     public Result createAppointment() {
         /* Get user object from request */
         JsonNode json = request().body().asJson();
@@ -43,6 +41,7 @@ public class AppointmentsController extends Controller {
         appointment.setAppointmentNotes(json.findPath("appointmentNotes").textValue());
         appointment.setPresent(Boolean.getBoolean(json.findPath("present").textValue()));
         appointment.setServiceType(json.findPath("serviceType").textValue());
+        appointment.setWeekly(json.findPath("weekly").asBoolean());
         /* Check if user is in DB */
         appointment = AppointmentsDB.addAppointment(appointment);
         AppointmentsModel finalAppointment = appointment;
@@ -54,7 +53,7 @@ public class AppointmentsController extends Controller {
         JsonNode json = request().body().asJson();
         String appointmentId = json.findPath("appointmentId").textValue();
         AppointmentsModel appointment = AppointmentsDB.removeAppointment(appointmentId);
-        MailerService.sendAppointmentCancellation(appointment);
+        new Thread(() -> MailerService.sendAppointmentCancellation(appointment)).start();
         return ok();
     }
 

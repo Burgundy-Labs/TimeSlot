@@ -8,7 +8,7 @@
     <body>
         <script type="text/javascript">
                 // FirebaseUI config.
-                if ( localStorage.getItem("firebaseui::rememberedAccounts") != null ) {
+                if ( localStorage.getItem("firebaseui::rememberedAccounts") !== null ) {
                     window.location = "/Dashboard";
                 }
                 let uiConfig = {
@@ -29,6 +29,7 @@
                                     content: 'Please sign-in using an @@mtu.edu email address',
                                     buttons: {
                                         confirm: {
+                                            keys: ['enter'],
                                             text: "Okay",
                                             btnClass: "btn-primary",
                                             action: function() {
@@ -69,7 +70,8 @@
                 // The start method will wait until the DOM is loaded.
                 ui.start('#firebaseui-auth-container', uiConfig);
         </script>
-            <div class="loginJumbotron">
+        @helper.CSRF.formField
+        <div class="loginJumbotron">
                 <div class="jumbotron d-flex align-items-center">
                     <div class="container">
                         <h1>@SettingsController.getSettings.getCenterName</h1>

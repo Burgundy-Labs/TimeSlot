@@ -14,14 +14,16 @@
                     coachDropdown.empty(); // remove old options
                     let count = 0;
                     $.each(json, function(key, value) {
+                        if('@currentUser.getUid' !== value.uid) {
                         coachDropdown.append("<option value='"+value.uid+"'>" + value.displayName + "</option>");
                         count++;
+                        }
                     });
                     if(count === 0) {
                         coachDropdown.prepend("<option selected value disabled hidden'>No Coaches Found</option>");
                     } else {
                         coachDropdown.prepend("<option value='any'>Any Coach</option>");
-                        coachDropdown.prepend("<option selected value disabled hidden'>Select A Coach</option>");
+                        coachDropdown.prepend("<option selected value disabled hidden'>Select a Coach</option>");
                     }
                 }
             });
@@ -37,13 +39,13 @@
                 editable: false,
                 weekends: false,
                 selectable: true,
-                /* TODO pull from open / close hours of operation in settings page */
                 minTime: moment('@currentSettings.getStartTime.toInstant').format("HH:mm"),
                 maxTime: moment('@currentSettings.getEndTime.toInstant').format("HH:mm"),
                 events: function (start, end, timezone, callback) {
                     const coachId = $("#coachId :selected").val();
+                    const service = $("#serviceType :selected").val();
                     $.ajax({
-                        url: '/availableSlotsForAppointments/' + coachId,
+                        url: '/availableSlotsForAppointments/' + coachId  + '/' + moment(start).toISOString() + '/' + moment(end).toISOString() + '/' + service,
                         type: 'GET',
                         success: function (response) {
                             const events = [];
@@ -51,11 +53,28 @@
                                 const event = {
                                     id: $(this).attr('availabilityId'),
                                     title: "One-Time",
-                                    start: moment($(this).attr('startDate')).format(),
-                                    end: moment($(this).attr('endDate')).format(),
+                                    start: moment($(this).attr('startDate')),
+                                    end: moment($(this).attr('endDate')),
                                     dow: [moment($(this).attr('startDate')).isoWeekday()],
-                                    rendering: 'background'
+                                    rendering: 'background',
+                                    backgroundColor: "red",
+                                    canBeWeekly: $(this).attr("canBeWeekly"),
+                                    canBeOneTime: $(this).attr("canBeOneTime"),
+                                    oneTimeUsers: $(this).attr("oneTimeUsers"),
+                                    weeklyUsers: $(this).attr("weeklyUsers")
                                 };
+                                if ($(this).attr("weekly") === true) {
+                                    event.title = "Weekly";
+                                    event.dow = [moment($(this).attr('startDate')).isoWeekday()];
+                                    event.start = moment($(this).attr('startDate')).format("HH:mm");
+                                    event.end = moment($(this).attr('endDate')).format("HH:mm");
+                                    if ( event.canBeWeekly ) {
+                                        event.backgroundColor = "blue";
+                                    }
+                                }
+                                if(event.canBeOneTime && event.canBeWeekly) {
+                                    event.backgroundColor = "purple";
+                                }
                                 events.push(event);
                             });
                             callback(events);
@@ -66,25 +85,15 @@
                     eventElement.find("div.fc-content").prepend("<button onclick='removeAppointment(\"" + event.id + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
                 },
                 select: function (start, end, jsEvent, view) {
-                    var check = moment(start);
-                    var today = moment();
-                    if(check <= today) {return false;}
-                    window['moment-range'].extendMoment(moment);
-                    const events =  $("#newAppointmentCalendar").fullCalendar('clientEvents');
-                    let selectedEvent = null;
-                    for (let i in events) {
-                        const range = moment().range(events[i].start, events[i].end);
-                            if (range.contains(start) && range.contains(end)) {
-                                selectedEvent = events[i];
-                                break;
-                            }
-                    }
-                    selectedEvent = "f";
-                    if(selectedEvent === null) {
-                        return false;
-                    }
+                    let valid = (function(){
+                        return $("#newAppointmentCalendar").fullCalendar('clientEvents', function (event) {
+                            return (event.rendering === "background" &&
+                                    (start.local().isAfter(event.start.local()) || start.local().isSame(event.start.local(),'minute')) &&
+                                    (end.local().isBefore(event.end.local()) || end.local().isSame(event.end.local(), 'minute')));
+                        }).length > 0;
+                    })();
                     const duration = moment.duration(end.diff(start)).asHours();
-                    // TODO pull duration from DB - settings
+                    // TODO pull duration from DB - settings + allow for greater than .5 selection
                     if (duration > .5) {
                         $.alert({
                             title: "Hold on there",
@@ -95,7 +104,18 @@
                                 }
                             }
                         })
-                    } else if (($("#newAppointmentCalendar").fullCalendar('clientEvents', [1])).length > 0) {
+                    }
+                    else if(!valid){
+                        $.alert({
+                        title: "Pick an appointment",
+                        content: "The highlighted areas indicates available appointment slots.",
+                        buttons: {
+                            ok: {
+                                text: "Okay"
+                            }
+                        }
+                    })}
+                    else if (($("#newAppointmentCalendar").fullCalendar('clientEvents', [1])).length > 0) {
                         $.alert({
                             title: "Hold on there",
                             content: "You already have an appointment slot selected, cancel the current one to change your time.",
@@ -106,6 +126,13 @@
                             }
                         })
                     } else {
+                        let canBes = (function(){
+                            return $("#newAppointmentCalendar").fullCalendar('clientEvents', function (event) {
+                                if (event.rendering === "background" && (start.local().isAfter(event.start.local()) || start.local().isSame(event.start.local(),'minute')) &&
+                                        (end.local().isBefore(event.end.local()) || end.local().isSame(event.end.local(), 'minute'))) {
+                                return {canBeOneTime: event.canBeOneTime, canBeWeekly: event.canBeWeekly, weeklyUsers: event.weeklyUsers, oneTimeUsers: event.oneTimeUsers};
+                            }
+                        })})();
                         const newAppointment = {
                             title: "Appointment",
                             /* TODO If want to select more than 1 event, create unique id's */
@@ -113,27 +140,15 @@
                             userId: '@currentUser.getUid',
                             start: moment(start).format(),
                             end: moment(end).format(),
-                            weekly: false
+                            startDate: moment(start).format(),
+                            endDate: moment(end).format(),
+                            canBeOneTime: canBes[0].canBeOneTime,
+                            canBeWeekly: canBes[0].canBeWeekly,
+                            weeklyUsers: canBes[0].weeklyUsers,
+                            oneTimeUsers: canBes[0].oneTimeUsers
                         };
-                        $.confirm({
-                            title: 'Confirm Appointment',
-                            content: 'Do you want to create an appointment for this time?',
-                            theme: 'modern',
-                            buttons: {
-                                yes: {
-                                    text: 'Yes, Create',
-                                    btnClass: 'btn-primary',
-                                    keys: ['enter', 'shift'],
-                                    action: function () {
-                                        $('#newAppointmentCalendar').fullCalendar('renderEvent', newAppointment, true);
-                                        selectedEvents.push(newAppointment);
-                                    }
-                                },
-                                cancel: {
-                                    text: 'No, Cancel.'
-                                }
-                            }
-                        });
+                        $('#newAppointmentCalendar').fullCalendar('renderEvent', newAppointment, true);
+                        selectedEvents.push(newAppointment);
                     }
                 },
                 selectOverlap: function (event) {
@@ -153,8 +168,10 @@
     function createNewAppointment() {
         let content = ` @{ partials.components._createNewAppointmentFlow() } `;
         $.confirm({
-            columnClass: 'col-md-12',
+            columnClass: 'col-11',
+            containerFluid: true,
             title: "New Appointment",
+            escapeKey: 'cancel',
             content: content,
             buttons: {
                 cancel: {
@@ -168,6 +185,7 @@
                 submit: {
                     text: 'Create Appointment',
                     btnClass: 'btn-primary',
+                    keys: ['enter'],
                     action: function () {
                         if (selectedEvents.length <= 0) {
                             $.alert({
@@ -177,12 +195,7 @@
                             });
                             return false;
                         } else {
-                            const appointment = {
-                                /* TOOD: If desired to allow multiple events - change this*/
-                                id: selectedEvents[0].id,
-                                startDate: selectedEvents[0].start,
-                                endDate: selectedEvents[0].end
-                            };
+                            const appointment = selectedEvents[0];
                             const form = {
                                 appointmentType: $('#appointmentType option:selected').text(),
                                 serviceType: $('#serviceType option:selected').text(),
@@ -191,7 +204,7 @@
                                 startDate: appointment.startDate,
                                 endDate: appointment.endDate,
                                 appointmentNotes: $('#appointmentNotes').val(),
-                                present: false
+                                present: false,
                             };
                             let coachName = $('#coachId option:selected').text();
                             let appointmentType = $('#appointmentType option:selected').text();
@@ -204,11 +217,56 @@
                                 "<b>Date:</b> " + moment(appointment.startDate).format('dddd, MMMM Do, YYYY h:mm A') + " - " + moment(appointment.endDate).format('h:mm A') + "<br/>" +
                                 "</div>",
                                 theme: 'modern',
+                                escapeKey: 'no',
                                 buttons: {
                                     Weekly: {
                                         text: 'Create Weekly Appointment',
-                                        btnClass: 'btn-primary',
+                                        btnClass: 'btn-primary mb-3 col-md-12',
                                         action: function () {
+                                            form.weekly = true;
+                                            if ( form.coachId === "any" ) {
+                                                form.coachId = appointment.weeklyUsers[Math.floor(Math.random()*appointment.weeklyUsers.length)];
+                                            }
+                                            /* Create appointment Here*/
+                                            $.ajax({
+                                                url: '/createAppointment',
+                                                type: 'POST',
+                                                data: JSON.stringify(form),
+                                                contentType: 'application/json',
+                                                success: function () {
+                                                    let studentNotification = "New weekly "+ form.appointmentType +" Appointment on " + moment(form.startDate).format("dddd, MMMM Do, h:mm A") + " - " + moment(form.endDate).format("h:mm A") + " with " + coachName;
+                                                    let coachNotification = "New weekly "+ form.appointmentType +" Appointment on " + moment(form.startDate).format("dddd, MMMM Do, h:mm A") + " - " + moment(form.endDate).format("h:mm A") + " with " + "@currentUser.getDisplayName";
+                                                    $.ajax({
+                                                        url: '/addNotificationToUser',
+                                                        type: 'POST',
+                                                        data: JSON.stringify({userId: form.coachId, notificationContent: coachNotification}),
+                                                        contentType: 'application/json',
+                                                    });
+                                                    $.ajax({
+                                                        url: '/addNotificationToUser',
+                                                        type: 'POST',
+                                                        data: JSON.stringify({userId: form.studentId, notificationContent: studentNotification}),
+                                                        contentType: 'application/json',
+                                                    });
+                                                    createAlert("success", "Appointment Created!");
+                                                    location.reload();
+                                                },
+                                                error: function () {
+                                                    createAlert('danger', 'Appointment creation failed.');
+                                                    location.reload();
+                                                }
+                                            });
+                                        }
+                                    },
+                                    OneTime: {
+                                        text: 'Create One-Time Appointment',
+                                        btnClass: 'btn-primary mb-3 col-md-12',
+                                        action: function () {
+                                            form.weekly = false;
+                                            console.log(appointment);
+                                            if ( form.coachId === "any" ) {
+                                                form.coachId = appointment.oneTimeUsers[Math.floor(Math.random()*appointment.oneTimeUsers.length)];
+                                            }
                                             /* Create appointment Here*/
                                             $.ajax({
                                                 url: '/createAppointment',
@@ -241,12 +299,19 @@
                                     },
                                     no: {
                                         text: 'Cancel Appointment',
+                                        btnClass: "mb-3 col-md-12",
                                         action: function () {
                                             createAlert("warning", "Appointment Not Created");
                                             selectedEvents = [];
+                                            /* TODO have calendar  re-fetch on re-open */
+                                            location.reload();
                                         }
                                     }
-                                }
+                                },
+                                onOpenBefore: function () {
+                                    if(!appointment.canBeWeekly){this.buttons.Weekly.hide()}
+                                    if(!appointment.canBeOneTime){this.buttons.OneTime.hide()}
+                                },
                             });
                         }
                     }

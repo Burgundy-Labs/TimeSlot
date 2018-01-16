@@ -1,7 +1,6 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import controllers.Databases.SettingsDB;
 import play.mvc.Controller;
 import play.mvc.Result;
 

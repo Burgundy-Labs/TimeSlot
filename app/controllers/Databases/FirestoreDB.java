@@ -1,22 +1,33 @@
 package controllers.Databases;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.FirestoreOptions;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.cloud.FirestoreClient;
+import controllers.Application;
 
-import javax.inject.Singleton;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
-@Singleton
-public class FirestoreDB {
-    private static Firestore firestoreDB = null;
+public class FirestoreDB  {
 
-    public static Firestore getFirestoreDB(){
-        return firestoreDB;
+    public static Firestore get(){
+        File serviceAccount = Application.getEnvironment().getFile("conf/credentials.json");
+        GoogleCredentials credentials = null;
+        try {
+            credentials = GoogleCredentials.fromStream(new FileInputStream(serviceAccount));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        assert credentials != null;
+        FirebaseOptions options = new FirebaseOptions.Builder()
+                .setCredentials(credentials)
+                .build();
+        if (!(FirebaseApp.getApps().size() > 0)) {
+            FirebaseApp.initializeApp(options);
+        }
+        return FirestoreClient.getFirestore();
     }
-    /* Initializes the FirestoreDB DB for use in other areas within the project. */
-    public static void initialize() {
-        FirestoreOptions firestoreOptions =
-                FirestoreOptions.getDefaultInstance().toBuilder()
-                        .setProjectId("project-burgundy")
-                        .build();
-        firestoreDB = firestoreOptions.getService();
     }
-}
+
