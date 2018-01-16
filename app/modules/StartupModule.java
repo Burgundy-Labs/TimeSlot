@@ -12,7 +12,7 @@ public class StartupModule extends AbstractModule {
      /* Start the database service */
         bind(FirestoreDB.class).asEagerSingleton();
         bind(Application.class).asEagerSingleton();
-        bind(Application.class).asEagerSingleton();
+        bind(MailerService.class).asEagerSingleton();
         /* Define default roles for project */
         new Roles("Coach");
         new Roles("Admin");
