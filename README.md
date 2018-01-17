@@ -38,3 +38,15 @@ Please note that the initial load may take awhile, as source compilation will ta
 In order to allow users to sign in, make sure that the Firebase Auth contains the correct Authorized domains (localhost, etc).
 These can be changed at: https://console.firebase.google.com/u/0/project/{POROJECT_NAME}/authentication/providers
 The first user to log into the application will be automatically made the role of Admin.
+
+## To Deploy (Linux):
+This following instructions are written assuming a linux-based server (such as a hosted Cpanel). 
+
+1. Within the SBT shell (or terminal) run the command ` dist `.
+2. Move the generated .zip file onto the server it is to be deployed on.
+3. Unzip the folder and move into the corresponding directory.
+4. Inside of the /bin/ directory run the following: ` nohup ./Project_Burgundy -Dhttps.port=9443 & `
+5. This will launch the server in the background, defaulting to http port 9000, and https port 9443.
+6. You can now see the PID of the program in the project's directory as RUNNING_PID.
+7. You can now see console output of the program inside /bin/nohup.out
+8. You're all set.
