@@ -32,7 +32,7 @@ public class MailerService {
         /* Coach Email */
         Email email = new Email()
                 .setSubject("New Appointment With " + appointment.getStudentName() + " on " + DateFormat.getDateTimeInstance().format(appointment.getStartDate()) + " at the " + settings.getCenterName() )
-                .setFrom("Project Burgundy <contact.project.burgundy@gmail.com>")
+                .setFrom("Project Burgundy <"+ Application.getConfig().getString("play.mailer.user") +">")
                 .addTo(appointment.getCoachName() + "<"+appointment.getCoachEmail()+">")
                 .setBodyHtml("<p style=\"font-size:48px;color:#17C671;text-align:center;\">&#x2705;</p><h1 style=\"text-align:center;\">You have a new Appointment!</h1> <h3>Details:</h3>" +
                         "<div style=\"background-color:#EFF0F1; border-radius:4px; padding: 10px;\">"+
@@ -52,7 +52,7 @@ public class MailerService {
         /* Student Email */
         email = new Email()
                 .setSubject("New Appointment With " + appointment.getCoachName() + " on " + DateFormat.getDateTimeInstance().format(appointment.getStartDate()) + " at the " + settings.getCenterName())
-                .setFrom("Project Burgundy <contact.project.burgundy@gmail.com>")
+                .setFrom("Project Burgundy <"+ Application.getConfig().getString("play.mailer.user") + ">")
                 .addTo(appointment.getStudentName() + "<"+appointment.getStudentEmail()+">")
                 .setBodyHtml("<p style=\"font-size:48px;color:#17C671;text-align:center;\">&#x2705;</p><h1 style=\"text-align:center;\">You have a new Appointment!</h1> <h3>Details:</h3>" +
                         "<div style=\"background-color:#EFF0F1; border-radius:4px; padding: 10px;\">"+
@@ -76,7 +76,7 @@ public class MailerService {
         /* Coach Email */
         Email email = new Email()
                 .setSubject("Appointment With " + appointment.getStudentName() + " on " + DateFormat.getDateTimeInstance().format(appointment.getStartDate()) + " at the " + settings.getCenterName() +" CANCELLED")
-                .setFrom("Project Burgundy <contact.project.burgundy@gmail.com>")
+                .setFrom("Project Burgundy <"+ Application.getConfig().getString("play.mailer.user") +">")
                 .addTo(appointment.getCoachName() + "<"+appointment.getCoachEmail()+">")
                 .setBodyHtml("<p style=\"font-size:48px;color:#C4183C;text-align:center;\">&#10060;</p><h1 style=\"text-align:center;\">Your Appointment Has Been Cancelled</h1> <h3>Details:</h3>" +
                         "<div style=\"background-color:#EFF0F1; border-radius:4px; padding: 10px;\">"+
@@ -89,7 +89,7 @@ public class MailerService {
         /* Student Email */
         email = new Email()
                 .setSubject("Appointment With " + appointment.getCoachName()+ " on " + DateFormat.getDateTimeInstance().format(appointment.getStartDate()) + " at the " + settings.getCenterName() + " CANCELLED")
-                .setFrom("Project Burgundy <contact.project.burgundy@gmail.com>")
+                .setFrom("Project Burgundy <"+ Application.getConfig().getString("play.mailer.user") +">")
                 .addTo(appointment.getStudentName() + "<"+appointment.getStudentEmail()+">")
                 .setBodyHtml("<p style=\"font-size:48px;color:#C4183C;text-align:center;\">&#10060;</p><h1 style=\"text-align:center;\">Your Appointment Has Been Cancelled</h1> <h3>Details:</h3>" +
                         "<div style=\"background-color:#EFF0F1; border-radius:4px; padding: 10px;\">"+
