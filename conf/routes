@@ -3,7 +3,6 @@
 # ~~~~
 
 # GET requests
-GET         /Center                                                   controllers.CenterController.index
 GET         /                                                                    controllers.LoginController.index
 GET         /Dashboard                                                           controllers.DashboardController.index
 GET         /Account                                                             controllers.AccountController.index
