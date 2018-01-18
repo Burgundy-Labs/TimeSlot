@@ -178,13 +178,20 @@ public class AppointmentsDB {
                     document.getBoolean("weekly"));
             appointmentList.add(appointment);
         }
-        Collections.sort(appointmentList, new Comparator<AppointmentsModel>() {
-            public int compare(AppointmentsModel app1, AppointmentsModel app2) {
-                return app1.getStartDate().compareTo(app2.getStartDate());
-            }
-        });
+        appointmentList.sort(Comparator.comparing(AppointmentsModel::getStartDate));
         if ( appointmentList.size() > 5 ) {
             appointmentList = appointmentList.subList(0, 5);
+        }
+        return appointmentList;
+    }
+
+    public static synchronized List<AppointmentsModel> getAppointmentsByUserAndDate(String userId, Date start, Date end) {
+        UsersModel user = UserDB.getUser(userId);
+        List<AppointmentsModel> appointmentList = getAppointmentsByDate(start, end);
+        if(user.getRole().equals("Coach") || user.isCoach()){
+            appointmentList.removeIf(i -> !i.getCoachId().equals(user.getUid()));
+        } else {
+            appointmentList.removeIf(i -> !i.getStudentId().equals(user.getUid()));
         }
         return appointmentList;
     }

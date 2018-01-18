@@ -133,7 +133,7 @@
                         selectable: false,
                         events: function (start, end, timezone, callback) {
                             $.ajax({
-                                url: '/appointmentsForUser/' + '@currentUser.getRole' + "/" + '@currentUser.getUid',
+                                url: '/appointmentsForUser/' + '@currentUser.getRole' + '/' + '@currentUser.getUid' + '/' + moment(start).toISOString() + '/' + moment(end).toISOString(),
                                 type: 'GET',
                                 success: function (response) {
                                     const events = [];

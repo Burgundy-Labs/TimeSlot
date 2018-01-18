@@ -81,11 +81,15 @@
                                         Site Alert
                                     </div>
                                     <div class="card-block">
-                                            <textarea type="text" class="form-control" id="siteAlert" placeholder="@if(currentSettings.getSiteAlert.equals("")){ Enter a site alert } else{ @currentSettings.getSiteAlert}" aria-label="@currentSettings.getSiteAlert"></textarea>
-                                            <br/>
-                                            <button onclick="changeSiteAlert()" class="btn btn-primary col-md-12 type="button">
-                                                Change Site Alert</button>
-                                            <button onclick="clearAlert()" class="btn btn col-md-12 type="button">Clear Alert</button>
+                                        <textarea type="text" class="form-control" id="siteAlert" placeholder="@if(currentSettings.getSiteAlert.equals("")) { Enter a site alert } else {
+                                            @currentSettings.getSiteAlert
+                                        }" aria-label="@currentSettings.getSiteAlert"></textarea>
+                                        <br/>
+                                        <button onclick="changeSiteAlert()" class="btn btn-primary col-md-12 type=" button
+                                        ">
+                                        Change Site Alert</button>
+                                        <button onclick="clearAlert()" class="btn btn col-md-12 type=" button
+                                        ">Clear Alert</button>
                                     </div>
                                 </div>
                             </div>
@@ -98,50 +102,51 @@
                             <div class="mb-3 col-md-12 dashCards">
                                 <div class="card">
                                     <div class="card-header">
-                                        Appointment Types
+                                        <h3>Appointment Types</h3>
                                         <button class="btn btn-primary btn-light float-right" onclick=createAppointmentType()>
                                             Add Appointment Type</button>
                                     </div>
                                     <div class="card-block">
-                                        <table class="table" id="appointmentTypeTable" cellspacing="0" width="100%">
-                                            <thead>
-                                                <tr>
-                                                    <td>
-                                                        Appointment Type
-                                                    </td>
-                                                    <td>
-                                                        One-Time
-                                                    </td>
-                                                    <td>
-                                                        Weekly
-                                                    </td>
-                                                    <td>
-                                                        Actions
-                                                    </td>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            @for(appointmentType <- SettingsController.getAppointmentTypes) {
-                                                <tr class="@appointmentType.getAppointmentTypeId">
-                                                    <td>
-                                                    @appointmentType.getAppointmentType
-                                                    </td>
-                                                    <td>
-                                                        <input onclick="oneTimeCheck('@appointmentType.getAppointmentTypeId')" type="checkbox" class="form-check-input oneTime-@appointmentType.getAppointmentTypeId" title="one-time"
-                                                        @if(appointmentType.getOneTime) {checked}/>
-                                                    </td>
-                                                    <td>
-                                                        <input onclick="weeklyCheck('@appointmentType.getAppointmentTypeId')" type="checkbox" class="form-check-input weekly-@appointmentType.getAppointmentTypeId" title="weekly"
-                                                        @if(appointmentType.getWeekly) {checked}/>
-                                                    </td>
-                                                    <td>
-                                                        <button class="btn btn-primary btn-danger" onclick="removeAppointmentType('@appointmentType.getAppointmentTypeId')">Remove</button>
-                                                    </td>
-                                                </tr>
-                                            }
-                                            </tbody>
-                                        </table>
-
+                                        <div class="table-responsive">
+                                            <table class="table table-striped" id="appointmentTypeTable" cellspacing="0" width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <td>
+                                                            Appointment Type
+                                                        </td>
+                                                        <td>
+                                                            One-Time
+                                                        </td>
+                                                        <td>
+                                                            Weekly
+                                                        </td>
+                                                        <td>
+                                                            Actions
+                                                        </td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                @for(appointmentType <- SettingsController.getAppointmentTypes) {
+                                                    <tr class="@appointmentType.getAppointmentTypeId">
+                                                        <td>
+                                                        @appointmentType.getAppointmentType
+                                                        </td>
+                                                        <td>
+                                                            <input onclick="oneTimeCheck('@appointmentType.getAppointmentTypeId')" type="checkbox" class="form-check-input oneTime-@appointmentType.getAppointmentTypeId" title="one-time"
+                                                            @if(appointmentType.getOneTime) {checked}/>
+                                                        </td>
+                                                        <td>
+                                                            <input onclick="weeklyCheck('@appointmentType.getAppointmentTypeId')" type="checkbox" class="form-check-input weekly-@appointmentType.getAppointmentTypeId" title="weekly"
+                                                            @if(appointmentType.getWeekly) {checked}/>
+                                                        </td>
+                                                        <td>
+                                                            <button class="btn btn-primary btn-danger" onclick="removeAppointmentType('@appointmentType.getAppointmentTypeId')">Remove</button>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -154,28 +159,30 @@
                                             Add Service</button>
                                     </div>
                                     <div class="card-block">
-                                        <table class="table" id="serviceTable" cellspacing="0" width="100%">
-                                            <thead>
-                                                <tr>
-                                                    <td>
-                                                        Service
-                                                    </td>
-                                                    <td>Actions</td>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            @for(service <- SettingsController.getServices) {
-                                                <tr class="@service.getServiceId">
-                                                    <td>
-                                                        <h6 class="mb-1">@service.getService</h6>
-                                                    </td>
-                                                    <td>
-                                                        <button class="btn btn-primary btn-danger" onclick="removeService('@service.getServiceId')">Remove</button>
-                                                    </td>
-                                                </tr>
-                                            }
-                                            </tbody>
-                                        </table>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped" id="serviceTable" cellspacing="0" width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <td>
+                                                            Service
+                                                        </td>
+                                                        <td>Actions</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                @for(service <- SettingsController.getServices) {
+                                                    <tr class="@service.getServiceId">
+                                                        <td>
+                                                           @service.getService
+                                                        </td>
+                                                        <td>
+                                                            <button class="btn btn-primary btn-danger" onclick="removeService('@service.getServiceId')">Remove</button>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -205,7 +212,7 @@
                     });
                 }
 
-                function clearAlert(){
+                function clearAlert() {
                     $("#siteAlert").val("");
                     changeSiteAlert();
                 }
@@ -310,35 +317,35 @@
                     });
                 }
 
-                $("#appointmentServicesTab").onclick(function() {
-                    $('#appointmentTypeTable').DataTable({
-                        scrollY: "300px",
-                        scrollCollapse: true,
-                        lengthChange: false,
-                        ordering: false,
+                    $("#appointmentServicesTab").on('click', function() {
+                        $('#serviceTable').DataTable({
+                            retrieve: true,
+                            responsive: true,
+                            scrollY: "300px",
+                            scrollCollapse: true,
+                            lengthChange: false,
+                            ordering: false,
+                        });
+
+                        $('#appointmentTypeTable').DataTable({
+                            retrieve: true,
+                            responsive: true,
+                            scrollY: "300px",
+                            scrollCollapse: true,
+                            lengthChange: false,
+                            ordering: false,
+                        });
                     });
-                    $('#serviceTable').DataTable({
-                        scrollY: "300px",
-                        scrollCollapse: true,
-                        lengthChange: false,
-                        ordering: false,
-                    });
-                });
+
+
+
 
                 $(document).ready(function () {
-                    $('#appointmentTypeTable').DataTable({
-                        scrollY: "300px",
-                        scrollCollapse: true,
-                        lengthChange: false,
-                        ordering: false,
-                    });
-                    $('#serviceTable').DataTable({
-                        scrollY: "300px",
-                        scrollCollapse: true,
-                        lengthChange: false,
-                        ordering: false,
-                    });
-                    if (window.location.hash === "#success") {
+
+                    if (window.location.hash === "#appointmentServicesTab") {
+                        $("#appointmentServicesTab").click();
+                    }
+                    else if (window.location.hash === "#success") {
                         createAlert("info", "Settings updated successfully!");
                         history.pushState("", document.title, window.location.pathname + window.location.search);
                     }
@@ -432,6 +439,7 @@
                                             contentType: 'application/json',
                                             success: function () {
                                                 createAlert("success", "Appointment Type Created!");
+                                                window.location.hash = "#appointmentServicesTab";
                                                 location.reload();
                                             },
                                             error: function () {
@@ -484,6 +492,7 @@
                                             contentType: 'application/json',
                                             success: function () {
                                                 createAlert("success", "Service Created!");
+                                                window.location.hash = "#appointmentServicesTab";
                                                 location.reload();
                                             },
                                             error: function () {

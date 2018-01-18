@@ -67,8 +67,10 @@ public class AppointmentsController extends Controller {
         return ok();
     }
 
-    public Result appointmentsForUser(String role, String userId) {
-        List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsForUser(role, userId);
+    public Result appointmentsForUser(String role, String userId, String start, String end) {
+        Date startDate = DatatypeConverter.parseDateTime(start).getTime();
+        Date endDate = DatatypeConverter.parseDateTime(end).getTime();
+        List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsByUserAndDate(userId, startDate, endDate);
         return ok(Json.toJson(appointments));
     }
 }
