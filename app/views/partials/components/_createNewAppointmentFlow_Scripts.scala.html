@@ -2,6 +2,7 @@
 @currentSettings = @{SettingsController.getSettings}
 <script type="text/javascript">
     let selectedEvents = [];
+    let scheduleUser = {userId: null, userRole: null};
     $(document).ready(function () {
         createMakeAppointmentCalendar();
         $(document).on("change", '#serviceType', function(e) {
@@ -12,14 +13,12 @@
                 success: function(json) {
                     const coachDropdown = $("#coachId");
                     coachDropdown.empty(); // remove old options
-                    let count = 0;
                     $.each(json, function(key, value) {
-                        if('@currentUser.getUid' !== value.uid) {
+                        if('@currentUser.getUid' !== value.uid || (scheduleUser.userId !== null && scheduleUser.userId !== value.uid)) {
                         coachDropdown.append("<option value='"+value.uid+"'>" + value.displayName + "</option>");
-                        count++;
                         }
                     });
-                    if(count === 0) {
+                    if(coachDropdown.has('option').length === 0) {
                         coachDropdown.prepend("<option selected value disabled hidden'>No Coaches Found</option>");
                     } else {
                         coachDropdown.prepend("<option value='any'>Any Coach</option>");
@@ -170,7 +169,9 @@
         $('#newAppointmentCalendar').fullCalendar('removeEvents', [eventId]);
     }
 
-    function createNewAppointment() {
+    function createNewAppointment(role, userId) {
+        scheduleUser.userRole = role;
+        scheduleUser.userId = userId;
         let content = ` @{ partials.components._createNewAppointmentFlow() } `;
         $.confirm({
             columnClass: 'col-11',
@@ -212,10 +213,15 @@
                                 appointmentNotes: $('#appointmentNotes').val(),
                                 present: false,
                             };
+                            if(scheduleUser.userId !== null && scheduleUser.userRole === "Coach") {
+                                form.coachId = scheduleUser.userId;
+                            } else if(scheduleUser.userId !== null && scheduleUser.userRole === "Student"){
+                                form.studentId = scheduleUser.userId;
+                            }
                             let coachName = $('#coachId option:selected').text();
                             let appointmentType = $('#appointmentType option:selected').text();
                             $.confirm({
-                                boxWidth: "50%",
+                                columnClass: "col-11",
                                 title: 'New Appointment',
                                 content: "<div class='appointmentDetails'>Your appointment details: <br/>" +
                                 "<b>Appointment Type:</b> " + appointmentType  + " <br/>" +
