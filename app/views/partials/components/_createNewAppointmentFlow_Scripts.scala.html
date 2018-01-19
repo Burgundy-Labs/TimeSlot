@@ -85,6 +85,11 @@
                     eventElement.find("div.fc-content").prepend("<button onclick='removeAppointment(\"" + event.id + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
                 },
                 select: function (start, end, jsEvent, view) {
+                    /* ALlow scheduling appointments in the past for up to 10 minutes (walk-ins, etc) */
+                    if(start.local().isBefore(moment().subtract(10, 'minutes'))) {
+                        $('#newAppointmentCalendar').fullCalendar('unselect');
+                        return false;
+                    }
                     let valid = (function(){
                         return $("#newAppointmentCalendar").fullCalendar('clientEvents', function (event) {
                             return (event.rendering === "background" &&
