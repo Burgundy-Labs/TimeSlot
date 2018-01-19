@@ -5,6 +5,7 @@
 @currentUser = @{
     UserController.getCurrentUser
 }
+@currentSettings = @{SettingsController.getSettings}
 <div class="table-responsive">
     <table class="table table-striped appointmentList" cellspacing="0" width="100%" id="appointmentList">
         <thead>
@@ -19,6 +20,7 @@
                 <th>Attendance</th>
                 <th>Student's Notes</th>
                 <th>Manage</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -40,7 +42,6 @@
                 <td class="attendance">@partials.components._appointmentAttendanceDropdown(appointment, currentUser)</td>
                 <td class="appointmentNotes">@appointment.getAppointmentNotes</td>
                 <td>
-                    <span class="mdl-list__item-secondary-content">
                         @if(currentUser.getRole.equals("Student")) {
                             <button class="no-button"> <span class="action-primary">@partials.components._tooltipIconLink("mailto:" + appointment.getCoachEmail, "email", "bottom", "Email Coach", 32)</span></button>
                         } else {
@@ -55,7 +56,10 @@
                         }
                     <button class="no-button" onclick="cancelAppointment('@appointment.getAppointmentId')"><span class="action-delete">@partials.components._tooltipIconLink("javascript:void(0)", "close", "bottom", "Cancel", 32)</span>
                     </button>
-                    </span>
+                </td>
+                <td>
+                    <a class="btn btn-primary" href="https://www.google.com/calendar/render?action=TEMPLATE&text=@currentSettings.getCenterName.replaceAll(" ", "+")+Appointment+With+@appointment.getStudentName.replaceAll(" ", "+")&dates=@appointment.getStartDate.toInstant.toString.replaceAll("-","").replaceAll(":","")/@appointment.getEndDate.toInstant.toString.replaceAll("-","").replaceAll(":","")&details=@appointment.toString.replace("\n", "%0A").replace(" ","+")&location=@currentSettings.getCenterName.replaceAll(" ","+")&sf=true&output=xml"
+                    target="_blank" rel="nofollow">Add to calendar</a>
                 </td>
             </tr>
         }
