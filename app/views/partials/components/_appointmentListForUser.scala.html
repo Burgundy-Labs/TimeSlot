@@ -160,6 +160,9 @@
 
         $('#appointmentList').DataTable({
             dom: 'frtlip',
+            columnDefs: [
+                { width: 150, targets: 8 }
+            ],
             responsive: true
         });
     });

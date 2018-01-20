@@ -46,77 +46,70 @@
             }
 
             function createServicesChart() {
+                let servicesChartLabels = [];
                 let servicesChartData = [];
                 const serviceChart = document.getElementById('serviceChart').getContext('2d');
-                const servicesChart = new Chart(serviceChart, {
-                    type: 'doughnut',
-                    data: {
-                        datasets: [{
-                            data: [],
-                            backgroundColor: palette('tol', servicesChartData.length).map(function (hex) {
-                                return '#' + hex;
-                            })
-                        }],
-                        labels: [],
-                    },
-                });
-
                 $.ajax({
+                    async: false,
                     url: '/serviceStatistics/' + moment(reportStart.val()).valueOf() + "/" + moment(reportEnd.val()).valueOf(),
                     type: 'GET',
                     success: function (response) {
                         $(response).each(function () {
                             for (let i = 0; i < Object.getOwnPropertyNames(this).length; i++) {
-                                addData(servicesChart, Object.getOwnPropertyNames(this)[i], Object.values(this)[i]);
-                                servicesChartData.push(i);
+                                servicesChartLabels.push(Object.getOwnPropertyNames(this)[i]);
+                                servicesChartData.push(Object.values(this)[i]);
                             }
-                            servicesChart.update();
                         });
                     }
                 });
-
-
-            }
-
-            function createAppointmentChart() {
-                let appointmentChartData = [];
-                /* Appointment Types Chart */
-                const appointmentChart = document.getElementById('appointmentChart').getContext('2d');
-                const appointmentsChart = new Chart(appointmentChart, {
+                new Chart(serviceChart, {
                     type: 'doughnut',
                     data: {
                         datasets: [{
-                            data: [],
-                            backgroundColor: palette('tol', appointmentChartData.length).map(function (hex) {
+                            data: servicesChartData,
+                            backgroundColor: palette('tol', servicesChartData.length).map(function (hex) {
                                 return '#' + hex;
                             })
                         }],
-                        labels: [],
+                        labels: servicesChartLabels,
                     },
                 });
+            }
+
+            function createAppointmentChart() {
+                let appointmentChartLabels = [];
+                let appointmentChartData = [];
+                /* Appointment Types Chart */
+                const appointmentChart = document.getElementById('appointmentChart').getContext('2d');
 
                 $.ajax({
+                    async: false,
                     url: '/appointmentTypeStatistics/' + moment(reportStart.val()).valueOf() + "/" + moment(reportEnd.val()).valueOf(),
                     type: 'GET',
                     success: function (response) {
                         $(response).each(function () {
                             for (let i = 0; i < Object.getOwnPropertyNames(this).length; i++) {
-                                addData(appointmentsChart, Object.getOwnPropertyNames(this)[i], Object.values(this)[i]);
-                                appointmentChartData.push(i);
+                                appointmentChartLabels.push(Object.getOwnPropertyNames(this)[i]);
+                                appointmentChartData.push(Object.values(this)[i]);
                             }
-                            appointmentsChart.update();
                         });
                     }
                 });
 
-            }
-
-            function addData(chart, label, data) {
-                chart.data.labels.push(label);
-                chart.data.datasets.forEach((dataset) => {
-                    dataset.data.push(data);
+                new Chart(appointmentChart, {
+                    type: 'doughnut',
+                    data: {
+                        datasets: [{
+                            data: appointmentChartData,
+                            backgroundColor: palette('tol', appointmentChartData.length).map(function (hex) {
+                                return '#' + hex;
+                            })
+                        }],
+                        labels: appointmentChartLabels,
+                    },
                 });
             }
+
     </script>
 
 }

@@ -315,10 +315,11 @@
                             text: 'Cancel'
                         }
                     });
-                }
+                    }
 
-                    $("#appointmentServicesTab").on('click', function() {
-                        $('#serviceTable').DataTable({
+                    $(document).ready(function () {
+                        const appointmentServicesTab = $("#appointmentServicesTab");
+                        const serviceTable = $('#serviceTable').DataTable({
                             retrieve: true,
                             responsive: true,
                             scrollY: "300px",
@@ -327,7 +328,7 @@
                             ordering: false,
                         });
 
-                        $('#appointmentTypeTable').DataTable({
+                        const appointmentTypeTable = $('#appointmentTypeTable').DataTable({
                             retrieve: true,
                             responsive: true,
                             scrollY: "300px",
@@ -335,21 +336,22 @@
                             lengthChange: false,
                             ordering: false,
                         });
+
+                        appointmentServicesTab.on('click', function () {
+                            $('#serviceTable').css( 'display', 'table' );
+                            serviceTable.columns.adjust().responsive.recalc();
+                            $('#appointmentTypeTable').css( 'display', 'table' );
+                            appointmentTypeTable.columns.adjust().responsive.recalc();
+                        });
+
+                        if (window.location.hash === "#appointmentServicesTab") {
+                            appointmentServicesTab.click();
+                        }
+                        else if (window.location.hash === "#success") {
+                            createAlert("info", "Settings updated successfully!");
+                            history.pushState("", document.title, window.location.pathname + window.location.search);
+                        }
                     });
-
-
-
-
-                $(document).ready(function () {
-
-                    if (window.location.hash === "#appointmentServicesTab") {
-                        $("#appointmentServicesTab").click();
-                    }
-                    else if (window.location.hash === "#success") {
-                        createAlert("info", "Settings updated successfully!");
-                        history.pushState("", document.title, window.location.pathname + window.location.search);
-                    }
-                });
 
                 function updateSettings() {
                     const settings = {
