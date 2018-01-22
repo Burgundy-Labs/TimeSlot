@@ -2,9 +2,10 @@ package modules;
 
 import com.google.inject.AbstractModule;
 import controllers.Application;
+import controllers.ApplicationComponents.EmailScheduler;
 import controllers.ApplicationComponents.Roles;
 import controllers.Databases.FirestoreDB;
-import controllers.MailerService;
+import controllers.ApplicationComponents.MailerService;
 
 public class StartupModule extends AbstractModule {
 
@@ -13,6 +14,7 @@ public class StartupModule extends AbstractModule {
         bind(FirestoreDB.class).asEagerSingleton();
         bind(Application.class).asEagerSingleton();
         bind(MailerService.class).asEagerSingleton();
+        bind(EmailScheduler.class).asEagerSingleton();
         /* Define default roles for project */
         new Roles("Coach");
         new Roles("Admin");

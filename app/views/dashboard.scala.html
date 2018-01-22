@@ -133,9 +133,10 @@
                         selectable: false,
                         events: function (start, end, timezone, callback) {
                             $.ajax({
-                                url: '/appointmentsForUser/' + '@currentUser.getRole' + "/" + '@currentUser.getUid',
+                                url: '/appointmentsForUser/' + '@currentUser.getRole' + '/' + '@currentUser.getUid' + '/' + moment(start).toISOString() + '/' + moment(end).toISOString(),
                                 type: 'GET',
                                 success: function (response) {
+                                    let upcomingCount = 0;
                                     const events = [];
                                     $(response).each(function () {
                                         const userID = '@currentUser.getUid';
@@ -157,9 +158,12 @@
                                             end: moment($(this).attr('endDate')),
                                             dow: [],
                                         };
+                                        if(!event.start.local().isBefore(moment())){
+                                            upcomingCount++;
+                                        }
                                         events.push(event);
                                     });
-                                    $(".appointmentCount").html("You have " + events.length + (events.length === 1 ? " appointment this week." : " appointments this week."));
+                                    $(".appointmentCount").html("You have " + upcomingCount + (upcomingCount === 1 ? " appointment this week." : " appointments this week."));
                                     callback(events);
                                 }
                             })

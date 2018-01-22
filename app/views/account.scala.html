@@ -210,7 +210,7 @@
                         weekends: false,
                         selectable: true,
                         defaultView: 'agendaWeek',
-                        navLinks: true,
+                        navLinks: false,
                         eventLimit: false,
                         select: function (start, end, jsEvent, view) {
                             const newAvailability = {
@@ -222,6 +222,7 @@
                             $.confirm({
                                 title: 'Availability',
                                 content: 'Is this slot available weekly?',
+                                columnClass: "col-md-11",
                                 theme: 'modern',
                                 escapeKey: 'cancel',
                                 buttons: {

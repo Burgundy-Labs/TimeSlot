@@ -1,122 +1,119 @@
 @()
-@main("Reports", "Reports") {
-    <div class="col-12">
-        <div class="row">
-            <div class="form-group mb-3 col-md-6">
-                <label for="reportStart" class="mb-3 col-md-12 mb-3 col-md-form-label">Start Date</label>
-                <div class="mb-3 col-md-12">
-                    <input id="reportStart" class="form-control" type="date" name="reportStart" value="" onchange="createCharts()">
+    @main("Reports", "Reports") {
+        <div class="col-12">
+            <div class="row">
+                <div class="form-group mb-3 col-md-6">
+                    <div class="row">
+                        <label for="reportStart" class="mb-3 col-md-12 mb-3 col-md-form-label">Start Date</label>
+                        <div class="mb-3 col-md-12">
+                            <input id="reportStart" class="form-control" type="date" name="reportStart" value="" onchange="createCharts()">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group mb-3 col-md-6">
+                    <div class="row">
+                        <label for="reportEnd" class="mb-3 col-md-12 mb-3 col-md-form-label">End Date</label>
+                        <div class="mb-3 col-md-12">
+                            <input id="reportEnd" class="form-control" type="date" name="reportEnd" value="" onchange="createCharts()">
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="form-group mb-3 col-md-6">
-                <label for="reportEnd" class="mb-3 col-md-12 mb-3 col-md-form-label">End Date</label>
-                <div class="mb-3 col-md-12">
-                    <input id="reportEnd" class="form-control" type="date" name="reportEnd" value="" onchange="createCharts()">
+            <div class="row">
+                <div class="mb-3 col-md-4">
+                    <h1 class="center">Appointment Types</h1>
+                    <br/>
+                    <canvas id="appointmentChart"></canvas>
+                </div>
+                <div class="mb-3 col-md-4">
+                    <h1 class="center">Services</h1>
+                    <br/>
+                    <canvas id="serviceChart"></canvas>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="mb-3 col-md-4">
-                <h1 class="center">Appointment Types</h1>
-                <br/>
-                <canvas id="appointmentChart"></canvas>
-            </div>
-            <div class="mb-3 col-md-4">
-                <h1 class="center">Services</h1>
-                <br/>
-                <canvas id="serviceChart"></canvas>
-            </div>
-        </div>
-    </div>
 
-    <script type="text/javascript">
-            let reportStart = $('#reportStart');
-            let reportEnd = $('#reportEnd');
+        <script type="text/javascript">
+                let reportStart = $('#reportStart');
+                let reportEnd = $('#reportEnd');
 
-            /* Create Charts On Page Load*/
-            $(document).ready(function () {
-                reportStart.val(moment().subtract(7, "days").format("YYYY-MM-DD"));
-                reportEnd.val(moment().format("YYYY-MM-DD"));
-                createCharts();
-            });
-
-            function createCharts() {
-                createServicesChart();
-                createAppointmentChart();
-            }
-
-            function createServicesChart() {
-                let servicesChartData = [];
-                const serviceChart = document.getElementById('serviceChart').getContext('2d');
-                const servicesChart = new Chart(serviceChart, {
-                    type: 'doughnut',
-                    data: {
-                        datasets: [{
-                            data: [],
-                            backgroundColor: palette('tol', servicesChartData.length).map(function (hex) {
-                                return '#' + hex;
-                            })
-                        }],
-                        labels: [],
-                    },
+                /* Create Charts On Page Load*/
+                $(document).ready(function () {
+                    reportStart.val(moment().subtract(7, "days").format("YYYY-MM-DD"));
+                    reportEnd.val(moment().format("YYYY-MM-DD"));
+                    createCharts();
                 });
 
-                $.ajax({
-                    url: '/serviceStatistics/' + moment(reportStart.val()).valueOf() + "/" + moment(reportEnd.val()).valueOf(),
-                    type: 'GET',
-                    success: function (response) {
-                        $(response).each(function () {
-                            for (let i = 0; i < Object.getOwnPropertyNames(this).length; i++) {
-                                addData(servicesChart, Object.getOwnPropertyNames(this)[i], Object.values(this)[i]);
-                                servicesChartData.push(i);
-                            }
-                            servicesChart.update();
-                        });
-                    }
-                });
+                function createCharts() {
+                    createServicesChart();
+                    createAppointmentChart();
+                }
 
+                function createServicesChart() {
+                    let servicesChartLabels = [];
+                    let servicesChartData = [];
+                    const serviceChart = document.getElementById('serviceChart').getContext('2d');
+                    $.ajax({
+                        async: false,
+                        url: '/serviceStatistics/' + moment(reportStart.val()).valueOf() + "/" + moment(reportEnd.val()).valueOf(),
+                        type: 'GET',
+                        success: function (response) {
+                            $(response).each(function () {
+                                for (let i = 0; i < Object.getOwnPropertyNames(this).length; i++) {
+                                    servicesChartLabels.push(Object.getOwnPropertyNames(this)[i]);
+                                    servicesChartData.push(Object.values(this)[i]);
+                                }
+                            });
+                        }
+                    });
+                    new Chart(serviceChart, {
+                        type: 'doughnut',
+                        data: {
+                            datasets: [{
+                                data: servicesChartData,
+                                backgroundColor: palette('tol', servicesChartData.length).map(function (hex) {
+                                    return '#' + hex;
+                                })
+                            }],
+                            labels: servicesChartLabels,
+                        },
+                    });
+                }
 
-            }
+                function createAppointmentChart() {
+                    let appointmentChartLabels = [];
+                    let appointmentChartData = [];
+                    /* Appointment Types Chart */
+                    const appointmentChart = document.getElementById('appointmentChart').getContext('2d');
 
-            function createAppointmentChart() {
-                let appointmentChartData = [];
-                /* Appointment Types Chart */
-                const appointmentChart = document.getElementById('appointmentChart').getContext('2d');
-                const appointmentsChart = new Chart(appointmentChart, {
-                    type: 'doughnut',
-                    data: {
-                        datasets: [{
-                            data: [],
-                            backgroundColor: palette('tol', appointmentChartData.length).map(function (hex) {
-                                return '#' + hex;
-                            })
-                        }],
-                        labels: [],
-                    },
-                });
+                    $.ajax({
+                        async: false,
+                        url: '/appointmentTypeStatistics/' + moment(reportStart.val()).valueOf() + "/" + moment(reportEnd.val()).valueOf(),
+                        type: 'GET',
+                        success: function (response) {
+                            $(response).each(function () {
+                                for (let i = 0; i < Object.getOwnPropertyNames(this).length; i++) {
+                                    appointmentChartLabels.push(Object.getOwnPropertyNames(this)[i]);
+                                    appointmentChartData.push(Object.values(this)[i]);
+                                }
+                            });
+                        }
+                    });
 
-                $.ajax({
-                    url: '/appointmentTypeStatistics/' + moment(reportStart.val()).valueOf() + "/" + moment(reportEnd.val()).valueOf(),
-                    type: 'GET',
-                    success: function (response) {
-                        $(response).each(function () {
-                            for (let i = 0; i < Object.getOwnPropertyNames(this).length; i++) {
-                                addData(appointmentsChart, Object.getOwnPropertyNames(this)[i], Object.values(this)[i]);
-                                appointmentChartData.push(i);
-                            }
-                            appointmentsChart.update();
-                        });
-                    }
-                });
+                    new Chart(appointmentChart, {
+                        type: 'doughnut',
+                        data: {
+                            datasets: [{
+                                data: appointmentChartData,
+                                backgroundColor: palette('tol', appointmentChartData.length).map(function (hex) {
+                                    return '#' + hex;
+                                })
+                            }],
+                            labels: appointmentChartLabels,
+                        },
+                    });
+                }
 
-            }
+        </script>
 
-            function addData(chart, label, data) {
-                chart.data.labels.push(label);
-                chart.data.datasets.forEach((dataset) => {
-                    dataset.data.push(data);
-                });
-            }
-    </script>
-
-}
+    }

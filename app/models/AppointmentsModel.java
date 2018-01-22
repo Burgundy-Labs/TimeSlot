@@ -21,6 +21,7 @@ public class AppointmentsModel {
     private String appointmentType;
     private String serviceType;
     private boolean weekly;
+    private String weeklyId;
 
     public AppointmentsModel( ) {
 
@@ -43,7 +44,8 @@ public class AppointmentsModel {
             boolean present,
             String appointmentType,
             String serviceType,
-            boolean weekly) {
+            boolean weekly,
+            String weeklyId) {
         this.appointmentId = appointmentId;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -182,6 +184,10 @@ public class AppointmentsModel {
     public void setServiceType(String serviceType) {
         this.serviceType = serviceType;
     }
+
+    public String getWeeklyId() { return weeklyId; }
+
+    public void setWeeklyId(String weeklyId) { this.weeklyId = weeklyId; }
 
     @Override
     public String toString() {

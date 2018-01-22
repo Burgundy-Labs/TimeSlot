@@ -1,7 +1,9 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import controllers.ApplicationComponents.MailerService;
 import controllers.Databases.AppointmentsDB;
+import controllers.Databases.SettingsDB;
 import models.AppointmentsModel;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -32,6 +34,8 @@ public class AppointmentsController extends Controller {
         /* Get user object from request */
         JsonNode json = request().body().asJson();
         /* Get user from json request */
+        String uniqueId = UUID.randomUUID().toString();
+
         AppointmentsModel appointment = new AppointmentsModel();
         appointment.setCoachId(json.findPath("coachId").textValue());
         appointment.setStudentId(json.findPath("studentId").textValue());
@@ -42,8 +46,36 @@ public class AppointmentsController extends Controller {
         appointment.setPresent(Boolean.getBoolean(json.findPath("present").textValue()));
         appointment.setServiceType(json.findPath("serviceType").textValue());
         appointment.setWeekly(json.findPath("weekly").asBoolean());
-        /* Check if user is in DB */
+        appointment.setWeeklyId(uniqueId);
+
         appointment = AppointmentsDB.addAppointment(appointment);
+        if ( appointment.isWeekly() ) {
+            Calendar currentDate = DatatypeConverter.parseDateTime(json.findPath("startDate").textValue());
+            Calendar endDate = DatatypeConverter.parseDateTime(json.findPath("endDate").textValue());
+            Calendar semesterEnd = Calendar.getInstance();
+            semesterEnd.setTime(SettingsDB.getSettings().getSemesterEnd());
+            currentDate.add(Calendar.DAY_OF_YEAR, 7);
+            endDate.add(Calendar.DAY_OF_YEAR, 7);
+
+            while ( currentDate.before(semesterEnd) ){
+                AppointmentsModel newAppointment = new AppointmentsModel();
+                newAppointment.setCoachId(json.findPath("coachId").textValue());
+                newAppointment.setStudentId(json.findPath("studentId").textValue());
+                newAppointment.setAppointmentType(json.findPath("appointmentType").textValue());
+                newAppointment.setStartDate(currentDate.getTime());
+                newAppointment.setEndDate(endDate.getTime());
+                newAppointment.setAppointmentNotes(json.findPath("appointmentNotes").textValue());
+                newAppointment.setPresent(Boolean.getBoolean(json.findPath("present").textValue()));
+                newAppointment.setServiceType(json.findPath("serviceType").textValue());
+                newAppointment.setWeekly(json.findPath("weekly").asBoolean());
+                newAppointment.setWeeklyId(uniqueId);
+                AppointmentsDB.addAppointment(newAppointment);
+                currentDate.add(Calendar.DAY_OF_YEAR, 7);
+                endDate.add(Calendar.DAY_OF_YEAR, 7);
+            }
+        }
+
+        /* Check if user is in DB */
         AppointmentsModel finalAppointment = appointment;
         new Thread(() -> MailerService.sendAppointmentConfirmation(finalAppointment)).start();
         return ok();
@@ -67,8 +99,10 @@ public class AppointmentsController extends Controller {
         return ok();
     }
 
-    public Result appointmentsForUser(String role, String userId) {
-        List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsForUser(role, userId);
+    public Result appointmentsForUser(String role, String userId, String start, String end) {
+        Date startDate = DatatypeConverter.parseDateTime(start).getTime();
+        Date endDate = DatatypeConverter.parseDateTime(end).getTime();
+        List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsByUserAndDate(userId, startDate, endDate);
         return ok(Json.toJson(appointments));
     }
 }
