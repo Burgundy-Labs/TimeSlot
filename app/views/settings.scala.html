@@ -319,23 +319,27 @@
 
                     $(document).ready(function () {
                         const appointmentServicesTab = $("#appointmentServicesTab");
-                        const serviceTable = $('#serviceTable').DataTable({
-                            responsive: true,
-                            scrollY: "300px",
-                            scrollCollapse: true,
-                            lengthChange: false,
-                            ordering: false,
-                        });
 
-                        const appointmentTypeTable = $('#appointmentTypeTable').DataTable({
-                            responsive: true,
-                            scrollY: "300px",
-                            scrollCollapse: true,
-                            lengthChange: false,
-                            ordering: false,
-                        });
                         appointmentServicesTab.on('click', function () {
-                            $('#appointmentTypeTable').DataTable().columns.adjust().responsive.recalc();
+                            setTimeout(function() {
+                                $('#serviceTable').DataTable({
+                                    retrieve: true,
+                                    responsive: true,
+                                    scrollY: "300px",
+                                    scrollCollapse: true,
+                                    lengthChange: false,
+                                    ordering: false,
+                                });
+                                $('#appointmentTypeTable').DataTable({
+                                    retrieve: true,
+                                    responsive: true,
+                                    scrollY: "300px",
+                                    scrollCollapse: true,
+                                    lengthChange: false,
+                                    ordering: false,
+                                });
+                            }, 300);
+
                         });
 
                         if (window.location.hash === "#appointmentServicesTab") {
