@@ -44,7 +44,8 @@ public class AppointmentsDB {
                     document.getBoolean("present"),
                     document.getString("appointment_type"),
                     document.getString("service_type"),
-                    document.getBoolean("weekly"));
+                    document.getBoolean("weekly"),
+                    document.getString("weeklyId"));
         } else {
             /* Log something */
         }
@@ -89,7 +90,8 @@ public class AppointmentsDB {
                     document.getBoolean("present"),
                     document.getString("appointment_type"),
                     document.getString("service_type"),
-                    document.getBoolean("weekly"));
+                    document.getBoolean("weekly"),
+                    document.getString("weeklyId"));
             appointmentList.add(appointment);
         }
         for (DocumentSnapshot document : documentsStudent) {
@@ -110,7 +112,8 @@ public class AppointmentsDB {
                     document.getBoolean("present"),
                     document.getString("appointment_type"),
                     document.getString("service_type"),
-                    document.getBoolean("weekly"));
+                    document.getBoolean("weekly"),
+                    document.getString("weeklyId"));
             appointmentList.add(appointment);
         }
         return appointmentList;
@@ -154,7 +157,8 @@ public class AppointmentsDB {
                     document.getBoolean("present"),
                     document.getString("appointment_type"),
                     document.getString("service_type"),
-                    document.getBoolean("weekly"));
+                    document.getBoolean("weekly"),
+                    document.getString("weeklyId"));
             appointmentList.add(appointment);
         }
         for (DocumentSnapshot document : documentsStudent) {
@@ -175,7 +179,8 @@ public class AppointmentsDB {
                     document.getBoolean("present"),
                     document.getString("appointment_type"),
                     document.getString("service_type"),
-                    document.getBoolean("weekly"));
+                    document.getBoolean("weekly"),
+                    document.getString("weeklyId"));
             appointmentList.add(appointment);
         }
         appointmentList.sort(Comparator.comparing(AppointmentsModel::getStartDate));
@@ -188,7 +193,7 @@ public class AppointmentsDB {
     public static synchronized List<AppointmentsModel> getAppointmentsByUserAndDate(String userId, Date start, Date end) {
         UsersModel user = UserDB.getUser(userId);
         List<AppointmentsModel> appointmentList = getAppointmentsByDate(start, end);
-        if(user.getRole().equals("Coach") || user.isCoach()){
+        if( user.getRole().equals("Coach") || (user.isCoach() != null && user.isCoach())){
             appointmentList.removeIf(i -> !i.getCoachId().equals(user.getUid()));
         } else {
             appointmentList.removeIf(i -> !i.getStudentId().equals(user.getUid()));
@@ -229,7 +234,8 @@ public class AppointmentsDB {
                     document.getBoolean("present"),
                     document.getString("appointment_type"),
                     document.getString("service_type"),
-                    document.getBoolean("weekly"));
+                    document.getBoolean("weekly"),
+                    document.getString("weeklyId"));
             appointmentList.add(appointment);
             } else {
                 break;
@@ -270,7 +276,8 @@ public class AppointmentsDB {
                     document.getBoolean("present"),
                     document.getString("appointment_type"),
                     document.getString("service_type"),
-                    document.getBoolean("weekly"));
+                    document.getBoolean("weekly"),
+                    document.getString("weeklyId"));
             appointmentList.add(appointment);
         }
         return appointmentList;
@@ -304,6 +311,7 @@ public class AppointmentsDB {
         data.put("appointment_type", appointment.getAppointmentType());
         data.put("service_type",appointment.getServiceType());
         data.put("weekly", appointment.isWeekly());
+        data.put("weeklyId", appointment.getWeeklyId());
         /* Asynchronously write appointment into DB */
         ApiFuture<WriteResult> result = docRef.set(data);
 
