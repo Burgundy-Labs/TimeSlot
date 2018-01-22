@@ -97,7 +97,7 @@ public class MailerService {
         /* Student Email */
         email = new Email()
                 .setSubject("New Appointment With " + appointment.getCoachName() + " on " + DateFormat.getDateTimeInstance().format(appointment.getStartDate()) + " at the " + settings.getCenterName())
-                .setFrom("Project Burgundy <"+ Application.getConfig().getString("play.mailer.user") +">")
+                .setFrom("Project Burgundy <"+ Application.getConfig().getString("play.mailer.user") + ">")
                 .addTo(appointment.getStudentName() + "<"+appointment.getStudentEmail()+">")
                 .setBodyHtml("<p style=\"font-size:48px;color:#17C671;text-align:center;\">&#x2705;</p><h1 style=\"text-align:center;\">You have a new Appointment!</h1> <h3>Details:</h3>" +
                         "<div style=\"background-color:#EFF0F1; border-radius:4px; padding: 10px;\">"+

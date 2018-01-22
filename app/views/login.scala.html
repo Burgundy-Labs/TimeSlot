@@ -8,6 +8,9 @@
     <body>
         <script type="text/javascript">
                 // FirebaseUI config.
+                @if(UserController.getCurrentUser.getUid == null) {
+                        localStorage.clear();
+                }
                 if ( localStorage.getItem("firebaseui::rememberedAccounts") !== null ) {
                     window.location = "/Dashboard";
                 }
@@ -86,5 +89,6 @@
                 </div>
             </div>
         @partials._footer()
+
     </body>
 </html>
