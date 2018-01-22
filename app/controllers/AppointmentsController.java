@@ -33,7 +33,10 @@ public class AppointmentsController extends Controller {
         /* Get user object from request */
         JsonNode json = request().body().asJson();
         /* Get user from json request */
-        String uniqueId = UUID.randomUUID().toString();
+        String uniqueId = "";
+        if ( json.findPath("weekly").asBoolean() ) {
+            uniqueId = UUID.randomUUID().toString();
+        }
 
         AppointmentsModel appointment = new AppointmentsModel();
         appointment.setCoachId(json.findPath("coachId").textValue());
@@ -84,6 +87,14 @@ public class AppointmentsController extends Controller {
         JsonNode json = request().body().asJson();
         String appointmentId = json.findPath("appointmentId").textValue();
         AppointmentsModel appointment = AppointmentsDB.removeAppointment(appointmentId);
+        if ( json.findPath("weeklyId").asText() != null && json.findPath("weeklyId").asText() != "" ) {
+            List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsForUser("Student", appointment.getStudentId());
+            for ( AppointmentsModel ap : appointments ) {
+                if ( ap.getWeeklyId() != null && ap.getWeeklyId().equals(json.findPath("weeklyId").asText()) ) {
+                    AppointmentsDB.removeAppointment(ap.getAppointmentId());
+                }
+            }
+        }
         new Thread(() -> MailerService.sendAppointmentCancellation(appointment)).start();
         return ok();
     }

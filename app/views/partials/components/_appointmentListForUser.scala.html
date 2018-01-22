@@ -7,7 +7,7 @@
 }
 @currentSettings = @{SettingsController.getSettings}
 <div class="table-responsive">
-    <table class="table table-striped appointmentList" cellspacing="0" width="100%" id="appointmentList">
+    <table class="table table-striped appointmentList col-md-12" cellspacing="0" width="100%" id="appointmentList">
         <thead>
             <tr>
                 <th></th>
@@ -19,7 +19,7 @@
                 <th>End</th>
                 <th>Attendance</th>
                 <th>Student's Notes</th>
-                <th>Manage</th>
+                <th style="min-width: 120px">Manage</th>
                 <th></th>
             </tr>
         </thead>
@@ -54,7 +54,7 @@
                                 <button id="notesFor-@appointment.getAppointmentId" class="no-button" onclick="updateCoachNotes('@appointment.getAppointmentId', '@appointment.getCoachNotes')"><span class="action-secondary" id="appointmentNotes">@partials.components._tooltipIconLink("javascript:void(0)", "assignment", "bottom", "Session Notes", 32)</span></button>
                             }
                         }
-                    <button class="no-button" onclick="cancelAppointment('@appointment.getAppointmentId')"><span class="action-delete">@partials.components._tooltipIconLink("javascript:void(0)", "close", "bottom", "Cancel", 32)</span>
+                    <button class="no-button" onclick="cancelAppointment('@appointment.getAppointmentId', '@appointment.getWeeklyId')"><span class="action-delete">@partials.components._tooltipIconLink("javascript:void(0)", "close", "bottom", "Cancel", 32)</span>
                     </button>
                 </td>
                 <td>
@@ -114,25 +114,26 @@
         });
     }
 
-    function cancelAppointment(appointmentId) {
+    function cancelAppointment(appointmentId, weeklyId) {
         $.confirm({
+            onOpenBefore: function () {
+                console.log(weeklyId);
+                if ( weeklyId && weeklyId === "" ) {
+                    this.buttons.deleteAll.hide();
+                }
+            },
             title: 'Cancel Appointment',
             content: 'Are you sure you want to cancel this appointment?',
             escapeKey: 'cancel',
             buttons: {
-                cancel: {
-                    text: "Nevermind",
-                    btClass: "btn"
-                },
-                delete: {
-                    keys: ['enter'],
-                    text: 'Cancel Appointment',
-                    btnClass: 'btn-primary',
+                deleteOne: {
+                    text: 'Cancel This Appointment',
+                    btnClass: 'btn-primary mb-3 col-md-12',
                     action: function () {
                         $.ajax({
                             url: '/cancelAppointment',
                             type: 'POST',
-                            data: JSON.stringify({appointmentId: appointmentId}),
+                            data: JSON.stringify({appointmentId: appointmentId, weeklyId: null}),
                             contentType: 'application/json',
                             success: function () {
                                 $('.' + appointmentId).hide();
@@ -144,6 +145,30 @@
                         });
                     }
                 },
+                deleteAll: {
+                    text: 'Cancel All Appointments in Series',
+                    btnClass: 'btn-primary mb-3 col-md-12',
+                    action: function () {
+                        console.log(weeklyId);
+                        $.ajax({
+                            url: '/cancelAppointment',
+                            type: 'POST',
+                            data: JSON.stringify({appointmentId: appointmentId, weeklyId: weeklyId}),
+                            contentType: 'application/json',
+                            success: function () {
+                                location.reload();
+                                createAlert("success", "Appointments cancelled.");
+                            },
+                            error: function (err) {
+                                console.log(err);
+                            }
+                        });
+                    }
+                },
+                cancel: {
+                    text: "Nevermind",
+                    btnClass: "mb-3 col-md-12"
+                }
             },
         });
     }

@@ -63,6 +63,7 @@ public class AppointmentsModel {
         this.appointmentType = appointmentType;
         this.serviceType = serviceType;
         this.weekly = weekly;
+        this.weeklyId = weeklyId;
     }
 
     public String getAppointmentId() {

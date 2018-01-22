@@ -329,4 +329,5 @@ public class AppointmentsDB {
         ApiFuture<WriteResult> writeResult = FirestoreDB.get().collection("appointments").document(appointmentId).delete();
         return appointment;
     }
+
 }
