@@ -151,7 +151,12 @@
     $(document).ready(function () {
         /* Format dates for humans */
         $('.date').each(function () {
-            $(this).text(moment($(this).text()).format('MMM DD YYYY, hh:mm A'));
+            let m = moment($(this).text());
+            if(!moment().isDST() && m.isDST()){
+                $(this).text(moment($(this).text()).subtract(1, 'hour').format('MMM DD YYYY, hh:mm A'));
+            } else {
+                $(this).text(moment($(this).text()).format('MMM DD YYYY, hh:mm A'));
+            }
         });
 
         $('.appointmentNotes').shorten({
