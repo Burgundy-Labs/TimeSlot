@@ -15,8 +15,7 @@
                 <th>Coach</th>
                 <th>Type</th>
                 <th>Service</th>
-                <th>Start</th>
-                <th>End</th>
+                <th>Date</th>
                 <th>Attendance</th>
                 <th>Student's Notes</th>
                 <th style="min-width: 120px">Manage</th>
@@ -37,8 +36,10 @@
                 </td>
                 <td>@appointment.getAppointmentType</td>
                 <td>@appointment.getServiceType</td>
-                <td class="date"> @DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mmX").withZone(ZoneOffset.UTC).format(appointment.getStartDate.toInstant)</td>
-                <td class="date"> @DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mmX").withZone(ZoneOffset.UTC).format(appointment.getEndDate.toInstant)</td>
+                <td class="date">
+                    <span class="start">@DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mmX").withZone(ZoneOffset.UTC).format(appointment.getStartDate.toInstant)</span>
+                    <span class="end">@DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mmX").withZone(ZoneOffset.UTC).format(appointment.getEndDate.toInstant)</span>
+                </td>
                 <td class="attendance">@partials.components._appointmentAttendanceDropdown(appointment, currentUser)</td>
                 <td class="appointmentNotes">@appointment.getAppointmentNotes</td>
                 <td>
@@ -176,25 +177,24 @@
     $(document).ready(function () {
         /* Format dates for humans */
         $('.date').each(function () {
-            let m = moment($(this).text());
-            if(!moment().isDST() && m.isDST()){
-                $(this).text(moment($(this).text()).subtract(1, 'hour').format('MMM DD YYYY, hh:mm A'));
-            } if (moment().isDST() && !m.isDST()) {
-                $(this).text(moment($(this).text()).add(1, 'hour').format('MMM DD YYYY, hh:mm A'));
+            let start = moment($(this).find("span.start").text());
+            let end = moment($(this).find("span.end").text());
+            if(!moment().isDST() && start.isDST()){
+                $(this).text(start.subtract(1, 'hour').format('MM/DD/YY, h:mm') + "-" + end.format("h:mm A"));
+            } if (moment().isDST() && !start.isDST()) {
+                $(this).text(start.add(1, 'hour').format('MM/DD/YY, h:mm') + "-" + end.format("h:mm A"));
             } else {
-                $(this).text(moment($(this).text()).format('MMM DD YYYY, hh:mm A'));
+                $(this).text(start.format('MM/DD/YY, h:mm') + "-" + end.format("h:mm A"));
             }
         });
 
-        $('.appointmentNotes').shorten({
-            showChars: 150
-        });
+        // $('.appointmentNotes').shorten({
+        //     showChars: 150
+        // });
 
         $('#appointmentList').DataTable({
             dom: 'frtlip',
-            columnDefs: [
-                { width: 150, targets: 8 }
-            ],
+            order: [[5, 'asc']],
             responsive: true
         });
     });
