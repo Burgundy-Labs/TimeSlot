@@ -114,6 +114,7 @@ public class AppointmentsController extends Controller {
         Date startDate = DatatypeConverter.parseDateTime(start).getTime();
         Date endDate = DatatypeConverter.parseDateTime(end).getTime();
         List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsByUserAndDate(userId, startDate, endDate);
+
         return ok(Json.toJson(appointments));
     }
 }
