@@ -1,0 +1,53 @@
+@currentUser = @{
+  UserController.getCurrentUser
+}
+<div id="appointmentCalendar"></div>
+
+<script type="text/javascript">
+  $('#appointmentCalendar').fullCalendar({
+      header: {
+        left:   '',
+        center: 'title',
+        right:  'today prev,next'
+      },
+      defaultView: 'month',
+      editable: false,
+      weekends: false,
+      height: "parent",
+      allDaySlot: false,
+      selectable: false,
+      events: function (start, end, timezone, callback) {
+        $.ajax({
+          url: '/appointmentsForUser/' + '@currentUser.getRole' + '/' + '@currentUser.getUid' + '/' + moment(start).toISOString() + '/' + moment(end).toISOString(),
+          type: 'GET',
+          success: function (response) {
+            let upcomingCount = 0;
+            const events = [];
+            $(response).each(function () {
+              const userID = '@currentUser.getUid';
+              const role = '@currentUser.getRole';
+              let title = "";
+              if (userID === $(this).attr("studentId")) {
+                if (role !== "Student") {
+                  title = $(this).attr("studentName")
+                } else {
+                  title = $(this).attr("coachName")
+                }
+              } else {
+                title = $(this).attr("studentName")
+              }
+              const event = {
+                id: $(this).attr('availabilityId'),
+                title: title,
+                start: moment($(this).attr('startDate')),
+                end: moment($(this).attr('endDate')),
+                dow: [],
+              };
+              events.push(event);
+            });
+            callback(events);
+          }
+        })
+      }
+  });
+</script>
