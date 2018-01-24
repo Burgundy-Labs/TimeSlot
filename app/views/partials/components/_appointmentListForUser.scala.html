@@ -55,8 +55,10 @@
                                 <button id="notesFor-@appointment.getAppointmentId" class="no-button" onclick="updateCoachNotes('@appointment.getAppointmentId', '@appointment.getCoachNotes')"><span class="action-secondary" id="appointmentNotes">@partials.components._tooltipIconLink("javascript:void(0)", "assignment", "bottom", "Session Notes", 32)</span></button>
                             }
                         }
+                    @if(!appointment.getStartDate.before(new Date())){
                     <button class="no-button" onclick="cancelAppointment('@appointment.getAppointmentId')"><span class="action-delete">@partials.components._tooltipIconLink("javascript:void(0)", "close", "bottom", "Cancel", 32)</span>
                     </button>
+                    }
                 </td>
                 <td>
                     <a class="btn btn-primary" href="https://www.google.com/calendar/render?action=TEMPLATE&text=@currentSettings.getCenterName.replaceAll(" ", "+")+Appointment+With+@appointment.getStudentName.replaceAll(" ", "+")&dates=@appointment.getStartDate.toInstant.toString.replaceAll("-","").replaceAll(":","")/@appointment.getEndDate.toInstant.toString.replaceAll("-","").replaceAll(":","")&details=@appointment.toString.replace("\n", "%0A").replace(" ","+")&location=@currentSettings.getCenterName.replaceAll(" ","+")&sf=true&output=xml"
