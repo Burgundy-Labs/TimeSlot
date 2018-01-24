@@ -29,6 +29,51 @@ public class ReportsController extends Controller {
         }
     }
 
+
+    public Result getAppointmentDate (Long resportStart, Long reportEnd) {
+        Date start = new  Date(resportStart);
+        Date end = new Date(reportEnd);
+        List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsByDate(start, end);
+        Map<String,Map<String,Integer>>  data = new HashMap<String,Map<String,Integer>>;
+        Map<String, Integer> appointmentType = new HashMap<String, Integer>();
+        Map<String, Integer> appointmentService = new HashMap<String, Integer>();
+        Map<String, Integer> appointmentWeekly = new HashMap<String, Integer>();
+        String type;
+        String service;
+        int weekly=0;
+        int oneTime = 0;
+
+        int count = 0;
+
+        for( AppointmentsModel a: appointments){
+            type  = a.getAppointmentType();
+            service = a.getServiceType();
+            if (appointmentService.containsKey(service)){
+                count = appointmentService.get(service);
+                appointmentService.put(serivce,count);
+            } else {
+                appointmentService.put(serivce,1);
+            }
+            if (appointmentType.containsKey(type)){
+                count = appointmentType.get(type);
+                appointmentType.put(type,count);
+            }else {
+                appointmentType.put(type,1);
+            }
+            if(a.isWeekly()){
+                weekly++;
+            }else {
+                oneTime++;
+            }
+        }
+        appointmentWeekly.put("Weekly",weekly);
+        appointmentWeekly.put("OneTime",oneTime);
+        data.put("Type",appointmentType);
+        data.put("Service",appointmentService);
+        data.put("Weekly",appointmentWeekly);
+        return ok(Json.toJson(data));
+    }
+
     public Result appointmentTypeStatistics(Long reportStart, Long reportEnd) {
         Date start = new Date(reportStart);
         Date end = new Date(reportEnd);
