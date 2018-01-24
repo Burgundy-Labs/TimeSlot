@@ -170,9 +170,14 @@
                 }
 
                 $(document).ready(function () {
+                    console.log(moment('@SettingsController.getSettings.getSemesterStart.toInstant').format("YYYY-DD-MM"));
                     $('#availabilitySchedule').fullCalendar({
                         height: 'auto',
                         allDaySlot: false,
+                        validRange: {
+                            start: moment('@SettingsController.getSettings.getSemesterStart.toInstant').format("YYYY-MM-DD"),
+                            end: moment('@SettingsController.getSettings.getSemesterEnd.toInstant').format("YYYY-MM-DD")
+                        },
                         minTime: moment('@SettingsController.getSettings.getStartTime.toInstant').format("HH:mm"),
                         maxTime: moment('@SettingsController.getSettings.getEndTime.toInstant').format("HH:mm"),
                         events: function (start, end, timezone, callback) {
@@ -222,6 +227,7 @@
                             $.confirm({
                                 title: 'Availability',
                                 content: 'Is this slot available weekly?',
+                                columnClass: "col-md-11",
                                 theme: 'modern',
                                 escapeKey: 'cancel',
                                 buttons: {

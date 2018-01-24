@@ -1,6 +1,6 @@
 name := "project_burgundy"
 
-version := "1.0"
+version := "1.1"
 
 lazy val `project_burgundy` = (project in file(".")).enablePlugins(PlayJava, LauncherJarPlugin, PlayAkkaHttp2Support)
 
