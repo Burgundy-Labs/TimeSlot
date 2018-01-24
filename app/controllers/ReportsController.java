@@ -34,7 +34,7 @@ public class ReportsController extends Controller {
         Date start = new  Date(resportStart);
         Date end = new Date(reportEnd);
         List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsByDate(start, end);
-        Map<String,Map<String,Integer>>  data = new HashMap<String,Map<String,Integer>>;
+        Map<String,Map<String,Integer>>  data = new HashMap<String,Map<String,Integer>>();
         Map<String, Integer> appointmentType = new HashMap<String, Integer>();
         Map<String, Integer> appointmentService = new HashMap<String, Integer>();
         Map<String, Integer> appointmentWeekly = new HashMap<String, Integer>();
@@ -50,9 +50,9 @@ public class ReportsController extends Controller {
             service = a.getServiceType();
             if (appointmentService.containsKey(service)){
                 count = appointmentService.get(service);
-                appointmentService.put(serivce,count);
+                appointmentService.put(service,count);
             } else {
-                appointmentService.put(serivce,1);
+                appointmentService.put(service,1);
             }
             if (appointmentType.containsKey(type)){
                 count = appointmentType.get(type);
