@@ -23,6 +23,8 @@ GET         /appointmentsForUser/:role/:userId/:start/:end                      
 GET         /Reports                                                             controllers.ReportsController.index
 GET         /appointmentTypeStatistics/:reportStart/:reportEnd                   controllers.ReportsController.appointmentTypeStatistics(reportStart: Long, reportEnd: Long)
 GET         /serviceStatistics/:reportStart/:reportEnd                           controllers.ReportsController.serviceStatistics(reportStart: Long, reportEnd: Long)
+GET         /weeklyAppointmentStatistics/:reportStart/:reportEnd                controllers.ReportsController.weeklyAppointmentStatistics(reportStart: Long, reportEnd: Long)
+
 
 # POST requests
 POST        /signedIn                                                            controllers.LoginController.signedIn()

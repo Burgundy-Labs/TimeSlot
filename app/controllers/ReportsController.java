@@ -54,4 +54,24 @@ public class ReportsController extends Controller {
         }
         return ok(Json.toJson(serviceCounts));
     }
+    public Result weeklyAppointmentStatistics(Long reportStart, Long reportEnd) {
+        Date start = new Date(reportStart);
+        Date end = new Date(reportEnd);
+        List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsByDate(start, end);
+        Map<String,Integer> weeklyCount = new HashMap<String, Integer>();
+
+        int weekly = 0;
+        int oneTime = 0;
+        for( AppointmentsModel a: appointments){
+            if(a.isWeekly()){
+                weekly++;
+            }else {
+                oneTime++;
+            }
+        }
+        weeklyCount.put("Weekly",weekly);
+        weeklyCount.put("One-Time", oneTime);
+        return ok(Json.toJson(weeklyCount));
+
+    }
 }
