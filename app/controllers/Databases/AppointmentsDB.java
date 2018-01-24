@@ -331,4 +331,5 @@ public class AppointmentsDB {
         /* Asynchronously remove appointment from DB */
         return appointment;
     }
+
 }

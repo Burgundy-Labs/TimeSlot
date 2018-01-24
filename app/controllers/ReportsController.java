@@ -33,11 +33,19 @@ public class ReportsController extends Controller {
         Date start = new Date(reportStart);
         Date end = new Date(reportEnd);
         List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsByDate(start, end);
-        List<AppointmentTypeModel> appointmentTypes = SettingsDB.getAppointmentTypes();
-        Map<String, Integer> appointmentTypeCounts = appointmentTypes.stream().collect(Collectors.toMap(AppointmentTypeModel::getAppointmentType, i -> 0));
+        Map<String, Integer> appointmentTypeCounts = new HashMap<String, Integer>();
+        int count = 0;
+        String type;
+
         for (AppointmentsModel a: appointments ) {
-            appointmentTypeCounts.putIfAbsent(a.getAppointmentType(), 0);
-            appointmentTypeCounts.put(a.getAppointmentType(), appointmentTypeCounts.get(a.getAppointmentType()) + 1);
+            type = a.getAppointmentType();
+            if (appointmentTypeCounts.containsKey(type)){
+                count = appointmentTypeCounts.get(type);
+                appointmentTypeCounts.put(type,count++);
+            } else {
+                appointmentTypeCounts.put(type,1);
+            }
+            count = 0;
         }
         return ok(Json.toJson(appointmentTypeCounts));
     }
@@ -46,12 +54,40 @@ public class ReportsController extends Controller {
         Date start = new Date(reportStart);
         Date end = new Date(reportEnd);
         List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsByDate(start ,end);
-        List<ServiceModel> services = SettingsDB.getServices();
-        Map<String, Integer> serviceCounts = services.stream().collect(Collectors.toMap(ServiceModel::getService, i -> 0));
+        Map<String, Integer> serviceCounts = new HashMap<String,Integer>();
+        int count = 0;
+        String type;
         for (AppointmentsModel a: appointments ) {
-            serviceCounts.putIfAbsent(a.getServiceType(), 0);
-            serviceCounts.put(a.getServiceType(), serviceCounts.get(a.getServiceType()) + 1);
+            type = a.getServiceType();
+            if (serviceCounts.containsKey(type)){
+                count = serviceCounts.get(type);
+                serviceCounts.put(type, count++);
+            } else {
+                serviceCounts.put(type,1);
+            }
+            count = 0;
+
         }
         return ok(Json.toJson(serviceCounts));
+    }
+    public Result weeklyAppointmentStatistics(Long reportStart, Long reportEnd) {
+        Date start = new Date(reportStart);
+        Date end = new Date(reportEnd);
+        List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsByDate(start, end);
+        Map<String,Integer> weeklyCount = new HashMap<String, Integer>();
+
+        int weekly = 0;
+        int oneTime = 0;
+        for( AppointmentsModel a: appointments){
+            if(a.isWeekly()){
+                weekly++;
+            }else {
+                oneTime++;
+            }
+        }
+        weeklyCount.put("Weekly",weekly);
+        weeklyCount.put("One-Time", oneTime);
+        return ok(Json.toJson(weeklyCount));
+
     }
 }

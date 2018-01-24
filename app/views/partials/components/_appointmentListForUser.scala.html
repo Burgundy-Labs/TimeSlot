@@ -2,12 +2,14 @@
 @import java.time.format.DateTimeFormatter
 @import java.time.ZoneOffset
 @import controllers.Databases
-@currentUser = @{
+    @currentUser = @{
     UserController.getCurrentUser
 }
-@currentSettings = @{SettingsController.getSettings}
+    @currentSettings = @{
+    SettingsController.getSettings
+}
 <div class="table-responsive">
-    <table class="table table-striped appointmentList" cellspacing="0" width="100%" id="appointmentList">
+    <table class="table table-striped appointmentList col-md-12" cellspacing="0" width="100%" id="appointmentList">
         <thead>
             <tr>
                 <th></th>
@@ -18,7 +20,7 @@
                 <th>Date</th>
                 <th>Attendance</th>
                 <th>Student's Notes</th>
-                <th>Manage</th>
+                <th id="manage">Manage</th>
                 <th></th>
             </tr>
         </thead>
@@ -43,25 +45,24 @@
                 <td class="attendance">@partials.components._appointmentAttendanceDropdown(appointment, currentUser)</td>
                 <td class="appointmentNotes">@appointment.getAppointmentNotes</td>
                 <td>
-                        @if(currentUser.getRole.equals("Student")) {
-                            <button class="no-button"> <span class="action-primary">@partials.components._tooltipIconLink("mailto:" + appointment.getCoachEmail, "email", "bottom", "Email Coach", 32)</span></button>
+                    @if(currentUser.getRole.equals("Student")) {
+                        <button class="no-button"> <span class="action-primary">@partials.components._tooltipIconLink("mailto:" + appointment.getCoachEmail, "email", "bottom", "Email Coach", 32)</span></button>
+                    } else {
+                        <button class="no-button"> <span class="action-primary">@partials.components._tooltipIconLink("mailto:" + appointment.getStudentEmail, "email", "bottom", "Email Student", 32)</span></button>
+                    }
+                    @if(currentUser.getRole.equals("Coach") || (currentUser.isCoach != null && currentUser.isCoach)) {
+                        @if(appointment.getCoachNotes.equals("")) {
+                            <button id="notesFor-@appointment.getAppointmentId" class="no-button" onclick="updateCoachNotes('@appointment.getAppointmentId', '@appointment.getCoachNotes')"><span class="action-black" id="appointmentNotes">@partials.components._tooltipIconLink("javascript:void(0)", "assignment", "bottom", "Session Notes", 32)</span></button>
                         } else {
-                            <button class="no-button"> <span class="action-primary">@partials.components._tooltipIconLink("mailto:" + appointment.getStudentEmail, "email", "bottom", "Email Student", 32)</span></button>
+                            <button id="notesFor-@appointment.getAppointmentId" class="no-button" onclick="updateCoachNotes('@appointment.getAppointmentId', '@appointment.getCoachNotes')"><span class="action-secondary" id="appointmentNotes">@partials.components._tooltipIconLink("javascript:void(0)", "assignment", "bottom", "Session Notes", 32)</span></button>
                         }
-                        @if(currentUser.getRole.equals("Coach") || (currentUser.isCoach != null && currentUser.isCoach)){
-                            @if(appointment.getCoachNotes.equals("")) {
-                                <button id="notesFor-@appointment.getAppointmentId" class="no-button" onclick="updateCoachNotes('@appointment.getAppointmentId', '@appointment.getCoachNotes')"><span class="action-black" id="appointmentNotes">@partials.components._tooltipIconLink("javascript:void(0)", "assignment", "bottom", "Session Notes", 32)</span></button>
-                            } else {
-                                <button id="notesFor-@appointment.getAppointmentId" class="no-button" onclick="updateCoachNotes('@appointment.getAppointmentId', '@appointment.getCoachNotes')"><span class="action-secondary" id="appointmentNotes">@partials.components._tooltipIconLink("javascript:void(0)", "assignment", "bottom", "Session Notes", 32)</span></button>
-                            }
-                        }
-                    @if(!appointment.getStartDate.before(new Date())){
-                    <button class="no-button" onclick="cancelAppointment('@appointment.getAppointmentId')"><span class="action-delete">@partials.components._tooltipIconLink("javascript:void(0)", "close", "bottom", "Cancel", 32)</span>
-                    </button>
+                    }
+                    @if(!appointment.getStartDate.before(new Date())) {
+                        <button class="no-button" onclick="cancelAppointment('@appointment.getAppointmentId')"><span class="action-delete">@partials.components._tooltipIconLink("javascript:void(0)", "close", "bottom", "Cancel", 32)</span></button>
                     }
                 </td>
                 <td>
-                    <a class="btn btn-primary" href="https://www.google.com/calendar/render?action=TEMPLATE&text=@currentSettings.getCenterName.replaceAll(" ", "+")+Appointment+With+@appointment.getStudentName.replaceAll(" ", "+")&dates=@appointment.getStartDate.toInstant.toString.replaceAll("-","").replaceAll(":","")/@appointment.getEndDate.toInstant.toString.replaceAll("-","").replaceAll(":","")&details=@appointment.toString.replace("\n", "%0A").replace(" ","+")&location=@currentSettings.getCenterName.replaceAll(" ","+")&sf=true&output=xml"
+                    <a class="btn btn-primary" href="https://www.google.com/calendar/render?action=TEMPLATE&text=@currentSettings.getCenterName.replaceAll(" ", "+")+Appointment+With+@appointment.getStudentName.replaceAll(" ", "+")&dates=@appointment.getStartDate.toInstant.toString.replaceAll("-", "").replaceAll(":", "")/@appointment.getEndDate.toInstant.toString.replaceAll("-", "").replaceAll(":", "")&details=@appointment.toString.replace("\n", "%0A").replace(" ", "+")&location=@currentSettings.getCenterName.replaceAll(" ", "+")&sf=true&output=xml"
                     target="_blank" rel="nofollow">Add to calendar</a>
                 </td>
             </tr>
@@ -117,25 +118,26 @@
         });
     }
 
-    function cancelAppointment(appointmentId) {
+    function cancelAppointment(appointmentId, weeklyId) {
         $.confirm({
+            onOpenBefore: function () {
+                console.log(weeklyId);
+                if (weeklyId && weeklyId === "") {
+                    this.buttons.deleteAll.hide();
+                }
+            },
             title: 'Cancel Appointment',
             content: 'Are you sure you want to cancel this appointment?',
             escapeKey: 'cancel',
             buttons: {
-                cancel: {
-                    text: "Nevermind",
-                    btClass: "btn"
-                },
-                delete: {
-                    keys: ['enter'],
-                    text: 'Cancel Appointment',
-                    btnClass: 'btn-primary',
+                deleteOne: {
+                    text: 'Cancel This Appointment',
+                    btnClass: 'btn-primary mb-3 col-md-12',
                     action: function () {
                         $.ajax({
                             url: '/cancelAppointment',
                             type: 'POST',
-                            data: JSON.stringify({appointmentId: appointmentId}),
+                            data: JSON.stringify({appointmentId: appointmentId, weeklyId: null}),
                             contentType: 'application/json',
                             success: function () {
                                 $('.' + appointmentId).hide();
@@ -147,6 +149,30 @@
                         });
                     }
                 },
+                deleteAll: {
+                    text: 'Cancel All Appointments in Series',
+                    btnClass: 'btn-primary mb-3 col-md-12',
+                    action: function () {
+                        console.log(weeklyId);
+                        $.ajax({
+                            url: '/cancelAppointment',
+                            type: 'POST',
+                            data: JSON.stringify({appointmentId: appointmentId, weeklyId: weeklyId}),
+                            contentType: 'application/json',
+                            success: function () {
+                                location.reload();
+                                createAlert("success", "Appointments cancelled.");
+                            },
+                            error: function (err) {
+                                console.log(err);
+                            }
+                        });
+                    }
+                },
+                cancel: {
+                    text: "Nevermind",
+                    btnClass: "mb-3 col-md-12"
+                }
             },
         });
     }
@@ -156,7 +182,7 @@
         $('.date').each(function () {
             let start = moment($(this).find("span.start").text());
             let end = moment($(this).find("span.end").text());
-            if(!moment().isDST() && start.isDST()){
+            if (!moment().isDST() && start.isDST()) {
                 $(this).text(start.subtract(1, 'hour').format('MM/DD/YY, h:mm') + "-" + end.subtract(1, 'hour').format("h:mm A"));
             } else if (moment().isDST() && !start.isDST()) {
                 $(this).text(start.add(1, 'hour').format('MM/DD/YY, h:mm') + "-" + end.add(1, 'hour').format("h:mm A"));
