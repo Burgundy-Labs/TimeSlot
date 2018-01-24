@@ -36,6 +36,10 @@
     function createMakeAppointmentCalendar() {
         if ($('#newAppointmentCalendar').is(':visible')) { //if the container is visible on the page
             $('#newAppointmentCalendar').fullCalendar({
+                validRange: {
+                    start: moment('@SettingsController.getSettings.getSemesterStart.toInstant').format("YYYY-MM-DD"),
+                    end: moment('@SettingsController.getSettings.getSemesterEnd.toInstant').format("YYYY-MM-DD")
+                },
                 height: 'auto',
                 allDaySlot: false,
                 defaultView: 'agendaWeek',

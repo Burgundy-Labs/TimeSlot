@@ -10,6 +10,10 @@
         center: 'title',
         right:  'today prev,next'
       },
+      validRange: {
+          start: moment('@SettingsController.getSettings.getSemesterStart.toInstant').format("YYYY-MM-DD"),
+          end: moment('@SettingsController.getSettings.getSemesterEnd.toInstant').format("YYYY-MM-DD")
+      },
       defaultView: 'month',
       editable: false,
       weekends: false,
