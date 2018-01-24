@@ -157,9 +157,9 @@
             let start = moment($(this).find("span.start").text());
             let end = moment($(this).find("span.end").text());
             if(!moment().isDST() && start.isDST()){
-                $(this).text(start.subtract(1, 'hour').format('MM/DD/YY, h:mm') + "-" + end.format("h:mm A"));
-            } if (moment().isDST() && !start.isDST()) {
-                $(this).text(start.add(1, 'hour').format('MM/DD/YY, h:mm') + "-" + end.format("h:mm A"));
+                $(this).text(start.subtract(1, 'hour').format('MM/DD/YY, h:mm') + "-" + end.subtract(1, 'hour').format("h:mm A"));
+            } else if (moment().isDST() && !start.isDST()) {
+                $(this).text(start.add(1, 'hour').format('MM/DD/YY, h:mm') + "-" + end.add(1, 'hour').format("h:mm A"));
             } else {
                 $(this).text(start.format('MM/DD/YY, h:mm') + "-" + end.format("h:mm A"));
             }
