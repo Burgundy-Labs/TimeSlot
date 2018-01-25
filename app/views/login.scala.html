@@ -62,13 +62,17 @@
                     signInSuccessUrl: '/Dashboard',
                     signInOptions: [{
                         provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+                        authMethod: "https://accounts.google.com",
+                        clientId: '@Application.getConfig.getString("authConfig.clientId")',
                     }],
-                    // Terms of service url.
+                    credentialHelper: firebaseui.auth.CredentialHelper.GOOGLE_YOLO,
+                // Terms of service url.
                     tosUrl: '/Terms'
                 };
 
                 // Initialize the FirebaseUI Widget using FirestoreDB.
                 var ui = new firebaseui.auth.AuthUI(firebase.auth());
+                ui.disableAutoSignIn();
                 // The start method will wait until the DOM is loaded.
                 ui.start('#firebaseui-auth-container', uiConfig);
         </script>
