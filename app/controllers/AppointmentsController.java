@@ -57,10 +57,14 @@ public class AppointmentsController extends Controller {
         }
         /* Check if user is in DB */
         AppointmentsModel finalAppointment = appointment;
+        createNotifications(finalAppointment);
         new Thread(() -> MailerService.sendAppointmentConfirmation(finalAppointment)).start();
         return ok();
     }
 
+    private void createNotifications(AppointmentsModel appointment){
+        /* TODO create notifications*/
+    }
     private void createWeeklyAppointments(JsonNode json, String uniqueId){
         Calendar currentDate = DatatypeConverter.parseDateTime(json.findPath("startDate").textValue());
         Calendar endDate = DatatypeConverter.parseDateTime(json.findPath("endDate").textValue());
