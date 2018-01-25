@@ -8,7 +8,7 @@
     <body>
         <script type="text/javascript">
                 // FirebaseUI config.
-                @if(UserController.getCurrentUser.getUid == null) {
+                @if(UserController.getCurrentRole == null) {
                         localStorage.clear();
                 }
                 if ( localStorage.getItem("firebaseui::rememberedAccounts") !== null ) {

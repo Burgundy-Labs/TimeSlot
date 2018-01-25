@@ -266,31 +266,6 @@
                                                 data: JSON.stringify(form),
                                                 contentType: 'application/json',
                                                 success: function () {
-                                                    var studentNotification;
-                                                    if (coachName != "Any Coach") {
-                                                        studentNotification = "New weekly " + form.appointmentType + " Appointment on " + moment(form.startDate).format("dddd, MMMM Do, h:mm A") + " - " + moment(form.endDate).format("h:mm A") + " with " + coachName;
-                                                    } else {
-                                                        studentNotification = "New weekly " + form.appointmentType + " Appointment on " + moment(form.startDate).format("dddd, MMMM Do, h:mm A") + " - " + moment(form.endDate).format("h:mm A");
-                                                    }
-                                                    let coachNotification = "New weekly " + form.appointmentType + " Appointment on " + moment(form.startDate).format("dddd, MMMM Do, h:mm A") + " - " + moment(form.endDate).format("h:mm A") + " with " + "@currentUser.getDisplayName";
-                                                    $.ajax({
-                                                        url: '/addNotificationToUser',
-                                                        type: 'POST',
-                                                        data: JSON.stringify({
-                                                            userId: form.coachId,
-                                                            notificationContent: coachNotification
-                                                        }),
-                                                        contentType: 'application/json',
-                                                    });
-                                                    $.ajax({
-                                                        url: '/addNotificationToUser',
-                                                        type: 'POST',
-                                                        data: JSON.stringify({
-                                                            userId: form.studentId,
-                                                            notificationContent: studentNotification
-                                                        }),
-                                                        contentType: 'application/json',
-                                                    });
                                                     createAlert("success", "Appointment Created!");
                                                     location.reload();
                                                 },
@@ -317,26 +292,6 @@
                                                 data: JSON.stringify(form),
                                                 contentType: 'application/json',
                                                 success: function () {
-                                                    let studentNotification = "New " + form.appointmentType + " Appointment on " + moment(form.startDate).format("dddd, MMMM Do, h:mm A") + " - " + moment(form.endDate).format("h:mm A") + " with " + coachName;
-                                                    let coachNotification = "New " + form.appointmentType + " Appointment on " + moment(form.startDate).format("dddd, MMMM Do, h:mm A") + " - " + moment(form.endDate).format("h:mm A") + " with " + "@currentUser.getDisplayName";
-                                                    $.ajax({
-                                                        url: '/addNotificationToUser',
-                                                        type: 'POST',
-                                                        data: JSON.stringify({
-                                                            userId: form.coachId,
-                                                            notificationContent: coachNotification
-                                                        }),
-                                                        contentType: 'application/json',
-                                                    });
-                                                    $.ajax({
-                                                        url: '/addNotificationToUser',
-                                                        type: 'POST',
-                                                        data: JSON.stringify({
-                                                            userId: form.studentId,
-                                                            notificationContent: studentNotification
-                                                        }),
-                                                        contentType: 'application/json',
-                                                    });
                                                     createAlert("success", "Appointment Created!");
                                                     location.reload();
                                                 },

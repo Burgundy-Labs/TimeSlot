@@ -33,6 +33,8 @@ public class LoginController extends Controller {
         UserDB.addUser(user);
         /* Store UID in Session */
         session("currentUser", user.getUid());
+        session("currentRole", user.getRole());
+
         /* Add user to DB with 'student' role (default) */
         return ok();
     }

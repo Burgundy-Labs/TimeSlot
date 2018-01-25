@@ -1,12 +1,12 @@
 @(currentPage: String)
-@currentUser = @{UserController.getCurrentUser}
+@currentRole = @{UserController.getCurrentRole}
     <div class="sidebar">
         <div>
             <img src="@routes.Assets.at("images/husky.png")" width="100%">
         </div>
             <nav class="sidebar-navigation">
                 @for(menuLink <- Application.menuLinks) {
-                    @if( (!menuLink.adminLocked && !menuLink.coachLocked) || (menuLink.coachLocked && currentUser.getRole.equals("Coach")) || (menuLink.adminLocked && currentUser.getRole.equals("Admin")) ) {
+                    @if( (!menuLink.adminLocked && !menuLink.coachLocked) || (menuLink.coachLocked && currentRole.equals("Coach")) || (menuLink.adminLocked && currentRole.equals("Admin")) ) {
                         <div @if(currentPage.equals(menuLink.menuText)) {
                             class="currentPage"}>@partials.components._tooltipIconLink(menuLink.href, menuLink.mdlIcon, "right", menuLink.menuText, 32)</div>
                     }

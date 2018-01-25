@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 public class ReportsController extends Controller {
 
     public Result index() {
-        UsersModel currentUser = UserController.getCurrentUser();
-        if( currentUser ==  null || !currentUser.getRole().equals("Admin")){
+        String currentRole = UserController.getCurrentRole();
+        if( currentRole ==  null || !currentRole.equals("Admin")){
             if(session("newUser") != null && session("newUser").equals("true")){
                 return ok(views.html.dashboard.render()).withCookies(Http.Cookie.builder("newUser", "true").build());
             } else {

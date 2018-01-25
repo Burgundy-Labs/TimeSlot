@@ -19,8 +19,8 @@ import java.util.List;
 public class SettingsController extends Controller {
 
     public Result index() {
-        UsersModel currentUser = UserController.getCurrentUser();
-        if( currentUser ==  null || !currentUser.getRole().equals("Admin")){
+        String currentRole = UserController.getCurrentRole();
+        if( currentRole ==  null || !currentRole.equals("Admin")){
             if(session("newUser") != null && session("newUser").equals("true")){
                 return ok(views.html.dashboard.render()).withCookies(Http.Cookie.builder("newUser", "true").build());
             } else {
@@ -32,6 +32,9 @@ public class SettingsController extends Controller {
     }
 
     public Result appointmentTypeFrequency() {
+        if(!UserController.getCurrentRole().equals("Admin")){
+            return unauthorized();
+        }
         JsonNode json = request().body().asJson();
         String frequency = json.findPath("frequency").asText();
         Boolean enabled = json.findPath("checked").asBoolean();
@@ -46,6 +49,9 @@ public class SettingsController extends Controller {
         return ok();
     }
     public Result changeSiteAlert(){
+        if(!UserController.getCurrentRole().equals("Admin")){
+            return unauthorized();
+        }
         JsonNode json = request().body().asJson();
         String siteAlert = json.findPath("siteAlert").asText();
         SettingsModel s = SettingsDB.getSettings();
@@ -55,6 +61,9 @@ public class SettingsController extends Controller {
     }
 
     public Result updateSettings() {
+        if(!UserController.getCurrentRole().equals("Admin")){
+            return unauthorized();
+        }
         /* Get user object from request */
         JsonNode json = request().body().asJson();
         /* Get user from json request */
@@ -85,6 +94,9 @@ public class SettingsController extends Controller {
     }
 
     public Result createAppointmentType() {
+        if(!UserController.getCurrentRole().equals("Admin")){
+            return unauthorized();
+        }
         JsonNode json = request().body().asJson();
         String appointmentTypeName = json.findPath("appointmentTypeName").asText();
         AppointmentTypeModel appointmentType = new AppointmentTypeModel(null, appointmentTypeName);
@@ -103,6 +115,9 @@ public class SettingsController extends Controller {
     }
 
     public Result createService() {
+        if(!UserController.getCurrentRole().equals("Admin")){
+            return unauthorized();
+        }
         JsonNode json = request().body().asJson();
         String serviceName = json.findPath("serviceName").asText();
         ServiceModel service = new ServiceModel(null, serviceName);
@@ -111,6 +126,9 @@ public class SettingsController extends Controller {
     }
 
     public Result removeAppointmentType() {
+        if(!UserController.getCurrentRole().equals("Admin")){
+            return unauthorized();
+        }
         JsonNode json = request().body().asJson();
         String appointmentTypeId = json.findPath("appointmentTypeId").asText();
         SettingsDB.removeAppointmentType(appointmentTypeId);
@@ -118,6 +136,9 @@ public class SettingsController extends Controller {
     }
 
     public Result removeService() {
+        if(!UserController.getCurrentRole().equals("Admin")){
+            return unauthorized();
+        }
         JsonNode json = request().body().asJson();
         String serviceId = json.findPath("serviceId").asText();
         SettingsDB.removeService(serviceId);
