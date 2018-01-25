@@ -120,60 +120,75 @@
 
     function cancelAppointment(appointmentId, weeklyId) {
         $.confirm({
-            onOpenBefore: function () {
-                console.log(weeklyId);
-                if (weeklyId && weeklyId === "") {
-                    this.buttons.deleteAll.hide();
-                }
-            },
             title: 'Cancel Appointment',
-            content: 'Are you sure you want to cancel this appointment?',
+            content: 'Reason for Cancelling:<textarea class="form-control" rows="5" id="appointmentNotes" placeholder="I can\'t come to the meeting anymore because..."></textarea>',
             escapeKey: 'cancel',
             buttons: {
-                deleteOne: {
-                    text: 'Cancel This Appointment',
+                next: {
+                    text: 'Next',
                     btnClass: 'btn-primary mb-3 col-md-12',
-                    action: function () {
-                        $.ajax({
-                            url: '/cancelAppointment',
-                            type: 'POST',
-                            data: JSON.stringify({appointmentId: appointmentId, weeklyId: null}),
-                            contentType: 'application/json',
-                            success: function () {
-                                $('.' + appointmentId).hide();
-                                createAlert("success", "Appointment cancelled.");
+                    action: function() {
+                        $.confirm({
+                            onOpenBefore: function () {
+                                if (weeklyId && weeklyId === "") {
+                                    this.buttons.deleteAll.hide();
+                                }
                             },
-                            error: function (err) {
-                                console.log(err);
-                            }
-                        });
-                    }
-                },
-                deleteAll: {
-                    text: 'Cancel All Appointments in Series',
-                    btnClass: 'btn-primary mb-3 col-md-12',
-                    action: function () {
-                        console.log(weeklyId);
-                        $.ajax({
-                            url: '/cancelAppointment',
-                            type: 'POST',
-                            data: JSON.stringify({appointmentId: appointmentId, weeklyId: weeklyId}),
-                            contentType: 'application/json',
-                            success: function () {
-                                location.reload();
-                                createAlert("success", "Appointments cancelled.");
+                            title: 'Cancel Appointment',
+                            content: 'Are you sure you want to cancel this appointment?',
+                            escapeKey: 'cancel',
+                            buttons: {
+                                deleteOne: {
+                                    text: 'Cancel This Appointment',
+                                    btnClass: 'btn-primary mb-3 col-md-12',
+                                    action: function () {
+                                        $.ajax({
+                                            url: '/cancelAppointment',
+                                            type: 'POST',
+                                            data: JSON.stringify({appointmentId: appointmentId, weeklyId: null}),
+                                            contentType: 'application/json',
+                                            success: function () {
+                                                $('.' + appointmentId).hide();
+                                                createAlert("success", "Appointment cancelled.");
+                                            },
+                                            error: function (err) {
+                                                console.log(err);
+                                            }
+                                        });
+                                    }
+                                },
+                                deleteAll: {
+                                    text: 'Cancel All Appointments in Series',
+                                    btnClass: 'btn-primary mb-3 col-md-12',
+                                    action: function () {
+                                        $.ajax({
+                                            url: '/cancelAppointment',
+                                            type: 'POST',
+                                            data: JSON.stringify({appointmentId: appointmentId, weeklyId: weeklyId}),
+                                            contentType: 'application/json',
+                                            success: function () {
+                                                location.reload();
+                                                createAlert("success", "Appointments cancelled.");
+                                            },
+                                            error: function (err) {
+                                                console.log(err);
+                                            }
+                                        });
+                                    }
+                                },
+                                cancel: {
+                                    text: "Nevermind",
+                                    btnClass: "mb-3 col-md-12"
+                                }
                             },
-                            error: function (err) {
-                                console.log(err);
-                            }
                         });
                     }
                 },
                 cancel: {
-                    text: "Nevermind",
-                    btnClass: "mb-3 col-md-12"
+                    text: 'Nevermind',
+                    btnClass: 'mb-3 col-md-12',
                 }
-            },
+            }
         });
     }
 
