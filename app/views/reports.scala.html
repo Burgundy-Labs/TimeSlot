@@ -19,7 +19,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" id="reports">
                 <div class="mb-3 col-md-4">
                     <h1 class="center">Appointment Types</h1>
                     <br/>
@@ -41,7 +41,8 @@
         <script type="text/javascript">
                 let reportStart = $('#reportStart');
                 let reportEnd = $('#reportEnd');
-
+                let Charts = [];
+                let chartData = [];
                 /* Create Charts On Page Load*/
                 $(document).ready(function () {
                     reportStart.val(moment().subtract(7, "days").format("YYYY-MM-DD"));
@@ -55,8 +56,7 @@
                     createWeeklyChart();
                 }
                 function getData() {
-                    let Chart = [];
-                    let chartData = [];
+
                     $.ajax({
                         async: false,
                         url: '/AppointmentStatistics/'+ moment(reportStart.val()).valueOf()+"/"+moment(reportEnd.val()).valueOf(),
@@ -64,13 +64,32 @@
                         success: function (response) {
                             $(response).each(function (){
                                 for (let i=0; i < Object.getOwnPropertyNames(this).length; i++){
-                                    Chart.push(Object.getOwnPropertyNames(this)[i]);
+                                    Charts.push(Object.getOwnPropertyNames(this)[i]);
                                     chartData.push(Object.values(this)[i]);
                                 }
                             })
                         }
                     })
                 }
+                function makeCharts() {
+                    let numberOfCharts = Chart.length;
+                    let numberOfRows =   Math.ceil(numberOfCharts/3);
+                    var row;
+                    var div;
+                    for (let i = 0; i < numberOfRows; i++){
+                        row = document.createElement('div');
+                        row.className = 'row '+i;
+                        for( let j= 0; j < 2; j++){
+                            div = document.createElement('div');
+                            div.className = 'col-md-1';
+                            div.id = 'hello';
+
+                        }
+                    }
+
+
+                }
+
                 function createWeeklyChart() {
                     let weeklyChartLabels = [];
                     let weeklyChartData = [];
