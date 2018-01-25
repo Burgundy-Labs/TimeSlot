@@ -15,6 +15,11 @@ import java.util.List;
 
 public class UserController extends Controller {
     public Result index() {
+        String currentRole = UserController.getCurrentRole();
+        /* Force redirect to Login is the user isn't signed in */
+        if(currentRole == null) {
+            return ok(views.html.login.render());
+        }
         return ok(views.html.users.render());
     }
 
@@ -58,13 +63,10 @@ public class UserController extends Controller {
         return ok();
     }
 
-    public Result addNotificationToUser() {
-        JsonNode json = request().body().asJson();
-        String userId = json.get("userId").asText();
+    public void addNotificationToUser(String userId, String content) {
         NotificationModel notification = new NotificationModel();
-        notification.setNotificationContent(json.get("notificationContent").asText());
+        notification.setNotificationContent(content);
         UserDB.addNotificationToUser(notification,userId);
-        return ok();
     }
 
     public Result removeServiceFromCoach() {

@@ -7,9 +7,9 @@ import play.mvc.Result;
 
 public class DashboardController extends Controller {
     public Result index() {
-        UsersModel u = UserController.getCurrentUser();
+        String currentRole = UserController.getCurrentRole();
         /* Force redirect to Login is the user isn't signed in */
-        if(u == null || u.getUid() == null) {
+        if(currentRole == null) {
             return ok(views.html.login.render());
         }
         if(session("newUser") != null && session("newUser").equals("true")){
