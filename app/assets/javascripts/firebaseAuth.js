@@ -35,7 +35,6 @@ function signout() {
     firebase.auth().signOut().then(function() {
         sessionStorage.clear();
         localStorage.clear();
-        window.location.href ='/Logout';
     }).catch(function(error) {
         console.log(error);
     });

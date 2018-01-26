@@ -64,7 +64,13 @@
                         provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
                         authMethod: "https://accounts.google.com",
                         clientId: '@Application.getConfig.getString("authConfig.clientId")',
+                        customParameters: {
+                            // Forces password re-entry.
+                            auth_type: 'reauthenticate',
+                            prompt: 'select_account'
+                        },
                     }],
+
                     credentialHelper: firebaseui.auth.CredentialHelper.GOOGLE_YOLO,
                 // Terms of service url.
                     tosUrl: '/Terms'

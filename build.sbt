@@ -2,7 +2,7 @@ name := "project_burgundy"
 
 version := "1.1"
 
-lazy val `project_burgundy` = (project in file(".")).enablePlugins(PlayJava, LauncherJarPlugin, PlayAkkaHttp2Support)
+lazy val `project_burgundy` = (project in file(".")).enablePlugins(PlayJava, LauncherJarPlugin, PlayAkkaHttp2Support, SbtWeb)
 
 resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 
@@ -16,3 +16,5 @@ libraryDependencies ++= Seq(javaJdbc, ehcache, ws, javaWs, guice,
   "com.typesafe.play" %% "play-mailer" % "6.0.1",
   "com.typesafe.play" %% "play-mailer-guice" % "6.0.1",
 )
+
+pipelineStages := Seq(gzip)

@@ -63,25 +63,11 @@ public class UserController extends Controller {
         return ok();
     }
 
-    public void addNotificationToUser(String userId, String content) {
-        NotificationModel notification = new NotificationModel();
-        notification.setNotificationContent(content);
-        UserDB.addNotificationToUser(notification,userId);
-    }
-
     public Result removeServiceFromCoach() {
         JsonNode json = request().body().asJson();
         String userId = json.get("userId").asText();
         String serviceId = json.get("serviceId").asText();
         UserDB.removeServiceFromUser(userId, serviceId);
-        return ok();
-    }
-
-    public Result removeNotificationFromUser() {
-        JsonNode json = request().body().asJson();
-        String userId = json.get("userId").asText();
-        String notificationId = json.get("notificationId").asText();
-        UserDB.removeNotification(userId, notificationId);
         return ok();
     }
 

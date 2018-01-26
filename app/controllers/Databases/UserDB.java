@@ -12,11 +12,11 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 /* DB classes contain the methods necessary to manage their corresponding models.
-* UserDB works with UsersModel to retrieve and remove users in the Firestore DB.*/
+ * UserDB works with UsersModel to retrieve and remove users in the Firestore DB.*/
 public class UserDB {
 
-    public static synchronized void addServiceToUser(String userId, ServiceModel service){
-         /* Get DB instance */
+    public static synchronized void addServiceToUser(String userId, ServiceModel service) {
+        /* Get DB instance */
         DocumentReference docRef = FirestoreDB.get().collection("users").document(userId).collection("services").document(service.getServiceId());
         Map<String, Object> data = new HashMap<>();
         /* Create user model for DB insert */
@@ -26,7 +26,7 @@ public class UserDB {
         result.isDone();
     }
 
-    public static synchronized List<ServiceModel> getServicesForUser(String userId){
+    public static synchronized List<ServiceModel> getServicesForUser(String userId) {
         List<ServiceModel> servicesList = new ArrayList<>();
         /* Asynchronously retrieve all users */
         ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("users").document(userId).collection("services").get();
@@ -43,7 +43,7 @@ public class UserDB {
         ZonedDateTime now = ZonedDateTime.now();
         ZonedDateTime thirtyDaysAgo = now.plusDays(-30);
         for (DocumentSnapshot document : documents) {
-                   ServiceModel service = new ServiceModel(
+            ServiceModel service = new ServiceModel(
                     document.getId(),
                     document.getString("service")
             );
@@ -55,66 +55,6 @@ public class UserDB {
     public static boolean removeServiceFromUser(String userId, String serviceId) {
         /* Asynchronously remove user from DB */
         ApiFuture<WriteResult> writeResult = FirestoreDB.get().collection("users").document(userId).collection("services").document(serviceId).delete();
-        try {
-            /* Verify that action is complete */
-            writeResult.get();
-            return writeResult.isDone();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public static synchronized void addNotificationToUser(NotificationModel notificationModel, String userId){
-         /* Get DB instance */
-        DocumentReference docRef = null;
-         if(notificationModel.getNotificationId() == null) {
-             docRef = FirestoreDB.get().collection("users").document(userId).collection("notifications").document();
-         } else {
-             docRef = FirestoreDB.get().collection("users").document(userId).collection("notifications").document(notificationModel.getNotificationId());
-         }
-        Map<String, Object> data = new HashMap<>();
-        /* Create user model for DB insert */
-        data.put("notificationId", docRef.getId());
-        data.put("notificationContent", notificationModel.getNotificationContent());
-        data.put("creationDate", new Date());
-        /* Asynchronously write user into DB */
-        ApiFuture<WriteResult> result = docRef.set(data);
-        result.isDone();
-    }
-
-    public static synchronized List<NotificationModel> getNotificaitonsForUser(String userId){
-        List<NotificationModel> notificationList = new ArrayList<>();
-        /* Asynchronously retrieve all users */
-        ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("users").document(userId).collection("notifications").orderBy("creationDate", Query.Direction.DESCENDING).limit(5).get();
-        QuerySnapshot querySnapshot = null;
-        try {
-            /* Attempt to get a list of all users - blocking */
-            querySnapshot = query.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        assert querySnapshot != null;
-        List<DocumentSnapshot> documents = querySnapshot.getDocuments();
-        /* Iterate users and add them to a list for return */
-        ZonedDateTime now = ZonedDateTime.now();
-        ZonedDateTime thirtyDaysAgo = now.plusDays(-30);
-        for (DocumentSnapshot document : documents) {
-            if (document.getDate("creationDate").toInstant().isBefore(thirtyDaysAgo.toInstant())) {
-                removeNotification(userId, document.getString("notificationId"));
-            }
-            NotificationModel notification = new NotificationModel(
-                    document.getString("notificationId"),
-                    document.getString("notificationContent")
-            );
-            notificationList.add(notification);
-        }
-        return notificationList;
-    }
-
-    public static boolean removeNotification(String userId, String notificationId) {
-        /* Asynchronously remove user from DB */
-        ApiFuture<WriteResult> writeResult = FirestoreDB.get().collection("users").document(userId).collection("notifications").document(notificationId).delete();
         try {
             /* Verify that action is complete */
             writeResult.get();
@@ -150,8 +90,6 @@ public class UserDB {
                     Roles.getRole(document.getString("role")),
                     document.getBoolean("isCoach")
             );
-        } else {
-
         }
         return userFound;
     }
@@ -186,7 +124,6 @@ public class UserDB {
         return userList;
     }
 
-
     public static synchronized List<UsersModel> getCoaches() {
         List<UsersModel> userList = new ArrayList<>();
         /* Asynchronously retrieve all users */
@@ -205,8 +142,7 @@ public class UserDB {
             if (document.getString("role").equals("Coach")
                     || (document.getString("role").equals("Admin")
                     && (document.getBoolean("isCoach") != null)
-                    && document.getBoolean("isCoach")))
-            {
+                    && document.getBoolean("isCoach"))) {
                 UsersModel user = new UsersModel(
                         document.getString("display_name"),
                         document.getString("email"),
@@ -238,8 +174,7 @@ public class UserDB {
         List<DocumentSnapshot> documents = querySnapshot.getDocuments();
         /* Iterate users and add them to a list for return */
         for (DocumentSnapshot document : documents) {
-            if (document.getString("role").equals("Admin"))
-            {
+            if (document.getString("role").equals("Admin")) {
                 UsersModel user = new UsersModel(
                         document.getString("display_name"),
                         document.getString("email"),
@@ -271,8 +206,7 @@ public class UserDB {
         List<DocumentSnapshot> documents = querySnapshot.getDocuments();
         /* Iterate users and add them to a list for return */
         for (DocumentSnapshot document : documents) {
-            if (document.getString("role").equals("Student"))
-            {
+            if (document.getString("role").equals("Student")) {
                 UsersModel user = new UsersModel(
                         document.getString("display_name"),
                         document.getString("email"),
@@ -292,9 +226,9 @@ public class UserDB {
     public static List<UsersModel> getCoachesByService(String serviceId) {
         List<UsersModel> coachesWithService = new ArrayList<>();
         List<UsersModel> coaches = getCoaches();
-        for(UsersModel c : coaches) {
+        for (UsersModel c : coaches) {
             List<ServiceModel> services = getServicesForUser(c.getUid());
-            for(ServiceModel s : services) {
+            for (ServiceModel s : services) {
                 if (s.getServiceId().equals(serviceId)) {
                     coachesWithService.add(c);
                 }
@@ -306,7 +240,7 @@ public class UserDB {
     public static synchronized void addUser(UsersModel user) {
         /* Set only user present to admin */
         List<UsersModel> users = getUsers();
-        if(users.size() == 0) {
+        if (users.size() == 0) {
             user.setRole(Roles.getRole("Admin"));
         }
         /* Get DB instance */
