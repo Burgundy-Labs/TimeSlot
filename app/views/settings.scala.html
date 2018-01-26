@@ -77,9 +77,8 @@
                                     Site Alert
                                 </div>
                                 <div class="card-block">
-                                    <textarea type="text" class="form-control" id="siteAlert" placeholder="@if(currentSettings.getSiteAlert.equals("")) { Enter a site alert. } else {
-                                        @currentSettings.getSiteAlert
-                                    }" aria-label="@currentSettings.getSiteAlert"></textarea>
+                                    <textarea type="text" class="form-control" id="siteAlert" placeholder="Enter a site alert." aria-label="@currentSettings.getSiteAlert">@if(!currentSettings.getSiteAlert.equals("")){@currentSettings.getSiteAlert}
+                                    </textarea>
                                     <br/>
                                     <button onclick="changeSiteAlert()" class="btn btn-danger col-md-12">
                                         Change Site Alert</button>
@@ -91,13 +90,11 @@
                                     Center Information
                                 </div>
                                 <div class="card-block">
-                                    <textarea type="text" class="form-control" id="siteAlert" placeholder="@if(currentSettings.getSiteAlert.equals("")) { Enter center information. } else {
-                                        @currentSettings.getSiteAlert
-                                    }" aria-label="@currentSettings.getSiteAlert"></textarea>
+                                    <textarea type="text" class="form-control" id="centerInformation" placeholder="Enter center information." aria-label="@currentSettings.getCenterInformation">@if(!currentSettings.getCenterInformation.equals("")){@currentSettings.getCenterInformation}</textarea>
                                     <br/>
-                                    <button onclick="changeSiteAlert()" class="btn btn-primary col-md-12">
+                                    <button onclick="changeCenterInformation()" class="btn btn-primary col-md-12">
                                         Change Center Information</button>
-                                    <button onclick="clearAlert()" class="btn btn col-md-12">Clear Message</button>
+                                    <button onclick="clearCenterInformation()" class="btn btn col-md-12">Clear Message</button>
                                 </div>
                             </div>
                         </div>
@@ -241,6 +238,29 @@
                     }
                 });
             }
+
+            function clearCenterInformation() {
+                $("#centerInformation").val("");
+                changeCenterInformation();
+            }
+
+            function changeCenterInformation() {
+                let centerInformation = $("#centerInformation").val();
+                $.ajax({
+                    url: '/changeCenterInformation',
+                    type: 'POST',
+                    data: JSON.stringify({centerInformation: centerInformation}),
+                    contentType: 'application/json',
+                    success: function () {
+                        createAlert("success", "Center Information Changed");
+                        location.reload();
+                    },
+                    error: function () {
+                        createAlert('danger', 'Failed to change Center Information.');
+                    }
+                });
+            }
+
 
             function oneTimeCheck(appointmentTypeId) {
                 let checked = $(".weekly-" + appointmentTypeId).is(':checked');

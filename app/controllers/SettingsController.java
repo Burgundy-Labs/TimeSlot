@@ -60,6 +60,18 @@ public class SettingsController extends Controller {
         return ok();
     }
 
+    public Result changeCenterInformation(){
+        if(!UserController.getCurrentRole().equals("Admin")){
+            return unauthorized();
+        }
+        JsonNode json = request().body().asJson();
+        String centerInformation = json.findPath("centerInformation").asText();
+        SettingsModel s = SettingsDB.getSettings();
+        s.setCenterInformation(centerInformation);
+        SettingsDB.changeSettings(s);
+        return ok();
+    }
+
     public Result updateSettings() {
         if(!UserController.getCurrentRole().equals("Admin")){
             return unauthorized();

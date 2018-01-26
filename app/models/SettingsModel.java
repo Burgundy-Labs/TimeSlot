@@ -10,6 +10,7 @@ public class SettingsModel {
     private Date startTime;
     private Date endTime;
     private String siteAlert;
+    private String centerInformation;
 
     public static SettingsModel replaceNull(SettingsModel settings) {
         if(settings == null) settings = new SettingsModel();
@@ -21,6 +22,7 @@ public class SettingsModel {
         if(settings.getStartTime() == null) settings.setStartTime(new Date());
         if(settings.getEndTime() == null) settings.setEndTime(new Date());
         if(settings.getSiteAlert() == null) settings.setSiteAlert("");
+        if(settings.getCenterInformation() == null) settings.setCenterInformation("");
         return settings;
     }
 
@@ -60,5 +62,13 @@ public class SettingsModel {
 
     public void setSiteAlert(String siteAlert) {
         this.siteAlert = siteAlert;
+    }
+
+    public String getCenterInformation() {
+        return centerInformation;
+    }
+
+    public void setCenterInformation(String centerInformation) {
+        this.centerInformation = centerInformation;
     }
 }

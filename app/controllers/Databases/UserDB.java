@@ -38,7 +38,7 @@ public class UserDB {
             e.printStackTrace();
         }
         assert querySnapshot != null;
-        List<DocumentSnapshot> documents = querySnapshot.getDocuments();
+        List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
         /* Iterate users and add them to a list for return */
         ZonedDateTime now = ZonedDateTime.now();
         ZonedDateTime thirtyDaysAgo = now.plusDays(-30);
@@ -106,7 +106,7 @@ public class UserDB {
             e.printStackTrace();
         }
         assert querySnapshot != null;
-        List<DocumentSnapshot> documents = querySnapshot.getDocuments();
+        List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
         /* Iterate users and add them to a list for return */
         for (DocumentSnapshot document : documents) {
             UsersModel user = new UsersModel(
@@ -136,7 +136,7 @@ public class UserDB {
             e.printStackTrace();
         }
         assert querySnapshot != null;
-        List<DocumentSnapshot> documents = querySnapshot.getDocuments();
+        List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
         /* Iterate users and add them to a list for return */
         for (DocumentSnapshot document : documents) {
             if (document.getString("role").equals("Coach")
@@ -171,7 +171,7 @@ public class UserDB {
             e.printStackTrace();
         }
         assert querySnapshot != null;
-        List<DocumentSnapshot> documents = querySnapshot.getDocuments();
+        List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
         /* Iterate users and add them to a list for return */
         for (DocumentSnapshot document : documents) {
             if (document.getString("role").equals("Admin")) {
@@ -203,7 +203,7 @@ public class UserDB {
             e.printStackTrace();
         }
         assert querySnapshot != null;
-        List<DocumentSnapshot> documents = querySnapshot.getDocuments();
+        List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
         /* Iterate users and add them to a list for return */
         for (DocumentSnapshot document : documents) {
             if (document.getString("role").equals("Student")) {

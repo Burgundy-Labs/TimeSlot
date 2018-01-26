@@ -3,7 +3,6 @@ package controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import controllers.Databases.AppointmentsDB;
 import controllers.Databases.AvailabilityDB;
-import controllers.Databases.SettingsDB;
 import controllers.Databases.UserDB;
 import models.AppointmentsModel;
 import models.AvailabilityModel;
@@ -13,7 +12,6 @@ import org.joda.time.DateTime;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
-import sun.security.x509.AVA;
 
 import javax.xml.bind.DatatypeConverter;
 import java.util.ArrayList;
@@ -104,8 +102,8 @@ public class AvailabilityController extends Controller {
     }
 
     private List<AvailabilityModel> availableSlotsForCoach(String userId, Date startDate, Date endDate) {
-        List<AvailabilityModel> availabilities = new ArrayList<>();
-        List<AppointmentsModel> appointments = new ArrayList<>();
+        List<AvailabilityModel> availabilities;
+        List<AppointmentsModel> appointments;
 
         availabilities = AvailabilityDB.getAvailabilitesForUser(userId, startDate, endDate);
         appointments = AppointmentsDB.getAppointmentsForUser("Coach", userId);
