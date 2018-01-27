@@ -3,9 +3,9 @@ package modules;
 import com.google.inject.AbstractModule;
 import controllers.Application;
 import controllers.ApplicationComponents.EmailScheduler;
+import controllers.ApplicationComponents.MailerService;
 import controllers.ApplicationComponents.Roles;
 import controllers.Databases.FirestoreDB;
-import controllers.ApplicationComponents.MailerService;
 
 public class StartupModule extends AbstractModule {
 
