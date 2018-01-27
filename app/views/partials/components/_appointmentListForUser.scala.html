@@ -121,13 +121,14 @@
     function cancelAppointment(appointmentId, weeklyId) {
         $.confirm({
             title: 'Cancel Appointment',
-            content: 'Reason for Cancelling:<textarea class="form-control" rows="5" id="appointmentNotes" placeholder="I can\'t come to the meeting anymore because..."></textarea>',
+            content: 'Reason for Cancelling:<textarea class="form-control" rows="5" id="cancelNotes" placeholder="I can\'t come to the meeting anymore because..."></textarea>',
             escapeKey: 'cancel',
             buttons: {
                 next: {
                     text: 'Next',
                     btnClass: 'btn-primary mb-3 col-md-12',
                     action: function() {
+                        let cancelNotes = this.$content.find('#cancelNotes').val();
                         $.confirm({
                             onOpenBefore: function () {
                                 if (weeklyId && weeklyId === "") {
@@ -145,7 +146,7 @@
                                         $.ajax({
                                             url: '/cancelAppointment',
                                             type: 'POST',
-                                            data: JSON.stringify({appointmentId: appointmentId, weeklyId: null}),
+                                            data: JSON.stringify({appointmentId: appointmentId, weeklyId: null, cancelNotes: cancelNotes}),
                                             contentType: 'application/json',
                                             success: function () {
                                                 $('.' + appointmentId).hide();
@@ -164,7 +165,7 @@
                                         $.ajax({
                                             url: '/cancelAppointment',
                                             type: 'POST',
-                                            data: JSON.stringify({appointmentId: appointmentId, weeklyId: weeklyId}),
+                                            data: JSON.stringify({appointmentId: appointmentId, weeklyId: weeklyId, cancelNotes: cancelNotes}),
                                             contentType: 'application/json',
                                             success: function () {
                                                 location.reload();

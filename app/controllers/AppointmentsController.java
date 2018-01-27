@@ -102,7 +102,7 @@ public class AppointmentsController extends Controller {
                 }
             }
         }
-        new Thread(() -> MailerService.sendAppointmentCancellation(appointment)).start();
+        new Thread(() -> MailerService.sendAppointmentCancellation(appointment, json.findPath("cancelNotes").asText())).start();
         return ok();
     }
 

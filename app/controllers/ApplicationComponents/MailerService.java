@@ -116,7 +116,7 @@ public class MailerService {
         mailerClient.send(email);
     }
 
-    public static void sendAppointmentCancellation(AppointmentsModel appointment) {
+    public static void sendAppointmentCancellation(AppointmentsModel appointment, String cancellationNotes) {
         SettingsModel settings = SettingsController.getSettings();
         /* Coach Email */
         Email email = new Email()
@@ -126,6 +126,10 @@ public class MailerService {
                 .setBodyHtml("<p style=\"font-size:48px;color:#C4183C;text-align:center;\">&#10060;</p><h1 style=\"text-align:center;\">Your Appointment Has Been Cancelled</h1> <h3>Details:</h3>" +
                         "<div style=\"background-color:#EFF0F1; border-radius:4px; padding: 10px;\">"+
                         appointment.toHTMLString() +
+                        "</div>" +
+                        "<h3>Reason for cancellation:</h3>" +
+                        "<div style=\"background-color:#EFF0F1; border-radius:4px; padding: 10px;\">"+
+                        cancellationNotes +
                         "</div>" +
                         "<br/>" +
                         "<a style=\"background-color:#0067F4; color: white; border-radius: 4px; padding: 10px; margin:0 auto; display:block; width: 90%; text-align: center; font-size: 18px; text-decoration:none; \" " +
@@ -139,6 +143,10 @@ public class MailerService {
                 .setBodyHtml("<p style=\"font-size:48px;color:#C4183C;text-align:center;\">&#10060;</p><h1 style=\"text-align:center;\">Your Appointment Has Been Cancelled</h1> <h3>Details:</h3>" +
                         "<div style=\"background-color:#EFF0F1; border-radius:4px; padding: 10px;\">"+
                         appointment.toHTMLString() +
+                        "</div>" +
+                        "<h3>Reason for cancellation:</h3>" +
+                        "<div style=\"background-color:#EFF0F1; border-radius:4px; padding: 10px;\">"+
+                        cancellationNotes +
                         "</div>" +
                         "<br/>" +
                         "<a style=\"background-color:#0067F4; color: white; border-radius: 4px; padding: 10px; margin:0 auto; display:block; width: 90%; text-align: center; font-size: 18px; text-decoration:none; \" " +
