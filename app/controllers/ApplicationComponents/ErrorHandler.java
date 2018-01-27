@@ -9,6 +9,7 @@ import play.http.DefaultHttpErrorHandler;
 import play.http.HttpErrorHandler;
 import play.mvc.*;
 import play.mvc.Http.*;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import javax.inject.Inject;
@@ -23,19 +24,16 @@ public class ErrorHandler extends DefaultHttpErrorHandler implements HttpErrorHa
     }
 
     public CompletionStage<Result> onClientError(RequestHeader request, int statusCode, String message) {
-        switch(statusCode){
+        if (Application.getEnvironment().isDev()) {
+            return super.onClientError(request, statusCode, message);
+        }
+        switch (statusCode) {
             case 404:
-                if(Application.getEnvironment().isDev()){
-                    return CompletableFuture.completedFuture(
-                            Results.notFound(views.html.error_pages.notfound.render())
-                    );
-                } else {
-                    return CompletableFuture.completedFuture(
-                            Results.notFound(views.html.error_pages.notfound.render())
-                    );
-                }
+                return CompletableFuture.completedFuture(Results.notFound(views.html.error_pages.notfound.render()));
+            case 401:
+                return CompletableFuture.completedFuture(Results.unauthorized(views.html.error_pages.unauthorized.render()));
             case 500:
-                break;
+                return CompletableFuture.completedFuture(Results.internalServerError(views.html.error_pages.servererror.render()));
             default:
                 break;
         }

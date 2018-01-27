@@ -21,11 +21,7 @@ public class SettingsController extends Controller {
     public Result index() {
         String currentRole = UserController.getCurrentRole();
         if( currentRole ==  null || !currentRole.equals("Admin")){
-            if(session("newUser") != null && session("newUser").equals("true")){
-                return ok(views.html.dashboard.render()).withCookies(Http.Cookie.builder("newUser", "true").build());
-            } else {
-                return ok(views.html.dashboard.render());
-            }
+            return unauthorized();
         } else {
             return ok(views.html.settings.render());
         }
