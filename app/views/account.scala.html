@@ -26,9 +26,6 @@
                                         <div class="container-fluid">
                                             <div class="row">
                                                 <select id="selectedService" title="Services" class="mb-1 col-lg-7 form-control">
-                                                    <option value="" selected disabled hidden>
-                                                        Select A Service
-                                                    </option>
                                                     @for(service <- AccountController.getAvailableServices(currentUser.getUid)) {
                                                         <option value="@service.getServiceId">
                                                         @service.getService
@@ -36,7 +33,7 @@
                                                     }
                                                 </select>
                                                 <div class="col-lg-5 mb-1">
-                                                    <button class="btn btn-primary btn-success" onclick=createService()>
+                                                    <button class="btn btn-primary btn-success" id="addService" onclick=createService()>
                                                         Add Service</button>
                                                 </div>
                                             </div>
@@ -65,7 +62,6 @@
             </div>
         </div>
         <script>
-
                 function isCoachCheck() {
                     let checked = $("#isCoachCheck").is(':checked');
                     let userId = '@currentUser.getUid';
@@ -170,7 +166,13 @@
                 }
 
                 $(document).ready(function () {
-                    console.log(moment('@SettingsController.getSettings.getSemesterStart.toInstant').format("YYYY-DD-MM"));
+                    const dropDown = $("#selectedService");
+                    if (dropDown.has('option').length === 0) {
+                        dropDown.prepend("<option id='default' value='' selected disabled hidden>No More Services</option>");
+                        $("#addService").hide();
+                    } else {
+                        dropDown.prepend("<option id='default' value='' selected disabled hidden>Select A Service</option>");
+                    }
                     $('#availabilitySchedule').fullCalendar({
                         height: 'auto',
                         allDaySlot: false,
