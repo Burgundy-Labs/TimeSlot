@@ -179,6 +179,9 @@
                     return event.rendering === 'background';
                 }
             });
+            if ( (new Date()).getDay() == 6 ) {
+                $('#appointmentCalendar').fullCalendar('next');
+            }
         } else {
             setTimeout(createMakeAppointmentCalendar, 50); //wait 50 ms, then try again
         }
@@ -190,143 +193,148 @@
     }
 
     function createNewAppointment(role, userId) {
-        scheduleUser.userRole = role;
-        scheduleUser.userId = userId;
-        let content = ` @{ partials.components._createNewAppointmentFlow() } `;
-        $.confirm({
-            columnClass: 'col-11',
-            containerFluid: true,
-            title: "New Appointment",
-            escapeKey: 'cancel',
-            content: content,
-            buttons: {
-                cancel: {
-                    text: "Cancel",
-                    btnClass: "btn",
-                    action: function () {
-                        $('#newAppointmentCalendar').hide();
-                        createMakeAppointmentCalendar();
-                        location.reload();
-                    }
-                },
-                submit: {
-                    text: 'Create Appointment',
-                    btnClass: 'btn-primary',
-                    keys: ['enter'],
-                    action: function () {
-                        if (selectedEvents.length <= 0) {
-                            $.alert({
-                                title: 'Alert',
-                                type: 'red',
-                                content: 'No appointments slots have been selected.'
-                            });
-                            return false;
-                        } else {
-                            const appointment = selectedEvents[0];
-                            const form = {
-                                appointmentType: $('#appointmentType option:selected').text(),
-                                serviceType: $('#serviceType option:selected').text(),
-                                coachId: $('#coachId').val(),
-                                studentId: firebase.auth().currentUser.uid,
-                                startDate: appointment.startDate,
-                                endDate: appointment.endDate,
-                                appointmentNotes: $('#appointmentNotes').val(),
-                                present: false,
-                            };
-                            if (scheduleUser.userId !== null && scheduleUser.userRole === "Coach") {
-                                form.coachId = scheduleUser.userId;
-                            } else if (scheduleUser.userId !== null && scheduleUser.userRole === "Student") {
-                                form.studentId = scheduleUser.userId;
+        let maxAppoints = @currentSettings.getMaximumAppointments;
+        if ( appointments >= maxAppoints && maxAppoints != 0 ) {
+            createAlert("warning", "You've reached the maximum weekly appointments.");
+        } else {
+            scheduleUser.userRole = role;
+            scheduleUser.userId = userId;
+            let content = ` @{ partials.components._createNewAppointmentFlow() } `;
+            $.confirm({
+                columnClass: 'col-11',
+                containerFluid: true,
+                title: "New Appointment",
+                escapeKey: 'cancel',
+                content: content,
+                buttons: {
+                    cancel: {
+                        text: "Cancel",
+                        btnClass: "btn",
+                        action: function () {
+                            $('#newAppointmentCalendar').hide();
+                            createMakeAppointmentCalendar();
+                            location.reload();
+                        }
+                    },
+                    submit: {
+                        text: 'Create Appointment',
+                        btnClass: 'btn-primary',
+                        keys: ['enter'],
+                        action: function () {
+                            if (selectedEvents.length <= 0) {
+                                $.alert({
+                                    title: 'Alert',
+                                    type: 'red',
+                                    content: 'No appointments slots have been selected.'
+                                });
+                                return false;
+                            } else {
+                                const appointment = selectedEvents[0];
+                                const form = {
+                                    appointmentType: $('#appointmentType option:selected').text(),
+                                    serviceType: $('#serviceType option:selected').text(),
+                                    coachId: $('#coachId').val(),
+                                    studentId: firebase.auth().currentUser.uid,
+                                    startDate: appointment.startDate,
+                                    endDate: appointment.endDate,
+                                    appointmentNotes: $('#appointmentNotes').val(),
+                                    present: false,
+                                };
+                                if (scheduleUser.userId !== null && scheduleUser.userRole === "Coach") {
+                                    form.coachId = scheduleUser.userId;
+                                } else if (scheduleUser.userId !== null && scheduleUser.userRole === "Student") {
+                                    form.studentId = scheduleUser.userId;
+                                }
+                                let coachName = $('#coachId option:selected').text();
+                                let appointmentType = $('#appointmentType option:selected').text();
+                                $.confirm({
+                                    columnClass: "col-11",
+                                    title: 'New Appointment',
+                                    content: "<div class='appointmentDetails'>Your appointment details: <br/>" +
+                                    "<b>Appointment Type:</b> " + appointmentType + " <br/>" +
+                                    "<b>Coach:</b> " + coachName + " <br/>" +
+                                    "<b>Date:</b> " + moment(appointment.startDate).format('dddd, MMMM Do, YYYY h:mm A') + " - " + moment(appointment.endDate).format('h:mm A') + "<br/>" +
+                                    "</div>",
+                                    theme: 'modern',
+                                    escapeKey: 'no',
+                                    buttons: {
+                                        Weekly: {
+                                            text: 'Create Weekly Appointment',
+                                            btnClass: 'btn-primary mb-3 col-md-12',
+                                            action: function () {
+                                                form.weekly = true;
+                                                if (form.coachId === "any") {
+                                                    form.coachId = appointment.weeklyUsers[Math.floor(Math.random() * appointment.weeklyUsers.length)];
+                                                }
+                                                /* Create appointment Here*/
+                                                $.ajax({
+                                                    url: '/createAppointment',
+                                                    type: 'POST',
+                                                    data: JSON.stringify(form),
+                                                    contentType: 'application/json',
+                                                    success: function () {
+                                                        createAlert("success", "Appointment Created!");
+                                                        location.reload();
+                                                    },
+                                                    error: function () {
+                                                        createAlert('danger', 'Appointment creation failed.');
+                                                        location.reload();
+                                                    }
+                                                });
+                                            }
+                                        },
+                                        OneTime: {
+                                            text: 'Create One-Time Appointment',
+                                            btnClass: 'btn-primary mb-3 col-md-12',
+                                            action: function () {
+                                                form.weekly = false;
+                                                console.log(appointment);
+                                                if (form.coachId === "any") {
+                                                    form.coachId = appointment.oneTimeUsers[Math.floor(Math.random() * appointment.oneTimeUsers.length)];
+                                                }
+                                                /* Create appointment Here*/
+                                                $.ajax({
+                                                    url: '/createAppointment',
+                                                    type: 'POST',
+                                                    data: JSON.stringify(form),
+                                                    contentType: 'application/json',
+                                                    success: function () {
+                                                        createAlert("success", "Appointment Created!");
+                                                        location.reload();
+                                                    },
+                                                    error: function () {
+                                                        createAlert('danger', 'Appointment creation failed.');
+                                                    }
+                                                });
+                                            }
+                                        },
+                                        no: {
+                                            text: 'Cancel Appointment',
+                                            btnClass: "mb-3 col-md-12",
+                                            action: function () {
+                                                createAlert("warning", "Appointment Not Created");
+                                                selectedEvents = [];
+                                                /* TODO have calendar  re-fetch on re-open */
+                                                location.reload();
+                                            }
+                                        }
+                                    },
+                                    onOpenBefore: function () {
+                                        if (!appointment.canBeWeekly) {
+                                            this.buttons.Weekly.hide()
+                                        }
+                                        if (!appointment.canBeOneTime) {
+                                            this.buttons.OneTime.hide()
+                                        }
+                                    },
+                                });
                             }
-                            let coachName = $('#coachId option:selected').text();
-                            let appointmentType = $('#appointmentType option:selected').text();
-                            $.confirm({
-                                columnClass: "col-11",
-                                title: 'New Appointment',
-                                content: "<div class='appointmentDetails'>Your appointment details: <br/>" +
-                                "<b>Appointment Type:</b> " + appointmentType + " <br/>" +
-                                "<b>Coach:</b> " + coachName + " <br/>" +
-                                "<b>Date:</b> " + moment(appointment.startDate).format('dddd, MMMM Do, YYYY h:mm A') + " - " + moment(appointment.endDate).format('h:mm A') + "<br/>" +
-                                "</div>",
-                                theme: 'modern',
-                                escapeKey: 'no',
-                                buttons: {
-                                    Weekly: {
-                                        text: 'Create Weekly Appointment',
-                                        btnClass: 'btn-primary mb-3 col-md-12',
-                                        action: function () {
-                                            form.weekly = true;
-                                            if (form.coachId === "any") {
-                                                form.coachId = appointment.weeklyUsers[Math.floor(Math.random() * appointment.weeklyUsers.length)];
-                                            }
-                                            /* Create appointment Here*/
-                                            $.ajax({
-                                                url: '/createAppointment',
-                                                type: 'POST',
-                                                data: JSON.stringify(form),
-                                                contentType: 'application/json',
-                                                success: function () {
-                                                    createAlert("success", "Appointment Created!");
-                                                    location.reload();
-                                                },
-                                                error: function () {
-                                                    createAlert('danger', 'Appointment creation failed.');
-                                                    location.reload();
-                                                }
-                                            });
-                                        }
-                                    },
-                                    OneTime: {
-                                        text: 'Create One-Time Appointment',
-                                        btnClass: 'btn-primary mb-3 col-md-12',
-                                        action: function () {
-                                            form.weekly = false;
-                                            console.log(appointment);
-                                            if (form.coachId === "any") {
-                                                form.coachId = appointment.oneTimeUsers[Math.floor(Math.random() * appointment.oneTimeUsers.length)];
-                                            }
-                                            /* Create appointment Here*/
-                                            $.ajax({
-                                                url: '/createAppointment',
-                                                type: 'POST',
-                                                data: JSON.stringify(form),
-                                                contentType: 'application/json',
-                                                success: function () {
-                                                    createAlert("success", "Appointment Created!");
-                                                    location.reload();
-                                                },
-                                                error: function () {
-                                                    createAlert('danger', 'Appointment creation failed.');
-                                                }
-                                            });
-                                        }
-                                    },
-                                    no: {
-                                        text: 'Cancel Appointment',
-                                        btnClass: "mb-3 col-md-12",
-                                        action: function () {
-                                            createAlert("warning", "Appointment Not Created");
-                                            selectedEvents = [];
-                                            /* TODO have calendar  re-fetch on re-open */
-                                            location.reload();
-                                        }
-                                    }
-                                },
-                                onOpenBefore: function () {
-                                    if (!appointment.canBeWeekly) {
-                                        this.buttons.Weekly.hide()
-                                    }
-                                    if (!appointment.canBeOneTime) {
-                                        this.buttons.OneTime.hide()
-                                    }
-                                },
-                            });
                         }
                     }
                 }
-            }
-        });
-        makeStepper();
+            });
+            makeStepper();
+        }
     }
 
     function makeStepper() {

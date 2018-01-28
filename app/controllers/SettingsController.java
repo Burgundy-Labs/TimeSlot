@@ -68,6 +68,18 @@ public class SettingsController extends Controller {
         return ok();
     }
 
+    public Result changeMaximumAppointments() {
+        if(!UserController.getCurrentRole().equals("Admin")){
+            return unauthorized();
+        }
+        JsonNode json = request().body().asJson();
+        Integer maximumAppointments = json.findPath("maximumAppointments").asInt();
+        SettingsModel s = SettingsDB.getSettings();
+        s.setMaximumAppointments(maximumAppointments);
+        SettingsDB.changeSettings(s);
+        return ok();
+    }
+
     public Result updateSettings() {
         if(!UserController.getCurrentRole().equals("Admin")){
             return unauthorized();
@@ -94,6 +106,7 @@ public class SettingsController extends Controller {
             }
             settings.setStartTime(startTime);
             settings.setEndTime(endTime);
+            settings.setMaximumAppointments(json.findPath("maxAppointments").asInt());
             /* Check if user is in DB */
             SettingsDB.changeSettings(settings);
             return ok();

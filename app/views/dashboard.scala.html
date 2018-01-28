@@ -86,6 +86,7 @@
             </div>
         </div>
         <script type="text/javascript">
+                let appointments;
 
                 function deleteNotification(notificationId) {
                     $.ajax({
@@ -127,6 +128,7 @@
                                 type: 'GET',
                                 success: function (response) {
                                     let upcomingCount = 0;
+                                    let weekCount = 0;
                                     const events = [];
                                     $(response).each(function () {
                                         const userID = '@currentUser.getUid';
@@ -151,14 +153,19 @@
                                         if(!event.start.local().isBefore(moment())){
                                             upcomingCount++;
                                         }
+                                        weekCount++;
                                         events.push(event);
                                     });
                                     $(".appointmentCount").html("You have " + upcomingCount + (upcomingCount === 1 ? " appointment this week." : " appointments this week."));
+                                    appointments = weekCount;
                                     callback(events);
                                 }
                             })
                         },
                     });
+                    if ( (new Date()).getDay() == 6 ) {
+                        $('#appointmentCalendar').fullCalendar('next');
+                    }
                 });
 
 

@@ -58,7 +58,7 @@
                         }
                     }
                     @if(!appointment.getStartDate.before(new Date())) {
-                        <button class="no-button" onclick="cancelAppointment('@appointment.getAppointmentId')"><span class="action-delete">@partials.components._tooltipIconLink("javascript:void(0)", "close", "bottom", "Cancel", 32)</span></button>
+                        <button class="no-button" onclick="cancelAppointment('@appointment.getAppointmentId','@appointment.getWeeklyId')"><span class="action-delete">@partials.components._tooltipIconLink("javascript:void(0)", "close", "bottom", "Cancel", 32)</span></button>
                     }
                 </td>
                 <td>
@@ -131,7 +131,7 @@
                         let cancelNotes = this.$content.find('#cancelNotes').val();
                         $.confirm({
                             onOpenBefore: function () {
-                                if (weeklyId && weeklyId === "") {
+                                if ((weeklyId && weeklyId === "") || !weeklyId) {
                                     this.buttons.deleteAll.hide();
                                 }
                             },

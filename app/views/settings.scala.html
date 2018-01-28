@@ -64,6 +64,24 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label for="maximumAppointments" class="mb-3 col-md-12 mb-3 col-md-form-label">
+                                        Student Appointment Limit Per Week</label>
+                                    <div class="mb-3 col-md-12">
+                                        <select id="maximumAppointments" class="form-control col-md-12" type="dropdown" name="maximumAppointments">
+                                            <option value="1" selected>1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="0">Infinite</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <div class="mb-3 col-md-12">
                                         <button type="submit" onclick="return updateSettings()" class="btn btn-primary">
                                             Update Site Settings</button>
@@ -347,6 +365,12 @@
 
             $(document).ready(function () {
                 const appointmentServicesTab = $("#appointmentServicesTab");
+                let select = @currentSettings.getMaximumAppointments - 1;
+                if ( select === -1 ) {
+                    $('#universityName')
+                    select = document.getElementById("maximumAppointments").length - 1;
+                }
+                document.getElementById("maximumAppointments").selectedIndex = select;
 
                 appointmentServicesTab.on('click', function () {
                     setTimeout(function () {
@@ -386,7 +410,8 @@
                     semesterStart: $('#semesterStart').val(),
                     semesterEnd: $('#semesterEnd').val(),
                     startTime: $('#startTime').val(),
-                    endTime: $('#endTime').val()
+                    endTime: $('#endTime').val(),
+                    maxAppointments: $('#maximumAppointments').val()
                 };
                 if (Date.parse(settings.semesterStart) >= Date.parse(settings.semesterEnd)) {
                     $.alert({

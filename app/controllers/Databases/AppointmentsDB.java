@@ -325,7 +325,7 @@ public class AppointmentsDB {
 
     public static AppointmentsModel removeAppointment(String appointmentId){
         AppointmentsModel appointment = getAppointment(appointmentId);
-        if(!appointment.getStartDate().before(new Date())){
+        if(!(appointment == null) && !appointment.getStartDate().before(new Date())){
             ApiFuture<WriteResult> writeResult = FirestoreDB.get().collection("appointments").document(appointmentId).delete();
         }
         /* Asynchronously remove appointment from DB */

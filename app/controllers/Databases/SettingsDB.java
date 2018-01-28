@@ -177,6 +177,7 @@ public class SettingsDB {
         data.put("endTime", settings.getEndTime());
         data.put("siteAlert", settings.getSiteAlert());
         data.put("centerInformation", settings.getCenterInformation());
+        data.put("maximumAppointments", settings.getMaximumAppointments());
         /* Write settings to DB */
         ApiFuture<WriteResult> result = docRef.set(data);
         result.isDone();
