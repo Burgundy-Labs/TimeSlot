@@ -112,7 +112,9 @@
                                 checking = true;
                                 setTimeout(function () {
                                     if (ID !== "") {
-                                        console.log(ID)
+                                        if(ID.length > 4){
+                                            console.log(ID)
+                                        }
                                     }
                                     checking = false;
                                     clearID();
