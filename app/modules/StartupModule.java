@@ -1,5 +1,6 @@
 package modules;
 
+import controllers.ApplicationComponents.CompressorFilter;
 import com.google.inject.AbstractModule;
 import controllers.Application;
 import controllers.ApplicationComponents.EmailScheduler;
