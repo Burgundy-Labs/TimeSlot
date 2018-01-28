@@ -100,6 +100,7 @@
         <script type="text/javascript">
                 let ID = "";
                 let checking = false;
+                let authenticating = false;
                 $(document).ready(function () {
                     function clearID() {
                         ID = ""
@@ -111,9 +112,21 @@
                             if (!checking) {
                                 checking = true;
                                 setTimeout(function () {
-                                    if (ID !== "") {
-                                        if(ID.length > 4){
-                                            console.log(ID)
+                                    if (ID !== "" && ID.length > 4) {
+                                        if (!authenticating) {
+                                            authenticating = true;
+                                            $.confirm({
+                                                title: "Tap-Detected!",
+                                                content: "Hello ID card #" + ID + " welcome to Project Burgundy.",
+                                                buttons: {
+                                                    confirm: function () {
+                                                        authenticating = false;
+                                                    },
+                                                    cancel: function () {
+                                                        authenticating = false;
+                                                    },
+                                                }
+                                            });
                                         }
                                     }
                                     checking = false;
