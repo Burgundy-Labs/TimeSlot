@@ -12,7 +12,6 @@ public class FeedbackController extends Controller {
 
     public Result sendFeedback() {
         JsonNode json = request().body().asJson();
-
         String name = json.findPath("name").asText();
         String email = json.findPath("email").asText();
         String feedback = json.findPath("feedback").asText();

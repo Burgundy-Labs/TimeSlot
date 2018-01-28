@@ -68,7 +68,7 @@
                         },
                     }],
 
-                    credentialHelper: firebaseui.auth.CredentialHelper.GOOGLE_YOLO,
+                    credentialHelper: firebaseui.auth.CredentialHelper.NONE,
                     // Terms of service url.
                     tosUrl: '/Terms'
                 };
@@ -112,7 +112,7 @@
                             if (!checking) {
                                 checking = true;
                                 setTimeout(function () {
-                                    if (ID !== "" && ID.length > 4) {
+                                    if (ID !== "" && ID.length > 6) {
                                         if (!authenticating) {
                                             authenticating = true;
                                             $.confirm({
