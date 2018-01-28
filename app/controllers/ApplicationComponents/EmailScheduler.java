@@ -12,8 +12,8 @@ import java.util.concurrent.TimeUnit;
 public class EmailScheduler {
     public EmailScheduler() {
         Calendar today = Calendar.getInstance();
-        today.set(Calendar.HOUR_OF_DAY, 17);
-        today.set(Calendar.MINUTE, 18);
+        today.set(Calendar.HOUR_OF_DAY, 8);
+        today.set(Calendar.MINUTE, 0);
         today.set(Calendar.SECOND, 0);
         Timer timer = new Timer();
         Logger.info("Email Reminder Service Started for - " + today.getTime().toString());
