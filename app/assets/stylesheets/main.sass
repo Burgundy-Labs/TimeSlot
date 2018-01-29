@@ -15,12 +15,16 @@ main
   height: 100%
 
 .weekSelect
+  .weekText
+    width: 350px
+    text-align: center
   button
     height: 25px
   .weekSelected
     vertical-align: middle
     padding: 5px
-    display: table
+    display: table-cell
+    text-align: center
 
 @for $index from 1 through 6
   h#{$index}
