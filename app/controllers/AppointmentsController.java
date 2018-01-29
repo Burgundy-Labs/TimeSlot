@@ -120,4 +120,14 @@ public class AppointmentsController extends Controller {
         List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsByUserAndDate(userId, startDate, endDate);
         return ok(Json.toJson(appointments));
     }
+
+    public Result appointmentsByDate(String role, String userId, String start, String end) {
+        if(!UserController.getCurrentRole().equals("Admin")){
+            return unauthorized();
+        }
+        Date startDate = DatatypeConverter.parseDateTime(start).getTime();
+        Date endDate = DatatypeConverter.parseDateTime(end).getTime();
+        List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsByDate(startDate, endDate);
+        return ok(Json.toJson(appointments));
+    }
 }
