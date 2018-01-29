@@ -15,6 +15,11 @@ import java.util.List;
 
 public class UserController extends Controller {
     public Result index() {
+        String currentRole = UserController.getCurrentRole();
+        /* Force redirect to Login is the user isn't signed in */
+        if(currentRole == null) {
+            return ok(views.html.login.render());
+        }
         return ok(views.html.users.render());
     }
 
@@ -29,6 +34,9 @@ public class UserController extends Controller {
     }
 
     public Result updateUserRole() {
+        if(!getCurrentRole().equals("Admin")){
+            return forbidden(views.html.error_pages.unauthorized.render());
+        }
         /* Get user object from request */
         JsonNode json = request().body().asJson();
         /* Get user from json request */
@@ -42,21 +50,16 @@ public class UserController extends Controller {
     }
 
     public Result addServiceToCoach() {
+        String currentRole = getCurrentRole();
+        if(currentRole.equals("Student")){
+            return forbidden(views.html.error_pages.unauthorized.render());
+        }
         JsonNode json = request().body().asJson();
         String userId = json.get("userId").asText();
         String serviceText = json.get("serviceName").asText();
         String serviceId = json.get("serviceId").asText();
         ServiceModel service = new ServiceModel(serviceId, serviceText);
         UserDB.addServiceToUser(userId, service);
-        return ok();
-    }
-
-    public Result addNotificationToUser() {
-        JsonNode json = request().body().asJson();
-        String userId = json.get("userId").asText();
-        NotificationModel notification = new NotificationModel();
-        notification.setNotificationContent(json.get("notificationContent").asText());
-        UserDB.addNotificationToUser(notification,userId);
         return ok();
     }
 
@@ -68,15 +71,10 @@ public class UserController extends Controller {
         return ok();
     }
 
-    public Result removeNotificationFromUser() {
-        JsonNode json = request().body().asJson();
-        String userId = json.get("userId").asText();
-        String notificationId = json.get("notificationId").asText();
-        UserDB.removeNotification(userId, notificationId);
-        return ok();
-    }
-
     public Result removeUser() {
+        if(!getCurrentRole().equals("Admin")){
+            return forbidden(views.html.error_pages.unauthorized.render());
+        }
         try {
             JsonNode json = request().body().asJson();
             String userId = json.get("userId").asText();
@@ -104,5 +102,9 @@ public class UserController extends Controller {
             return u;
     }
         return UserDB.getUser(s);
+    }
+
+    public static String getCurrentRole(){
+        return session("currentRole");
     }
 }

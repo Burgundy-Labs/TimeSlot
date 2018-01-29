@@ -1,513 +1,566 @@
 @()
-    @currentUser = @{
-        UserController.getCurrentUser
-    }
+@currentSettings = @{
+    SettingsController.getSettings
+}
 
-    @currentSettings = @{
-        SettingsController.getSettings
-    }
-
-    @main("Site Settings", "Settings") {
-        <div class="mb-3 col-md-3">
-            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                <a class="nav-link active" id="siteSettingsTab" data-toggle="pill" href="#siteSettingsContent" role="tab" aria-controls="siteSettingsContent" aria-selected="true">
-                    Site Settings</a>
-                <a class="nav-link" id="appointmentServicesTab" data-toggle="pill" href="#appointmentServicesContent" role="tab" aria-controls="appointmentServicesContent" aria-selected="false">
-                    Appointment Types & Services</a>
-                <a class="nav-link" id="emailsTab" data-toggle="pill" href="#emailsContent" role="tab" aria-controls="emailsContent" aria-selected="false">
-                    Emails</a>
-            </div>
+@main("Site Settings", "Settings") {
+    <div class="mb-3 col-md-3">
+        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <a class="nav-link active" id="siteSettingsTab" data-toggle="pill" href="#siteSettingsContent" role="tab" aria-controls="siteSettingsContent" aria-selected="true">
+                Site Settings</a>
+            <a class="nav-link" id="appointmentServicesTab" data-toggle="pill" href="#appointmentServicesContent" role="tab" aria-controls="appointmentServicesContent" aria-selected="false">
+                Appointment Types & Services</a>
+            <a class="nav-link" id="emailsTab" data-toggle="pill" href="#emailsContent" role="tab" aria-controls="emailsContent" aria-selected="false">
+                Emails</a>
         </div>
-        <div class="mb-3 col-md-9">
-            <div class="tab-content" id="tabContent">
-                <div class="tab-pane fade show active" id="siteSettingsContent" role="tabpanel" aria-labelledby="siteSettingsTab">
-                    <div class="mb-3 col-md-12">
-                        <div class="row">
-                            <div class="mb-3 col-md-6">
-                                <form>
-                                    <div class="form-group">
-                                        <label for="universityName" class="mb-3 col-md-12 mb-3 col-md-form-label">
-                                            University Name</label>
-                                        <div class="mb-3 col-md-12">
-                                            <input type="text" class="form-control" id="universityName" value="@currentSettings.getUniversityName">
-                                        </div>
+    </div>
+    <div class="mb-3 col-md-9">
+        <div class="tab-content" id="tabContent">
+            <div class="tab-pane fade show active" id="siteSettingsContent" role="tabpanel" aria-labelledby="siteSettingsTab">
+                <div class="mb-3 col-md-12">
+                    <div class="row">
+                        <div class="mb-3 col-md-6">
+                            <form>
+                                <div class="form-group">
+                                    <label for="universityName" class="mb-3 col-md-12 mb-3 col-md-form-label">
+                                        University Name</label>
+                                    <div class="mb-3 col-md-12">
+                                        <input type="text" class="form-control" id="universityName" value="@currentSettings.getUniversityName">
                                     </div>
-                                    <div class="form-group">
-                                        <label for="centerName" class="mb-3 col-md-12 mb-3 col-md-form-label">
-                                            Center Name</label>
-                                        <div class="mb-3 col-md-12">
-                                            <input type="text" class="form-control" id="centerName" value="@currentSettings.getCenterName">
-                                        </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="centerName" class="mb-3 col-md-12 mb-3 col-md-form-label">
+                                        Center Name</label>
+                                    <div class="mb-3 col-md-12">
+                                        <input type="text" class="form-control" id="centerName" value="@currentSettings.getCenterName">
                                     </div>
-                                    <div class="form-group">
-                                        <label for="semesterDates" class="mb-3 col-md-12 mb-3 col-md-form-label">
-                                            Semester Start Date</label>
-                                        <div class="mb-3 col-md-12">
-                                            <input id="semesterStart" class="form-control" type="date" name="semesterStart" value="@currentSettings.getSemesterStart.format("yyyy-MM-dd")">
-                                        </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="semesterDates" class="mb-3 col-md-12 mb-3 col-md-form-label">
+                                        Semester Start Date</label>
+                                    <div class="mb-3 col-md-12">
+                                        <input id="semesterStart" class="form-control" type="date" name="semesterStart" value="@currentSettings.getSemesterStart.format("yyyy-MM-dd")">
                                     </div>
-                                    <div class="form-group">
-                                        <label for="semesterDates" class="mb-3 col-md-12 mb-3 col-md-form-label">
-                                            Semester End Date</label>
-                                        <div class="mb-3 col-md-12">
-                                            <input id="semesterEnd" class="form-control" type="date" name="semesterEnd" value="@currentSettings.getSemesterEnd.format("yyyy-MM-dd")">
-                                        </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="semesterDates" class="mb-3 col-md-12 mb-3 col-md-form-label">
+                                        Semester End Date</label>
+                                    <div class="mb-3 col-md-12">
+                                        <input id="semesterEnd" class="form-control" type="date" name="semesterEnd" value="@currentSettings.getSemesterEnd.format("yyyy-MM-dd")">
                                     </div>
-                                    <div class="form-group">
-                                        <label for="startTime" class="mb-3 col-md-12 mb-3 col-md-form-label">
-                                            Learning Center Open Time</label>
-                                        <div class="mb-3 col-md-12">
-                                            <input id="startTime" class="form-control" type="time" name="startTime" value='@currentSettings.getStartTime.format("HH:mm")'>
-                                        </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="startTime" class="mb-3 col-md-12 mb-3 col-md-form-label">
+                                        Learning Center Open Time</label>
+                                    <div class="mb-3 col-md-12">
+                                        <input id="startTime" class="form-control" type="time" name="startTime" value='@currentSettings.getStartTime.format("HH:mm")'>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="endTime" class="mb-3 col-md-12 mb-3 col-md-form-label">
-                                            Learning Center Close Time</label>
-                                        <div class="mb-3 col-md-12">
-                                            <input id="endTime" class="form-control" type="time" name="endTime" value='@currentSettings.getEndTime.format("HH:mm")'>
-                                        </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="endTime" class="mb-3 col-md-12 mb-3 col-md-form-label">
+                                        Learning Center Close Time</label>
+                                    <div class="mb-3 col-md-12">
+                                        <input id="endTime" class="form-control" type="time" name="endTime" value='@currentSettings.getEndTime.format("HH:mm")'>
                                     </div>
-                                    <div class="form-group">
-                                        <div class="mb-3 col-md-12">
-                                            <button type="submit" onclick="return updateSettings()" class="btn btn-primary">
-                                                Update Site Settings</button>
-                                        </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="maximumAppointments" class="mb-3 col-md-12 mb-3 col-md-form-label">
+                                        Student Appointment Limit Per Week</label>
+                                    <div class="mb-3 col-md-12">
+                                        <select id="maximumAppointments" class="form-control col-md-12" type="dropdown" name="maximumAppointments">
+                                            <option value="1" selected>1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="0">Infinite</option>
+                                        </select>
                                     </div>
-                                </form>
-                            </div>
-                            <div class="mb-3 col-md-4 offset-1">
-                                <div class="dashCards card">
-                                    <div class="card-header">
-                                        Site Alert
+                                </div>
+                                <div class="form-group">
+                                    <div class="mb-3 col-md-12">
+                                        <button type="submit" onclick="return updateSettings()" class="btn btn-primary">
+                                            Update Site Settings</button>
                                     </div>
-                                    <div class="card-block">
-                                        <textarea type="text" class="form-control" id="siteAlert" placeholder="@if(currentSettings.getSiteAlert.equals("")) { Enter a site alert } else {
-                                            @currentSettings.getSiteAlert
-                                        }" aria-label="@currentSettings.getSiteAlert"></textarea>
-                                        <br/>
-                                        <button onclick="changeSiteAlert()" class="btn btn-primary col-md-12 type=" button
-                                        ">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="mb-3 col-md-4 offset-1">
+                            <div class="dashCards mb-3 card">
+                                <div class="card-header">
+                                    Site Alert
+                                </div>
+                                <div class="card-block">
+                                    <textarea type="text" class="form-control" id="siteAlert" placeholder="Enter a site alert." aria-label="@currentSettings.getSiteAlert">@if(!currentSettings.getSiteAlert.equals("")){@currentSettings.getSiteAlert}
+                                    </textarea>
+                                    <br/>
+                                    <button onclick="changeSiteAlert()" class="btn btn-danger col-md-12">
                                         Change Site Alert</button>
-                                        <button onclick="clearAlert()" class="btn btn col-md-12 type=" button
-                                        ">Clear Alert</button>
-                                    </div>
+                                    <button onclick="clearAlert()" class="btn btn col-md-12">Clear Alert</button>
+                                </div>
+                            </div>
+                            <div class="dashCards card">
+                                <div class="card-header">
+                                    Center Information
+                                </div>
+                                <div class="card-block">
+                                    <textarea type="text" class="form-control" id="centerInformation" placeholder="Enter center information." aria-label="@currentSettings.getCenterInformation">@if(!currentSettings.getCenterInformation.equals("")){@currentSettings.getCenterInformation}</textarea>
+                                    <br/>
+                                    <button onclick="changeCenterInformation()" class="btn btn-primary col-md-12">
+                                        Change Center Information</button>
+                                    <button onclick="clearCenterInformation()" class="btn btn col-md-12">Clear Message</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="tab-pane fade" id="appointmentServicesContent" role="tabpanel" aria-labelledby="appointmentServicesTab">
-                    <div class="mb-3 col-md-12">
-                        <div class="row">
-                            <div class="mb-3 col-md-12 dashCards">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h4 class="float-left">Appointment Types</h4>
-                                        <button class="btn btn-primary btn-light float-right" onclick=createAppointmentType()>
-                                            Add Appointment Type</button>
-                                    </div>
-                                    <div class="card-block">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped" id="appointmentTypeTable" cellspacing="0" width="100%">
-                                                <thead>
-                                                    <tr>
-                                                        <td>
-                                                            Appointment Type
-                                                        </td>
-                                                        <td>
-                                                            One-Time
-                                                        </td>
-                                                        <td>
-                                                            Weekly
-                                                        </td>
-                                                        <td>
-                                                            Actions
-                                                        </td>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                @for(appointmentType <- SettingsController.getAppointmentTypes) {
-                                                    <tr class="@appointmentType.getAppointmentTypeId">
-                                                        <td>
-                                                        @appointmentType.getAppointmentType
-                                                        </td>
-                                                        <td>
-                                                            <input onclick="oneTimeCheck('@appointmentType.getAppointmentTypeId')" type="checkbox" class="form-check-input oneTime-@appointmentType.getAppointmentTypeId" title="one-time"
-                                                            @if(appointmentType.getOneTime) {checked}/>
-                                                        </td>
-                                                        <td>
-                                                            <input onclick="weeklyCheck('@appointmentType.getAppointmentTypeId')" type="checkbox" class="form-check-input weekly-@appointmentType.getAppointmentTypeId" title="weekly"
-                                                            @if(appointmentType.getWeekly) {checked}/>
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-primary btn-danger" onclick="removeAppointmentType('@appointmentType.getAppointmentTypeId')">Remove</button>
-                                                        </td>
-                                                    </tr>
-                                                }
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <br/>
-                            <div class="mb-3 col-md-12 dashCards">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h4 class="float-left">Services</h4>
-                                        <button class="btn btn-primary btn-light float-right" onclick=createService()>
-                                            Add Service</button>
-                                    </div>
-                                    <div class="card-block">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped" id="serviceTable" cellspacing="0" width="100%">
-                                                <thead>
-                                                    <tr>
-                                                        <td>
-                                                            Service
-                                                        </td>
-                                                        <td>Actions</td>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                @for(service <- SettingsController.getServices) {
-                                                    <tr class="@service.getServiceId">
-                                                        <td>
-                                                           @service.getService
-                                                        </td>
-                                                        <td>
-                                                            <button class="btn btn-primary btn-danger" onclick="removeService('@service.getServiceId')">Remove</button>
-                                                        </td>
-                                                    </tr>
-                                                }
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="emailsContent" role="tabpanel" aria-labelledby="emailsTab">
-                    Coming soon! Check back in a future update to change email related settings.
                 </div>
             </div>
+            <div class="tab-pane fade" id="appointmentServicesContent" role="tabpanel" aria-labelledby="appointmentServicesTab">
+                <div class="mb-3 col-md-12">
+                    <div class="row">
+                        <div class="mb-3 col-md-12 dashCards">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="float-left">Appointment Types</h4>
+                                    <button class="btn btn-primary btn-light float-right" onclick=createAppointmentType()>
+                                        Add Appointment Type</button>
+                                </div>
+                                <div class="card-block">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped" id="appointmentTypeTable" cellspacing="0" width="100%">
+                                            <thead>
+                                                <tr>
+                                                    <td>
+                                                        Appointment Type
+                                                    </td>
+                                                    <td>
+                                                        One-Time
+                                                    </td>
+                                                    <td>
+                                                        Weekly
+                                                    </td>
+                                                    <td>
+                                                        Actions
+                                                    </td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            @for(appointmentType <- SettingsController.getAppointmentTypes) {
+                                                <tr class="@appointmentType.getAppointmentTypeId">
+                                                    <td>
+                                                    @appointmentType.getAppointmentType
+                                                    </td>
+                                                    <td>
+                                                        <input onclick="oneTimeCheck('@appointmentType.getAppointmentTypeId')" type="checkbox" class="form-check-input oneTime-@appointmentType.getAppointmentTypeId" title="one-time"
+                                                        @if(appointmentType.getOneTime) {checked}/>
+                                                    </td>
+                                                    <td>
+                                                        <input onclick="weeklyCheck('@appointmentType.getAppointmentTypeId')" type="checkbox" class="form-check-input weekly-@appointmentType.getAppointmentTypeId" title="weekly"
+                                                        @if(appointmentType.getWeekly) {checked}/>
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-primary btn-danger" onclick="removeAppointmentType('@appointmentType.getAppointmentTypeId')">Remove</button>
+                                                    </td>
+                                                </tr>
+                                            }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="mb-3 col-md-12 dashCards">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="float-left">Services</h4>
+                                    <button class="btn btn-primary btn-light float-right" onclick=createService()>
+                                        Add Service</button>
+                                </div>
+                                <div class="card-block">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped" id="serviceTable" cellspacing="0" width="100%">
+                                            <thead>
+                                                <tr>
+                                                    <td>
+                                                        Service
+                                                    </td>
+                                                    <td>Actions</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            @for(service <- SettingsController.getServices) {
+                                                <tr class="@service.getServiceId">
+                                                    <td>
+                                                    @service.getService
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-primary btn-danger" onclick="removeService('@service.getServiceId')">Remove</button>
+                                                    </td>
+                                                </tr>
+                                            }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="emailsContent" role="tabpanel" aria-labelledby="emailsTab">
+                Coming soon! Check back in a future update to change email related settings.
+            </div>
         </div>
-        <script type="text/javascript">
-                function weeklyCheck(appointmentTypeId) {
-                    let checked = $(".weekly-" + appointmentTypeId).is(':checked');
-                    let data = {frequency: "weekly", id: appointmentTypeId, checked: checked};
-                    $.ajax({
-                        url: '/appointmentTypeFrequency',
-                        type: 'POST',
-                        data: JSON.stringify(data),
-                        contentType: 'application/json',
-                        success: function () {
-                            createAlert("success", "Appointment Type Updated!");
-                        },
-                        error: function () {
-                            createAlert('danger', 'Appointment Type Change Failed.');
+    </div>
+    <script type="text/javascript">
+            function weeklyCheck(appointmentTypeId) {
+                let checked = $(".weekly-" + appointmentTypeId).is(':checked');
+                let data = {frequency: "weekly", id: appointmentTypeId, checked: checked};
+                $.ajax({
+                    url: '/appointmentTypeFrequency',
+                    type: 'POST',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    success: function () {
+                        createAlert("success", "Appointment Type Updated!");
+                    },
+                    error: function () {
+                        createAlert('danger', 'Appointment Type Change Failed.');
+                    }
+                });
+            }
+
+            function clearAlert() {
+                $("#siteAlert").val("");
+                changeSiteAlert();
+            }
+
+            function changeSiteAlert() {
+                let siteAlert = $("#siteAlert").val();
+                $.ajax({
+                    url: '/changeSiteAlert',
+                    type: 'POST',
+                    data: JSON.stringify({siteAlert: siteAlert}),
+                    contentType: 'application/json',
+                    success: function () {
+                        createAlert("success", "Site Alert Changed");
+                        location.reload();
+                    },
+                    error: function () {
+                        createAlert('danger', 'Failed to change Site Alert.');
+                    }
+                });
+            }
+
+            function clearCenterInformation() {
+                $("#centerInformation").val("");
+                changeCenterInformation();
+            }
+
+            function changeCenterInformation() {
+                let centerInformation = $("#centerInformation").val();
+                $.ajax({
+                    url: '/changeCenterInformation',
+                    type: 'POST',
+                    data: JSON.stringify({centerInformation: centerInformation}),
+                    contentType: 'application/json',
+                    success: function () {
+                        createAlert("success", "Center Information Changed");
+                        location.reload();
+                    },
+                    error: function () {
+                        createAlert('danger', 'Failed to change Center Information.');
+                    }
+                });
+            }
+
+
+            function oneTimeCheck(appointmentTypeId) {
+                let checked = $(".weekly-" + appointmentTypeId).is(':checked');
+                let data = {frequency: "oneTime", id: appointmentTypeId, checked: checked};
+                $.ajax({
+                    url: '/appointmentTypeFrequency',
+                    type: 'POST',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    success: function () {
+                        createAlert("success", "Appointment Type Updated!");
+                    },
+                    error: function () {
+                        createAlert('danger', 'Appointment Type Change Failed.');
+                    }
+                });
+            }
+
+            function removeService(serviceId) {
+                $.confirm({
+                    title: 'Remove Service',
+                    content: 'Are you sure you want to remove this service?',
+                    escapeKey: 'cancel',
+                    buttons: {
+                        confirm: {
+                            text: 'Remove Service',
+                            btnClass: "btn btn-primary",
+                            keys: ['enter'],
+                            action: function () {
+                                $.ajax({
+                                    url: '/removeService',
+                                    type: 'POST',
+                                    data: JSON.stringify({serviceId: serviceId}),
+                                    contentType: 'application/json',
+                                    success: function () {
+                                        createAlert("success", "Service removed!");
+                                        $('.' + serviceId).hide();
+                                    },
+                                    error: function () {
+                                        createAlert('danger', 'Service deletion failed.');
+                                    }
+                                });
+                            }
+                        }
+                    },
+                    cancel: {
+                        text: 'Cancel'
+                    }
+                });
+            }
+
+            function removeAppointmentType(appointmentTypeId) {
+                $.confirm({
+                    title: 'Remove Appointment Type',
+                    content: 'Are you sure you want to remove this Appointment Type?',
+                    escapeKey: 'cancel',
+                    buttons: {
+                        confirm: {
+                            keys: ['enter'],
+                            text: 'Remove Appointment Type',
+                            btnClass: "btn btn-primary",
+                            action: function () {
+                                $.ajax({
+                                    url: '/removeAppointmentType',
+                                    type: 'POST',
+                                    data: JSON.stringify({appointmentTypeId: appointmentTypeId}),
+                                    contentType: 'application/json',
+                                    success: function () {
+                                        createAlert("success", "Appointment Type removed!");
+                                        $('.' + appointmentTypeId).hide();
+                                    },
+                                    error: function () {
+                                        createAlert('danger', 'Appointment Type deletion failed.');
+                                    }
+                                });
+                            }
+                        }
+                    },
+                    cancel: {
+                        text: 'Cancel'
+                    }
+                });
+            }
+
+            $(document).ready(function () {
+                const appointmentServicesTab = $("#appointmentServicesTab");
+                let select = @currentSettings.getMaximumAppointments - 1;
+                if ( select === -1 ) {
+                    $('#universityName')
+                    select = document.getElementById("maximumAppointments").length - 1;
+                }
+                document.getElementById("maximumAppointments").selectedIndex = select;
+
+                appointmentServicesTab.on('click', function () {
+                    setTimeout(function () {
+                        $('#serviceTable').DataTable({
+                            retrieve: true,
+                            responsive: true,
+                            scrollY: "300px",
+                            scrollCollapse: true,
+                            lengthChange: false,
+                            ordering: false,
+                        });
+                        $('#appointmentTypeTable').DataTable({
+                            retrieve: true,
+                            responsive: true,
+                            scrollY: "300px",
+                            scrollCollapse: true,
+                            lengthChange: false,
+                            ordering: false,
+                        });
+                    }, 300);
+
+                });
+
+                if (window.location.hash === "#appointmentServicesTab") {
+                    appointmentServicesTab.click();
+                }
+                else if (window.location.hash === "#success") {
+                    createAlert("info", "Settings updated successfully!");
+                    history.pushState("", document.title, window.location.pathname + window.location.search);
+                }
+            });
+
+            function updateSettings() {
+                const settings = {
+                    universityName: $('#universityName').val(),
+                    centerName: $('#centerName').val(),
+                    semesterStart: $('#semesterStart').val(),
+                    semesterEnd: $('#semesterEnd').val(),
+                    startTime: $('#startTime').val(),
+                    endTime: $('#endTime').val(),
+                    maxAppointments: $('#maximumAppointments').val()
+                };
+                if (Date.parse(settings.semesterStart) >= Date.parse(settings.semesterEnd)) {
+                    $.alert({
+                        title: 'Alert',
+                        content: 'The semester end date must be after the semester start date.',
+                        buttons: {
+                            confirm: {
+                                keys: ['enter'],
+                                text: "Okay",
+                                btnClass: "btn-primary",
+                            }
                         }
                     });
-                }
-
-                function clearAlert() {
-                    $("#siteAlert").val("");
-                    changeSiteAlert();
-                }
-
-                function changeSiteAlert() {
-                    let siteAlert = $("#siteAlert").val();
+                    return false;
+                } else if (Date.parse('1970-01-01T' + settings.startTime + 'Z') >= Date.parse('1970-01-01T' + settings.endTime + 'Z')) {
+                    $.alert({
+                        title: 'Alert',
+                        content: 'The center end time must be after the center start time.',
+                        buttons: {
+                            confirm: {
+                                keys: ['enter'],
+                                text: "Okay",
+                                btnClass: "btn-primary",
+                            }
+                        }
+                    });
+                    return false;
+                } else {
                     $.ajax({
-                        url: '/changeSiteAlert',
+                        url: '/updateSettings',
                         type: 'POST',
-                        data: JSON.stringify({siteAlert: siteAlert}),
+                        data: JSON.stringify(settings),
                         contentType: 'application/json',
                         success: function () {
-                            createAlert("success", "Site Alert Changed");
+                            window.location.hash = "#success";
                             location.reload();
                         },
                         error: function () {
-                            createAlert('danger', 'Failed to change Site Alert.');
+                            createAlert('warning', 'Settings not updated!');
                         }
                     });
                 }
+            }
 
-                function oneTimeCheck(appointmentTypeId) {
-                    let checked = $(".weekly-" + appointmentTypeId).is(':checked');
-                    let data = {frequency: "oneTime", id: appointmentTypeId, checked: checked};
-                    $.ajax({
-                        url: '/appointmentTypeFrequency',
-                        type: 'POST',
-                        data: JSON.stringify(data),
-                        contentType: 'application/json',
-                        success: function () {
-                            createAlert("success", "Appointment Type Updated!");
-                        },
-                        error: function () {
-                            createAlert('danger', 'Appointment Type Change Failed.');
-                        }
-                    });
-                }
-
-                function removeService(serviceId) {
-                    $.confirm({
-                        title: 'Remove Service',
-                        content: 'Are you sure you want to remove this service?',
-                        escapeKey: 'cancel',
-                        buttons: {
-                            confirm: {
-                                text: 'Remove Service',
-                                btnClass: "btn btn-primary",
-                                keys: ['enter'],
-                                action: function () {
-                                    $.ajax({
-                                        url: '/removeService',
-                                        type: 'POST',
-                                        data: JSON.stringify({serviceId: serviceId}),
-                                        contentType: 'application/json',
-                                        success: function () {
-                                            createAlert("success", "Service removed!");
-                                            $('.' + serviceId).hide();
-                                        },
-                                        error: function () {
-                                            createAlert('danger', 'Service deletion failed.');
-                                        }
+            function createAppointmentType() {
+                $.confirm({
+                    title: 'New Appointment Type',
+                    columnClass: 'mb-3 col-md-4',
+                    content: '' +
+                    '<form action="" class="formName">' +
+                    '<div class="form-group">' +
+                    '<label>Name for the new appointment type:</label>' +
+                    '<input id="appointmentTypeName" type="text" class="name form-control" required />' +
+                    '</div>' +
+                    '</form>',
+                    escapeKey: 'cancel',
+                    buttons: {
+                        confirm: {
+                            keys: ['enter'],
+                            text: 'Confirm',
+                            btnClass: 'btn btn-primary',
+                            action: function () {
+                                if ($('#appointmentTypeName').val() === '') {
+                                    $.alert({
+                                        title: 'Alert',
+                                        type: 'red',
+                                        content: 'You must give the appointment type a name.'
                                     });
-                                }
-                            }
-                        },
-                        cancel: {
-                            text: 'Cancel'
-                        }
-                    });
-                }
-
-                function removeAppointmentType(appointmentTypeId) {
-                    $.confirm({
-                        title: 'Remove Appointment Type',
-                        content: 'Are you sure you want to remove this Appointment Type?',
-                        escapeKey: 'cancel',
-                        buttons: {
-                            confirm: {
-                                keys: ['enter'],
-                                text: 'Remove Appointment Type',
-                                btnClass: "btn btn-primary",
-                                action: function () {
-                                    $.ajax({
-                                        url: '/removeAppointmentType',
-                                        type: 'POST',
-                                        data: JSON.stringify({appointmentTypeId: appointmentTypeId}),
-                                        contentType: 'application/json',
-                                        success: function () {
-                                            createAlert("success", "Appointment Type removed!");
-                                            $('.' + appointmentTypeId).hide();
-                                        },
-                                        error: function () {
-                                            createAlert('danger', 'Appointment Type deletion failed.');
-                                        }
-                                    });
-                                }
-                            }
-                        },
-                        cancel: {
-                            text: 'Cancel'
-                        }
-                    });
-                    }
-
-                    $(document).ready(function () {
-                        const appointmentServicesTab = $("#appointmentServicesTab");
-
-                        appointmentServicesTab.on('click', function () {
-                            setTimeout(function() {
-                                $('#serviceTable').DataTable({
-                                    retrieve: true,
-                                    responsive: true,
-                                    scrollY: "300px",
-                                    scrollCollapse: true,
-                                    lengthChange: false,
-                                    ordering: false,
-                                });
-                                $('#appointmentTypeTable').DataTable({
-                                    retrieve: true,
-                                    responsive: true,
-                                    scrollY: "300px",
-                                    scrollCollapse: true,
-                                    lengthChange: false,
-                                    ordering: false,
-                                });
-                            }, 300);
-
-                        });
-
-                        if (window.location.hash === "#appointmentServicesTab") {
-                            appointmentServicesTab.click();
-                        }
-                        else if (window.location.hash === "#success") {
-                            createAlert("info", "Settings updated successfully!");
-                            history.pushState("", document.title, window.location.pathname + window.location.search);
-                        }
-                    });
-
-                function updateSettings() {
-                    const settings = {
-                        universityName: $('#universityName').val(),
-                        centerName: $('#centerName').val(),
-                        semesterStart: $('#semesterStart').val(),
-                        semesterEnd: $('#semesterEnd').val(),
-                        startTime: $('#startTime').val(),
-                        endTime: $('#endTime').val()
-                    };
-                    if (Date.parse(settings.semesterStart) >= Date.parse(settings.semesterEnd)) {
-                        $.alert({
-                            title: 'Alert',
-                            content: 'The semester end date must be after the semester start date.',
-                            buttons: {
-                                confirm: {
-                                    keys: ['enter'],
-                                    text: "Okay",
-                                    btnClass: "btn-primary",
-                                }
-                            }
-                        });
-                        return false;
-                    } else if (Date.parse('1970-01-01T' + settings.startTime + 'Z') >= Date.parse('1970-01-01T' + settings.endTime + 'Z')) {
-                        $.alert({
-                            title: 'Alert',
-                            content: 'The center end time must be after the center start time.',
-                            buttons: {
-                                confirm: {
-                                    keys: ['enter'],
-                                    text: "Okay",
-                                    btnClass: "btn-primary",
-                                }
-                            }
-                        });
-                        return false;
-                    } else {
-                        $.ajax({
-                            url: '/updateSettings',
-                            type: 'POST',
-                            data: JSON.stringify(settings),
-                            contentType: 'application/json',
-                            success: function () {
-                                window.location.hash = "#success";
-                                location.reload();
-                            },
-                            error: function () {
-                                createAlert('warning', 'Settings not updated!');
-                            }
-                        });
-                    }
-                }
-
-                function createAppointmentType() {
-                    $.confirm({
-                        title: 'New Appointment Type',
-                        columnClass: 'mb-3 col-md-4',
-                        content: '' +
-                        '<form action="" class="formName">' +
-                        '<div class="form-group">' +
-                        '<label>Name for the new appointment type:</label>' +
-                        '<input id="appointmentTypeName" type="text" class="name form-control" required />' +
-                        '</div>' +
-                        '</form>',
-                        escapeKey: 'cancel',
-                        buttons: {
-                            confirm: {
-                                keys: ['enter'],
-                                text: 'Confirm',
-                                btnClass: 'btn btn-primary',
-                                action: function () {
-                                    if ($('#appointmentTypeName').val() === '') {
-                                        $.alert({
-                                            title: 'Alert',
-                                            type: 'red',
-                                            content: 'You must give the appointment type a name.'
-                                        });
-                                        return false;
-                                    } else {
-                                        const form = {
-                                            appointmentTypeName: $('#appointmentTypeName').val(),
-                                        };
-                                        $.ajax({
-                                            url: '/createAppointmentType',
-                                            type: 'POST',
-                                            data: JSON.stringify(form),
-                                            contentType: 'application/json',
-                                            success: function () {
-                                                createAlert("success", "Appointment Type Created!");
-                                                window.location.hash = "#appointmentServicesTab";
-                                                location.reload();
-                                            },
-                                            error: function () {
-                                                createAlert('danger', 'Appointment type creation failed.');
-                                            }
-                                        });
+                                    return false;
+                                } else {
+                                    const form = {
+                                        appointmentTypeName: $('#appointmentTypeName').val(),
                                     };
-                                }
-                            },
-                            cancel: {
-                                text: 'Cancel'
+                                    $.ajax({
+                                        url: '/createAppointmentType',
+                                        type: 'POST',
+                                        data: JSON.stringify(form),
+                                        contentType: 'application/json',
+                                        success: function () {
+                                            createAlert("success", "Appointment Type Created!");
+                                            window.location.hash = "#appointmentServicesTab";
+                                            location.reload();
+                                        },
+                                        error: function () {
+                                            createAlert('danger', 'Appointment type creation failed.');
+                                        }
+                                    });
+                                };
                             }
+                        },
+                        cancel: {
+                            text: 'Cancel'
                         }
-                    });
-                }
+                    }
+                });
+            }
 
-                function createService() {
-                    $.confirm({
-                        title: 'New Service',
-                        columnClass: 'mb-3 col-md-4',
-                        content: '' +
-                        '<form action="" class="formName">' +
-                        '<div class="form-group">' +
-                        '<label>Name for the new service:</label>' +
-                        '<input id="serviceName" type="text" class="name form-control" required />' +
-                        '</div>' +
-                        '</form>',
-                        escapeKey: 'cancel',
-                        buttons: {
-                            confirm: {
-                                text: 'Confirm',
-                                btnClass: "btn btn-primary",
-                                keys: ['enter'],
-                                action: function () {
-                                    if ($('#serviceName').val() === '') {
-                                        $.alert({
-                                            title: 'Alert',
-                                            type: 'red',
-                                            content: 'You must give a service name.'
-                                        });
-                                        return false;
-                                    } else {
-                                        const form = {
-                                            serviceName: $('#serviceName').val(),
-                                        };
-                                        $.ajax({
-                                            url: '/createService',
-                                            type: 'POST',
-                                            data: JSON.stringify(form),
-                                            contentType: 'application/json',
-                                            success: function () {
-                                                createAlert("success", "Service Created!");
-                                                window.location.hash = "#appointmentServicesTab";
-                                                location.reload();
-                                            },
-                                            error: function () {
-                                                createAlert('danger', 'Service creation failed.');
-                                            }
-                                        });
-                                    }
+            function createService() {
+                $.confirm({
+                    title: 'New Service',
+                    columnClass: 'mb-3 col-md-4',
+                    content: '' +
+                    '<form action="" class="formName">' +
+                    '<div class="form-group">' +
+                    '<label>Name for the new service:</label>' +
+                    '<input id="serviceName" type="text" class="name form-control" required />' +
+                    '</div>' +
+                    '</form>',
+                    escapeKey: 'cancel',
+                    buttons: {
+                        confirm: {
+                            text: 'Confirm',
+                            btnClass: "btn btn-primary",
+                            keys: ['enter'],
+                            action: function () {
+                                if ($('#serviceName').val() === '') {
+                                    $.alert({
+                                        title: 'Alert',
+                                        type: 'red',
+                                        content: 'You must give a service name.'
+                                    });
+                                    return false;
+                                } else {
+                                    const form = {
+                                        serviceName: $('#serviceName').val(),
+                                    };
+                                    $.ajax({
+                                        url: '/createService',
+                                        type: 'POST',
+                                        data: JSON.stringify(form),
+                                        contentType: 'application/json',
+                                        success: function () {
+                                            createAlert("success", "Service Created!");
+                                            window.location.hash = "#appointmentServicesTab";
+                                            location.reload();
+                                        },
+                                        error: function () {
+                                            createAlert('danger', 'Service creation failed.');
+                                        }
+                                    });
                                 }
-                            },
-                            cancel: {
-                                text: 'Cancel'
                             }
+                        },
+                        cancel: {
+                            text: 'Cancel'
                         }
-                    });
-                }
-        </script>
-    }
+                    }
+                });
+            }
+    </script>
+}
 

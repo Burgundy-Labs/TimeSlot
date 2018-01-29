@@ -8,7 +8,7 @@ function startTimeout() {
         localStorage.setItem("timeoutDisabled", true);
         createAlert("info", "Timeout has been disabled.");
     });
-    setInterval(timerIncrement, 300000);
+    setInterval(timerIncrement, 500000);
     $(this).mousemove(function (e) {
         idleTime = 0;
     });

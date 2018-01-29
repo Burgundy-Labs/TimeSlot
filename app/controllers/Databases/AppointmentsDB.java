@@ -69,8 +69,8 @@ public class AppointmentsDB {
         }
         assert querySnapshotCoach != null;
         assert querySnapshotStudent != null;
-        List<DocumentSnapshot> documentsCoach = querySnapshotCoach.getDocuments();
-        List<DocumentSnapshot> documentsStudent = querySnapshotStudent.getDocuments();
+        List<QueryDocumentSnapshot> documentsCoach = querySnapshotCoach.getDocuments();
+        List<QueryDocumentSnapshot> documentsStudent = querySnapshotStudent.getDocuments();
         /* Iterate appointments and add them to a list for return */
         for (DocumentSnapshot document : documentsCoach) {
             AppointmentsModel appointment = new AppointmentsModel(
@@ -136,8 +136,8 @@ public class AppointmentsDB {
         }
         assert querySnapshotCoach != null;
         assert querySnapshotStudent != null;
-        List<DocumentSnapshot> documentsCoach = querySnapshotCoach.getDocuments();
-        List<DocumentSnapshot> documentsStudent = querySnapshotStudent.getDocuments();
+        List<QueryDocumentSnapshot> documentsCoach = querySnapshotCoach.getDocuments();
+        List<QueryDocumentSnapshot> documentsStudent = querySnapshotStudent.getDocuments();
         /* Iterate appointments and add them to a list for return */
         for (DocumentSnapshot document : documentsCoach) {
             AppointmentsModel appointment = new AppointmentsModel(
@@ -213,7 +213,7 @@ public class AppointmentsDB {
             e.printStackTrace();
         }
         assert querySnapshot != null;
-        List<DocumentSnapshot> documents = querySnapshot.getDocuments();
+        List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
         /* Iterate appointments and add them to a list for return */
         for (DocumentSnapshot document : documents) {
             if(document.getDate("end_date").before(end)){
@@ -256,7 +256,7 @@ public class AppointmentsDB {
             e.printStackTrace();
         }
         assert querySnapshot != null;
-        List<DocumentSnapshot> documents = querySnapshot.getDocuments();
+        List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
         /* Iterate appointments and add them to a list for return */
         for (DocumentSnapshot document : documents) {
             AppointmentsModel appointment = new AppointmentsModel(
@@ -325,8 +325,10 @@ public class AppointmentsDB {
 
     public static AppointmentsModel removeAppointment(String appointmentId){
         AppointmentsModel appointment = getAppointment(appointmentId);
+        if(!(appointment == null) && !appointment.getStartDate().before(new Date())){
+            ApiFuture<WriteResult> writeResult = FirestoreDB.get().collection("appointments").document(appointmentId).delete();
+        }
         /* Asynchronously remove appointment from DB */
-        ApiFuture<WriteResult> writeResult = FirestoreDB.get().collection("appointments").document(appointmentId).delete();
         return appointment;
     }
 

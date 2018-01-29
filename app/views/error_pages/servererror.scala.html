@@ -1,0 +1,35 @@
+@( exception: Throwable)
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Server Error</title>
+        @partials._head()
+    </head>
+    <body>
+        <div class="loginJumbotron">
+            <div class="jumbotron d-flex align-items-center">
+                <div class="container">
+                    <h1>Something went wrong</h1>
+                    <p>We're constantly working on identifying and fixing bugs, please take a moment to tell us what went wrong.</p>
+                    <a href="/" class="btn btn-primary"> Go Home </a>
+                    <a href="/Feedback" class="btn btn-primary"> Send Us a Message</a>
+                    <br/>
+                    <br/>
+                    <hr/>
+                    <br/>
+                        <div class="span4 collapse-group">
+                            <h2>Additional Details <br/><small>(Send these to us!)</small></h2>
+                            <p><a class="btn" data-toggle="collapse" data-target="#viewdetails">View details &raquo;</a></p>
+                            <p class="collapse" id="viewdetails">
+                                <b>Exception Type: </b> @exception.toString <br/>
+                                <b>Stack Trace: </b> @exception.printStackTrace() <br/>
+                                <b>Message: </b> @exception.getMessage <br/>
+                                <b>Cause: </b> @exception.getCause <br/>
+                            </p>
+                        </div>
+                </div>
+            </div>
+        </div>
+        @partials._footer()
+    </body>
+</html>

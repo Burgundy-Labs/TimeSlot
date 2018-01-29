@@ -2,17 +2,14 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Login</title>
+        <title>Sign-in Station</title>
         @partials._head()
         </head>
     <body>
         <script type="text/javascript">
                 // FirebaseUI config.
                 @if(UserController.getCurrentRole == null) {
-                        localStorage.clear();
-                }
-                if ( localStorage.getItem("firebaseui::rememberedAccounts") !== null ) {
-                    window.location = "/Dashboard";
+                localStorage.clear();
                 }
                 let uiConfig = {
                     callbacks: {
@@ -25,8 +22,7 @@
                                 uid: user.uid,
                                 phoneNumber: user.phoneNumber
                             };
-                            /* TODO: get mtu.edu from DB */
-                            if(!(user.email.split('@@')[1] === 'mtu.edu')){
+                            if (!(user.email.split('@@')[1] === 'mtu.edu')) {
                                 $.alert({
                                     title: 'Alert',
                                     content: 'Please sign-in using an @@mtu.edu email address',
@@ -35,7 +31,7 @@
                                             keys: ['enter'],
                                             text: "Okay",
                                             btnClass: "btn-primary",
-                                            action: function() {
+                                            action: function () {
                                                 signout();
                                             }
                                         }
@@ -49,7 +45,7 @@
                                     type: 'POST',
                                     data: JSON.stringify(userSignIn),
                                     contentType: 'application/json',
-                                    success: function() {
+                                    success: function () {
                                         window.location = "/Dashboard";
                                     },
                                     error: function (err) {
@@ -72,8 +68,8 @@
                         },
                     }],
 
-                    credentialHelper: firebaseui.auth.CredentialHelper.GOOGLE_YOLO,
-                // Terms of service url.
+                    credentialHelper: firebaseui.auth.CredentialHelper.NONE,
+                    // Terms of service url.
                     tosUrl: '/Terms'
                 };
 
@@ -85,20 +81,63 @@
         </script>
         @helper.CSRF.formField
         <div class="loginJumbotron">
-                <div class="jumbotron d-flex align-items-center">
-                    <div class="container">
-                        <h1>@SettingsController.getSettings.getCenterName</h1>
+            <div class="jumbotron d-flex align-items-center">
+                <div class="container">
+                    <h1>@SettingsController.getSettings.getCenterName</h1>
+                    <br/>
+                    <p><b>Sign-In Station</b>
                         <br/>
-                        <p><b>Welcome to Project Burgundy</b>
-                            <br/>
-                            Please sign in below to view, schedule, and manage appointments at the @SettingsController.getSettings.getCenterName.
-                        </p>
-                        <div id="firebaseui-auth-container" class="btn"></div>
-                        <div id="sign-out"></div>
-                    </div>
+                        Please <b>tap your ID card</b>
+                        or sign-in below to view, schedule, and manage appointments at the @SettingsController.getSettings.getCenterName.
+                    </p>
+                    <div id="firebaseui-auth-container" class="btn"></div>
+                    <div id="sign-out"></div>
                 </div>
             </div>
+        </div>
         @partials._footer()
 
+        <script type="text/javascript">
+                let ID = "";
+                let checking = false;
+                let authenticating = false;
+                $(document).ready(function () {
+                    function clearID() {
+                        ID = ""
+                    }
+                    window.onkeypress = function (event) {
+                        let key = String.fromCharCode(event.keyCode || event.which);
+                        if (!isNaN(key)) {
+                            ID += key;
+                            if (!checking) {
+                                checking = true;
+                                setTimeout(function () {
+                                    if (ID !== "" && ID.length > 6) {
+                                        if (!authenticating) {
+                                            authenticating = true;
+                                            $.confirm({
+                                                title: "Tap-Detected!",
+                                                content: "Hello ID card #" + ID + " welcome to Project Burgundy.",
+                                                buttons: {
+                                                    confirm: function () {
+                                                        authenticating = false;
+                                                    },
+                                                    cancel: function () {
+                                                        authenticating = false;
+                                                    },
+                                                }
+                                            });
+                                        }
+                                    }
+                                    checking = false;
+                                    clearID();
+                                }, 200);
+                            }
+                        } else {
+                            clearID();
+                        }
+                    };
+                });
+        </script>
     </body>
 </html>

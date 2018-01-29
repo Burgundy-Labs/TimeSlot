@@ -1,10 +1,7 @@
 package controllers.Databases;
 
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.QuerySnapshot;
-import com.google.cloud.firestore.WriteResult;
+import com.google.cloud.firestore.*;
 import models.AppointmentTypeModel;
 import models.ServiceModel;
 import models.SettingsModel;
@@ -81,7 +78,7 @@ public class SettingsDB {
             e.printStackTrace();
         }
         assert querySnapshot != null;
-        List<DocumentSnapshot> documents = querySnapshot.getDocuments();
+        List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
         /* Iterate users and add them to a list for return */
         for (DocumentSnapshot document : documents) {
                 AppointmentTypeModel appointmentType = new AppointmentTypeModel(
@@ -157,7 +154,7 @@ public class SettingsDB {
             e.printStackTrace();
         }
         assert querySnapshot != null;
-        List<DocumentSnapshot> documents = querySnapshot.getDocuments();
+        List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
         /* Iterate users and add them to a list for return */
         for (DocumentSnapshot document : documents) {
             ServiceModel service = new ServiceModel(
@@ -179,6 +176,8 @@ public class SettingsDB {
         data.put("startTime", settings.getStartTime());
         data.put("endTime", settings.getEndTime());
         data.put("siteAlert", settings.getSiteAlert());
+        data.put("centerInformation", settings.getCenterInformation());
+        data.put("maximumAppointments", settings.getMaximumAppointments());
         /* Write settings to DB */
         ApiFuture<WriteResult> result = docRef.set(data);
         result.isDone();

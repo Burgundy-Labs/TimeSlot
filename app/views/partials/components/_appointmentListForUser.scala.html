@@ -1,11 +1,141 @@
-@import controllers.Databases.AppointmentsDB
-@import java.time.format.DateTimeFormatter
-@import java.time.ZoneOffset
-@import controllers.Databases
+@(readAll: Boolean)
 @currentUser = @{
     UserController.getCurrentUser
 }
-@currentSettings = @{SettingsController.getSettings}
+@currentSettings = @{
+    SettingsController.getSettings
+}
+<div class="weekSelect row col-12 ">
+    <button onClick="prevWeek()" class="btn btn-primary"><i class="material-icons md-18">navigate_before</i></button>
+    <div class="weekText"><h3><small><span class="weekSelected"></span></small></h3></div>
+    <button onClick="nextWeek()" class="btn btn-primary"><i class="material-icons md-18">navigate_next</i></button>
+</div>
+
+@if(currentUser.isCoach || currentUser.getRole.equals("Admin")) {
+    <script type="text/javascript">
+            $(document).on('click', '.attendanceSelect', function () {
+                $(this).data('prev', $(this).val());
+            });
+
+            $(document).on('change', '.attendanceSelect', function () {
+                let e = $(this);
+                let newPresence = $(this).val();
+                let appointment = {
+                    appointmentId: $(this).data('id'),
+                    present: newPresence
+                };
+                $.ajax({
+                    url: '/updatePresence',
+                    type: 'POST',
+                    data: JSON.stringify(appointment),
+                    contentType: 'application/json',
+                    success: function () {
+                        if (newPresence === 'true') {
+                            e.removeClass('danger-border');
+                            e.addClass('success-border');
+                        } else {
+                            e.removeClass('success-border');
+                            e.addClass('danger-border');
+                        }
+                        createAlert('info', 'Attendance Changed');
+                    },
+                    error: function (err) {
+                        createAlert('warning', 'Error changing attendance!');
+                        console.log(err);
+                    }
+                });
+            });
+    </script>
+}
+<script type="text/javascript">
+        let selectedDate;
+        $(document).ready(function () {
+            if (moment().weekday() >= 5 || moment().weekday() === 0) {
+                selectedDate = moment().add(3, 'days').isoWeekday(1);
+            } else {
+                selectedDate = moment().isoWeekday(1);
+            }
+            updateDate();
+        });
+
+        function updateDate() {
+            let endDate = moment(selectedDate);
+            $(".weekSelected").html(selectedDate.format("dddd MMMM Do ") + " - " + endDate.isoWeekday(5).format("dddd MMMM Do "));
+            let t = $('#appointmentList');
+            t.DataTable().clear();
+            t.DataTable({
+                retrieve: true,
+                dom: 'frtlip',
+                order: [[5, 'asc']],
+                responsive: true
+            });
+            t.DataTable().draw();
+            $.ajax({
+                async: false,
+                @if(currentUser.getRole.equals("Admin") && readAll){
+                url: '/appointmentsByDate/@currentUser.getRole/@currentUser.getUid/' + moment(selectedDate).format("YYYY-MM-DD") + '/' + moment(endDate).format("YYYY-MM-DD"),
+                } else {
+                url: '/appointmentsForUser/@currentUser.getRole/@currentUser.getUid/' + moment(selectedDate).format("YYYY-MM-DD") + '/' + moment(endDate).format("YYYY-MM-DD"),
+                }
+                type: 'GET',
+                success: function (response) {
+                    $(response).each(function () {
+                        t.DataTable().rows.add([{
+                            0: `<img src="${$(this).attr('studentPhoto')}" class="userAvatar"/>`,
+                            1: $(this).attr('studentName'),
+                            2: $(this).attr('coachName'),
+                            3: $(this).attr('appointmentType'),
+                            4: $(this).attr('serviceType'),
+                            5: (!moment().isDST() && moment($(this).attr("startDate")).isDST()) ? moment($(this).attr('startDate')).subtract(1, 'hour').format("MM/DD/YYYY hh:mm") + " - " + moment($(this).attr('endDate')).subtract(1, 'hour').format("hh:mm A") : (moment().isDST() && !moment($(this).attr("startDate")).isDST()) ? moment($(this).attr('startDate')).add(1, 'hour').format("MM/DD/YYYY hh:mm") + " - " + moment($(this).attr('endDate')).add(1, 'hour').format("hh:mm A") : moment($(this).attr('startDate')).format("MM/DD/YYYY hh:mm") + " - " + moment($(this).attr('endDate')).format("hh:mm A"),
+                            6: @if(!currentUser.getRole.equals("Student")) {
+                                    `<select data-id="${$(this).attr("appointmentId")}" class="custom-select attendanceSelect  ${($(this).attr("present") ? "success" : "danger")}-border" title="Appointment Attendance">
+            <option value="${$(this).attr("present")}" selected>
+                ${($(this).attr("present") ? "&#10004;" : "&#x2716;")}
+                </option>
+            <option value="${!$(this).attr("present")}">
+                ${!$(this).attr("present") ? "&#10004;" : "&#x2716;"}
+            </option>
+        </select>`
+                                            } else {
+                                             ` ${$(this).attr("present") ? "&#10004;" : "&#x2716;"}`
+                            },
+                            7: $(this).attr('appointmentNotes'),
+                            8: @if(currentUser.getRole.equals("Student")) {
+                            `<button class="no-button"><span class="action-primary"><a href="mailto:${$(this).attr("coachEmail")}" data-toggle="tooltip" data-placement="bottom" title="Email Coach" class="md-32"><i class="material-icons md-32">email</i></a></span></button>`
+                                    } else {
+                                    `<button class="no-button"><span class="action-primary"><a href="mailto:${$(this).attr("studentEmail")}" data-toggle="tooltip" data-placement="bottom" title="Email Student" class="md-32"><i class="material-icons md-32">email</i></a></span></button>`
+                            }
+                            @if(currentUser.getRole.equals("Coach") || (currentUser.isCoach != null && currentUser.isCoach)) {
+                            + `
+                            ${$(this).attr("coachNotes") === "" ?
+                                    `<button id="notesFor-${$(this).attr("appointmentId")}" class="no-button" onclick="updateCoachNotes('${$(this).attr("appointmentId")}', '${$(this).attr("coachNotes")}')"><span class="action-black" id="appointmentNotes"><a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="Session Notes" class="md-32"><i class="material-icons md-32">assignment</i></a> </span></button>`
+                                    :
+                                    `<button id="notesFor-${$(this).attr("appointmentId")}" class="no-button" onclick="updateCoachNotes('${$(this).attr("appointmentId")}', '${$(this).attr("coachNotes")}')"><span class="action-secondary" id="appointmentNotes"><a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="Session Notes" class="md-32"><i class="material-icons md-32">assignment</i></a> </span></button>`
+                                    }
+                            `} + `${!moment($(this).attr('startDate')).local().isBefore(moment()) ? `<button class="no-button" onclick="cancelAppointment('${$(this).attr("appointmentId")}','${$(this).attr("weekly")}','${$(this).attr("weeklyId")}')"><span class="action-delete"><a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="Cancel Appointment" class="md-32"><i class="material-icons md-32">close</i></a></span></button>` : ``}
+                                `,
+                            9: `<a class="btn btn-primary" href="https://www.google.com/calendar/render?action=TEMPLATE&text=@currentSettings.getCenterName.replaceAll(" ", "+")+Appointment+With+${$(this).attr("studentName").replace(" ", "+")}&dates=${(!moment().isDST() && moment($(this).attr("startDate")).isDST()) ? moment($(this).attr('startDate')).subtract(1, 'hour').utc().format("YYYYMMDDTHHmmss[Z]") + "/" + moment($(this).attr('endDate')).subtract(1, 'hour').utc().format("YYYYMMDDTHHmmss[Z]") : (moment().isDST() && !moment($(this).attr("startDate")).isDST()) ? moment($(this).attr('startDate')).add(1, 'hour').utc().format("YYYYMMDDTHHmmss[Z]") + "/" + moment($(this).attr('endDate')).add(1, 'hour').utc().format("YYYYMMDDTHHmmss[Z]") : moment($(this).attr('startDate')).utc().format("YYYYMMDDTHHmmss[Z]") + "/" + moment($(this).attr('endDate')).utc().format("YYYYMMDDTHHmmss[Z]")}&details=${$(this).attr("description").replace("<br/>", "%0A").replace(" ", "+")}&location=@currentSettings.getCenterName.replaceAll(" ", "+")&sf=true&output=xml"
+                                target="_blank" rel="nofollow">Add to calendar</a>`,
+                        }]).draw();
+                    });
+                }
+            });
+
+            $('.appointmentNotes').shorten({
+                showChars: 150
+            });
+        }
+
+        function prevWeek() {
+            selectedDate = moment(selectedDate).subtract(1, 'weeks').isoWeekday(1);
+            updateDate();
+        }
+
+        function nextWeek() {
+            selectedDate = moment(selectedDate).add(1, 'weeks').isoWeekday(1);
+            updateDate();
+        }
+</script>
 <div class="table-responsive">
     <table class="table table-striped appointmentList col-md-12" cellspacing="0" width="100%" id="appointmentList">
         <thead>
@@ -23,180 +153,139 @@
             </tr>
         </thead>
         <tbody>
-        @for(appointment <- if(currentUser.getRole.equals("Admin")) AppointmentsDB.getAppointments else AppointmentsDB.getAppointmentsForUser(currentUser.getRole, currentUser.getUid)) {
-            <tr class="@appointment.getAppointmentId">
-                <td>
-                    <img src="@appointment.getStudentPhoto" class="userAvatar"/>
-                </td>
-                <td>
-                @appointment.getStudentName
-                </td>
-                <td>
-                @appointment.getCoachName
-                </td>
-                <td>@appointment.getAppointmentType</td>
-                <td>@appointment.getServiceType</td>
-                <td class="date">
-                    <span class="start">@DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mmX").withZone(ZoneOffset.UTC).format(appointment.getStartDate.toInstant)</span>
-                    <span class="end">@DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mmX").withZone(ZoneOffset.UTC).format(appointment.getEndDate.toInstant)</span>
-                </td>
-                <td class="attendance">@partials.components._appointmentAttendanceDropdown(appointment, currentUser)</td>
-                <td class="appointmentNotes">@appointment.getAppointmentNotes</td>
-                <td>
-                        @if(currentUser.getRole.equals("Student")) {
-                            <button class="no-button"> <span class="action-primary">@partials.components._tooltipIconLink("mailto:" + appointment.getCoachEmail, "email", "bottom", "Email Coach", 32)</span></button>
-                        } else {
-                            <button class="no-button"> <span class="action-primary">@partials.components._tooltipIconLink("mailto:" + appointment.getStudentEmail, "email", "bottom", "Email Student", 32)</span></button>
-                        }
-                        @if(currentUser.getRole.equals("Coach") || (currentUser.isCoach != null && currentUser.isCoach)){
-                            @if(appointment.getCoachNotes.equals("")) {
-                                <button id="notesFor-@appointment.getAppointmentId" class="no-button" onclick="updateCoachNotes('@appointment.getAppointmentId', '@appointment.getCoachNotes')"><span class="action-black" id="appointmentNotes">@partials.components._tooltipIconLink("javascript:void(0)", "assignment", "bottom", "Session Notes", 32)</span></button>
-                            } else {
-                                <button id="notesFor-@appointment.getAppointmentId" class="no-button" onclick="updateCoachNotes('@appointment.getAppointmentId', '@appointment.getCoachNotes')"><span class="action-secondary" id="appointmentNotes">@partials.components._tooltipIconLink("javascript:void(0)", "assignment", "bottom", "Session Notes", 32)</span></button>
-                            }
-                        }
-                    <button class="no-button" onclick="cancelAppointment('@appointment.getAppointmentId', '@appointment.getWeeklyId')"><span class="action-delete">@partials.components._tooltipIconLink("javascript:void(0)", "close", "bottom", "Cancel", 32)</span>
-                    </button>
-                </td>
-                <td>
-                    <a class="btn btn-primary" href="https://www.google.com/calendar/render?action=TEMPLATE&text=@currentSettings.getCenterName.replaceAll(" ", "+")+Appointment+With+@appointment.getStudentName.replaceAll(" ", "+")&dates=@appointment.getStartDate.toInstant.toString.replaceAll("-","").replaceAll(":","")/@appointment.getEndDate.toInstant.toString.replaceAll("-","").replaceAll(":","")&details=@appointment.toString.replace("\n", "%0A").replace(" ","+")&location=@currentSettings.getCenterName.replaceAll(" ","+")&sf=true&output=xml"
-                    target="_blank" rel="nofollow">Add to calendar</a>
-                </td>
-            </tr>
-        }
         </tbody>
     </table>
 </div>
 <script type="text/javascript">
-    function updateCoachNotes(appointmentId, coachNotes) {
-        $.confirm({
-            closeIcon: true,
-            title: 'Session Notes',
-            content: '' +
-            '<form action="" class="coachNoteForm">' +
-            '<div class="form-group">' +
-            '<label>Enter notes about the appointment here. </label>' +
-            '<textarea cols="50" rows="10" class="coachNotes form-control" required>' + coachNotes + '</textarea>' +
-            '</div>' +
-            '</form>',
-            escapeKey: true,
-            buttons: {
-                updateNotes: {
-                    text: 'Update Coach Notes',
-                    btnClass: 'btn-primary',
-                    keys: ['enter'],
-                    action: function () {
-                        coachNotes = this.$content.find('.coachNotes').val();
-                        $.ajax({
-                            url: '/updateCoachNotes',
-                            type: 'POST',
-                            data: JSON.stringify({appointmentId: appointmentId, coachNotes: coachNotes}),
-                            contentType: 'application/json',
-                            success: function () {
-                                $('#notesFor-' + appointmentId).attr("onclick", 'updateCoachNotes("' + appointmentId + '", "' + coachNotes + '")');
-                                $().val(coachNotes);
-                                let spanIcon = $('#notesFor-' + appointmentId + ' span');
-                                if (coachNotes === '' || coachNotes === null) {
-                                    spanIcon.removeClass('action-secondary');
-                                    spanIcon.addClass('action-black');
-                                } else {
-                                    spanIcon.removeClass('action-black');
-                                    spanIcon.addClass('action-secondary');
-
+        function updateCoachNotes(appointmentId, coachNotes) {
+            $.confirm({
+                closeIcon: true,
+                title: 'Session Notes',
+                content: '' +
+                '<form action="" class="coachNoteForm">' +
+                '<div class="form-group">' +
+                '<label>Enter notes about the appointment here. </label>' +
+                '<textarea cols="50" rows="10" class="coachNotes form-control" required>' + coachNotes + '</textarea>' +
+                '</div>' +
+                '</form>',
+                escapeKey: true,
+                buttons: {
+                    updateNotes: {
+                        text: 'Update Coach Notes',
+                        btnClass: 'btn-primary',
+                        keys: ['enter'],
+                        action: function () {
+                            coachNotes = this.$content.find('.coachNotes').val();
+                            $.ajax({
+                                url: '/updateCoachNotes',
+                                type: 'POST',
+                                data: JSON.stringify({appointmentId: appointmentId, coachNotes: coachNotes}),
+                                contentType: 'application/json',
+                                success: function () {
+                                    $('#notesFor-' + appointmentId).attr("onclick", 'updateCoachNotes("' + appointmentId + '", "' + coachNotes + '")');
+                                    $().val(coachNotes);
+                                    let spanIcon = $('#notesFor-' + appointmentId + ' span');
+                                    if (coachNotes === '' || coachNotes === null) {
+                                        spanIcon.removeClass('action-secondary');
+                                        spanIcon.addClass('action-black');
+                                    } else {
+                                        spanIcon.removeClass('action-black');
+                                        spanIcon.addClass('action-secondary');
+                                    }
+                                },
+                                error: function (err) {
+                                    createAlert("danger", "There was an error updating coach notes");
                                 }
-                            },
-                            error: function (err) {
-                                createAlert("danger", "There was an error updating coach notes");
-                            }
-                        });
-                    }
+                            });
+                        }
+                    },
                 },
-            },
-        });
-    }
+            });
+        }
 
-    function cancelAppointment(appointmentId, weeklyId) {
-        $.confirm({
-            onOpenBefore: function () {
-                console.log(weeklyId);
-                if ( weeklyId && weeklyId === "" ) {
-                    this.buttons.deleteAll.hide();
+        function cancelAppointment(appointmentId, isWeekly, weeklyId) {
+            $.confirm({
+                title: 'Cancel Appointment',
+                content: 'Reason for Cancelling:<textarea class="form-control" rows="5" id="cancelNotes" placeholder="I can\'t come to the appointment anymore because..."></textarea>',
+                escapeKey: 'cancel',
+                buttons: {
+                    next: {
+                        text: 'Next',
+                        btnClass: 'btn-primary mb-3 col-md-12',
+                        action: function () {
+                            let cancelNotes = this.$content.find('#cancelNotes').val();
+                            $.confirm({
+                                onOpenBefore: function () {
+                                    if (isWeekly == "false") {
+                                        this.buttons.deleteAll.hide();
+                                    }
+                                },
+                                title: 'Cancel Appointment',
+                                content: 'Are you sure you want to cancel this appointment?',
+                                escapeKey: 'cancel',
+                                buttons: {
+                                    deleteOne: {
+                                        text: 'Cancel This Appointment',
+                                        btnClass: 'btn-primary mb-3 col-md-12',
+                                        action: function () {
+                                            $.ajax({
+                                                url: '/cancelAppointment',
+                                                type: 'POST',
+                                                data: JSON.stringify({
+                                                    appointmentId: appointmentId,
+                                                    weeklyId: null,
+                                                    cancelNotes: cancelNotes
+                                                }),
+                                                contentType: 'application/json',
+                                                success: function () {
+                                                    updateDate();
+                                                    createAlert("success", "Appointment cancelled.");
+                                                },
+                                                error: function (err) {
+                                                    console.log(err);
+                                                }
+                                            });
+                                        }
+                                    },
+                                    deleteAll: {
+                                        text: 'Cancel All Appointments in Series',
+                                        btnClass: 'btn-primary mb-3 col-md-12',
+                                        action: function () {
+                                            $.ajax({
+                                                url: '/cancelAppointment',
+                                                type: 'POST',
+                                                data: JSON.stringify({
+                                                    appointmentId: appointmentId,
+                                                    weeklyId: weeklyId,
+                                                    cancelNotes: cancelNotes
+                                                }),
+                                                contentType: 'application/json',
+                                                success: function () {
+                                                    updateDate();
+                                                    createAlert("success", "Appointments cancelled.");
+                                                },
+                                                error: function (err) {
+                                                    console.log(err);
+                                                }
+                                            });
+                                        }
+                                    },
+                                    cancel: {
+                                        text: "Nevermind",
+                                        btnClass: "mb-3 col-md-12"
+                                    }
+                                },
+                            });
+                        }
+                    },
+                    cancel: {
+                        text: 'Nevermind',
+                        btnClass: 'mb-3 col-md-12',
+                    }
                 }
-            },
-            title: 'Cancel Appointment',
-            content: 'Are you sure you want to cancel this appointment?',
-            escapeKey: 'cancel',
-            buttons: {
-                deleteOne: {
-                    text: 'Cancel This Appointment',
-                    btnClass: 'btn-primary mb-3 col-md-12',
-                    action: function () {
-                        $.ajax({
-                            url: '/cancelAppointment',
-                            type: 'POST',
-                            data: JSON.stringify({appointmentId: appointmentId, weeklyId: null}),
-                            contentType: 'application/json',
-                            success: function () {
-                                $('.' + appointmentId).hide();
-                                createAlert("success", "Appointment cancelled.");
-                            },
-                            error: function (err) {
-                                console.log(err);
-                            }
-                        });
-                    }
-                },
-                deleteAll: {
-                    text: 'Cancel All Appointments in Series',
-                    btnClass: 'btn-primary mb-3 col-md-12',
-                    action: function () {
-                        console.log(weeklyId);
-                        $.ajax({
-                            url: '/cancelAppointment',
-                            type: 'POST',
-                            data: JSON.stringify({appointmentId: appointmentId, weeklyId: weeklyId}),
-                            contentType: 'application/json',
-                            success: function () {
-                                location.reload();
-                                createAlert("success", "Appointments cancelled.");
-                            },
-                            error: function (err) {
-                                console.log(err);
-                            }
-                        });
-                    }
-                },
-                cancel: {
-                    text: "Nevermind",
-                    btnClass: "mb-3 col-md-12"
-                }
-            },
-        });
-    }
-
-    $(document).ready(function () {
-        /* Format dates for humans */
-        $('.date').each(function () {
-            let start = moment($(this).find("span.start").text());
-            let end = moment($(this).find("span.end").text());
-            if(!moment().isDST() && start.isDST()){
-                $(this).text(start.subtract(1, 'hour').format('MM/DD/YY, h:mm') + "-" + end.format("h:mm A"));
-            } if (moment().isDST() && !start.isDST()) {
-                $(this).text(start.add(1, 'hour').format('MM/DD/YY, h:mm') + "-" + end.format("h:mm A"));
-            } else {
-                $(this).text(start.format('MM/DD/YY, h:mm') + "-" + end.format("h:mm A"));
-            }
-        });
-
-        // $('.appointmentNotes').shorten({
-        //     showChars: 150
-        // });
-
-        $('#appointmentList').DataTable({
-            dom: 'frtlip',
-            order: [[5, 'asc']],
-            responsive: true
-        });
-    });
-
+            });
+            setTimeout(function () {
+                $(".jconfirm-buttons").addClass("col-12");
+            }, 200);
+        }
 </script>

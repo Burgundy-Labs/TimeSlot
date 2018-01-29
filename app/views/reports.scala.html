@@ -19,7 +19,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" id="reports">
                 <div class="mb-3 col-md-4">
                     <h1 class="center">Appointment Types</h1>
                     <br/>
@@ -30,13 +30,19 @@
                     <br/>
                     <canvas id="serviceChart"></canvas>
                 </div>
+                <div class="mb-3 col-md-4">
+                    <h1 class="center">Weekly/One-Time</h1>
+                    <br/>
+                    <canvas id="weeklyChart"></canvas>
+                </div>
             </div>
         </div>
 
         <script type="text/javascript">
                 let reportStart = $('#reportStart');
                 let reportEnd = $('#reportEnd');
-
+                let Charts = [];
+                let chartData = [];
                 /* Create Charts On Page Load*/
                 $(document).ready(function () {
                     reportStart.val(moment().subtract(7, "days").format("YYYY-MM-DD"));
@@ -47,6 +53,72 @@
                 function createCharts() {
                     createServicesChart();
                     createAppointmentChart();
+                    createWeeklyChart();
+                }
+                function getData() {
+
+                    $.ajax({
+                        async: false,
+                        url: '/AppointmentStatistics/'+ moment(reportStart.val()).valueOf()+"/"+moment(reportEnd.val()).valueOf(),
+                        type: 'GET',
+                        success: function (response) {
+                            $(response).each(function (){
+                                for (let i=0; i < Object.getOwnPropertyNames(this).length; i++){
+                                    Charts.push(Object.getOwnPropertyNames(this)[i]);
+                                    chartData.push(Object.values(this)[i]);
+                                }
+                            })
+                        }
+                    })
+                }
+                function makeCharts() {
+                    let numberOfCharts = Chart.length;
+                    let numberOfRows =   Math.ceil(numberOfCharts/3);
+                    var row;
+                    var div;
+                    for (let i = 0; i < numberOfRows; i++){
+                        row = document.createElement('div');
+                        row.className = 'row '+i;
+                        for( let j= 0; j < 2; j++){
+                            div = document.createElement('div');
+                            div.className = 'col-md-1';
+                            div.id = 'hello';
+
+                        }
+                    }
+
+
+                }
+
+                function createWeeklyChart() {
+                    let weeklyChartLabels = [];
+                    let weeklyChartData = [];
+                    const weeklyChart = document.getElementById('weeklyChart').getContext('2d');
+                    $.ajax({
+                        async: false,
+                        url: '/weeklyAppointmentStatistics/' + moment(reportStart.val()).valueOf() + "/" + moment(reportEnd.val()).valueOf(),
+                        type: 'GET',
+                        success: function (response) {
+                            $(response).each(function () {
+                                for (let i = 0; i < Object.getOwnPropertyNames(this).length; i++) {
+                                    weeklyChartLabels.push(Object.getOwnPropertyNames(this)[i]);
+                                    weeklyChartData.push(Object.values(this)[i]);
+                                }
+                            });
+                        }
+                    });
+                    new Chart(weeklyChart, {
+                        type: 'doughnut',
+                        data: {
+                            datasets: [{
+                                data: weeklyChartData,
+                                backgroundColor: palette('tol', weeklyChartData.length).map(function (hex) {
+                                    return '#' + hex;
+                                })
+                            }],
+                            labels : weeklyChartLabels,
+                        },
+                    });
                 }
 
                 function createServicesChart() {

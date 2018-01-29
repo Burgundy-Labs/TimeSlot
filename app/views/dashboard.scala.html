@@ -53,20 +53,10 @@
                 <div class="mb-3 col-md-4">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Stay up to date</h4>
+                            <h4>Center Information</h4>
                         </div>
                         <div class="card-block">
-                            <h6>Notifications:</h6>
-                            <ul class="list-group" id="notifications">
-                            @if(UserDB.getNotificaitonsForUser(currentUser.getUid).size() == 0) {
-                                There are currently no notifications to display.
-                            } else {
-                                @for(notification <- UserDB.getNotificaitonsForUser(currentUser.getUid)) {
-                                    <li class="list-group-item @notification.getNotificationId">@notification.getNotificationContent <button onclick="deleteNotification('@notification.getNotificationId')" class="no-button deleteNotification"><i class="material-icons md-18">backspace</i></button></li>
-                                }
-                                <button class="clearAll no-button" id="notificationButton">Clear All</button>
-                            }
-                            </ul>
+                            <h6>@Html(SettingsController.getSettings.getCenterInformation)</h6>
                         </div>
                     </div>
                 </div>
@@ -96,6 +86,7 @@
             </div>
         </div>
         <script type="text/javascript">
+                let appointments;
 
                 function deleteNotification(notificationId) {
                     $.ajax({
@@ -137,6 +128,7 @@
                                 type: 'GET',
                                 success: function (response) {
                                     let upcomingCount = 0;
+                                    let weekCount = 0;
                                     const events = [];
                                     $(response).each(function () {
                                         const userID = '@currentUser.getUid';
@@ -161,14 +153,19 @@
                                         if(!event.start.local().isBefore(moment())){
                                             upcomingCount++;
                                         }
+                                        weekCount++;
                                         events.push(event);
                                     });
                                     $(".appointmentCount").html("You have " + upcomingCount + (upcomingCount === 1 ? " appointment this week." : " appointments this week."));
+                                    appointments = weekCount;
                                     callback(events);
                                 }
                             })
                         },
                     });
+                    if ( (new Date()).getDay() == 6 ) {
+                        $('#appointmentCalendar').fullCalendar('next');
+                    }
                 });
 
 

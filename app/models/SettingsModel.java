@@ -10,6 +10,8 @@ public class SettingsModel {
     private Date startTime;
     private Date endTime;
     private String siteAlert;
+    private String centerInformation;
+    private Integer maximumAppointments;
 
     public static SettingsModel replaceNull(SettingsModel settings) {
         if(settings == null) settings = new SettingsModel();
@@ -21,8 +23,14 @@ public class SettingsModel {
         if(settings.getStartTime() == null) settings.setStartTime(new Date());
         if(settings.getEndTime() == null) settings.setEndTime(new Date());
         if(settings.getSiteAlert() == null) settings.setSiteAlert("");
+        if(settings.getCenterInformation() == null) settings.setCenterInformation("");
+        if(settings.getMaximumAppointments() == null) settings.setMaximumAppointments(5);
         return settings;
     }
+
+    public Integer getMaximumAppointments() { if (maximumAppointments == null) {maximumAppointments = 5;} return maximumAppointments; }
+
+    public void setMaximumAppointments(Integer maximumAppointments) { this.maximumAppointments = maximumAppointments; }
 
     public String getUniversityName() {
         return universityName;
@@ -60,5 +68,13 @@ public class SettingsModel {
 
     public void setSiteAlert(String siteAlert) {
         this.siteAlert = siteAlert;
+    }
+
+    public String getCenterInformation() {
+        return centerInformation;
+    }
+
+    public void setCenterInformation(String centerInformation) {
+        this.centerInformation = centerInformation;
     }
 }

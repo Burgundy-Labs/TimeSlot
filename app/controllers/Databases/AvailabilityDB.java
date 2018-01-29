@@ -16,7 +16,7 @@ public class AvailabilityDB {
         /* Return null appointment if none found */
         /* Get the specific appointment reference from the DB*/
         ApiFuture<QuerySnapshot> future = FirestoreDB.get().collection("availabilities").whereEqualTo("userId",userId).whereEqualTo("weekly", false).orderBy("startDate", Query.Direction.ASCENDING).whereGreaterThanOrEqualTo("startDate", start).get();
-        List<DocumentSnapshot> documents = null;
+        List<QueryDocumentSnapshot> documents = null;
         try {
             documents = future.get().getDocuments();
         } catch (InterruptedException | ExecutionException e) {
@@ -35,7 +35,7 @@ public class AvailabilityDB {
             }
         }
         ApiFuture<QuerySnapshot> weeklyFuture = FirestoreDB.get().collection("availabilities").whereEqualTo("userId",userId).whereEqualTo("weekly", true).orderBy("startDate", Query.Direction.ASCENDING).whereLessThanOrEqualTo("startDate", end).get();
-        List<DocumentSnapshot> weeklyDocuments = null;
+        List<QueryDocumentSnapshot> weeklyDocuments = null;
         try {
             weeklyDocuments = weeklyFuture.get().getDocuments();
         } catch (InterruptedException | ExecutionException e) {
@@ -57,7 +57,7 @@ public class AvailabilityDB {
         /* Return null appointment if none found */
         /* Get the specific appointment reference from the DB*/
         ApiFuture<QuerySnapshot> future = FirestoreDB.get().collection("availabilities").get();
-        List<DocumentSnapshot> documents = null;
+        List<QueryDocumentSnapshot> documents = null;
         try {
             documents = future.get().getDocuments();
         } catch (InterruptedException | ExecutionException e) {

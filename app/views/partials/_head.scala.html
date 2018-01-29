@@ -55,8 +55,6 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', '@Application.getConfig.getString("googleAnalyticsUA")');
 </script>
 <script src="@routes.Assets.at("javascripts/firebaseAuth.js")" type="text/javascript"></script>
-<script src="@routes.Assets.at("javascripts/firebaseIdle.js")" type="text/javascript"></script>

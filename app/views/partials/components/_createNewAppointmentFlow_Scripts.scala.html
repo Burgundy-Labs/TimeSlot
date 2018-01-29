@@ -1,12 +1,14 @@
     @currentUser = @{
         UserController.getCurrentUser
     }
-        @currentSettings = @{
+    @currentSettings = @{
         SettingsController.getSettings
     }
     <script type="text/javascript">
     let selectedEvents = [];
     let scheduleUser = {userId: null, userRole: null};
+    let startDateTime;
+    let endDateTime;
     $(document).ready(function () {
         createMakeAppointmentCalendar();
         $(document).on("change", '#serviceType', function (e) {
@@ -26,7 +28,7 @@
                         coachDropdown.prepend("<option selected value disabled hidden'>No Coaches Found</option>");
                     } else {
                         coachDropdown.prepend("<option value='any'>Any Coach</option>");
-                        coachDropdown.prepend("<option selected value disabled hidden'>Select a Coach</option>");
+                        coachDropdown.prepend("<option selected value disabled hidden>Select a Coach</option>");
                     }
                 }
             });
@@ -36,6 +38,10 @@
     function createMakeAppointmentCalendar() {
         if ($('#newAppointmentCalendar').is(':visible')) { //if the container is visible on the page
             $('#newAppointmentCalendar').fullCalendar({
+                validRange: {
+                    start: moment('@SettingsController.getSettings.getSemesterStart.toInstant').format("YYYY-MM-DD"),
+                    end: moment('@SettingsController.getSettings.getSemesterEnd.toInstant').format("YYYY-MM-DD")
+                },
                 height: 'auto',
                 allDaySlot: false,
                 defaultView: 'agendaWeek',
@@ -45,6 +51,8 @@
                 minTime: moment('@currentSettings.getStartTime.toInstant').format("HH:mm"),
                 maxTime: moment('@currentSettings.getEndTime.toInstant').format("HH:mm"),
                 events: function (start, end, timezone, callback) {
+                    startDateTime = moment(start).toISOString();
+                    endDateTime = moment(end).toISOString();
                     const coachId = $("#coachId :selected").val();
                     const service = $("#serviceType :selected").val();
                     $.ajax({
@@ -175,6 +183,9 @@
                     return event.rendering === 'background';
                 }
             });
+            if ( (new Date()).getDay() == 6 ) {
+                $('#newAppointmentCalendar').fullCalendar('next');
+            }
         } else {
             setTimeout(createMakeAppointmentCalendar, 50); //wait 50 ms, then try again
         }
@@ -218,150 +229,139 @@
                             });
                             return false;
                         } else {
-                            const appointment = selectedEvents[0];
-                            const form = {
-                                appointmentType: $('#appointmentType option:selected').text(),
-                                serviceType: $('#serviceType option:selected').text(),
-                                coachId: $('#coachId').val(),
-                                studentId: firebase.auth().currentUser.uid,
-                                startDate: appointment.startDate,
-                                endDate: appointment.endDate,
-                                appointmentNotes: $('#appointmentNotes').val(),
-                                present: false,
-                            };
-                            if (scheduleUser.userId !== null && scheduleUser.userRole === "Coach") {
-                                form.coachId = scheduleUser.userId;
-                            } else if (scheduleUser.userId !== null && scheduleUser.userRole === "Student") {
-                                form.studentId = scheduleUser.userId;
+                            let displayText;
+                            let weeksAppointments = 0;
+                            let usRole;
+                            let usId;
+                            if ( typeof scheduleUser.userRole !== "undefined" ) {
+                                usRole = scheduleUser.userRole;
+                                displayText = "This user has reached the maximum appointments allowed per week.";
+                            } else {
+                                usRole = '@currentUser.getRole';
+                                displayText = "You've reached the maximum appointments allowed per week.";
                             }
-                            let coachName = $('#coachId option:selected').text();
-                            let appointmentType = $('#appointmentType option:selected').text();
-                            $.confirm({
-                                columnClass: "col-11",
-                                title: 'New Appointment',
-                                content: "<div class='appointmentDetails'>Your appointment details: <br/>" +
-                                "<b>Appointment Type:</b> " + appointmentType + " <br/>" +
-                                "<b>Coach:</b> " + coachName + " <br/>" +
-                                "<b>Date:</b> " + moment(appointment.startDate).format('dddd, MMMM Do, YYYY h:mm A') + " - " + moment(appointment.endDate).format('h:mm A') + "<br/>" +
-                                "</div>",
-                                theme: 'modern',
-                                escapeKey: 'no',
-                                buttons: {
-                                    Weekly: {
-                                        text: 'Create Weekly Appointment',
-                                        btnClass: 'btn-primary mb-3 col-md-12',
-                                        action: function () {
-                                            form.weekly = true;
-                                            if (form.coachId === "any") {
-                                                form.coachId = appointment.weeklyUsers[Math.floor(Math.random() * appointment.weeklyUsers.length)];
-                                            }
-                                            /* Create appointment Here*/
-                                            $.ajax({
-                                                url: '/createAppointment',
-                                                type: 'POST',
-                                                data: JSON.stringify(form),
-                                                contentType: 'application/json',
-                                                success: function () {
-                                                    var studentNotification;
-                                                    if (coachName != "Any Coach") {
-                                                        studentNotification = "New weekly " + form.appointmentType + " Appointment on " + moment(form.startDate).format("dddd, MMMM Do, h:mm A") + " - " + moment(form.endDate).format("h:mm A") + " with " + coachName;
-                                                    } else {
-                                                        studentNotification = "New weekly " + form.appointmentType + " Appointment on " + moment(form.startDate).format("dddd, MMMM Do, h:mm A") + " - " + moment(form.endDate).format("h:mm A");
-                                                    }
-                                                    let coachNotification = "New weekly " + form.appointmentType + " Appointment on " + moment(form.startDate).format("dddd, MMMM Do, h:mm A") + " - " + moment(form.endDate).format("h:mm A") + " with " + "@currentUser.getDisplayName";
-                                                    $.ajax({
-                                                        url: '/addNotificationToUser',
-                                                        type: 'POST',
-                                                        data: JSON.stringify({
-                                                            userId: form.coachId,
-                                                            notificationContent: coachNotification
-                                                        }),
-                                                        contentType: 'application/json',
-                                                    });
-                                                    $.ajax({
-                                                        url: '/addNotificationToUser',
-                                                        type: 'POST',
-                                                        data: JSON.stringify({
-                                                            userId: form.studentId,
-                                                            notificationContent: studentNotification
-                                                        }),
-                                                        contentType: 'application/json',
-                                                    });
-                                                    createAlert("success", "Appointment Created!");
-                                                    location.reload();
-                                                },
-                                                error: function () {
-                                                    createAlert('danger', 'Appointment creation failed.');
-                                                    location.reload();
-                                                }
-                                            });
-                                        }
-                                    },
-                                    OneTime: {
-                                        text: 'Create One-Time Appointment',
-                                        btnClass: 'btn-primary mb-3 col-md-12',
-                                        action: function () {
-                                            form.weekly = false;
-                                            console.log(appointment);
-                                            if (form.coachId === "any") {
-                                                form.coachId = appointment.oneTimeUsers[Math.floor(Math.random() * appointment.oneTimeUsers.length)];
-                                            }
-                                            /* Create appointment Here*/
-                                            $.ajax({
-                                                url: '/createAppointment',
-                                                type: 'POST',
-                                                data: JSON.stringify(form),
-                                                contentType: 'application/json',
-                                                success: function () {
-                                                    let studentNotification = "New " + form.appointmentType + " Appointment on " + moment(form.startDate).format("dddd, MMMM Do, h:mm A") + " - " + moment(form.endDate).format("h:mm A") + " with " + coachName;
-                                                    let coachNotification = "New " + form.appointmentType + " Appointment on " + moment(form.startDate).format("dddd, MMMM Do, h:mm A") + " - " + moment(form.endDate).format("h:mm A") + " with " + "@currentUser.getDisplayName";
-                                                    $.ajax({
-                                                        url: '/addNotificationToUser',
-                                                        type: 'POST',
-                                                        data: JSON.stringify({
-                                                            userId: form.coachId,
-                                                            notificationContent: coachNotification
-                                                        }),
-                                                        contentType: 'application/json',
-                                                    });
-                                                    $.ajax({
-                                                        url: '/addNotificationToUser',
-                                                        type: 'POST',
-                                                        data: JSON.stringify({
-                                                            userId: form.studentId,
-                                                            notificationContent: studentNotification
-                                                        }),
-                                                        contentType: 'application/json',
-                                                    });
-                                                    createAlert("success", "Appointment Created!");
-                                                    location.reload();
-                                                },
-                                                error: function () {
-                                                    createAlert('danger', 'Appointment creation failed.');
-                                                }
-                                            });
-                                        }
-                                    },
-                                    no: {
-                                        text: 'Cancel Appointment',
-                                        btnClass: "mb-3 col-md-12",
-                                        action: function () {
-                                            createAlert("warning", "Appointment Not Created");
-                                            selectedEvents = [];
-                                            /* TODO have calendar  re-fetch on re-open */
-                                            location.reload();
-                                        }
-                                    }
-                                },
-                                onOpenBefore: function () {
-                                    if (!appointment.canBeWeekly) {
-                                        this.buttons.Weekly.hide()
-                                    }
-                                    if (!appointment.canBeOneTime) {
-                                        this.buttons.OneTime.hide()
-                                    }
-                                },
+                            if ( typeof scheduleUser.userId !== "undefined" ) {
+                                usId = scheduleUser.userId;
+                            } else {
+                                usId = '@currentUser.getUid';
+                            }
+                            $.ajax({
+                                url: '/appointmentsForUser/' + usRole + '/' + usId + '/' + startDateTime + '/' + endDateTime,
+                                type: 'GET',
+                                async: false,
+                                success: function (response) {
+                                    $(response).each(function () {
+                                        weeksAppointments++;
+                                    });
+                                }
                             });
+                            if ( weeksAppointments >= @currentSettings.getMaximumAppointments && 0 !== @currentSettings.getMaximumAppointments ) {
+                                $.alert({
+                                    title: 'Alert',
+                                    type: 'red',
+                                    content: displayText
+                                });
+                                return false;
+                            } else {
+                                const appointment = selectedEvents[0];
+                                const form = {
+                                    appointmentType: $('#appointmentType option:selected').text(),
+                                    serviceType: $('#serviceType option:selected').text(),
+                                    coachId: $('#coachId').val(),
+                                    studentId: firebase.auth().currentUser.uid,
+                                    startDate: appointment.startDate,
+                                    endDate: appointment.endDate,
+                                    appointmentNotes: $('#appointmentNotes').val(),
+                                    present: false,
+                                };
+                                if (scheduleUser.userId !== null && scheduleUser.userRole === "Coach") {
+                                    form.coachId = scheduleUser.userId;
+                                } else if (scheduleUser.userId !== null && scheduleUser.userRole === "Student") {
+                                    form.studentId = scheduleUser.userId;
+                                }
+                                let coachName = $('#coachId option:selected').text();
+                                let appointmentType = $('#appointmentType option:selected').text();
+                                $.confirm({
+                                    columnClass: "col-11",
+                                    title: 'New Appointment',
+                                    content: "<div class='appointmentDetails'>Your appointment details: <br/>" +
+                                    "<b>Appointment Type:</b> " + appointmentType + " <br/>" +
+                                    "<b>Coach:</b> " + coachName + " <br/>" +
+                                    "<b>Date:</b> " + moment(appointment.startDate).format('dddd, MMMM Do, YYYY h:mm A') + " - " + moment(appointment.endDate).format('h:mm A') + "<br/>" +
+                                    "</div>",
+                                    theme: 'modern',
+                                    escapeKey: 'no',
+                                    buttons: {
+                                        Weekly: {
+                                            text: 'Create Weekly Appointment',
+                                            btnClass: 'btn-primary mb-3 col-md-12',
+                                            action: function () {
+                                                form.weekly = true;
+                                                if (form.coachId === "any") {
+                                                    form.coachId = appointment.weeklyUsers[Math.floor(Math.random() * appointment.weeklyUsers.length)];
+                                                }
+                                                /!* Create appointment Here*!/
+                                                $.ajax({
+                                                    url: '/createAppointment',
+                                                    type: 'POST',
+                                                    data: JSON.stringify(form),
+                                                    contentType: 'application/json',
+                                                    success: function () {
+                                                        createAlert("success", "Appointment Created!");
+                                                        location.reload();
+                                                    },
+                                                    error: function () {
+                                                        createAlert('danger', 'Appointment creation failed.');
+                                                        location.reload();
+                                                    }
+                                                });
+                                            }
+                                        },
+                                        OneTime: {
+                                            text: 'Create One-Time Appointment',
+                                            btnClass: 'btn-primary mb-3 col-md-12',
+                                            action: function () {
+                                                form.weekly = false;
+                                                if (form.coachId === "any") {
+                                                    form.coachId = appointment.oneTimeUsers[Math.floor(Math.random() * appointment.oneTimeUsers.length)];
+                                                }
+                                                /!* Create appointment Here*!/
+                                                $.ajax({
+                                                    url: '/createAppointment',
+                                                    type: 'POST',
+                                                    data: JSON.stringify(form),
+                                                    contentType: 'application/json',
+                                                    success: function () {
+                                                        createAlert("success", "Appointment Created!");
+                                                        location.reload();
+                                                    },
+                                                    error: function () {
+                                                        createAlert('danger', 'Appointment creation failed.');
+                                                    }
+                                                });
+                                            }
+                                        },
+                                        no: {
+                                            text: 'Cancel Appointment',
+                                            btnClass: "mb-3 col-md-12",
+                                            action: function () {
+                                                createAlert("warning", "Appointment Not Created");
+                                                selectedEvents = [];
+                                                /!* TODO have calendar  re-fetch on re-open *!/
+                                                location.reload();
+                                            }
+                                        }
+                                    },
+                                    onOpenBefore: function () {
+                                        if (!appointment.canBeWeekly) {
+                                            this.buttons.Weekly.hide()
+                                        }
+                                        if (!appointment.canBeOneTime) {
+                                            this.buttons.OneTime.hide()
+                                        }
+                                    },
+                                });
+                            }
                         }
                     }
                 }

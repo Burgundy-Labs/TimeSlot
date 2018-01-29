@@ -22,11 +22,10 @@ public class AppointmentsModel {
     private String serviceType;
     private boolean weekly;
     private String weeklyId;
-
+    private String description;
     public AppointmentsModel( ) {
 
     }
-
     public AppointmentsModel(
             String appointmentId,
             Date startDate,
@@ -64,6 +63,7 @@ public class AppointmentsModel {
         this.serviceType = serviceType;
         this.weekly = weekly;
         this.weeklyId = weeklyId;
+        this.description = this.toHTMLString();
     }
 
     public String getAppointmentId() {
@@ -233,5 +233,13 @@ public class AppointmentsModel {
 
     public void setWeekly(boolean weekly) {
         this.weekly = weekly;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
