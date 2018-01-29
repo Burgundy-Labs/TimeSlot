@@ -5,6 +5,8 @@ import play.Environment;
 import play.api.OptionalSourceMapper;
 import play.api.routing.Router;
 import play.http.DefaultHttpErrorHandler;
+import play.http.HttpErrorHandler;
+import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Http.RequestHeader;
 import play.mvc.Result;
 import play.mvc.Results;
@@ -16,33 +18,38 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 @Singleton
-public class ErrorHandler extends DefaultHttpErrorHandler {
+public class ErrorHandler extends DefaultHttpErrorHandler implements HttpErrorHandler {
+    private HttpExecutionContext httpExecutionContext;
+
     @Inject
-    public ErrorHandler(Config config, Environment environment, OptionalSourceMapper sourceMapper, Provider<Router> routes) {
+    public ErrorHandler(Config config, Environment environment, OptionalSourceMapper sourceMapper, Provider<Router> routes, HttpExecutionContext ec) {
         super(config, environment, sourceMapper, routes);
+        this.httpExecutionContext = ec;
     }
 
+    @Override
     public CompletionStage<Result> onClientError(RequestHeader request, int statusCode, String message) {
         switch (statusCode) {
-            case 404:
-                return CompletableFuture.completedFuture(Results.notFound(views.html.error_pages.notfound.render()));
             case 401:
-                return CompletableFuture.completedFuture(Results.unauthorized(views.html.error_pages.unauthorized.render()));
+                return CompletableFuture.completedFuture(null).thenApplyAsync(a -> Results.unauthorized(views.html.error_pages.unauthorized.render()), httpExecutionContext.current());
             case 403:
-                return CompletableFuture.completedFuture(Results.forbidden(views.html.error_pages.unauthorized.render()));
+                return CompletableFuture.completedFuture(null).thenApplyAsync(a -> Results.forbidden(views.html.error_pages.unauthorized.render()), httpExecutionContext.current());
+            case 404:
+                return CompletableFuture.completedFuture(null).thenApplyAsync(a -> Results.notFound(views.html.error_pages.notfound.render()), httpExecutionContext.current());
             default:
                 break;
         }
         return super.onClientError(request, statusCode, message);
     }
+
+    @Override
     protected CompletionStage<Result> onForbidden(RequestHeader request, String message) {
-        return CompletableFuture.completedFuture(
-                Results.forbidden("You're not allowed to access this resource.")
-        );
+        return CompletableFuture.completedFuture(null).thenApplyAsync(a -> Results.forbidden(views.html.error_pages.unauthorized.render()), httpExecutionContext.current());
     }
+
+    @Override
     public CompletionStage<Result> onServerError(RequestHeader request, Throwable exception) {
-        return CompletableFuture.completedFuture(
-                Results.internalServerError(views.html.error_pages.servererror.render())
-        );
+        return CompletableFuture.completedFuture(exception).thenApplyAsync(a -> Results.internalServerError(views.html.error_pages.servererror.render(exception))
+                , httpExecutionContext.current());
     }
 }

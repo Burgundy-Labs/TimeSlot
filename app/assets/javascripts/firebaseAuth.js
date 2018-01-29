@@ -15,9 +15,11 @@ initApp = function () {
 
 window.addEventListener('load', function () {
     initApp();
-    document.getElementById('sign-out').addEventListener('click', function () {
-       signout();
-    });
+    if(document.getElementById('sign-out')) {
+        document.getElementById('sign-out').addEventListener('click', function () {
+            signout();
+        });
+    }
 });
 
 

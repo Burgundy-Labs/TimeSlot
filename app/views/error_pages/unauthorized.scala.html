@@ -2,15 +2,16 @@
 <html>
     <head>
         <title>401 - Unauthorized </title>
-        </head>
+        @partials._head()
+    </head>
     <body>
-        @helper.CSRF.formField
         <div class="loginJumbotron">
             <div class="jumbotron d-flex align-items-center">
                 <div class="container">
                     <h1>Are you in the right place?</h1>
                     <p>You don't have the proper permission to be here, if that doesn't sound correct please contact us.</p>
-                    <a href="/" class="btn btn-primary"> Go Home </a> <a href="/Feedback" class="btn btn-primary"> Send Us a Message</a>
+                    <a href="/" class="btn btn-primary"> Go Home </a>
+                    <a href="/Feedback" class="btn btn-primary"> Send Us a Message</a>
                 </div>
             </div>
         </div>
