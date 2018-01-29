@@ -255,7 +255,7 @@
                                     });
                                 }
                             });
-                            if ( weeksAppointments >= @currentSettings.getMaximumAppointments ) {
+                            if ( weeksAppointments >= @currentSettings.getMaximumAppointments && 0 !== @currentSettings.getMaximumAppointments ) {
                                 $.alert({
                                     title: 'Alert',
                                     type: 'red',
