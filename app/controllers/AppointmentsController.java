@@ -117,6 +117,10 @@ public class AppointmentsController extends Controller {
     public Result appointmentsForUser(String role, String userId, String start, String end) {
         Date startDate = DatatypeConverter.parseDateTime(start).getTime();
         Date endDate = DatatypeConverter.parseDateTime(end).getTime();
+        Calendar endc = Calendar.getInstance();
+        endc.setTime(endDate);
+        endc.set(Calendar.HOUR_OF_DAY, 24);
+        endDate = endc.getTime();
         List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsByUserAndDate(userId, startDate, endDate);
         return ok(Json.toJson(appointments));
     }
@@ -127,6 +131,10 @@ public class AppointmentsController extends Controller {
         }
         Date startDate = DatatypeConverter.parseDateTime(start).getTime();
         Date endDate = DatatypeConverter.parseDateTime(end).getTime();
+        Calendar endc = Calendar.getInstance();
+        endc.setTime(endDate);
+        endc.set(Calendar.HOUR_OF_DAY, 24);
+        endDate = endc.getTime();
         List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsByDate(startDate, endDate);
         return ok(Json.toJson(appointments));
     }
