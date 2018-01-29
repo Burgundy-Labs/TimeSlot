@@ -92,10 +92,10 @@ public class AppointmentsController extends Controller {
         JsonNode json = request().body().asJson();
         String appointmentId = json.findPath("appointmentId").textValue();
         AppointmentsModel appointment = AppointmentsDB.removeAppointment(appointmentId);
-        if ( json.findPath("weeklyId").asText() != null && json.findPath("weeklyId").asText() != "" ) {
+        if ( appointment.isWeekly() ) {
             List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsForUser("Student", appointment.getStudentId());
             for ( AppointmentsModel ap : appointments ) {
-                if ( ap.getWeeklyId() != null && ap.getWeeklyId().equals(json.findPath("weeklyId").asText()) ) {
+                if ( ap.getWeeklyId() != null && ap.getWeeklyId().equals(json.findPath("weeklyId").asText()) && ap.getStartDate().after(new Date()) ) {
                     AppointmentsDB.removeAppointment(ap.getAppointmentId());
                 }
             }
