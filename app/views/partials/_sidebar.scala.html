@@ -6,7 +6,7 @@
         </div>
             <nav class="sidebar-navigation">
                 @for(menuLink <- Application.menuLinks) {
-                    @if( (!menuLink.adminLocked && !menuLink.coachLocked) || (menuLink.coachLocked && currentRole.equals("Coach")) || (menuLink.adminLocked && currentRole.equals("Admin")) ) {
+                    @if( (!menuLink.adminLocked && !menuLink.coachLocked) || (menuLink.coachLocked && currentRole != null && currentRole.equals("Coach")) || (menuLink.adminLocked && currentRole != null && currentRole.equals("Admin")) ) {
                         <div @if(currentPage.equals(menuLink.menuText)) {
                             class="currentPage"}>@partials.components._tooltipIconLink(menuLink.href, menuLink.mdlIcon, "right", menuLink.menuText, 32)</div>
                     }

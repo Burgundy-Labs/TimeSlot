@@ -5,22 +5,38 @@ import controllers.Databases.AppointmentsDB;
 import models.AppointmentsModel;
 import play.Logger;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 @Singleton
 public class EmailScheduler {
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     public EmailScheduler() {
-        Calendar today = Calendar.getInstance();
-        today.set(Calendar.HOUR_OF_DAY, 8);
-        today.set(Calendar.MINUTE, 0);
-        today.set(Calendar.SECOND, 0);
-        Timer timer = new Timer();
-        Logger.info("Email Reminder Service Started for - " + today.getTime().toString());
-        timer.schedule(new AppointmentEmailTask(), today.getTime(), TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS));
+        schedule(new AppointmentEmailTask());
+    }
+    public void schedule(Runnable command) {
+        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime executionDate = LocalDateTime.of(currentTime.getYear(),
+                currentTime.getMonth(),
+                currentTime.getDayOfMonth(),
+                8, 0);
+        Logger.info("Email Reminder Service Started for - " + executionDate.getHour() + " : " + executionDate.getMinute());
+        long initialDelay;
+        if(currentTime.isAfter(executionDate)){
+            initialDelay = currentTime.until(executionDate.plusDays(1), ChronoUnit.MILLIS);
+        } else {
+            initialDelay = currentTime.until(executionDate, ChronoUnit.MILLIS);
+        }
+        long delay = TimeUnit.HOURS.toMillis(24); // repeat after 24 hours
+        scheduler.scheduleWithFixedDelay(command, initialDelay, delay, TimeUnit.MILLISECONDS);
     }
 
-    private class AppointmentEmailTask extends TimerTask {
+    private class AppointmentEmailTask implements Runnable {
         @Override
         public void run() {
             Calendar startDay = Calendar.getInstance();

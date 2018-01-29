@@ -43,6 +43,13 @@ public class ErrorHandler extends DefaultHttpErrorHandler implements HttpErrorHa
     }
 
     @Override
+    protected CompletionStage<Result> onOtherClientError(RequestHeader request, int statusCode, String message) {
+        return CompletableFuture.completedFuture(Results.status(statusCode, views.html.defaultpages.badRequest.render(
+                request.method(), request.uri(), message
+        )));
+    }
+
+    @Override
     protected CompletionStage<Result> onForbidden(RequestHeader request, String message) {
         return CompletableFuture.completedFuture(null).thenApplyAsync(a -> Results.forbidden(views.html.error_pages.unauthorized.render()), httpExecutionContext.current());
     }
