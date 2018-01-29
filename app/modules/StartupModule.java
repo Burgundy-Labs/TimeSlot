@@ -9,6 +9,7 @@ public class StartupModule extends AbstractModule {
 
     protected void configure() {
      /* Start the database service */
+     bind(ErrorHandler.class).asEagerSingleton();
      bind(FirestoreDB.class).asEagerSingleton();
      bind(Application.class).asEagerSingleton();
      bind(MailerService.class).asEagerSingleton();

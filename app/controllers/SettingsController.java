@@ -21,7 +21,7 @@ public class SettingsController extends Controller {
     public Result index() {
         String currentRole = UserController.getCurrentRole();
         if( currentRole ==  null || !currentRole.equals("Admin")){
-            return unauthorized();
+            return forbidden(views.html.error_pages.unauthorized.render());
         } else {
             return ok(views.html.settings.render());
         }
@@ -29,7 +29,7 @@ public class SettingsController extends Controller {
 
     public Result appointmentTypeFrequency() {
         if(!UserController.getCurrentRole().equals("Admin")){
-            return unauthorized();
+            return forbidden(views.html.error_pages.unauthorized.render());
         }
         JsonNode json = request().body().asJson();
         String frequency = json.findPath("frequency").asText();
@@ -46,7 +46,7 @@ public class SettingsController extends Controller {
     }
     public Result changeSiteAlert(){
         if(!UserController.getCurrentRole().equals("Admin")){
-            return unauthorized();
+            return forbidden(views.html.error_pages.unauthorized.render());
         }
         JsonNode json = request().body().asJson();
         String siteAlert = json.findPath("siteAlert").asText();
@@ -58,7 +58,7 @@ public class SettingsController extends Controller {
 
     public Result changeCenterInformation(){
         if(!UserController.getCurrentRole().equals("Admin")){
-            return unauthorized();
+            return forbidden(views.html.error_pages.unauthorized.render());
         }
         JsonNode json = request().body().asJson();
         String centerInformation = json.findPath("centerInformation").asText();
@@ -70,7 +70,7 @@ public class SettingsController extends Controller {
 
     public Result changeMaximumAppointments() {
         if(!UserController.getCurrentRole().equals("Admin")){
-            return unauthorized();
+            return forbidden(views.html.error_pages.unauthorized.render());
         }
         JsonNode json = request().body().asJson();
         Integer maximumAppointments = json.findPath("maximumAppointments").asInt();
@@ -82,7 +82,7 @@ public class SettingsController extends Controller {
 
     public Result updateSettings() {
         if(!UserController.getCurrentRole().equals("Admin")){
-            return unauthorized();
+            return forbidden(views.html.error_pages.unauthorized.render());
         }
         /* Get user object from request */
         JsonNode json = request().body().asJson();
@@ -116,7 +116,7 @@ public class SettingsController extends Controller {
 
     public Result createAppointmentType() {
         if(!UserController.getCurrentRole().equals("Admin")){
-            return unauthorized();
+            return forbidden(views.html.error_pages.unauthorized.render());
         }
         JsonNode json = request().body().asJson();
         String appointmentTypeName = json.findPath("appointmentTypeName").asText();
@@ -137,7 +137,7 @@ public class SettingsController extends Controller {
 
     public Result createService() {
         if(!UserController.getCurrentRole().equals("Admin")){
-            return unauthorized();
+            return forbidden(views.html.error_pages.unauthorized.render());
         }
         JsonNode json = request().body().asJson();
         String serviceName = json.findPath("serviceName").asText();
@@ -148,7 +148,7 @@ public class SettingsController extends Controller {
 
     public Result removeAppointmentType() {
         if(!UserController.getCurrentRole().equals("Admin")){
-            return unauthorized();
+            return forbidden(views.html.error_pages.unauthorized.render());
         }
         JsonNode json = request().body().asJson();
         String appointmentTypeId = json.findPath("appointmentTypeId").asText();
@@ -158,7 +158,7 @@ public class SettingsController extends Controller {
 
     public Result removeService() {
         if(!UserController.getCurrentRole().equals("Admin")){
-            return unauthorized();
+            return forbidden(views.html.error_pages.unauthorized.render());
         }
         JsonNode json = request().body().asJson();
         String serviceId = json.findPath("serviceId").asText();
