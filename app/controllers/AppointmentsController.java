@@ -18,7 +18,7 @@ public class AppointmentsController extends Controller {
         String currentRole = UserController.getCurrentRole();
         /* Force redirect to Login is the user isn't signed in */
         if(currentRole == null) {
-            return ok(views.html.login.render());
+            return unauthorized(views.html.error_pages.unauthorized.render());
         }
         return ok(views.html.appointments.render());
     }
@@ -59,14 +59,10 @@ public class AppointmentsController extends Controller {
         appointment = AppointmentsDB.addAppointment(appointment);
         /* Check if user is in DB */
         AppointmentsModel finalAppointment = appointment;
-        createNotifications(finalAppointment);
         new Thread(() -> MailerService.sendAppointmentConfirmation(finalAppointment)).start();
         return ok();
     }
 
-    private void createNotifications(AppointmentsModel appointment){
-        /* TODO create notifications*/
-    }
     private void createWeeklyAppointments(JsonNode json, String uniqueId){
         Calendar currentDate = DatatypeConverter.parseDateTime(json.findPath("startDate").textValue());
         Calendar endDate = DatatypeConverter.parseDateTime(json.findPath("endDate").textValue());
@@ -122,7 +118,6 @@ public class AppointmentsController extends Controller {
         Date startDate = DatatypeConverter.parseDateTime(start).getTime();
         Date endDate = DatatypeConverter.parseDateTime(end).getTime();
         List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsByUserAndDate(userId, startDate, endDate);
-
         return ok(Json.toJson(appointments));
     }
 }

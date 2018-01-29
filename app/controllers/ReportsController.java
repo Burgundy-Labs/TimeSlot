@@ -19,7 +19,7 @@ public class ReportsController extends Controller {
     public Result index() {
         String currentRole = UserController.getCurrentRole();
         if (currentRole == null || !currentRole.equals("Admin")) {
-            return unauthorized();
+            return forbidden(views.html.error_pages.unauthorized.render());
         } else {
             return ok(views.html.reports.render());
         }

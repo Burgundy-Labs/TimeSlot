@@ -35,7 +35,7 @@ public class UserController extends Controller {
 
     public Result updateUserRole() {
         if(!getCurrentRole().equals("Admin")){
-            return unauthorized();
+            return forbidden(views.html.error_pages.unauthorized.render());
         }
         /* Get user object from request */
         JsonNode json = request().body().asJson();
@@ -52,7 +52,7 @@ public class UserController extends Controller {
     public Result addServiceToCoach() {
         String currentRole = getCurrentRole();
         if(currentRole.equals("Student")){
-            return unauthorized();
+            return forbidden(views.html.error_pages.unauthorized.render());
         }
         JsonNode json = request().body().asJson();
         String userId = json.get("userId").asText();
@@ -73,7 +73,7 @@ public class UserController extends Controller {
 
     public Result removeUser() {
         if(!getCurrentRole().equals("Admin")){
-            return unauthorized();
+            return forbidden(views.html.error_pages.unauthorized.render());
         }
         try {
             JsonNode json = request().body().asJson();
