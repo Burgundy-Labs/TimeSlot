@@ -1,7 +1,3 @@
-@import java.time.ZoneOffset
-@import java.time.format.DateTimeFormatter
-
-@import controllers.Databases.AppointmentsDB
 @currentUser = @{
     UserController.getCurrentUser
 }
@@ -34,7 +30,6 @@
                     contentType: 'application/json',
                     success: function () {
                         if (newPresence === 'true') {
-                            console.log($(this));
                             e.removeClass('danger-border');
                             e.addClass('success-border');
                         } else {
@@ -113,12 +108,11 @@
                                         :
                                         `<button id="notesFor-${$(this).attr("appointmentId")}" class="no-button" onclick="updateCoachNotes('${$(this).attr("appointmentId")}', '${$(this).attr("coachNotes")}')"><span class="action-secondary" id="appointmentNotes"><a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="Session Notes" class="md-32"><i class="material-icons md-32">assignment</i></a> </span></button>`
                                         }
-                            }` + `${!moment($(this).attr('startDate')).local().isBefore(moment()) ? `<button class="no-button" onclick="cancelAppointment('${$(this).attr("appointmentId")}','${$(this).attr("weeklyId")}')"><span class="action-delete"><a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="Cancel Appointment" class="md-32"><i class="material-icons md-32">close</i></a></span></button>` : ``}
+                            }` + `${!moment($(this).attr('startDate')).local().isBefore(moment()) ? `<button class="no-button" onclick="cancelAppointment('${$(this).attr("appointmentId")}','${$(this).attr("weekly")}','${$(this).attr("weeklyId")}')"><span class="action-delete"><a href="javascript:void(0)" data-toggle="tooltip" data-placement="bottom" title="Cancel Appointment" class="md-32"><i class="material-icons md-32">close</i></a></span></button>` : ``}
                                 `,
                                 9:   `<a class="btn btn-primary" href="https://www.google.com/calendar/render?action=TEMPLATE&text=@currentSettings.getCenterName.replaceAll(" ", "+")+Appointment+With+${$(this).attr("studentName").replace(" ", "+")}&dates=${moment($(this).attr("startDate")).utc().format("YYYYMMDDTHHmmss[Z]")}/${moment($(this).attr("endDate")).utc().format("YYYYMMDDTHHmmss[Z]")}&details=${$(this).attr("description").replace("<br/>", "%0A").replace(" ", "+")}&location=@currentSettings.getCenterName.replaceAll(" ", "+")&sf=true&output=xml"
                                 target="_blank" rel="nofollow">Add to calendar</a>`,
                             }]).draw();
-                            console.log(this);
                         });
                     }
                 });
@@ -167,8 +161,7 @@
             </tr>
         </thead>
         <tbody>
-
-            </tbody>
+        </tbody>
     </table>
 </div>
 <script type="text/javascript">
@@ -206,7 +199,6 @@
                                         } else {
                                             spanIcon.removeClass('action-black');
                                             spanIcon.addClass('action-secondary');
-
                                         }
                                     },
                                     error: function (err) {
@@ -218,21 +210,20 @@
                     },
                 });
             }
-
-            function cancelAppointment(appointmentId, weeklyId) {
+            function cancelAppointment(appointmentId, isWeekly, weeklyId) {
                 $.confirm({
                     title: 'Cancel Appointment',
-                    content: 'Reason for Cancelling:<textarea class="form-control" rows="5" id="cancelNotes" placeholder="I can\'t come to the meeting anymore because..."></textarea>',
+                    content: 'Reason for Cancelling:<textarea class="form-control" rows="5" id="cancelNotes" placeholder="I can\'t come to the appointment anymore because..."></textarea>',
                     escapeKey: 'cancel',
                     buttons: {
                         next: {
                             text: 'Next',
                             btnClass: 'btn-primary mb-3 col-md-12',
-                            action: function () {
+                            action: function() {
                                 let cancelNotes = this.$content.find('#cancelNotes').val();
                                 $.confirm({
                                     onOpenBefore: function () {
-                                        if ((weeklyId && weeklyId === "") || !weeklyId) {
+                                        if (isWeekly == "false") {
                                             this.buttons.deleteAll.hide();
                                         }
                                     },
@@ -247,14 +238,10 @@
                                                 $.ajax({
                                                     url: '/cancelAppointment',
                                                     type: 'POST',
-                                                    data: JSON.stringify({
-                                                        appointmentId: appointmentId,
-                                                        weeklyId: null,
-                                                        cancelNotes: cancelNotes
-                                                    }),
+                                                    data: JSON.stringify({appointmentId: appointmentId, weeklyId: null, cancelNotes: cancelNotes}),
                                                     contentType: 'application/json',
                                                     success: function () {
-                                                        $('.' + appointmentId).hide();
+                                                        updateDate();
                                                         createAlert("success", "Appointment cancelled.");
                                                     },
                                                     error: function (err) {
@@ -270,14 +257,10 @@
                                                 $.ajax({
                                                     url: '/cancelAppointment',
                                                     type: 'POST',
-                                                    data: JSON.stringify({
-                                                        appointmentId: appointmentId,
-                                                        weeklyId: weeklyId,
-                                                        cancelNotes: cancelNotes
-                                                    }),
+                                                    data: JSON.stringify({appointmentId: appointmentId, weeklyId: weeklyId, cancelNotes: cancelNotes}),
                                                     contentType: 'application/json',
                                                     success: function () {
-                                                        location.reload();
+                                                        updateDate();
                                                         createAlert("success", "Appointments cancelled.");
                                                     },
                                                     error: function (err) {
@@ -300,7 +283,7 @@
                         }
                     }
                 });
-                setTimeout(function () {
+                setTimeout(function() {
                     $(".jconfirm-buttons").addClass("col-12");
                 }, 200);
             }

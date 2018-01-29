@@ -7,6 +7,8 @@
     <script type="text/javascript">
     let selectedEvents = [];
     let scheduleUser = {userId: null, userRole: null};
+    let startDateTime;
+    let endDateTime;
     $(document).ready(function () {
         createMakeAppointmentCalendar();
         $(document).on("change", '#serviceType', function (e) {
@@ -49,6 +51,8 @@
                 minTime: moment('@currentSettings.getStartTime.toInstant').format("HH:mm"),
                 maxTime: moment('@currentSettings.getEndTime.toInstant').format("HH:mm"),
                 events: function (start, end, timezone, callback) {
+                    startDateTime = moment(start).toISOString();
+                    endDateTime = moment(end).toISOString();
                     const coachId = $("#coachId :selected").val();
                     const service = $("#serviceType :selected").val();
                     $.ajax({
@@ -180,7 +184,7 @@
                 }
             });
             if ( (new Date()).getDay() == 6 ) {
-                $('#appointmentCalendar').fullCalendar('next');
+                $('#newAppointmentCalendar').fullCalendar('next');
             }
         } else {
             setTimeout(createMakeAppointmentCalendar, 50); //wait 50 ms, then try again
@@ -193,39 +197,69 @@
     }
 
     function createNewAppointment(role, userId) {
-        let maxAppoints = @currentSettings.getMaximumAppointments;
-        if ( appointments >= maxAppoints && maxAppoints != 0 ) {
-            createAlert("warning", "You've reached the maximum weekly appointments.");
-        } else {
-            scheduleUser.userRole = role;
-            scheduleUser.userId = userId;
-            let content = ` @{ partials.components._createNewAppointmentFlow() } `;
-            $.confirm({
-                columnClass: 'col-11',
-                containerFluid: true,
-                title: "New Appointment",
-                escapeKey: 'cancel',
-                content: content,
-                buttons: {
-                    cancel: {
-                        text: "Cancel",
-                        btnClass: "btn",
-                        action: function () {
-                            $('#newAppointmentCalendar').hide();
-                            createMakeAppointmentCalendar();
-                            location.reload();
-                        }
-                    },
-                    submit: {
-                        text: 'Create Appointment',
-                        btnClass: 'btn-primary',
-                        keys: ['enter'],
-                        action: function () {
-                            if (selectedEvents.length <= 0) {
+        scheduleUser.userRole = role;
+        scheduleUser.userId = userId;
+        let content = ` @{ partials.components._createNewAppointmentFlow() } `;
+        $.confirm({
+            columnClass: 'col-11',
+            containerFluid: true,
+            title: "New Appointment",
+            escapeKey: 'cancel',
+            content: content,
+            buttons: {
+                cancel: {
+                    text: "Cancel",
+                    btnClass: "btn",
+                    action: function () {
+                        $('#newAppointmentCalendar').hide();
+                        createMakeAppointmentCalendar();
+                        location.reload();
+                    }
+                },
+                submit: {
+                    text: 'Create Appointment',
+                    btnClass: 'btn-primary',
+                    keys: ['enter'],
+                    action: function () {
+                        if (selectedEvents.length <= 0) {
+                            $.alert({
+                                title: 'Alert',
+                                type: 'red',
+                                content: 'No appointments slots have been selected.'
+                            });
+                            return false;
+                        } else {
+                            let displayText;
+                            let weeksAppointments = 0;
+                            let usRole;
+                            let usId;
+                            if ( typeof scheduleUser.userRole !== "undefined" ) {
+                                usRole = scheduleUser.userRole;
+                                displayText = "This user has reached the maximum appointments allowed per week.";
+                            } else {
+                                usRole = '@currentUser.getRole';
+                                displayText = "You've reached the maximum appointments allowed per week.";
+                            }
+                            if ( typeof scheduleUser.userId !== "undefined" ) {
+                                usId = scheduleUser.userId;
+                            } else {
+                                usId = '@currentUser.getUid';
+                            }
+                            $.ajax({
+                                url: '/appointmentsForUser/' + usRole + '/' + usId + '/' + startDateTime + '/' + endDateTime,
+                                type: 'GET',
+                                async: false,
+                                success: function (response) {
+                                    $(response).each(function () {
+                                        weeksAppointments++;
+                                    });
+                                }
+                            });
+                            if ( weeksAppointments >= @currentSettings.getMaximumAppointments && 0 !== @currentSettings.getMaximumAppointments ) {
                                 $.alert({
                                     title: 'Alert',
                                     type: 'red',
-                                    content: 'No appointments slots have been selected.'
+                                    content: displayText
                                 });
                                 return false;
                             } else {
@@ -266,7 +300,7 @@
                                                 if (form.coachId === "any") {
                                                     form.coachId = appointment.weeklyUsers[Math.floor(Math.random() * appointment.weeklyUsers.length)];
                                                 }
-                                                /* Create appointment Here*/
+                                                /!* Create appointment Here*!/
                                                 $.ajax({
                                                     url: '/createAppointment',
                                                     type: 'POST',
@@ -288,11 +322,10 @@
                                             btnClass: 'btn-primary mb-3 col-md-12',
                                             action: function () {
                                                 form.weekly = false;
-                                                console.log(appointment);
                                                 if (form.coachId === "any") {
                                                     form.coachId = appointment.oneTimeUsers[Math.floor(Math.random() * appointment.oneTimeUsers.length)];
                                                 }
-                                                /* Create appointment Here*/
+                                                /!* Create appointment Here*!/
                                                 $.ajax({
                                                     url: '/createAppointment',
                                                     type: 'POST',
@@ -314,7 +347,7 @@
                                             action: function () {
                                                 createAlert("warning", "Appointment Not Created");
                                                 selectedEvents = [];
-                                                /* TODO have calendar  re-fetch on re-open */
+                                                /!* TODO have calendar  re-fetch on re-open *!/
                                                 location.reload();
                                             }
                                         }
@@ -332,9 +365,9 @@
                         }
                     }
                 }
-            });
-            makeStepper();
-        }
+            }
+        });
+        makeStepper();
     }
 
     function makeStepper() {

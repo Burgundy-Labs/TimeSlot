@@ -50,11 +50,13 @@ public class AppointmentsController extends Controller {
         appointment.setPresent(Boolean.getBoolean(json.findPath("present").textValue()));
         appointment.setServiceType(json.findPath("serviceType").textValue());
         appointment.setWeekly(json.findPath("weekly").asBoolean());
-        appointment.setWeeklyId(uniqueId);
-        appointment = AppointmentsDB.addAppointment(appointment);
         if ( appointment.isWeekly() ) {
+            appointment.setWeeklyId(uniqueId);
             new Thread(() -> createWeeklyAppointments(json, uniqueId)).start();
+        } else {
+            appointment.setWeeklyId("");
         }
+        appointment = AppointmentsDB.addAppointment(appointment);
         /* Check if user is in DB */
         AppointmentsModel finalAppointment = appointment;
         new Thread(() -> MailerService.sendAppointmentConfirmation(finalAppointment)).start();
