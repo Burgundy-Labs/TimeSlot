@@ -58,7 +58,7 @@
                         }
                     }
                     @if(!appointment.getStartDate.before(new Date())) {
-                        <button class="no-button" onclick="cancelAppointment('@appointment.getAppointmentId','@appointment.getWeeklyId')"><span class="action-delete">@partials.components._tooltipIconLink("javascript:void(0)", "close", "bottom", "Cancel", 32)</span></button>
+                        <button class="no-button" onclick="cancelAppointment('@appointment.getAppointmentId','@appointment.isWeekly','@appointment.getWeeklyId')"><span class="action-delete">@partials.components._tooltipIconLink("javascript:void(0)", "close", "bottom", "Cancel", 32)</span></button>
                     }
                 </td>
                 <td>
@@ -118,7 +118,7 @@
         });
     }
 
-    function cancelAppointment(appointmentId, weeklyId) {
+    function cancelAppointment(appointmentId, isWeekly, weeklyId) {
         $.confirm({
             title: 'Cancel Appointment',
             content: 'Reason for Cancelling:<textarea class="form-control" rows="5" id="cancelNotes" placeholder="I can\'t come to the meeting anymore because..."></textarea>',
@@ -131,7 +131,7 @@
                         let cancelNotes = this.$content.find('#cancelNotes').val();
                         $.confirm({
                             onOpenBefore: function () {
-                                if ((weeklyId && weeklyId === "") || !weeklyId) {
+                                if (isWeekly == "false") {
                                     this.buttons.deleteAll.hide();
                                 }
                             },
