@@ -24,7 +24,7 @@ public class AvailabilityController extends Controller {
 
     public Result createAvailability() {
         String userRole = UserController.getCurrentRole();
-        if(!userRole.equals("Coach") || !userRole.equals("Admin")){
+        if(userRole == null || userRole.equals("Student")){
             return forbidden(views.html.error_pages.unauthorized.render());
         }
    /* Get user object from request */
@@ -220,7 +220,7 @@ public class AvailabilityController extends Controller {
 
     public Result removeAvailability() {
         String userRole = UserController.getCurrentRole();
-        if(!userRole.equals("Coach") || !userRole.equals("Admin")){
+        if(userRole == null || userRole.equals("Student")){
             return forbidden(views.html.error_pages.unauthorized.render());
         }
         JsonNode json = request().body().asJson();
