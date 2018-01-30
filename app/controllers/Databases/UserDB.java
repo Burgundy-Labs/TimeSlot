@@ -88,7 +88,38 @@ public class UserDB {
                     document.getId(),
                     document.getString("phone_number"),
                     Roles.getRole(document.getString("role")),
-                    document.getBoolean("isCoach")
+                    document.getBoolean("isCoach"),
+                    document.getString("ID")
+            );
+        }
+        return userFound;
+    }
+
+    public static UsersModel getUserByID(String ID) {
+        /* Return null user if none found */
+        UsersModel userFound = null;
+        /* Get the specific user reference from the DB*/
+        Query docRef = FirestoreDB.get().collection("users").whereEqualTo("ID", ID);
+        ApiFuture<QuerySnapshot> future = docRef.get();
+        QuerySnapshot document = null;
+        try {
+            document = future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        assert document != null;
+        if (document.getDocuments().size() >0 && document.getDocuments().get(0) != null) {
+            DocumentSnapshot d = document.getDocuments().get(0);
+            userFound = new UsersModel(
+                    d.getString("display_name"),
+                    d.getString("email"),
+                    d.getBoolean("email_verified"),
+                    d.getString("photo_url"),
+                    d.getId(),
+                    d.getString("phone_number"),
+                    Roles.getRole(d.getString("role")),
+                    d.getBoolean("isCoach"),
+                    d.getString("ID")
             );
         }
         return userFound;
@@ -117,7 +148,8 @@ public class UserDB {
                     document.getId(),
                     document.getString("phone_number"),
                     Roles.getRole(document.getString("role")),
-                    document.getBoolean("isCoach")
+                    document.getBoolean("isCoach"),
+                    document.getString("ID")
             );
             userList.add(user);
         }
@@ -151,7 +183,8 @@ public class UserDB {
                         document.getId(),
                         document.getString("phone_number"),
                         Roles.getRole(document.getString("role")),
-                        document.getBoolean("isCoach")
+                        document.getBoolean("isCoach"),
+                        document.getString("ID")
                 );
                 userList.add(user);
             }
@@ -183,7 +216,8 @@ public class UserDB {
                         document.getId(),
                         document.getString("phone_number"),
                         Roles.getRole(document.getString("role")),
-                        document.getBoolean("isCoach")
+                        document.getBoolean("isCoach"),
+                        document.getString("ID")
                 );
                 userList.add(user);
             }
@@ -215,7 +249,8 @@ public class UserDB {
                         document.getId(),
                         document.getString("phone_number"),
                         Roles.getRole(document.getString("role")),
-                        document.getBoolean("isCoach")
+                        document.getBoolean("isCoach"),
+                        document.getString("ID")
                 );
                 userList.add(user);
             }
@@ -259,6 +294,7 @@ public class UserDB {
             }
             data.put("isCoach", user.isCoach());
         }
+        data.put("ID", user.getID());
         /* Asynchronously write user into DB */
         ApiFuture<WriteResult> result = docRef.set(data);
         result.isDone();

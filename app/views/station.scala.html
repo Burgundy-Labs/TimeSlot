@@ -114,6 +114,7 @@
                                 setTimeout(function () {
                                     if (ID !== "" && ID.length > 6) {
                                         if (!authenticating) {
+                                            let usedID = ID;
                                             authenticating = true;
                                             $.confirm({
                                                 title: "Tap-Detected!",
@@ -121,6 +122,13 @@
                                                 buttons: {
                                                     confirm: function () {
                                                         authenticating = false;
+                                                        $.ajax({
+                                                            url: '/getUserByID/' + usedID,
+                                                            type: 'GET',
+                                                            success: function (response) {
+                                                                console.log(response);
+                                                            }
+                                                        })
                                                     },
                                                     cancel: function () {
                                                         authenticating = false;
