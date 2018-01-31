@@ -11,6 +11,9 @@
                 @if(UserController.getCurrentRole == null) {
                 localStorage.clear();
                 }
+                if ( localStorage.getItem("firebaseui::rememberedAccounts") !== null ) {
+                    signout();
+                }
                 let uiConfig = {
                     callbacks: {
                         signInSuccess: function (user, credential, redirectUrl) {
@@ -20,9 +23,11 @@
                                 emailVerified: user.emailVerified,
                                 photoURL: user.photoURL,
                                 uid: user.uid,
-                                phoneNumber: user.phoneNumber
+                                phoneNumber: user.phoneNumber,
+                                ID: Cookies.get("ID")
                             };
-                            if (!(user.email.split('@@')[1] === 'mtu.edu')) {
+                            /* TODO: get mtu.edu from DB */
+                            if(!(user.email.split('@@')[1] === 'mtu.edu')){
                                 $.alert({
                                     title: 'Alert',
                                     content: 'Please sign-in using an @@mtu.edu email address',
@@ -31,7 +36,7 @@
                                             keys: ['enter'],
                                             text: "Okay",
                                             btnClass: "btn-primary",
-                                            action: function () {
+                                            action: function() {
                                                 signout();
                                             }
                                         }
@@ -45,8 +50,10 @@
                                     type: 'POST',
                                     data: JSON.stringify(userSignIn),
                                     contentType: 'application/json',
-                                    success: function () {
-                                        window.location = "/Dashboard";
+                                    success: function() {
+                                        if(Cookies.get("ID") !== null){
+                                            alert("ID: " + Cookies.get("ID"));
+                                        }
                                     },
                                     error: function (err) {
                                         console.log(err);
@@ -56,7 +63,7 @@
                             }
                         }
                     },
-                    signInSuccessUrl: '/Dashboard',
+                    signInSuccessUrl: '/Station',
                     signInOptions: [{
                         provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
                         authMethod: "https://accounts.google.com",
@@ -83,10 +90,8 @@
         <div class="loginJumbotron">
             <div class="jumbotron d-flex align-items-center">
                 <div class="container">
-                    <h1>@SettingsController.getSettings.getCenterName</h1>
-                    <br/>
-                    <p><b>Sign-In Station</b>
-                        <br/>
+                    <h1>Sign-In Station<br/><small>@SettingsController.getSettings.getCenterName</small></h1>
+                    <p>
                         Please <b>tap your ID card</b>
                         or sign-in below to view, schedule, and manage appointments at the @SettingsController.getSettings.getCenterName.
                     </p>
@@ -95,8 +100,6 @@
                 </div>
             </div>
         </div>
-        @partials._footer()
-
         <script type="text/javascript">
                 let ID = "";
                 let checking = false;
@@ -114,27 +117,26 @@
                                 setTimeout(function () {
                                     if (ID !== "" && ID.length > 6) {
                                         if (!authenticating) {
-                                            let usedID = ID;
                                             authenticating = true;
-                                            $.confirm({
-                                                title: "Tap-Detected!",
-                                                content: "Hello ID card #" + ID + " welcome to Project Burgundy.",
-                                                buttons: {
-                                                    confirm: function () {
-                                                        authenticating = false;
-                                                        $.ajax({
-                                                            url: '/getUserByID/' + usedID,
-                                                            type: 'GET',
-                                                            success: function (response) {
-                                                                console.log(response);
-                                                            }
-                                                        })
-                                                    },
-                                                    cancel: function () {
-                                                        authenticating = false;
-                                                    },
+                                            let usedID = ID;
+                                            $.ajax({
+                                                url: '/getUserByID/' + usedID,
+                                                type: 'GET',
+                                                success: function (response) {
+                                                    console.log(response);
+                                                    if($(response).attr("id") === "") {
+                                                        Cookies.set("ID", usedID);
+                                                        $.confirm({
+                                                            title: "ID card not registered",
+                                                            content: "Use the Google Sign-In to link an ID to your account",
+                                                        });
+                                                    } else {
+                                                        $.confirm({
+                                                            title: "Hello, " + $(response).attr("displayName") + "!",
+                                                            content: "Etc",
+                                                        });                                                    }
                                                 }
-                                            });
+                                            })
                                         }
                                     }
                                     checking = false;
@@ -147,5 +149,6 @@
                     };
                 });
         </script>
+        @partials._footer()
     </body>
 </html>

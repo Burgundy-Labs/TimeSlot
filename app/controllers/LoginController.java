@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import controllers.ApplicationComponents.Roles;
 import controllers.Databases.UserDB;
 import models.UsersModel;
-import play.Logger;
 import play.libs.Json;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 
 public class LoginController extends Controller {
@@ -29,14 +29,19 @@ public class LoginController extends Controller {
             UserDB.addUser(user);
             session("newUser", "true");
         } else {
+            if(u.getID() == null && json.findPath("ID") != null) {
+                u.setID(json.findPath("ID").asText());
+            }
             user = u;
         }
         UserDB.addUser(user);
         /* Store UID in Session */
         session("currentUser", user.getUid());
         session("currentRole", user.getRole());
-
         /* Add user to DB with 'student' role (default) */
+        if(json.findPath("ID") != null){
+            return ok().withCookies(Http.Cookie.builder("ID", json.findPath("ID").textValue().replace("\r","")).build());
+        }
         return ok();
     }
 

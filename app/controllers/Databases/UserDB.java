@@ -99,17 +99,16 @@ public class UserDB {
         /* Return null user if none found */
         UsersModel userFound = null;
         /* Get the specific user reference from the DB*/
-        Query docRef = FirestoreDB.get().collection("users").whereEqualTo("ID", ID);
-        ApiFuture<QuerySnapshot> future = docRef.get();
-        QuerySnapshot document = null;
+        ApiFuture<QuerySnapshot> docRef = FirestoreDB.get().collection("users").whereEqualTo("ID", ID).get();
+        List<QueryDocumentSnapshot> documents = null;
         try {
-            document = future.get();
+            documents = docRef.get().getDocuments();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-        assert document != null;
-        if (document.getDocuments().size() >0 && document.getDocuments().get(0) != null) {
-            DocumentSnapshot d = document.getDocuments().get(0);
+        assert documents != null;
+        if (documents.size() > 0 && documents.get(0) != null) {
+            DocumentSnapshot d = documents.get(0);
             userFound = new UsersModel(
                     d.getString("display_name"),
                     d.getString("email"),
