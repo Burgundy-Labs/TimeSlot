@@ -193,7 +193,7 @@ public class AppointmentsDB {
         UsersModel user = UserDB.getUser(userId);
         List<AppointmentsModel> appointmentList = getAppointmentsByDate(start, end);
         if( user.getRole().equals("Coach") || (user.isCoach() != null && user.isCoach())){
-            appointmentList.removeIf(i -> !i.getStudentId().equals(user.getUid()) || !i.getCoachId().equals(user.getUid()));
+            appointmentList.removeIf(i -> !i.getCoachId().equals(user.getUid()) && !i.getStudentId().equals(user.getUid()));
         } else {
             appointmentList.removeIf(i -> !i.getStudentId().equals(user.getUid()));
         }
