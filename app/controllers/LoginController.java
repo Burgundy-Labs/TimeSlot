@@ -29,8 +29,8 @@ public class LoginController extends Controller {
             UserDB.addUser(user);
             session("newUser", "true");
         } else {
-            if(u.getID() == null && json.findPath("ID") != null) {
-                u.setID(json.findPath("ID").asText());
+            if((u.getAuth_id() == null || u.getAuth_id().equals("")) && (json.findPath("auth_id").textValue() != null && !json.findPath("auth_id").textValue().equals(""))) {
+                u.setAuth_id(json.findPath("auth_id").asText());
             }
             user = u;
         }
@@ -39,8 +39,8 @@ public class LoginController extends Controller {
         session("currentUser", user.getUid());
         session("currentRole", user.getRole());
         /* Add user to DB with 'student' role (default) */
-        if(json.findPath("ID") != null && !json.findPath("ID").asText().equals("")){
-            return ok().withCookies(Http.Cookie.builder("ID", json.findPath("ID").textValue().replace("\r","")).build());
+        if(json.findPath("auth_id") != null && !json.findPath("auth_id").asText().equals("")){
+            return ok().withCookies(Http.Cookie.builder("auth_id", json.findPath("auth_id").textValue().replace("\r","")).build());
         }
         return ok();
     }

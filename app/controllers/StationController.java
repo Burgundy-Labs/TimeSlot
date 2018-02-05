@@ -18,7 +18,7 @@ public class StationController {
         if(u == null){
             u = new UsersModel();
             u.setRole(Roles.getRole("Student"));
-            u.setID("");
+            u.setAuth_id("");
         }
         return ok(Json.toJson(u));
     }

@@ -24,7 +24,7 @@
                                 photoURL: user.photoURL,
                                 uid: user.uid,
                                 phoneNumber: user.phoneNumber,
-                                ID: Cookies.get("ID")
+                                auth_id: Cookies.get("auth_id")
                             };
                             /* TODO: get mtu.edu from DB */
                             if(!(user.email.split('@@')[1] === 'mtu.edu')){
@@ -51,8 +51,8 @@
                                     data: JSON.stringify(userSignIn),
                                     contentType: 'application/json',
                                     success: function() {
-                                        if(Cookies.get("ID") !== null){
-                                            alert("ID: " + Cookies.get("ID"));
+                                        if(Cookies.get("auth_id") !== null){
+                                            alert("ID: " + Cookies.get("auth_id"));
                                         }
                                     },
                                     error: function (err) {
@@ -124,11 +124,27 @@
                                                 type: 'GET',
                                                 success: function (response) {
                                                     console.log(response);
-                                                    if($(response).attr("id") === "") {
-                                                        Cookies.set("ID", usedID);
+                                                    if($(response).attr("auth_id") === "") {
+                                                        Cookies.set("auth_id", usedID);
                                                         $.confirm({
                                                             title: "ID card not registered",
                                                             content: "Use the Google Sign-In to link an ID to your account",
+                                                            buttons: {
+                                                                ok: {
+                                                                    text: "Link Card",
+                                                                    btnClass: "btn-primary",
+                                                                    action: function() {
+                                                                        authenticating = false;
+                                                                    }
+                                                                },
+                                                                no: {
+                                                                    text: "Cancel",
+                                                                    action: function() {
+                                                                        ID = "";
+                                                                        usedID = "";
+                                                                    }
+                                                                }
+                                                            }
                                                         });
                                                     } else {
                                                         $.confirm({

@@ -99,7 +99,7 @@ public class UserDB {
         /* Return null user if none found */
         UsersModel userFound = null;
         /* Get the specific user reference from the DB*/
-        ApiFuture<QuerySnapshot> docRef = FirestoreDB.get().collection("users").whereEqualTo("ID", ID).get();
+        ApiFuture<QuerySnapshot> docRef = FirestoreDB.get().collection("users").whereEqualTo("auth_id", ID).get();
         List<QueryDocumentSnapshot> documents = null;
         try {
             documents = docRef.get().getDocuments();
@@ -118,7 +118,7 @@ public class UserDB {
                     d.getString("phone_number"),
                     Roles.getRole(d.getString("role")),
                     d.getBoolean("isCoach"),
-                    d.getString("ID")
+                    d.getString("auth_id")
             );
         }
         return userFound;
@@ -148,7 +148,7 @@ public class UserDB {
                     document.getString("phone_number"),
                     Roles.getRole(document.getString("role")),
                     document.getBoolean("isCoach"),
-                    document.getString("ID")
+                    document.getString("auth_id")
             );
             userList.add(user);
         }
@@ -183,7 +183,7 @@ public class UserDB {
                         document.getString("phone_number"),
                         Roles.getRole(document.getString("role")),
                         document.getBoolean("isCoach"),
-                        document.getString("ID")
+                        document.getString("auth_id")
                 );
                 userList.add(user);
             }
@@ -216,7 +216,7 @@ public class UserDB {
                         document.getString("phone_number"),
                         Roles.getRole(document.getString("role")),
                         document.getBoolean("isCoach"),
-                        document.getString("ID")
+                        document.getString("auth_id")
                 );
                 userList.add(user);
             }
@@ -249,7 +249,7 @@ public class UserDB {
                         document.getString("phone_number"),
                         Roles.getRole(document.getString("role")),
                         document.getBoolean("isCoach"),
-                        document.getString("ID")
+                        document.getString("auth_id")
                 );
                 userList.add(user);
             }
@@ -293,7 +293,7 @@ public class UserDB {
             }
             data.put("isCoach", user.isCoach());
         }
-        data.put("ID", user.getID());
+        data.put("auth_id", user.getAuth_id());
         /* Asynchronously write user into DB */
         ApiFuture<WriteResult> result = docRef.set(data);
         result.isDone();
