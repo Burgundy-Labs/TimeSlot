@@ -117,6 +117,9 @@
                         defaultView: 'agendaWeek',
                         height: 'auto',
                         editable: false,
+                        eventClick: function(calEvent, jsEvent, view) {
+                            window.location = "/Appointments"
+                        },
                         weekends: false,
                         minTime: moment('@SettingsController.getSettings.getStartTime.toInstant').format("HH:mm"),
                         maxTime: moment('@SettingsController.getSettings.getEndTime.toInstant').format("HH:mm"),

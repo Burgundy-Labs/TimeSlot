@@ -17,7 +17,7 @@ public class AppointmentsController extends Controller {
     public Result index() {
         String currentRole = UserController.getCurrentRole();
         /* Force redirect to Login is the user isn't signed in */
-        if(currentRole == null) {
+        if (currentRole == null) {
             return unauthorized(views.html.error_pages.unauthorized.render());
         }
         return ok(views.html.appointments.render());
@@ -50,7 +50,7 @@ public class AppointmentsController extends Controller {
         appointment.setPresent(Boolean.getBoolean(json.findPath("present").textValue()));
         appointment.setServiceType(json.findPath("serviceType").textValue());
         appointment.setWeekly(json.findPath("weekly").asBoolean());
-        if ( appointment.isWeekly() ) {
+        if (appointment.isWeekly()) {
             appointment.setWeeklyId(uniqueId);
             new Thread(() -> createWeeklyAppointments(json, uniqueId)).start();
         } else {
@@ -63,14 +63,14 @@ public class AppointmentsController extends Controller {
         return ok();
     }
 
-    private void createWeeklyAppointments(JsonNode json, String uniqueId){
+    private void createWeeklyAppointments(JsonNode json, String uniqueId) {
         Calendar currentDate = DatatypeConverter.parseDateTime(json.findPath("startDate").textValue());
         Calendar endDate = DatatypeConverter.parseDateTime(json.findPath("endDate").textValue());
         Calendar semesterEnd = Calendar.getInstance();
         semesterEnd.setTime(SettingsDB.getSettings().getSemesterEnd());
         currentDate.add(Calendar.DAY_OF_YEAR, 7);
         endDate.add(Calendar.DAY_OF_YEAR, 7);
-        while ( currentDate.before(semesterEnd) ){
+        while (currentDate.before(semesterEnd)) {
             AppointmentsModel newAppointment = new AppointmentsModel();
             newAppointment.setCoachId(json.findPath("coachId").textValue());
             newAppointment.setStudentId(json.findPath("studentId").textValue());
@@ -88,14 +88,14 @@ public class AppointmentsController extends Controller {
         }
     }
 
-    public Result cancelAppointment(){
+    public Result cancelAppointment() {
         JsonNode json = request().body().asJson();
         String appointmentId = json.findPath("appointmentId").textValue();
         AppointmentsModel appointment = AppointmentsDB.removeAppointment(appointmentId);
-        if ( appointment.isWeekly() ) {
+        if (appointment.isWeekly()) {
             List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsForUser("Student", appointment.getStudentId());
-            for ( AppointmentsModel ap : appointments ) {
-                if ( ap.getWeeklyId() != null && ap.getWeeklyId().equals(json.findPath("weeklyId").asText()) && ap.getStartDate().after(new Date()) ) {
+            for (AppointmentsModel ap : appointments) {
+                if (ap.getWeeklyId() != null && ap.getWeeklyId().equals(json.findPath("weeklyId").asText()) && ap.getStartDate().after(new Date())) {
                     AppointmentsDB.removeAppointment(ap.getAppointmentId());
                 }
             }
@@ -104,7 +104,7 @@ public class AppointmentsController extends Controller {
         return ok();
     }
 
-    public Result updateCoachNotes(){
+    public Result updateCoachNotes() {
         JsonNode json = request().body().asJson();
         String appointmentId = json.findPath("appointmentId").textValue();
         String coachNotes = json.findPath("coachNotes").textValue();
@@ -126,7 +126,7 @@ public class AppointmentsController extends Controller {
     }
 
     public Result appointmentsByDate(String role, String userId, String start, String end) {
-        if(!UserController.getCurrentRole().equals("Admin")){
+        if (!UserController.getCurrentRole().equals("Admin")) {
             return unauthorized();
         }
         Date startDate = DatatypeConverter.parseDateTime(start).getTime();

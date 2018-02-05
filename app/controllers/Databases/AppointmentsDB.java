@@ -124,7 +124,6 @@ public class AppointmentsDB {
         /* Asynchronously retrieve all appointments */
         ApiFuture<QuerySnapshot> coachQuery = FirestoreDB.get().collection("appointments").whereGreaterThan("start_date",new Date()).orderBy("start_date", Query.Direction.ASCENDING).whereEqualTo("coachId",userId).limit(5).get();
         ApiFuture<QuerySnapshot> studentQuery = FirestoreDB.get().collection("appointments").whereGreaterThan("start_date",new Date()).orderBy("start_date", Query.Direction.ASCENDING).whereEqualTo("studentId",userId).limit(5).get();
-
         QuerySnapshot querySnapshotCoach = null;
         QuerySnapshot querySnapshotStudent = null;
         try {
@@ -194,7 +193,7 @@ public class AppointmentsDB {
         UsersModel user = UserDB.getUser(userId);
         List<AppointmentsModel> appointmentList = getAppointmentsByDate(start, end);
         if( user.getRole().equals("Coach") || (user.isCoach() != null && user.isCoach())){
-            appointmentList.removeIf(i -> !i.getCoachId().equals(user.getUid()));
+            appointmentList.removeIf(i -> !i.getStudentId().equals(user.getUid()) || !i.getCoachId().equals(user.getUid()));
         } else {
             appointmentList.removeIf(i -> !i.getStudentId().equals(user.getUid()));
         }
