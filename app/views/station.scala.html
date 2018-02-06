@@ -11,7 +11,7 @@
                 @if(UserController.getCurrentRole == null) {
                 localStorage.clear();
                 }
-                if ( localStorage.getItem("firebaseui::rememberedAccounts") !== null ) {
+                if (localStorage.getItem("firebaseui::rememberedAccounts") !== null) {
                     signout();
                 }
                 let uiConfig = {
@@ -27,7 +27,7 @@
                                 auth_id: Cookies.get("auth_id")
                             };
                             /* TODO: get mtu.edu from DB */
-                            if(!(user.email.split('@@')[1] === 'mtu.edu')){
+                            if (!(user.email.split('@@')[1] === 'mtu.edu')) {
                                 $.alert({
                                     title: 'Alert',
                                     content: 'Please sign-in using an @@mtu.edu email address',
@@ -36,7 +36,7 @@
                                             keys: ['enter'],
                                             text: "Okay",
                                             btnClass: "btn-primary",
-                                            action: function() {
+                                            action: function () {
                                                 signout();
                                             }
                                         }
@@ -50,8 +50,8 @@
                                     type: 'POST',
                                     data: JSON.stringify(userSignIn),
                                     contentType: 'application/json',
-                                    success: function() {
-                                        if(Cookies.get("auth_id") !== null){
+                                    success: function () {
+                                        if (Cookies.get("auth_id") !== null) {
                                             alert("ID: " + Cookies.get("auth_id"));
                                         }
                                     },
@@ -90,7 +90,8 @@
         <div class="loginJumbotron">
             <div class="jumbotron d-flex align-items-center">
                 <div class="container">
-                    <h1>Sign-In Station<br/><small>@SettingsController.getSettings.getCenterName</small></h1>
+                    <h1>Sign-In Station<br/>
+                        <small>@SettingsController.getSettings.getCenterName</small></h1>
                     <p>
                         Please <b>tap your ID card</b>
                         or sign-in below to view, schedule, and manage appointments at the @SettingsController.getSettings.getCenterName.
@@ -108,6 +109,7 @@
                     function clearID() {
                         ID = ""
                     }
+
                     window.onkeypress = function (event) {
                         let key = String.fromCharCode(event.keyCode || event.which);
                         if (!isNaN(key)) {
@@ -123,23 +125,23 @@
                                                 url: '/getUserByID/' + usedID,
                                                 type: 'GET',
                                                 success: function (response) {
-                                                    console.log(response);
-                                                    if($(response).attr("auth_id") === "") {
+                                                    if ($(response).attr("auth_id") === "") {
                                                         Cookies.set("auth_id", usedID);
                                                         $.confirm({
                                                             title: "ID card not registered",
-                                                            content: "Use the Google Sign-In to link an ID to your account",
+                                                            content: "Click the Google Sign-In button to link this ID to your account.",
                                                             buttons: {
                                                                 ok: {
-                                                                    text: "Link Card",
+                                                                    text: "Ok",
                                                                     btnClass: "btn-primary",
-                                                                    action: function() {
+                                                                    action: function () {
                                                                         authenticating = false;
                                                                     }
                                                                 },
                                                                 no: {
                                                                     text: "Cancel",
-                                                                    action: function() {
+                                                                    action: function () {
+                                                                        authenticating = false;
                                                                         ID = "";
                                                                         usedID = "";
                                                                     }
@@ -148,9 +150,30 @@
                                                         });
                                                     } else {
                                                         $.confirm({
+                                                            columnClass: "col-md-11",
                                                             title: "Hello, " + $(response).attr("displayName") + "!",
-                                                            content: "Etc",
-                                                        });                                                    }
+                                                            content: "What are you signing in to do:",
+                                                            type: "orange",
+                                                            theme: "modern",
+                                                            buttons: {
+                                                                studyTime: {
+                                                                    btnClass: "btn-primary",
+                                                                    text: "No appointment, using center resources",
+                                                                    action: function () {
+
+                                                                    }
+                                                                },
+                                                                cancel: {
+                                                                    text: "Cancel",
+                                                                    action: function() {
+                                                                        authenticating = false;
+                                                                        ID = "";
+                                                                        usedID = "";
+                                                                    }
+                                                                }
+                                                            },
+                                                        });
+                                                    }
                                                 }
                                             })
                                         }

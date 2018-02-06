@@ -89,7 +89,7 @@ public class UserDB {
                     document.getString("phone_number"),
                     Roles.getRole(document.getString("role")),
                     document.getBoolean("isCoach"),
-                    document.getString("ID")
+                    document.getString("auth_id")
             );
         }
         return userFound;
