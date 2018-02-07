@@ -30,7 +30,7 @@ public class LoginController extends Controller {
             session("newUser", "true");
         } else {
             if((u.getAuth_id() == null || u.getAuth_id().equals("")) && (json.findPath("auth_id").textValue() != null && !json.findPath("auth_id").textValue().equals(""))) {
-                u.setAuth_id(json.findPath("auth_id").asText());
+                u.setAuth_id(json.findPath("auth_id").asText().replaceAll("\r",""));
             }
             user = u;
         }
