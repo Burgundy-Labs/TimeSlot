@@ -36,10 +36,6 @@ public class Application {
             new MenuLinks("/Settings","Site Settings", "settings","Manage settings related to the center",true,false ) ,
             new MenuLinks("/Reports", "Reports", "assessment", "View reports and statistics about the center", true, false)
     );
-
-    public static int getRandomSeed() {
-        return ThreadLocalRandom.current().nextInt(0, 10000);
-    }
 }
 
 

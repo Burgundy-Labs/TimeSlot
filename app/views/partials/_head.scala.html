@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css"/>
 @* Add new stylesheets above this line *@
 <link rel="stylesheet" href="@routes.Assets.at("lib/bootstrap/css/bootstrap.css")">
-<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")?@Application.getRandomSeed">
+<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")?@Application.getConfig.getString("app.version")">
 @* Scripts *@
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
