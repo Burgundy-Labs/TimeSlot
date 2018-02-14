@@ -51,9 +51,11 @@
                         <div class="step-tab-panel" id="step3">
                             <div class="row mb-3 col-md-12">
                                 <div class="center">
-                                    <span class="badge" style="background-color: #FFB3B3">
-                                    One-Time Availability</span> <span class="badge" style="background-color: #B3B3FF">
-                                     Weekly Availability</span> <span class="badge" style="background-color: #D9B3D9">
+                                    <span class="badge" style="background-color: #FFF5CE">
+                                    One-Time Availability</span>
+                                    <span class="badge" style="background-color: #007AFF">
+                                     Weekly Availability</span>
+                                    <span class="badge" style="background-color: #BDEDD4">
                                      Both One-Time and Weekly Availability</span>
                                     <br/>
                                     <br/>
@@ -65,7 +67,7 @@
                                 <div class="mb-3 col-md-12" id="calendarContainer">
                                     <div id="newAppointmentCalendar"></div>
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-12 center">
                                 <button class="btn btn-primary col-3 center" onclick="createAppointment()">Create Appointment</button>
                                 </div>
                             </div>
@@ -97,9 +99,7 @@
                             const coachDropdown = $("#coachId");
                             coachDropdown.empty(); // remove old options
                             $.each(json, function (key, value) {
-                                if ('@currentUser.getUid' !== value.uid || (scheduleUser.userId !== null && scheduleUser.userId !== value.uid)) {
                                     coachDropdown.append("<option value='" + value.uid + "'>" + value.displayName + "</option>");
-                                }
                             });
                             if (coachDropdown.has('option').length === 0) {
                                 coachAvailable = false;
@@ -116,7 +116,6 @@
 
             /* Setup listener to detect changes */
             $(document).on("change", "#coachId", function (e) {
-                console.log("changed");
                 createMakeAppointmentCalendar();
             });
 
@@ -125,7 +124,6 @@
                 if ($('#newAppointmentCalendar').is(':visible')) { //if the container is visible on the page
                     /* if calendar exists - refresh events */
                     if($('#newAppointmentCalendar>*').length !== 0) {
-                        console.log("refetch");
                         $('#newAppointmentCalendar').fullCalendar( 'refetchEvents' );
                         return;
                     }
@@ -160,7 +158,7 @@
                                             end: moment($(this).attr('endDate')),
                                             dow: [moment($(this).attr('startDate')).isoWeekday()],
                                             rendering: 'background',
-                                            backgroundColor: "red",
+                                            backgroundColor: "#FFDE5C",
                                             canBeWeekly: $(this).attr("canBeWeekly"),
                                             canBeOneTime: $(this).attr("canBeOneTime"),
                                             oneTimeUsers: $(this).attr("oneTimeUsers"),
@@ -172,11 +170,11 @@
                                             event.start = moment($(this).attr('startDate')).format("HH:mm");
                                             event.end = moment($(this).attr('endDate')).format("HH:mm");
                                             if (event.canBeWeekly) {
-                                                event.backgroundColor = "blue";
+                                                event.backgroundColor = "#B3D7FF";
                                             }
                                         }
                                         if (event.canBeOneTime && event.canBeWeekly) {
-                                            event.backgroundColor = "purple";
+                                            event.backgroundColor = "#1DC570";
                                         }
                                         events.push(event);
                                     });

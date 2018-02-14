@@ -79,15 +79,13 @@ public class AvailabilityController extends Controller {
                         newAv.addOneTimeUser(currentAv.getUserid());
                     } else {
                         newAv.addWeeklyUser(currentAv.getUserid());
+                        newAv.addOneTimeUser(currentAv.getUserid());
                     }
                     availabilities.remove(j);
                     j--;
                 }
             }
             i--;
-            for ( String uId : newAv.getWeeklyUsers() ) {
-                newAv.addOneTimeUser(uId);
-            }
             if ( !newAv.getWeeklyUsers().isEmpty() ) {
                 newAv.setCanBeWeekly(true);
                 newAv.setCanBeOneTime(true);
@@ -97,7 +95,6 @@ public class AvailabilityController extends Controller {
             }
             newAvailabilites.add(newAv);
         }
-
         return newAvailabilites;
     }
 
