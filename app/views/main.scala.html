@@ -10,6 +10,9 @@
             @partials._head()
         </head>
         <body>
+            <div id="loader">
+                <img src="@routes.Assets.at("images/loader.gif")" height="100px">
+            </div>
             <main>
                 @partials._sidebar(title)
                 @helper.CSRF.formField

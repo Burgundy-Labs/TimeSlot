@@ -1,7 +1,7 @@
 @* Meta *@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 @* Icons *@
-<link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+<link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.ico")">
 @* Stylesheets *@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-lite/1.3.0/material.amber-blue.min.css" />
 <link href="https://fonts.googleapis.com/css?family=Encode+Sans+Expanded|Montserrat" rel="stylesheet">
@@ -44,7 +44,14 @@
       const csrfToken = $('input[name="csrfToken"]').attr('value');
       $.ajaxSetup({
           beforeSend: function (xhr) {
+              $('#loader').fadeIn();
               xhr.setRequestHeader('Csrf-Token', csrfToken);
+          },
+          complete: function() {
+              $('#loader').fadeOut();
+          },
+          success: function() {
+              $('#loader').fadeOut();
           }
       });
   });
