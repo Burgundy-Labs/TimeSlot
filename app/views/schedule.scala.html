@@ -220,7 +220,7 @@
                             else if (!valid) {
                                 $.alert({
                                     title: "Pick an appointment",
-                                    content: "The highlighted areas indicates available appointment slots.",
+                                    content: "The highlighted areas indicate available appointment slots.",
                                     buttons: {
                                         ok: {
                                             text: "Okay"
@@ -379,7 +379,7 @@
                                             },
                                             error: function () {
                                                 createAlert('danger', 'Appointment creation failed.');
-                                                location.reload();
+                                                window.location.href="/Dashboard";
                                             }
                                         });
                                     }
@@ -400,7 +400,7 @@
                                             contentType: 'application/json',
                                             success: function () {
                                                 createAlert("success", "Appointment Created!");
-                                                location.reload();
+                                                window.location.href="/Dashboard";
                                             },
                                             error: function () {
                                                 createAlert('danger', 'Appointment creation failed.');
@@ -412,10 +412,7 @@
                                     text: 'Cancel Appointment',
                                     btnClass: "mb-3 col-md-12",
                                     action: function () {
-                                        createAlert("warning", "Appointment Not Created");
-                                        selectedEvents = [];
-                                        /!* TODO have calendar  re-fetch on re-open *!/
-                                        location.reload();
+                                        creJAXteAlert("warning", "Appointment Not Created");
                                     }
                                 }
                             },
