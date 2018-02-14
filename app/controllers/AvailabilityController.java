@@ -133,6 +133,8 @@ public class AvailabilityController extends Controller {
 
         ArrayList<AvailabilityModel> toRemove = new ArrayList<>();
         for ( AvailabilityModel av : oneAvail ) {
+            av.setCanBeOneTime(true);
+            av.setCanBeWeekly(false);
             for ( AppointmentsModel ap : appointments ) {
                 Date availabilityStart = new DateTime(av.getStartDate()).toDate();
                 Date appointmentStart = new DateTime(ap.getStartDate()).toDate();
