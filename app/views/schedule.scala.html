@@ -51,12 +51,15 @@
                         <div class="step-tab-panel" id="step3">
                             <div class="row mb-3 col-md-12">
                                 <div class="center">
-                                    <span class="badge" style="background-color: #FFF5CE">
+                                    <span class="badge" style="background-color: #FFF5CE; border: 1px solid #5f5f5f; margin: 2px">
                                     One-Time Availability</span>
-                                    <span class="badge" style="background-color: #007AFF">
+
+                                    <span class="badge" style="background-color: #B3D7FF; border: 1px solid #5f5f5f; margin: 2px">
                                      Weekly Availability</span>
-                                    <span class="badge" style="background-color: #BDEDD4">
+
+                                    <span class="badge" style="background-color: #BDEDD4; border: 1px solid #5f5f5f; margin: 2px">
                                      Both One-Time and Weekly Availability</span>
+
                                     <br/>
                                     <br/>
                                     <label for="coachId">Select a Coach:</label>
@@ -168,7 +171,7 @@
                                             event.start = moment($(this).attr('startDate')).format("HH:mm");
                                             event.end = moment($(this).attr('endDate')).format("HH:mm");
                                             if (event.canBeWeekly) {
-                                                event.backgroundColor = "#B3D7FF";
+                                                event.backgroundColor = "#007AFF";
                                             }
                                         }
                                         if (event.canBeOneTime && event.canBeWeekly) {
