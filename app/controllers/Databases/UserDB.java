@@ -41,8 +41,6 @@ public class UserDB {
         assert querySnapshot != null;
         List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
         /* Iterate users and add them to a list for return */
-        ZonedDateTime now = ZonedDateTime.now();
-        ZonedDateTime thirtyDaysAgo = now.plusDays(-30);
         for (DocumentSnapshot document : documents) {
             ServiceModel service = new ServiceModel(
                     document.getId(),
@@ -269,6 +267,7 @@ public class UserDB {
             for (ServiceModel s : services) {
                 if (s.getServiceId().equals(serviceId)) {
                     coachesWithService.add(c);
+                    break;
                 }
             }
         }

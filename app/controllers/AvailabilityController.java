@@ -69,7 +69,6 @@ public class AvailabilityController extends Controller {
             availabilities.addAll(availableSlotsForCoach(coach.getUid(), startDate, endDate));
         }
         List<AvailabilityModel> newAvailabilites = new ArrayList<>();
-
         for ( int i = 0; i < availabilities.size(); i++ ) {
             AvailabilityModel newAv = new AvailabilityModel(null, "any", availabilities.get(i).getStartDate(), availabilities.get(i).getEndDate(), false);
             for ( int j = i; j < availabilities.size(); j++ ) {
@@ -101,20 +100,15 @@ public class AvailabilityController extends Controller {
     private List<AvailabilityModel> availableSlotsForCoach(String userId, Date startDate, Date endDate) {
         List<AvailabilityModel> availabilities;
         List<AppointmentsModel> appointments;
-
         availabilities = AvailabilityDB.getAvailabilitesForUser(userId, startDate, endDate);
         appointments = AppointmentsDB.getAppointmentsForUser("Coach", userId);
         makeAvailabilities(userId, availabilities);
-
         List<AvailabilityModel> oneAvail = new ArrayList<>();
         List<AvailabilityModel> weeklyAvail = new ArrayList<>();
-
         for ( AvailabilityModel av : availabilities ) {
             if ( av.getWeekly() ) {
-
                 Calendar availabilityDate = Calendar.getInstance();
                 availabilityDate.setTime(av.getStartDate());
-
                 Calendar startCalendar = Calendar.getInstance();
                 startCalendar.setTime(startDate);
                 Calendar newAvailability = Calendar.getInstance();
@@ -126,7 +120,6 @@ public class AvailabilityController extends Controller {
                 Date startTime = newAvailability.getTime();
                 newAvailability.add(Calendar.MINUTE, 30);
                 Date endTime = newAvailability.getTime();
-
                 weeklyAvail.add(new AvailabilityModel(
                         av.getavailabilityId(),
                         av.getUserid(),
@@ -140,8 +133,6 @@ public class AvailabilityController extends Controller {
 
         ArrayList<AvailabilityModel> toRemove = new ArrayList<>();
         for ( AvailabilityModel av : oneAvail ) {
-            av.setCanBeOneTime(true);
-            av.setCanBeWeekly(false);
             for ( AppointmentsModel ap : appointments ) {
                 Date availabilityStart = new DateTime(av.getStartDate()).toDate();
                 Date appointmentStart = new DateTime(ap.getStartDate()).toDate();
@@ -185,9 +176,7 @@ public class AvailabilityController extends Controller {
             }
         }
         weeklyAvail.removeAll(weeklyRemove);
-
-        List<AvailabilityModel> avails = new ArrayList<>();
-        avails.addAll(weeklyAvail);
+        List<AvailabilityModel> avails = new ArrayList<>(weeklyAvail);
         avails.addAll(oneAvail);
         return avails;
     }
