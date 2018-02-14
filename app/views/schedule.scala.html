@@ -113,14 +113,12 @@
                 });
             });
 
-
             /* Setup listener to detect changes */
             $(document).on("change", "#coachId", function (e) {
                 createMakeAppointmentCalendar();
             });
 
             function createMakeAppointmentCalendar() {
-
                 if ($('#newAppointmentCalendar').is(':visible')) { //if the container is visible on the page
                     /* if calendar exists - refresh events */
                     if($('#newAppointmentCalendar>*').length !== 0) {
@@ -284,37 +282,6 @@
             function removeAppointment(eventId) {
                 selectedEvents = selectedEvents.filter(obj => !obj.id === eventId);
                 $('#newAppointmentCalendar').fullCalendar('removeEvents', [eventId]);
-            }
-
-            function createNewAppointment(role, userId) {
-                scheduleUser.userRole = role;
-                scheduleUser.userId = userId;
-                let content = ` @{ partials.components._createNewAppointmentFlow() } `;
-                $.confirm({
-                    columnClass: 'col-11',
-                    containerFluid: true,
-                    title: "New Appointment",
-                    escapeKey: 'cancel',
-                    content: content,
-                    buttons: {
-                        cancel: {
-                            text: "Cancel",
-                            btnClass: "btn",
-                            action: function () {
-                                $('#newAppointmentCalendar').hide();
-                                createMakeAppointmentCalendar();
-                                location.reload();
-                            }
-                        },
-                        submit: {
-                            text: 'Create Appointment',
-                            btnClass: 'btn-primary',
-                            keys: ['enter'],
-
-                        }
-                    }
-                });
-                makeStepper();
             }
 
             function createAppointment() {

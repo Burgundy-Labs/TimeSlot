@@ -87,31 +87,7 @@
         </div>
         <script type="text/javascript">
                 let appointments;
-
-                function deleteNotification(notificationId) {
-                    $.ajax({
-                        url: '/removeNotificationFromUser',
-                        data: JSON.stringify({
-                            userId: '@currentUser.getUid',
-                            notificationId: notificationId
-                        }),
-                        contentType: 'application/json',
-                        type: 'POST',
-                        success: function (response) {
-                            /* TODO load from AJAX so we don't have to reload or hide element from */
-                            createAlert("success", "Notification Removed.");
-                            $('.' + notificationId).hide();
-                        }
-                    })
-                }
-
                 $(document).ready(function () {
-
-                    $('.clearAll').on('click', function () {
-                        $('.deleteNotification').click();
-                        $(this).html("There are currently no notifications to display.");
-                    });
-
                     $('#appointmentCalendar').fullCalendar({
                         header: false,
                         defaultView: 'agendaWeek',
@@ -159,7 +135,7 @@
                                         weekCount++;
                                         events.push(event);
                                     });
-                                    $(".appointmentCount").html("You have " + upcomingCount + (upcomingCount === 1 ? " appointment this week." : " appointments this week."));
+                                    $(".appointmentCount").html("You have " + upcomingCount + (upcomingCount === 1 ? " remaining appointment this week." : " remaining appointments this week."));
                                     appointments = weekCount;
                                     callback(events);
                                 }
