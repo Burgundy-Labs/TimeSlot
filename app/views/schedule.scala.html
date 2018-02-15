@@ -183,7 +183,19 @@
                                 }
                             })
                         },
+                        viewRender: function(currentView) {
+                            var minDate = moment();
+                            if (minDate >= currentView.start && minDate <= currentView.end) {
+                                $(".fc-prev-button").prop('disabled', true);
+                                $(".fc-prev-button").addClass('fc-state-disabled');
+                            }
+                            else {
+                                $(".fc-prev-button").removeClass('fc-state-disabled');
+                                $(".fc-prev-button").prop('disabled', false);
+                            }
+                        },
                         eventRender: function (event, eventElement) {
+                            if(moment(event.start).isBefore(moment())){return false;}
                             eventElement.find("div.fc-content").prepend("<button onclick='removeAppointment(\"" + event.id + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
                         },
                         select: function (start, end, jsEvent, view) {

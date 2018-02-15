@@ -51,7 +51,6 @@ public class AvailabilityController extends Controller {
     public Result availableSlotsForAppointments(String userId, String start, String end, String serviceId) {
         Date startDate = DatatypeConverter.parseDateTime(start).getTime();
         Date endDate = DatatypeConverter.parseDateTime(end).getTime();
-
         List<AvailabilityModel> avails;
         if ( userId.equals("any") ) {
             avails = availableSlotsForAny(startDate, endDate, serviceId);
