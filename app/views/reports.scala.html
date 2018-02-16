@@ -23,17 +23,17 @@
                 <div class="mb-3 col-md-4">
                     <h1 class="center">Appointment Types</h1>
                     <br/>
-                    <canvas id="appointmentChart"></canvas>
+                    <canvas id="Type"></canvas>
                 </div>
                 <div class="mb-3 col-md-4">
                     <h1 class="center">Services</h1>
                     <br/>
-                    <canvas id="serviceChart"></canvas>
+                    <canvas id="Service"></canvas>
                 </div>
                 <div class="mb-3 col-md-4">
                     <h1 class="center">Weekly/One-Time</h1>
                     <br/>
-                    <canvas id="weeklyChart"></canvas>
+                    <canvas id="Weekly"></canvas>
                 </div>
             </div>
         </div>
@@ -52,27 +52,7 @@
 
                 function createCharts() {
                     getData();
-                    makeDivs();
                     makeCharts();
-                }
-                function makeDivs() {
-                    var container = document.getElementById('report-container');
-                    var row = document.createElement('div');
-                    let numOfRows = Math.ceil(Charts.length / 3);
-                    row.className = 'row';
-                    console.log(Charts.length);
-                    console.log('caleb');
-                    for (let j = 0; j < numOfRows; j++) {
-                        for (let i = 0; i < 3; i++) {
-                            var div = document.createElement('div');
-                            var canvas = document.createElement('canvas');
-                            canvas.id = Charts[(3*j)+i];
-                            div.className = 'col-md-4 md-3 ';
-                            div.appendChild(canvas);
-                            row.appendChild(div);
-                        }
-                        container.appendChild(row);
-                    }
                 }
                 function makeCharts() {
                     for (let i = 0; i< Charts.length; i++) {
@@ -81,10 +61,8 @@
                         $(chartData[i]).each(function (){
                             labels.push(Object.getOwnPropertyNames(this)[0]);
                             data.push(Object.values(this)[0]);
-                        })
-
+                        });
                         const chartone = document.getElementById(Charts[i]).getContext('2d');
-
                         if(chartone != null) {
                             new Chart(chartone, {
                                 type: 'doughnut',
@@ -100,13 +78,8 @@
                             })
                         }
                     }
-
-
-
-
                 }
                 function getData() {
-
                     $.ajax({
                         async: false,
                         url: '/AppointmentStatistics/'+ moment(reportStart.val()).valueOf()+"/"+moment(reportEnd.val()).valueOf(),
@@ -121,104 +94,6 @@
                         }
                     })
                 }
-
-
-                function createWeeklyChart() {
-                    let weeklyChartLabels = [];
-                    let weeklyChartData = [];
-                    const weeklyChart = document.getElementById('weeklyChart').getContext('2d');
-                    $.ajax({
-                        async: false,
-                        url: '/weeklyAppointmentStatistics/' + moment(reportStart.val()).valueOf() + "/" + moment(reportEnd.val()).valueOf(),
-                        type: 'GET',
-                        success: function (response) {
-                            $(response).each(function () {
-                                for (let i = 0; i < Object.getOwnPropertyNames(this).length; i++) {
-                                    weeklyChartLabels.push(Object.getOwnPropertyNames(this)[i]);
-                                    weeklyChartData.push(Object.values(this)[i]);
-                                }
-                            });
-                        }
-                    });
-                    new Chart(weeklyChart, {
-                        type: 'doughnut',
-                        data: {
-                            datasets: [{
-                                data: weeklyChartData,
-                                backgroundColor: palette('tol', weeklyChartData.length).map(function (hex) {
-                                    return '#' + hex;
-                                })
-                            }],
-                            labels : weeklyChartLabels,
-                        },
-                    });
-                }
-
-                function createServicesChart() {
-                    let servicesChartLabels = [];
-                    let servicesChartData = [];
-                    const serviceChart = document.getElementById('serviceChart').getContext('2d');
-                    $.ajax({
-                        async: false,
-                        url: '/serviceStatistics/' + moment(reportStart.val()).valueOf() + "/" + moment(reportEnd.val()).valueOf(),
-                        type: 'GET',
-                        success: function (response) {
-                            $(response).each(function () {
-                                for (let i = 0; i < Object.getOwnPropertyNames(this).length; i++) {
-                                    servicesChartLabels.push(Object.getOwnPropertyNames(this)[i]);
-                                    servicesChartData.push(Object.values(this)[i]);
-                                }
-                            });
-                        }
-                    });
-                    new Chart(serviceChart, {
-                        type: 'doughnut',
-                        data: {
-                            datasets: [{
-                                data: servicesChartData,
-                                backgroundColor: palette('tol', servicesChartData.length).map(function (hex) {
-                                    return '#' + hex;
-                                })
-                            }],
-                            labels: servicesChartLabels,
-                        },
-                    });
-                }
-
-                function createAppointmentChart() {
-                    let appointmentChartLabels = [];
-                    let appointmentChartData = [];
-                    /* Appointment Types Chart */
-                    const appointmentChart = document.getElementById('appointmentChart').getContext('2d');
-
-                    $.ajax({
-                        async: false,
-                        url: '/appointmentTypeStatistics/' + moment(reportStart.val()).valueOf() + "/" + moment(reportEnd.val()).valueOf(),
-                        type: 'GET',
-                        success: function (response) {
-                            $(response).each(function () {
-                                for (let i = 0; i < Object.getOwnPropertyNames(this).length; i++) {
-                                    appointmentChartLabels.push(Object.getOwnPropertyNames(this)[i]);
-                                    appointmentChartData.push(Object.values(this)[i]);
-                                }
-                            });
-                        }
-                    });
-
-                    new Chart(appointmentChart, {
-                        type: 'doughnut',
-                        data: {
-                            datasets: [{
-                                data: appointmentChartData,
-                                backgroundColor: palette('tol', appointmentChartData.length).map(function (hex) {
-                                    return '#' + hex;
-                                })
-                            }],
-                            labels: appointmentChartLabels,
-                        },
-                    });
-                }
-
         </script>
 
     }
