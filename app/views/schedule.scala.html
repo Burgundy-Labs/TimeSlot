@@ -217,7 +217,7 @@
                             }
                         },
                         eventRender: function (event, eventElement) {
-                            if(moment(event.start).isBefore(moment())){return false;}
+                            if(moment(event.start).isBefore(moment().subtract(10, "minutes"))){return false;}
                             eventElement.find("div.fc-content").prepend("<button onclick='removeAppointment(\"" + event.id + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
                         },
                         select: function (start, end, jsEvent, view) {
