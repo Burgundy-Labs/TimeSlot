@@ -334,14 +334,14 @@
                     let weeksAppointments = 0;
                     let usRole;
                     let usId;
-                    if (typeof scheduleUser.userRole !== "undefined") {
+                    if (scheduleUser.userRole) {
                         usRole = scheduleUser.userRole;
                         displayText = "This user has reached the maximum appointments allowed per week.";
                     } else {
                         usRole = '@currentUser.getRole';
                         displayText = "You've reached the maximum appointments allowed per week.";
                     }
-                    if (typeof scheduleUser.userId !== "undefined") {
+                    if (scheduleUser.userId) {
                         usId = scheduleUser.userId;
                     } else {
                         usId = '@currentUser.getUid';
