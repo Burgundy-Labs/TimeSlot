@@ -113,6 +113,29 @@ public class SettingsDB {
         return appointmentType;
     }
 
+    public static synchronized AppointmentTypeModel getAppointmentTypeByName(String appointmentTypeName){
+        AppointmentTypeModel appointmentType;
+        /* Asynchronously retrieve all users */
+        ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("settings").document("settings").collection("appointmentTypes").whereEqualTo("appointmentType", appointmentTypeName).get();
+        DocumentSnapshot documentSnapshot = null;
+        try {
+            /* Attempt to get a list of all users - blocking */
+            if ( query.get().getDocumentChanges().size() > 0 ) {
+                documentSnapshot = query.get().getDocuments().get(0);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        assert documentSnapshot != null;
+        appointmentType = new AppointmentTypeModel(
+                documentSnapshot.getId(),
+                documentSnapshot.getString("appointmentType"),
+                documentSnapshot.getBoolean("weekly"),
+                documentSnapshot.getBoolean("oneTime")
+        );
+        return appointmentType;
+    }
+
     public static synchronized void addService(ServiceModel service) {
         DocumentReference docRef;
         if(service.getServiceId() == null) {

@@ -174,4 +174,8 @@ public class SettingsController extends Controller {
         return  SettingsDB.getSettings();
     }
 
+    public static boolean getAppointmentTypeOneTime(String appointmentType) { return SettingsDB.getAppointmentTypeByName(appointmentType).getOneTime(); }
+
+    public static boolean getAppointmentTypeWeekly(String appointmentType) { return SettingsDB.getAppointmentTypeByName(appointmentType).getWeekly(); }
+
 }

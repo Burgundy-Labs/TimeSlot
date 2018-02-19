@@ -61,6 +61,7 @@
                         success: function (response) {
                             const events = [];
                             $(response).each(function () {
+
                                 const event = {
                                     id: $(this).attr('availabilityId'),
                                     title: "One-Time",
