@@ -54,16 +54,17 @@
                     getData();
                     makeCharts();
                 }
+
                 function makeCharts() {
                     for (let i = 0; i< Charts.length; i++) {
                         let labels = [];
                         let data = [];
-                        $(chartData[i]).each(function (){
-                            labels.push(Object.getOwnPropertyNames(this)[0]);
-                            data.push(Object.values(this)[0]);
+                        $.each(chartData[i], function( key, value ) {
+                            labels.push(key);
+                            data.push(value);
                         });
                         const chartone = document.getElementById(Charts[i]).getContext('2d');
-                        if(chartone != null) {
+                        if(chartone !== null) {
                             new Chart(chartone, {
                                 type: 'doughnut',
                                 data: {

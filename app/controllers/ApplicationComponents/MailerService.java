@@ -10,7 +10,6 @@ import play.libs.mailer.MailerClient;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -56,10 +55,10 @@ public class MailerService {
                 emailBody.append("&dates=").append(a.getStartDate().toInstant().toString().replaceAll("-", "").replaceAll(":", "")).append("/").append(a.getEndDate().toInstant().toString().replaceAll("-", "").replaceAll(":", "")).append("&details=").append(a.toString().replace("\n", "%0A").replace(" ", "+")).append("&location=").append(settings.getCenterName().replaceAll(" ", "+")).append("&sf=true").append("&output=xml\"").append("target=\"_blank\" rel=\"nofollow\">Add to my calendar</a> <br/>");
             }
             Date date = new Date();
-            DateFormat format = new SimpleDateFormat("MMMMM dd, yyyy");
+            DateFormat format = new SimpleDateFormat("EEEE MMMMM dd");
             String dateString = format.format(date);
             Email email = new Email()
-                    .setSubject("Appointment Reminder for " + dateString + " at the " + settings.getCenterName())
+                    .setSubject("Appointment Reminder: " + dateString + " at the " + settings.getCenterName())
                     .setFrom("Project Burgundy <" + Application.getConfig().getString("play.mailer.user") + ">")
                     .setBodyHtml(emailBody.toString());
             if (type.equals("Student")) {
