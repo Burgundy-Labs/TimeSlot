@@ -40,8 +40,8 @@ public class MailerService {
         SettingsModel settings = SettingsController.getSettings();
         /* Coach Email */
         StringBuilder emailBody = new StringBuilder("<p style=\"font-size:48px;color:#17C671;text-align:center;\">&#x23F3;</p><h1 style=\"text-align:center;\">Appointment Reminder</h1> <h3>Details:</h3>");
-        for (List<AppointmentsModel> l : appointments.values()) {
-            for (AppointmentsModel a : l) {
+        for (String l : appointments.keySet()) {
+            for (AppointmentsModel a : appointments.get(l)) {
                 emailBody.append("<div style=\"background-color:#EFF0F1; border-radius:4px; padding: 10px;\">");
                 emailBody.append(a.toHTMLString());
                 emailBody.append("</div>");
@@ -62,10 +62,10 @@ public class MailerService {
                     .setFrom("Project Burgundy <" + Application.getConfig().getString("play.mailer.user") + ">")
                     .setBodyHtml(emailBody.toString());
             if (type.equals("Student")) {
-                email.addTo(l.get(0).getStudentName() + "<" + l.get(0).getStudentEmail() + ">");
+                email.addTo(appointments.get(l).get(0).getStudentName() + "<" + appointments.get(l).get(0).getStudentEmail() + ">");
 
             } else if (type.equals("Coach")) {
-                email.addTo(l.get(0).getCoachName() + "<" + l.get(0).getCoachEmail() + ">");
+                email.addTo(appointments.get(l).get(0).getCoachName() + "<" + appointments.get(l).get(0).getCoachEmail() + ">");
 
             }
             mailerClient.send(email);
