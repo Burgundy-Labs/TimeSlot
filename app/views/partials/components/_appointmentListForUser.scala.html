@@ -86,7 +86,7 @@
                             2: $(this).attr('coachName'),
                             3: $(this).attr('appointmentType'),
                             4: $(this).attr('serviceType'),
-                            5: (!moment().isDST() && moment($(this).attr("startDate")).isDST()) ? moment($(this).attr('startDate')).subtract(1, 'hour').format("MM/DD/YYYY hh:mm") + " - " + moment($(this).attr('endDate')).subtract(1, 'hour').format("hh:mm A") : (moment().isDST() && !moment($(this).attr("startDate")).isDST()) ? moment($(this).attr('startDate')).add(1, 'hour').format("MM/DD/YYYY hh:mm") + " - " + moment($(this).attr('endDate')).add(1, 'hour').format("hh:mm A") : moment($(this).attr('startDate')).format("MM/DD/YYYY hh:mm") + " - " + moment($(this).attr('endDate')).format("hh:mm A"),
+                            5: moment(zonedDate($(this).attr('startDate'))).format("MM/DD/YYYY hh:mm") + " - " + moment(zonedDate($(this).attr('endDate'))).format("hh:mm A"),
                             6: @if(!currentUser.getRole.equals("Student")) {
                                     `<select data-id="${$(this).attr("appointmentId")}" class="custom-select attendanceSelect  ${($(this).attr("present") ? "success" : "danger")}-border" title="Appointment Attendance">
             <option value="${$(this).attr("present")}" selected>
@@ -95,11 +95,9 @@
             <option value="${!$(this).attr("present")}">
                 ${!$(this).attr("present") ? "&#10004;" : "&#x2716;"}
             </option>
-        </select>`
-                                            } else {
-                                            ` ${$(this).attr("present") ? "&#10004;" : "&#x2716;"}`
+        </select>` } else {` ${$(this).attr("present") ? "&#10004;" : "&#x2716;"}`
                             },
-                            7: $(this).attr('appointmentNotes'),
+                            7: `<span class="appointmentNotes">${$(this).attr('appointmentNotes')}</span>`,
                             8: @if(currentUser.getRole.equals("Student")) {
                             `<button class="no-button"><span class="action-primary"><a href="mailto:${$(this).attr("coachEmail")}" data-toggle="tooltip" data-placement="bottom" title="Email Coach" class="md-32"><i class="material-icons md-32">email</i></a></span></button>`
                                     } else {

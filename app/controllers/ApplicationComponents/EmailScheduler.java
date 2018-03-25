@@ -7,10 +7,7 @@ import play.Logger;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -22,6 +19,7 @@ public class EmailScheduler {
         schedule(new AppointmentEmailTask());
     }
     public void schedule(Runnable command) {
+        fixDatabase();
         LocalDateTime currentTime = LocalDateTime.now();
         LocalDateTime executionDate = LocalDateTime.of(currentTime.getYear(),
                 currentTime.getMonth(),
@@ -36,6 +34,16 @@ public class EmailScheduler {
         }
         long delay = TimeUnit.HOURS.toMillis(24); // repeat after 24 hours
         scheduler.scheduleWithFixedDelay(command, initialDelay, delay, TimeUnit.MILLISECONDS);
+    }
+
+    void fixDatabase() {
+        for(AppointmentsModel a : AppointmentsDB.getAppointmentsByDate(new Date(1520744400000L), new Date(1533960000000L))){
+            if(a.isWeekly()){
+                List<AppointmentsModel> weeklyList = AppointmentsDB.getWeeklyAppointmentsByWeeklyId(a.getWeeklyId());
+                
+            }
+            Logger.debug(a.getStartDate().toString());
+        }
     }
 
     private class AppointmentEmailTask implements Runnable {
