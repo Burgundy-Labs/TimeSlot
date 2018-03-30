@@ -40,9 +40,20 @@ public class EmailScheduler {
         for(AppointmentsModel a : AppointmentsDB.getAppointmentsByDate(new Date(1520744400000L), new Date(1533960000000L))){
             if(a.isWeekly()){
                 List<AppointmentsModel> weeklyList = AppointmentsDB.getWeeklyAppointmentsByWeeklyId(a.getWeeklyId());
-                
+                for ( AppointmentsModel app : weeklyList ) {
+                    if ( app.getStartDate().before(new Date(1520744400000L)) ) {
+                        Calendar c = Calendar.getInstance();
+                        c.setTime(a.getStartDate());
+                        c.add(Calendar.HOUR, -1);
+                        a.setStartDate(c.getTime());
+                        break;
+                    }
+                }
             }
-            Logger.debug(a.getStartDate().toString());
+            Calendar c = Calendar.getInstance();
+            c.setTime(a.getStartDate());
+            c.add(Calendar.HOUR, -1);
+            a.setStartDate(c.getTime());
         }
     }
 
