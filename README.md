@@ -12,7 +12,7 @@ In order to build and run Project Burgundy you will need multiple things.
 * An email account to send appointment reminders with
 
 ## First steps:
-* Clone the Project Burgundy repository
+* Clone the TimeSlot repository
 * Import as a current project in your IDE
 * Set up as a SBT shell (if available)
 
