@@ -44,9 +44,9 @@
                             <h4>Quick-Schedule</h4>
                         </div>
                         <div class="card-block">
-                            <button onclick="createNewAppointment()" class="btn btn-primary mb-3 col-12">
+                            <a href="/Schedule" class="btn btn-primary mb-3 col-12">
                                 Schedule New Appointment
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -87,36 +87,15 @@
         </div>
         <script type="text/javascript">
                 let appointments;
-
-                function deleteNotification(notificationId) {
-                    $.ajax({
-                        url: '/removeNotificationFromUser',
-                        data: JSON.stringify({
-                            userId: '@currentUser.getUid',
-                            notificationId: notificationId
-                        }),
-                        contentType: 'application/json',
-                        type: 'POST',
-                        success: function (response) {
-                            /* TODO load from AJAX so we don't have to reload or hide element from */
-                            createAlert("success", "Notification Removed.");
-                            $('.' + notificationId).hide();
-                        }
-                    })
-                }
-
                 $(document).ready(function () {
-
-                    $('.clearAll').on('click', function () {
-                        $('.deleteNotification').click();
-                        $(this).html("There are currently no notifications to display.");
-                    });
-
                     $('#appointmentCalendar').fullCalendar({
                         header: false,
                         defaultView: 'agendaWeek',
                         height: 'auto',
                         editable: false,
+                        eventClick: function(calEvent, jsEvent, view) {
+                            window.location = "/Appointments"
+                        },
                         weekends: false,
                         minTime: moment('@SettingsController.getSettings.getStartTime.toInstant').format("HH:mm"),
                         maxTime: moment('@SettingsController.getSettings.getEndTime.toInstant').format("HH:mm"),
@@ -156,14 +135,14 @@
                                         weekCount++;
                                         events.push(event);
                                     });
-                                    $(".appointmentCount").html("You have " + upcomingCount + (upcomingCount === 1 ? " appointment this week." : " appointments this week."));
+                                    $(".appointmentCount").html("You have " + upcomingCount + (upcomingCount === 1 ? " remaining appointment this week." : " remaining appointments this week."));
                                     appointments = weekCount;
                                     callback(events);
                                 }
                             })
                         },
                     });
-                    if ( (new Date()).getDay() == 6 ) {
+                    if ( (new Date()).getDay() === 6 ) {
                         $('#appointmentCalendar').fullCalendar('next');
                     }
                 });

@@ -21,11 +21,11 @@ GET         /MakeAppointment                                                    
 GET         /availableSlots/:userId/:start/:end                                  controllers.AvailabilityController.availableSlots(userId: String, start: String, end: String)
 GET         /availableSlotsForAppointments/:userId/:start/:end/:serviceId        controllers.AvailabilityController.availableSlotsForAppointments(userId: String, start: String, end: String, serviceId: String)
 GET         /appointmentsForUser/:role/:userId/:start/:end                       controllers.AppointmentsController.appointmentsForUser(role: String, userId: String, start: String, end: String)
-GET         /appointmentsByDate/:role/:userId/:start/:end                       controllers.AppointmentsController.appointmentsByDate(role: String, userId: String, start: String, end: String)
+GET         /appointmentsByDate/:role/:userId/:start/:end                        controllers.AppointmentsController.appointmentsByDate(role: String, userId: String, start: String, end: String)
 GET         /Reports                                                             controllers.ReportsController.index
-GET         /appointmentTypeStatistics/:reportStart/:reportEnd                   controllers.ReportsController.appointmentTypeStatistics(reportStart: Long, reportEnd: Long)
-GET         /serviceStatistics/:reportStart/:reportEnd                           controllers.ReportsController.serviceStatistics(reportStart: Long, reportEnd: Long)
-GET         /weeklyAppointmentStatistics/:reportStart/:reportEnd                 controllers.ReportsController.weeklyAppointmentStatistics(reportStart: Long, reportEnd: Long)
+GET         /AppointmentStatistics/:reportStart/:reportEnd                       controllers.ReportsController.getAppointmentDate(reportStart: Long, reportEnd: Long)
+GET         /getUserByID/:ID                                                     controllers.StationController.getUserByID(ID: String)
+GET         /Schedule                                                            controllers.SchedulerController.index
 # POST requests
 POST        /signedIn                                                            controllers.LoginController.signedIn()
 POST        /updateUser                                                          controllers.UserController.updateUser()

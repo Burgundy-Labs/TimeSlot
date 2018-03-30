@@ -24,7 +24,7 @@ public class AvailabilityController extends Controller {
 
     public Result createAvailability() {
         String userRole = UserController.getCurrentRole();
-        if(!userRole.equals("Coach") || !userRole.equals("Admin")){
+        if(userRole == null || userRole.equals("Student")){
             return forbidden(views.html.error_pages.unauthorized.render());
         }
    /* Get user object from request */
@@ -51,7 +51,6 @@ public class AvailabilityController extends Controller {
     public Result availableSlotsForAppointments(String userId, String start, String end, String serviceId) {
         Date startDate = DatatypeConverter.parseDateTime(start).getTime();
         Date endDate = DatatypeConverter.parseDateTime(end).getTime();
-
         List<AvailabilityModel> avails;
         if ( userId.equals("any") ) {
             avails = availableSlotsForAny(startDate, endDate, serviceId);
@@ -69,7 +68,6 @@ public class AvailabilityController extends Controller {
             availabilities.addAll(availableSlotsForCoach(coach.getUid(), startDate, endDate));
         }
         List<AvailabilityModel> newAvailabilites = new ArrayList<>();
-
         for ( int i = 0; i < availabilities.size(); i++ ) {
             AvailabilityModel newAv = new AvailabilityModel(null, "any", availabilities.get(i).getStartDate(), availabilities.get(i).getEndDate(), false);
             for ( int j = i; j < availabilities.size(); j++ ) {
@@ -79,15 +77,13 @@ public class AvailabilityController extends Controller {
                         newAv.addOneTimeUser(currentAv.getUserid());
                     } else {
                         newAv.addWeeklyUser(currentAv.getUserid());
+                        newAv.addOneTimeUser(currentAv.getUserid());
                     }
                     availabilities.remove(j);
                     j--;
                 }
             }
             i--;
-            for ( String uId : newAv.getWeeklyUsers() ) {
-                newAv.addOneTimeUser(uId);
-            }
             if ( !newAv.getWeeklyUsers().isEmpty() ) {
                 newAv.setCanBeWeekly(true);
                 newAv.setCanBeOneTime(true);
@@ -97,27 +93,21 @@ public class AvailabilityController extends Controller {
             }
             newAvailabilites.add(newAv);
         }
-
         return newAvailabilites;
     }
 
     private List<AvailabilityModel> availableSlotsForCoach(String userId, Date startDate, Date endDate) {
         List<AvailabilityModel> availabilities;
         List<AppointmentsModel> appointments;
-
         availabilities = AvailabilityDB.getAvailabilitesForUser(userId, startDate, endDate);
         appointments = AppointmentsDB.getAppointmentsForUser("Coach", userId);
         makeAvailabilities(userId, availabilities);
-
         List<AvailabilityModel> oneAvail = new ArrayList<>();
         List<AvailabilityModel> weeklyAvail = new ArrayList<>();
-
         for ( AvailabilityModel av : availabilities ) {
             if ( av.getWeekly() ) {
-
                 Calendar availabilityDate = Calendar.getInstance();
                 availabilityDate.setTime(av.getStartDate());
-
                 Calendar startCalendar = Calendar.getInstance();
                 startCalendar.setTime(startDate);
                 Calendar newAvailability = Calendar.getInstance();
@@ -129,7 +119,6 @@ public class AvailabilityController extends Controller {
                 Date startTime = newAvailability.getTime();
                 newAvailability.add(Calendar.MINUTE, 30);
                 Date endTime = newAvailability.getTime();
-
                 weeklyAvail.add(new AvailabilityModel(
                         av.getavailabilityId(),
                         av.getUserid(),
@@ -188,9 +177,7 @@ public class AvailabilityController extends Controller {
             }
         }
         weeklyAvail.removeAll(weeklyRemove);
-
-        List<AvailabilityModel> avails = new ArrayList<>();
-        avails.addAll(weeklyAvail);
+        List<AvailabilityModel> avails = new ArrayList<>(weeklyAvail);
         avails.addAll(oneAvail);
         return avails;
     }
@@ -220,7 +207,7 @@ public class AvailabilityController extends Controller {
 
     public Result removeAvailability() {
         String userRole = UserController.getCurrentRole();
-        if(!userRole.equals("Coach") || !userRole.equals("Admin")){
+        if(userRole == null || userRole.equals("Student")){
             return forbidden(views.html.error_pages.unauthorized.render());
         }
         JsonNode json = request().body().asJson();

@@ -10,7 +10,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 @Singleton
@@ -24,7 +23,7 @@ public class EmailScheduler {
         LocalDateTime executionDate = LocalDateTime.of(currentTime.getYear(),
                 currentTime.getMonth(),
                 currentTime.getDayOfMonth(),
-                8, 0);
+                8,0);
         Logger.info("Email Reminder Service Started for - " + executionDate.getHour() + " : " + executionDate.getMinute());
         long initialDelay;
         if(currentTime.isAfter(executionDate)){
@@ -45,7 +44,14 @@ public class EmailScheduler {
             endDay.set(Calendar.HOUR_OF_DAY, 24);
             Logger.info("Checking for daily appointments.");
             List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsByDate(startDay.getTime(), endDay.getTime());
-            MailerService.sendAppointmentReminder(appointments);
+            HashMap<String, ArrayList<AppointmentsModel>> coachAppointments = new HashMap<>();
+            HashMap<String, ArrayList<AppointmentsModel>> studentAppointments = new HashMap<>();
+            for(AppointmentsModel a : appointments){
+                coachAppointments.computeIfAbsent(a.getCoachId(), k -> new ArrayList<>()).add(a);
+                studentAppointments.computeIfAbsent(a.getStudentId(), k -> new ArrayList<>()).add(a);
+            }
+            MailerService.sendAppointmentReminder(studentAppointments, "Student");
+            MailerService.sendAppointmentReminder(coachAppointments, "Coach");
         }
     }
 }

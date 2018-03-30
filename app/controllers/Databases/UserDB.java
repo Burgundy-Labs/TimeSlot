@@ -3,6 +3,7 @@ package controllers.Databases;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import controllers.ApplicationComponents.Roles;
+import controllers.UserController;
 import models.NotificationModel;
 import models.ServiceModel;
 import models.UsersModel;
@@ -40,8 +41,6 @@ public class UserDB {
         assert querySnapshot != null;
         List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
         /* Iterate users and add them to a list for return */
-        ZonedDateTime now = ZonedDateTime.now();
-        ZonedDateTime thirtyDaysAgo = now.plusDays(-30);
         for (DocumentSnapshot document : documents) {
             ServiceModel service = new ServiceModel(
                     document.getId(),
@@ -88,7 +87,37 @@ public class UserDB {
                     document.getId(),
                     document.getString("phone_number"),
                     Roles.getRole(document.getString("role")),
-                    document.getBoolean("isCoach")
+                    document.getBoolean("isCoach"),
+                    document.getString("auth_id")
+            );
+        }
+        return userFound;
+    }
+
+    public static UsersModel getUserByID(String ID) {
+        /* Return null user if none found */
+        UsersModel userFound = null;
+        /* Get the specific user reference from the DB*/
+        ApiFuture<QuerySnapshot> docRef = FirestoreDB.get().collection("users").whereEqualTo("auth_id", ID).get();
+        List<QueryDocumentSnapshot> documents = null;
+        try {
+            documents = docRef.get().getDocuments();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        assert documents != null;
+        if (documents.size() > 0 && documents.get(0) != null) {
+            DocumentSnapshot d = documents.get(0);
+            userFound = new UsersModel(
+                    d.getString("display_name"),
+                    d.getString("email"),
+                    d.getBoolean("email_verified"),
+                    d.getString("photo_url"),
+                    d.getId(),
+                    d.getString("phone_number"),
+                    Roles.getRole(d.getString("role")),
+                    d.getBoolean("isCoach"),
+                    d.getString("auth_id")
             );
         }
         return userFound;
@@ -117,7 +146,8 @@ public class UserDB {
                     document.getId(),
                     document.getString("phone_number"),
                     Roles.getRole(document.getString("role")),
-                    document.getBoolean("isCoach")
+                    document.getBoolean("isCoach"),
+                    document.getString("auth_id")
             );
             userList.add(user);
         }
@@ -151,7 +181,8 @@ public class UserDB {
                         document.getId(),
                         document.getString("phone_number"),
                         Roles.getRole(document.getString("role")),
-                        document.getBoolean("isCoach")
+                        document.getBoolean("isCoach"),
+                        document.getString("auth_id")
                 );
                 userList.add(user);
             }
@@ -183,7 +214,8 @@ public class UserDB {
                         document.getId(),
                         document.getString("phone_number"),
                         Roles.getRole(document.getString("role")),
-                        document.getBoolean("isCoach")
+                        document.getBoolean("isCoach"),
+                        document.getString("auth_id")
                 );
                 userList.add(user);
             }
@@ -215,7 +247,8 @@ public class UserDB {
                         document.getId(),
                         document.getString("phone_number"),
                         Roles.getRole(document.getString("role")),
-                        document.getBoolean("isCoach")
+                        document.getBoolean("isCoach"),
+                        document.getString("auth_id")
                 );
                 userList.add(user);
             }
@@ -227,10 +260,14 @@ public class UserDB {
         List<UsersModel> coachesWithService = new ArrayList<>();
         List<UsersModel> coaches = getCoaches();
         for (UsersModel c : coaches) {
+            if(UserController.getCurrentUser().getUid().equals(c.getUid())){
+                continue;
+            }
             List<ServiceModel> services = getServicesForUser(c.getUid());
             for (ServiceModel s : services) {
                 if (s.getServiceId().equals(serviceId)) {
                     coachesWithService.add(c);
+                    break;
                 }
             }
         }
@@ -259,6 +296,7 @@ public class UserDB {
             }
             data.put("isCoach", user.isCoach());
         }
+        data.put("auth_id", user.getAuth_id());
         /* Asynchronously write user into DB */
         ApiFuture<WriteResult> result = docRef.set(data);
         result.isDone();

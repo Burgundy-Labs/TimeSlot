@@ -124,7 +124,6 @@ public class AppointmentsDB {
         /* Asynchronously retrieve all appointments */
         ApiFuture<QuerySnapshot> coachQuery = FirestoreDB.get().collection("appointments").whereGreaterThan("start_date",new Date()).orderBy("start_date", Query.Direction.ASCENDING).whereEqualTo("coachId",userId).limit(5).get();
         ApiFuture<QuerySnapshot> studentQuery = FirestoreDB.get().collection("appointments").whereGreaterThan("start_date",new Date()).orderBy("start_date", Query.Direction.ASCENDING).whereEqualTo("studentId",userId).limit(5).get();
-
         QuerySnapshot querySnapshotCoach = null;
         QuerySnapshot querySnapshotStudent = null;
         try {
@@ -194,7 +193,7 @@ public class AppointmentsDB {
         UsersModel user = UserDB.getUser(userId);
         List<AppointmentsModel> appointmentList = getAppointmentsByDate(start, end);
         if( user.getRole().equals("Coach") || (user.isCoach() != null && user.isCoach())){
-            appointmentList.removeIf(i -> !i.getCoachId().equals(user.getUid()));
+            appointmentList.removeIf(i -> !i.getCoachId().equals(user.getUid()) && !i.getStudentId().equals(user.getUid()));
         } else {
             appointmentList.removeIf(i -> !i.getStudentId().equals(user.getUid()));
         }
@@ -240,6 +239,46 @@ public class AppointmentsDB {
             } else {
                 break;
             }
+        }
+        return appointmentList;
+    }
+
+
+    public static synchronized List<AppointmentsModel> getWeeklyAppointmentsByWeeklyId(String weeklyId) {
+        List<AppointmentsModel> appointmentList = new ArrayList<>();
+        /* Asynchronously retrieve all appointments */
+        ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("appointments").whereEqualTo("weeklyId", weeklyId).get();
+        QuerySnapshot querySnapshot = null;
+        try {
+            /* Attempt to get a list of all appointments - blocking */
+            querySnapshot = query.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        assert querySnapshot != null;
+        List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
+        /* Iterate appointments and add them to a list for return */
+        for (DocumentSnapshot document : documents) {
+                AppointmentsModel appointment = new AppointmentsModel(
+                        document.getId(),
+                        document.getDate("start_date"),
+                        document.getDate("end_date"),
+                        document.getString("studentId"),
+                        document.getString("studentName"),
+                        document.getString("studentEmail"),
+                        document.getString("studentPhoto"),
+                        document.getString("coachId"),
+                        document.getString("coachName"),
+                        document.getString("coachEmail"),
+                        document.getString("coachPhoto"),
+                        document.getString("appointment_notes"),
+                        document.getString("coach_notes"),
+                        document.getBoolean("present"),
+                        document.getString("appointment_type"),
+                        document.getString("service_type"),
+                        document.getBoolean("weekly"),
+                        document.getString("weeklyId"));
+                appointmentList.add(appointment);
         }
         return appointmentList;
     }

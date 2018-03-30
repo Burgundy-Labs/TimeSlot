@@ -1,6 +1,6 @@
 @()
     @main("Reports", "Reports") {
-        <div class="col-12">
+        <div class="col-md-12" id="report-container">
             <div class="row">
                 <div class="form-group mb-3 col-md-6">
                     <div class="row">
@@ -23,17 +23,17 @@
                 <div class="mb-3 col-md-4">
                     <h1 class="center">Appointment Types</h1>
                     <br/>
-                    <canvas id="appointmentChart"></canvas>
+                    <canvas id="Type"></canvas>
                 </div>
                 <div class="mb-3 col-md-4">
                     <h1 class="center">Services</h1>
                     <br/>
-                    <canvas id="serviceChart"></canvas>
+                    <canvas id="Service"></canvas>
                 </div>
                 <div class="mb-3 col-md-4">
                     <h1 class="center">Weekly/One-Time</h1>
                     <br/>
-                    <canvas id="weeklyChart"></canvas>
+                    <canvas id="Weekly"></canvas>
                 </div>
             </div>
         </div>
@@ -51,12 +51,36 @@
                 });
 
                 function createCharts() {
-                    createServicesChart();
-                    createAppointmentChart();
-                    createWeeklyChart();
+                    getData();
+                    makeCharts();
+                }
+
+                function makeCharts() {
+                    for (let i = 0; i< Charts.length; i++) {
+                        let labels = [];
+                        let data = [];
+                        $.each(chartData[i], function( key, value ) {
+                            labels.push(key);
+                            data.push(value);
+                        });
+                        const chartone = document.getElementById(Charts[i]).getContext('2d');
+                        if(chartone !== null) {
+                            new Chart(chartone, {
+                                type: 'doughnut',
+                                data: {
+                                    datasets: [{
+                                        data: data,
+                                        backgroundColor: palette('tol', data.length).map(function (hex) {
+                                            return '#' + hex;
+                                        })
+                                    }],
+                                    labels: labels,
+                                },
+                            })
+                        }
+                    }
                 }
                 function getData() {
-
                     $.ajax({
                         async: false,
                         url: '/AppointmentStatistics/'+ moment(reportStart.val()).valueOf()+"/"+moment(reportEnd.val()).valueOf(),
@@ -71,121 +95,6 @@
                         }
                     })
                 }
-                function makeCharts() {
-                    let numberOfCharts = Chart.length;
-                    let numberOfRows =   Math.ceil(numberOfCharts/3);
-                    var row;
-                    var div;
-                    for (let i = 0; i < numberOfRows; i++){
-                        row = document.createElement('div');
-                        row.className = 'row '+i;
-                        for( let j= 0; j < 2; j++){
-                            div = document.createElement('div');
-                            div.className = 'col-md-1';
-                            div.id = 'hello';
-
-                        }
-                    }
-
-
-                }
-
-                function createWeeklyChart() {
-                    let weeklyChartLabels = [];
-                    let weeklyChartData = [];
-                    const weeklyChart = document.getElementById('weeklyChart').getContext('2d');
-                    $.ajax({
-                        async: false,
-                        url: '/weeklyAppointmentStatistics/' + moment(reportStart.val()).valueOf() + "/" + moment(reportEnd.val()).valueOf(),
-                        type: 'GET',
-                        success: function (response) {
-                            $(response).each(function () {
-                                for (let i = 0; i < Object.getOwnPropertyNames(this).length; i++) {
-                                    weeklyChartLabels.push(Object.getOwnPropertyNames(this)[i]);
-                                    weeklyChartData.push(Object.values(this)[i]);
-                                }
-                            });
-                        }
-                    });
-                    new Chart(weeklyChart, {
-                        type: 'doughnut',
-                        data: {
-                            datasets: [{
-                                data: weeklyChartData,
-                                backgroundColor: palette('tol', weeklyChartData.length).map(function (hex) {
-                                    return '#' + hex;
-                                })
-                            }],
-                            labels : weeklyChartLabels,
-                        },
-                    });
-                }
-
-                function createServicesChart() {
-                    let servicesChartLabels = [];
-                    let servicesChartData = [];
-                    const serviceChart = document.getElementById('serviceChart').getContext('2d');
-                    $.ajax({
-                        async: false,
-                        url: '/serviceStatistics/' + moment(reportStart.val()).valueOf() + "/" + moment(reportEnd.val()).valueOf(),
-                        type: 'GET',
-                        success: function (response) {
-                            $(response).each(function () {
-                                for (let i = 0; i < Object.getOwnPropertyNames(this).length; i++) {
-                                    servicesChartLabels.push(Object.getOwnPropertyNames(this)[i]);
-                                    servicesChartData.push(Object.values(this)[i]);
-                                }
-                            });
-                        }
-                    });
-                    new Chart(serviceChart, {
-                        type: 'doughnut',
-                        data: {
-                            datasets: [{
-                                data: servicesChartData,
-                                backgroundColor: palette('tol', servicesChartData.length).map(function (hex) {
-                                    return '#' + hex;
-                                })
-                            }],
-                            labels: servicesChartLabels,
-                        },
-                    });
-                }
-
-                function createAppointmentChart() {
-                    let appointmentChartLabels = [];
-                    let appointmentChartData = [];
-                    /* Appointment Types Chart */
-                    const appointmentChart = document.getElementById('appointmentChart').getContext('2d');
-
-                    $.ajax({
-                        async: false,
-                        url: '/appointmentTypeStatistics/' + moment(reportStart.val()).valueOf() + "/" + moment(reportEnd.val()).valueOf(),
-                        type: 'GET',
-                        success: function (response) {
-                            $(response).each(function () {
-                                for (let i = 0; i < Object.getOwnPropertyNames(this).length; i++) {
-                                    appointmentChartLabels.push(Object.getOwnPropertyNames(this)[i]);
-                                    appointmentChartData.push(Object.values(this)[i]);
-                                }
-                            });
-                        }
-                    });
-
-                    new Chart(appointmentChart, {
-                        type: 'doughnut',
-                        data: {
-                            datasets: [{
-                                data: appointmentChartData,
-                                backgroundColor: palette('tol', appointmentChartData.length).map(function (hex) {
-                                    return '#' + hex;
-                                })
-                            }],
-                            labels: appointmentChartLabels,
-                        },
-                    });
-                }
-
         </script>
 
     }
