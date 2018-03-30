@@ -11,6 +11,7 @@
     let endDateTime;
     $(document).ready(function () {
         createMakeAppointmentCalendar();
+
         $(document).on("change", '#serviceType', function (e) {
             const service = $(this).val();
             $.ajax({
@@ -33,6 +34,11 @@
                 }
             });
         });
+        $( "#appointmentType").change(function() {
+            console.log('test');
+            $('#newAppointmentCalendar').fullCalendar('refetchEvents');
+        });
+
     });
 
     function createMakeAppointmentCalendar() {
@@ -301,7 +307,6 @@
                                                 if (form.coachId === "any") {
                                                     form.coachId = appointment.weeklyUsers[Math.floor(Math.random() * appointment.weeklyUsers.length)];
                                                 }
-                                                /!* Create appointment Here*!/
                                                 $.ajax({
                                                     url: '/createAppointment',
                                                     type: 'POST',
@@ -313,7 +318,6 @@
                                                     },
                                                     error: function () {
                                                         createAlert('danger', 'Appointment creation failed.');
-                                                        location.reload();
                                                     }
                                                 });
                                             }
@@ -326,7 +330,6 @@
                                                 if (form.coachId === "any") {
                                                     form.coachId = appointment.oneTimeUsers[Math.floor(Math.random() * appointment.oneTimeUsers.length)];
                                                 }
-                                                /!* Create appointment Here*!/
                                                 $.ajax({
                                                     url: '/createAppointment',
                                                     type: 'POST',
@@ -348,8 +351,6 @@
                                             action: function () {
                                                 createAlert("warning", "Appointment Not Created");
                                                 selectedEvents = [];
-                                                /!* TODO have calendar  re-fetch on re-open *!/
-                                                location.reload();
                                             }
                                         }
                                     },

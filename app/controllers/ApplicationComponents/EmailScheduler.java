@@ -19,7 +19,6 @@ public class EmailScheduler {
         schedule(new AppointmentEmailTask());
     }
     public void schedule(Runnable command) {
-        fixDatabase();
         LocalDateTime currentTime = LocalDateTime.now();
         LocalDateTime executionDate = LocalDateTime.of(currentTime.getYear(),
                 currentTime.getMonth(),
@@ -34,35 +33,6 @@ public class EmailScheduler {
         }
         long delay = TimeUnit.HOURS.toMillis(24); // repeat after 24 hours
         scheduler.scheduleWithFixedDelay(command, initialDelay, delay, TimeUnit.MILLISECONDS);
-    }
-
-    void fixDatabase() {
-        for(AppointmentsModel a : AppointmentsDB.getAppointmentsByDate(new Date(1520744400000L), new Date(1533960000000L))){
-            if(a.isWeekly()){
-                List<AppointmentsModel> weeklyList = AppointmentsDB.getWeeklyAppointmentsByWeeklyId(a.getWeeklyId());
-                for ( AppointmentsModel app : weeklyList ) {
-                    if ( app.getStartDate().before(new Date(1520744400000L)) ) {
-                        Calendar appCalendarEnd = Calendar.getInstance();
-                        appCalendarEnd.setTime(app.getEndDate());
-                        Calendar aCalendarEnd = Calendar.getInstance();
-                        aCalendarEnd.setTime(a.getEndDate());
-                        aCalendarEnd.set(Calendar.HOUR, appCalendarEnd.get(Calendar.HOUR));
-                        aCalendarEnd.set(Calendar.MINUTE, appCalendarEnd.get(Calendar.MINUTE));
-
-                        Calendar appCalendarStart = Calendar.getInstance();
-                        appCalendarStart.setTime(app.getStartDate());
-                        Calendar aCalendarStart = Calendar.getInstance();
-                        aCalendarStart.setTime(a.getStartDate());
-                        aCalendarStart.set(Calendar.HOUR, appCalendarStart.get(Calendar.HOUR));
-                        aCalendarStart.set(Calendar.MINUTE, appCalendarStart.get(Calendar.MINUTE));
-                        a.setStartDate(aCalendarStart.getTime());
-                        a.setEndDate(aCalendarEnd.getTime());
-                        AppointmentsDB.addAppointment(a);
-                        break;
-                    }
-                }
-            }
-        }
     }
 
     private class AppointmentEmailTask implements Runnable {
