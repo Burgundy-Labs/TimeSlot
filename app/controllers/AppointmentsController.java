@@ -64,6 +64,7 @@ public class AppointmentsController extends Controller {
     }
 
     private void createWeeklyAppointments(JsonNode json, String uniqueId) {
+        Calendar startDate = DatatypeConverter.parseDateTime(json.findPath("startDate").textValue());
         Calendar currentDate = DatatypeConverter.parseDateTime(json.findPath("startDate").textValue());
         Calendar endDate = DatatypeConverter.parseDateTime(json.findPath("endDate").textValue());
         Calendar semesterEnd = Calendar.getInstance();
@@ -75,8 +76,22 @@ public class AppointmentsController extends Controller {
             newAppointment.setCoachId(json.findPath("coachId").textValue());
             newAppointment.setStudentId(json.findPath("studentId").textValue());
             newAppointment.setAppointmentType(json.findPath("appointmentType").textValue());
-            newAppointment.setStartDate(currentDate.getTime());
-            newAppointment.setEndDate(endDate.getTime());
+
+            Calendar startWeeklyDate = Calendar.getInstance();
+            startWeeklyDate.setTime(currentDate.getTime());
+            Calendar endWeeklyDate = Calendar.getInstance();
+            endWeeklyDate.setTime(endDate.getTime());
+
+            if (!TimeZone.getTimeZone( "US/Michigan").inDaylightTime( startDate.getTime() ) && TimeZone.getTimeZone( "US/Michigan").inDaylightTime( currentDate.getTime() )) {
+                startWeeklyDate.add(Calendar.HOUR, -1);
+                endWeeklyDate.add(Calendar.HOUR, -1);
+            } else if (TimeZone.getTimeZone( "US/Michigan").inDaylightTime( startDate.getTime() ) && !TimeZone.getTimeZone( "US/Michigan").inDaylightTime( currentDate.getTime() )) {
+                startWeeklyDate.add(Calendar.HOUR, 1);
+                endWeeklyDate.add(Calendar.HOUR, 1);
+            }
+
+            newAppointment.setStartDate(startWeeklyDate.getTime());
+            newAppointment.setEndDate(endWeeklyDate.getTime());
             newAppointment.setAppointmentNotes(json.findPath("appointmentNotes").textValue());
             newAppointment.setPresent(Boolean.getBoolean(json.findPath("present").textValue()));
             newAppointment.setServiceType(json.findPath("serviceType").textValue());

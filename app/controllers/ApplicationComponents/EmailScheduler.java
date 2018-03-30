@@ -42,18 +42,26 @@ public class EmailScheduler {
                 List<AppointmentsModel> weeklyList = AppointmentsDB.getWeeklyAppointmentsByWeeklyId(a.getWeeklyId());
                 for ( AppointmentsModel app : weeklyList ) {
                     if ( app.getStartDate().before(new Date(1520744400000L)) ) {
-                        Calendar c = Calendar.getInstance();
-                        c.setTime(a.getStartDate());
-                        c.add(Calendar.HOUR, -1);
-                        a.setStartDate(c.getTime());
+                        Calendar appCalendarEnd = Calendar.getInstance();
+                        appCalendarEnd.setTime(app.getEndDate());
+                        Calendar aCalendarEnd = Calendar.getInstance();
+                        aCalendarEnd.setTime(a.getEndDate());
+                        aCalendarEnd.set(Calendar.HOUR, appCalendarEnd.get(Calendar.HOUR));
+                        aCalendarEnd.set(Calendar.MINUTE, appCalendarEnd.get(Calendar.MINUTE));
+
+                        Calendar appCalendarStart = Calendar.getInstance();
+                        appCalendarStart.setTime(app.getStartDate());
+                        Calendar aCalendarStart = Calendar.getInstance();
+                        aCalendarStart.setTime(a.getStartDate());
+                        aCalendarStart.set(Calendar.HOUR, appCalendarStart.get(Calendar.HOUR));
+                        aCalendarStart.set(Calendar.MINUTE, appCalendarStart.get(Calendar.MINUTE));
+                        a.setStartDate(aCalendarStart.getTime());
+                        a.setEndDate(aCalendarEnd.getTime());
+                        AppointmentsDB.addAppointment(a);
                         break;
                     }
                 }
             }
-            Calendar c = Calendar.getInstance();
-            c.setTime(a.getStartDate());
-            c.add(Calendar.HOUR, -1);
-            a.setStartDate(c.getTime());
         }
     }
 

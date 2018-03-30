@@ -14,15 +14,16 @@ function createAlert(alertType, messageHTML) {
 }
 
 function zonedDate(m) {
-    console.log(moment(m).format() + "    " + moment(m).isDST());
-    if ((!moment().isDST() && moment(m).isDST())) {
-        return moment(m).subtract(1, 'hour').tz("America/Detroit");
-    } else {
-        if ((moment().isDST() && !moment(m).isDST())) {
-            return moment(m).add(1, 'hour').tz("America/Detroit");
-        } else {
-            return moment(m).tz("America/New_York");
-        }
-    }
+    // console.log(moment(m).format() + "    " + moment(m).isDST());
+    // if ((!moment().isDST() && moment(m).isDST())) {
+    //     return moment(m).subtract(1, 'hour').tz("America/Detroit");
+    // } else {
+    //     if ((moment().isDST() && !moment(m).isDST())) {
+    //         return moment(m).add(1, 'hour').tz("America/Detroit");
+    //     } else {
+    //         return moment(m).tz("America/New_York");
+    //     }
+    // }
+    return m;
 }
 
