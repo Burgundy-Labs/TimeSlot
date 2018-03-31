@@ -1,16 +1,18 @@
 @(currentPage: String)
-@currentRole = @{UserController.getCurrentRole}
-    <div class="sidebar">
-        <div>
-            <img src="@routes.Assets.at("images/husky.png")" width="100%">
-        </div>
-            <nav class="sidebar-navigation">
-                @for(menuLink <- Application.menuLinks) {
-                    @if( (!menuLink.adminLocked && !menuLink.coachLocked) || (menuLink.coachLocked && currentRole != null && currentRole.equals("Coach")) || (menuLink.adminLocked && currentRole != null && currentRole.equals("Admin")) ) {
-                        <div @if(currentPage.equals(menuLink.menuText)) {
-                            class="currentPage"}>@partials.components._tooltipIconLink(menuLink.href, menuLink.mdlIcon, "right", menuLink.menuText, 32)</div>
-                    }
-                }
-                <div id="sign-out">@partials.components._tooltipIconLink("", "exit_to_app", "right", "Sign Out",32)</div>
-        </nav>
+@currentRole = @{
+    UserController.getCurrentRole
+}
+<div class="sidebar">
+    <div class="nav_logo">
+        <img src="@routes.Assets.at("images/husky.png")" >
     </div>
+    <nav class="sidebar-navigation">
+        @for(menuLink <- Application.menuLinks) {
+            @if((!menuLink.adminLocked && !menuLink.coachLocked) || (menuLink.coachLocked && currentRole != null && currentRole.equals("Coach")) || (menuLink.adminLocked && currentRole != null && currentRole.equals("Admin"))) {
+                <div @if(currentPage.equals(menuLink.menuText)) {
+                    class="currentPage"}>@partials.components._tooltipIconLink(menuLink.href, menuLink.mdlIcon, "right", menuLink.menuText, 32)</div>
+            }
+        }
+        <div id="sign-out">@partials.components._tooltipIconLink("", "exit_to_app", "right", "Sign Out", 32)</div>
+    </nav>
+</div>

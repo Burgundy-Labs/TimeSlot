@@ -65,9 +65,6 @@
                         provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
                         authMethod: "https://accounts.google.com",
                         clientId: '@Application.getConfig.getString("authConfig.clientId")',
-                        customParameters: {
-                            prompt: 'consent'
-                        },
                     }],
 
                     credentialHelper: firebaseui.auth.CredentialHelper.GOOGLE_YOLO,

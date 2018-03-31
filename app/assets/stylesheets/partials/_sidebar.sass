@@ -1,8 +1,9 @@
 @import "../global_variables"
-
+@import "../partials/_media-queries"
 //Sidebar
 .sidebar
-  img
+  .nav_logo img
+    width: 64px
     padding: 5px
   z-index: 99
   position: fixed
@@ -25,6 +26,21 @@
   left: 0
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23)
   box-sizing: border-box
+  #lines
+    display: none
+    border-bottom: 17px double black
+    border-top: 6px solid black
+    content: ""
+    height: 5px
+    width: 30px
+  @include mobile-only
+    nav
+      display: inherit
+      margin: 0 auto
+    .nav_logo
+      display: none
+    width: 100%
+    height: 64px
   .sidebar-navigation
     div
       padding: 10px 0 10px 0
@@ -33,9 +49,17 @@
       display: block
       &:hover
         color: darken($secondary-color, 15%)
+    @include mobile-only
+      div
+        padding: 5px
+        display: inline-block
   .currentPage
     border-right: 5px solid darken($primary-color, 5%)
     border-radius: 5px
+  @include mobile-only
+    .currentPage
+      border-right: none
+      border-bottom: 5px solid darken($primary-color, 5%)
   input[type=checkbox]
     display: none
   .mdl-layout-title
@@ -51,7 +75,6 @@
       display: block
       transition: 0.2s linear all
       -webkit-flex-shrink: 0
-      -ms-flex-negative: 0
       flex-shrink: 0
       text-align: center
       margin: 0
