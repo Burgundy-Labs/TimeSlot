@@ -25,9 +25,9 @@ window.addEventListener('load', function () {
 
 function signout() {
     firebase.auth().signOut().then(function() {
-        $.get( "/Logout", function( data ) {});
         sessionStorage.clear();
         localStorage.clear();
+        window.location="/Logout";
     }).catch(function(error) {
         console.log(error);
     });

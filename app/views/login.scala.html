@@ -66,9 +66,7 @@
                         authMethod: "https://accounts.google.com",
                         clientId: '@Application.getConfig.getString("authConfig.clientId")',
                         customParameters: {
-                            // Forces password re-entry.
-                            auth_type: 'reauthenticate',
-                            prompt: 'select_account'
+                            prompt: 'consent'
                         },
                     }],
 

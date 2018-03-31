@@ -47,6 +47,6 @@ public class LoginController extends Controller {
 
     public Result logout(){
         session().clear();
-        return redirect("/Login");
+        return redirect("/");
     }
 }

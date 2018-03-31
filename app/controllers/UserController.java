@@ -11,6 +11,8 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class UserController extends Controller {
@@ -91,6 +93,7 @@ public class UserController extends Controller {
 
     public Result getCoachesByService(String serviceId) {
         List<UsersModel> coaches = UserDB.getCoachesByService(serviceId);
+        coaches.sort(Comparator.comparing(UsersModel::getDisplayName));
         return ok(Json.toJson(coaches));
     }
 
