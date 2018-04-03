@@ -59,8 +59,8 @@
                 events: function (start, end, timezone, callback) {
                     startDateTime = moment(start).toISOString();
                     endDateTime = moment(end).toISOString();
-                    const coachId = $("#coachId :selected").val();
-                    const service = $("#serviceType :selected").val();
+                    const coachId = $("#coachId").find(":selected").val();
+                    const service = $("#serviceType").find(":selected").val();
                     $.ajax({
                         url: '/availableSlotsForAppointments/' + coachId + '/' + moment(start).toISOString() + '/' + moment(end).toISOString() + '/' + service,
                         type: 'GET',
