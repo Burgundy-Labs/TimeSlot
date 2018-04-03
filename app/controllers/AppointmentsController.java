@@ -83,11 +83,11 @@ public class AppointmentsController extends Controller {
             endWeeklyDate.setTime(endDate.getTime());
 
             if (!TimeZone.getTimeZone( "US/Michigan").inDaylightTime( startDate.getTime() ) && TimeZone.getTimeZone( "US/Michigan").inDaylightTime( currentDate.getTime() )) {
-                startWeeklyDate.add(Calendar.HOUR, -1);
-                endWeeklyDate.add(Calendar.HOUR, -1);
+                startWeeklyDate.add(Calendar.HOUR_OF_DAY, -1);
+                endWeeklyDate.add(Calendar.HOUR_OF_DAY, -1);
             } else if (TimeZone.getTimeZone( "US/Michigan").inDaylightTime( startDate.getTime() ) && !TimeZone.getTimeZone( "US/Michigan").inDaylightTime( currentDate.getTime() )) {
-                startWeeklyDate.add(Calendar.HOUR, 1);
-                endWeeklyDate.add(Calendar.HOUR, 1);
+                startWeeklyDate.add(Calendar.HOUR_OF_DAY, 1);
+                endWeeklyDate.add(Calendar.HOUR_OF_DAY, 1);
             }
 
             newAppointment.setStartDate(startWeeklyDate.getTime());

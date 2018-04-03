@@ -35,6 +35,35 @@ public class EmailScheduler {
         scheduler.scheduleWithFixedDelay(command, initialDelay, delay, TimeUnit.MILLISECONDS);
     }
 
+    void fixDatabase() {
+        for(AppointmentsModel a : AppointmentsDB.getAppointmentsByDate(new Date(1520744400000L), new Date(1533960000000L))){
+            if(a.isWeekly()){
+                List<AppointmentsModel> weeklyList = AppointmentsDB.getWeeklyAppointmentsByWeeklyId(a.getWeeklyId());
+                for ( AppointmentsModel app : weeklyList ) {
+                    if ( app.getStartDate().before(new Date(1520744400000L)) ) {
+                        Calendar appCalendarEnd = Calendar.getInstance();
+                        appCalendarEnd.setTime(app.getEndDate());
+                        Calendar aCalendarEnd = Calendar.getInstance();
+                        aCalendarEnd.setTime(a.getEndDate());
+                        aCalendarEnd.set(Calendar.HOUR_OF_DAY, appCalendarEnd.get(Calendar.HOUR_OF_DAY));
+                        aCalendarEnd.set(Calendar.MINUTE, appCalendarEnd.get(Calendar.MINUTE));
+
+                        Calendar appCalendarStart = Calendar.getInstance();
+                        appCalendarStart.setTime(app.getStartDate());
+                        Calendar aCalendarStart = Calendar.getInstance();
+                        aCalendarStart.setTime(a.getStartDate());
+                        aCalendarStart.set(Calendar.HOUR_OF_DAY, appCalendarStart.get(Calendar.HOUR_OF_DAY));
+                        aCalendarStart.set(Calendar.MINUTE, appCalendarStart.get(Calendar.MINUTE));
+                        a.setStartDate(aCalendarStart.getTime());
+                        a.setEndDate(aCalendarEnd.getTime());
+                        AppointmentsDB.addAppointment(a);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     private class AppointmentEmailTask implements Runnable {
         @Override
         public void run() {
