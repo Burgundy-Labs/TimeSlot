@@ -81,6 +81,32 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="form-group col-md-12 row">
+                                    <label for="weekDays" class="mb-3 col-md-12 mb-3 col-md-form-label">
+                                        Open Days in the Week
+                                    </label>
+                                    <div class="mb-3 pr-0 col">
+                                        <input id="sunday" class="form-control" type="button" name="sunday" value='Sunday' onclick="toggleDayOfWeek('sunday')">
+                                    </div>
+                                    <div class="mb-3 pr-0 pl-1 col">
+                                        <input id="monday" class="form-control" type="button" name="monday" value='Monday' onclick="toggleDayOfWeek('monday')">
+                                    </div>
+                                    <div class="mb-3 pr-0 pl-1 col">
+                                        <input id="tuesday" class="form-control" type="button" name="tuesday" value='Tuesday' onclick="toggleDayOfWeek('tuesday')">
+                                    </div>
+                                    <div class="mb-3 pr-0 pl-1 col">
+                                        <input id="wednesday" class="form-control" type="button" name="wednesday" value='Wednesday' onclick="toggleDayOfWeek('wednesday')">
+                                    </div>
+                                    <div class="mb-3 pr-0 pl-1 col">
+                                        <input id="thursday" class="form-control" type="button" name="thursday" value='Thursday' onclick="toggleDayOfWeek('thursday')">
+                                    </div>
+                                    <div class="mb-3 pr-0 pl-1 col">
+                                        <input id="friday" class="form-control" type="button" name="friday" value='Friday' onclick="toggleDayOfWeek('friday')">
+                                    </div>
+                                    <div class="mb-3 pr-0 pl-1 col">
+                                        <input id="saturday" class="form-control" type="button" name="saturday" value='Saturday' onclick="toggleDayOfWeek('saturday')">
+                                    </div>
+                                </div>
                                 <div class="form-group">
                                     <div class="mb-3 col-md-12">
                                         <button type="submit" onclick="return updateSettings()" class="btn btn-primary">
@@ -237,6 +263,10 @@
             function clearAlert() {
                 $("#siteAlert").val("");
                 changeSiteAlert();
+            }
+
+            function toggleDayOfWeek(day) {
+                $('#' + day).css({"background-color":"#4CAF50"});
             }
 
             function changeSiteAlert() {
