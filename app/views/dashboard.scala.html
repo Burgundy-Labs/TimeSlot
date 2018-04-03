@@ -137,7 +137,7 @@
                                     });
                                     $(".appointmentCount").html("You have " + upcomingCount + (upcomingCount === 1 ? " remaining appointment this week." : " remaining appointments this week."));
                                     appointments = weekCount;
-                                    @if(currentUser.isCoach) {
+                                    @if(currentUser.getRole.equals("Coach") || currentUser.getRole.equals("Admin") && currentUser.isCoach) {
                                         $.ajax({
                                             async: false,
                                             url: '/availableSlots/' + '@currentUser.getUid' + '/' + moment(start).toISOString() + '/' + moment(end).toISOString(),
