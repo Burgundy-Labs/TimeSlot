@@ -86,7 +86,7 @@ public class UsersModel {
     }
 
     public Boolean isCoach() {
-        return isCoach || (getRole().equals("Coach"));
+        return isCoach || (getRole() != null && getRole().equals("Coach"));
     }
 
     public void setIsCoach(Boolean coach) {
