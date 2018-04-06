@@ -2,7 +2,9 @@
     @currentSettings = @{
         SettingsController.getSettings
     }
-
+    @currentRole = @{
+        UserController.getCurrentRole
+    }
 <!DOCTYPE html>
     <html>
         <head>
@@ -14,12 +16,20 @@
                 <img src="@routes.Assets.at("images/loader.gif")" height="100px">
             </div>
             <main>
-                @partials._sidebar(title)
                 @helper.CSRF.formField
             <div class="page-content">
                     <div class="row page-title">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <h3>@pageHead</h3>
+                            <nav class="nav-icons row">
+                                @for(menuLink <- Application.menuLinks) {
+                                    @if((!menuLink.adminLocked && !menuLink.coachLocked) || (menuLink.coachLocked && currentRole != null && currentRole.equals("Coach")) || (menuLink.adminLocked && currentRole != null && currentRole.equals("Admin"))) {
+                                        <div @if(pageHead.equals(menuLink.menuText)) {
+                                            class="currentPage"}>@partials.components._tooltipIconLink(menuLink.href, menuLink.mdlIcon, "bottom", menuLink.menuText, 32)</div>
+                                    }
+                                }
+                                <div id="sign-out">@partials.components._tooltipIconLink("", "exit_to_app", "bottom", "Sign Out", 32)</div>
+                            </nav>
                         </div>
                         @if(!currentSettings.getSiteAlert.equals("")) {
                             <div class="col-md-6 site-alert">

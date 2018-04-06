@@ -11,7 +11,6 @@
     let endDateTime;
     $(document).ready(function () {
         createMakeAppointmentCalendar();
-
         $(document).on("change", '#serviceType', function (e) {
             const service = $(this).val();
             $.ajax({
@@ -49,6 +48,7 @@
                     end: moment('@SettingsController.getSettings.getSemesterEnd.toInstant').format("YYYY-MM-DD")
                 },
                 height: 'auto',
+                themeSystem: 'bootstrap4',
                 allDaySlot: false,
                 defaultView: 'agendaWeek',
                 editable: false,

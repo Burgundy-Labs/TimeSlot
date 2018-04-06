@@ -9,7 +9,7 @@ html, body
   margin: 0 auto
 
 body
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3e%3crect width='56' height='100' fill='%23ffffff'/%3e%3cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='%23F2F2F2' stroke-width='2'/%3e%3cpath d='M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34' fill='none' stroke='%23F5F7F7' stroke-width='2'/%3e%3c/svg%3e")
+  background: #F1F1F2
 
 main
   width: 100%
@@ -46,15 +46,15 @@ a
   margin: 0 auto
 
 .page-title
-  color: #535353
-  background-color: #F8F8F8
+  color: white
+  background: -webkit-linear-gradient(-25deg, rgb(90, 45, 195), rgb(0, 121, 255))
+  background: linear-gradient(-25deg, rgb(90, 45, 195), rgb(0, 121, 255))
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)
   margin-left: 0
   margin-right: 0
   h3
     padding: 10px
-  @include mobile-only
-    margin-top: 65px
+    float: left
 
 .site-alert
   background-color: #D9534F
@@ -65,20 +65,15 @@ a
     margin-right: 0
 
 .page-content
-  margin-left: 65px
   height: 100vh
   overflow-y: scroll
   border-radius: 4px
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)
   transition: all 0.3s cubic-bezier(.25, .8, .25, 1)
-  background-color: #ffffff
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='105' viewBox='0 0 80 105'%3E%3Cg fill-rule='evenodd'%3E%3Cg id='death-star' fill='%23eeeeee' fill-opacity='0.4'%3E%3Cpath d='M20 10a5 5 0 0 1 10 0v50a5 5 0 0 1-10 0V10zm15 35a5 5 0 0 1 10 0v50a5 5 0 0 1-10 0V45zM20 75a5 5 0 0 1 10 0v20a5 5 0 0 1-10 0V75zm30-65a5 5 0 0 1 10 0v50a5 5 0 0 1-10 0V10zm0 65a5 5 0 0 1 10 0v20a5 5 0 0 1-10 0V75zM35 10a5 5 0 0 1 10 0v20a5 5 0 0 1-10 0V10zM5 45a5 5 0 0 1 10 0v50a5 5 0 0 1-10 0V45zm0-35a5 5 0 0 1 10 0v20a5 5 0 0 1-10 0V10zm60 35a5 5 0 0 1 10 0v50a5 5 0 0 1-10 0V45zm0-35a5 5 0 0 1 10 0v20a5 5 0 0 1-10 0V10z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E")
   @include mobile-only
     margin-left: 0
 
 .content
-  background: white
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)
+  background: #F1F1F2
   padding-bottom: 50px
 
 a i.material-icons
@@ -260,6 +255,14 @@ button
 
 .appointmentCount
   margin: 10px
+
+.nav-icons
+  float: right
+  display: inline-flex
+  padding: 5px
+  a
+    color: white
+    padding: 10px
 
 #createNewAppointmentForm .badge
   font-size: 90%
