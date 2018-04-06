@@ -54,7 +54,7 @@ a
   margin-right: 0
   h3
     padding: 10px
-    float: left
+    text-align: center
 
 .site-alert
   background-color: #D9534F
@@ -257,12 +257,29 @@ button
   margin: 10px
 
 .nav-icons
-  float: right
+  float: left
   display: inline-flex
-  padding: 5px
+  padding: 0 5px
+  .nav-icon
+    padding-top: 5px
+    &:hover
+      background-color: darken($primary-color, 5%)
   a
     color: white
-    padding: 10px
+    display: block
+    text-align: center
+    width: 125px
+    padding: 0 10px 5px
+    &:hover
+      text-decoration: none
+
+.currentPage
+  background-color: darken($primary-color, 10%)
+  border-radius: 4px
+
+.icon-text
+  padding: 0 10px 10px
+  display: block
 
 #createNewAppointmentForm .badge
   font-size: 90%
@@ -273,6 +290,7 @@ button
   display: none
   z-index: 99
   position: absolute
+  pointer-events: none
   img
     margin-left: 50vw
     margin-top: 50vh

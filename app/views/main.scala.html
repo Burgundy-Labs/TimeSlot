@@ -1,57 +1,57 @@
 @(title: String, pageHead: String)(content: Html)
-    @currentSettings = @{
-        SettingsController.getSettings
-    }
-    @currentRole = @{
-        UserController.getCurrentRole
-    }
+@currentSettings = @{
+    SettingsController.getSettings
+}
+@currentRole = @{
+    UserController.getCurrentRole
+}
 <!DOCTYPE html>
-    <html>
-        <head>
-            <title>@title</title>
-            @partials._head()
-        </head>
-        <body>
-            <div id="loader">
-                <img src="@routes.Assets.at("images/loader.gif")" height="100px">
-            </div>
-            <main>
-                @helper.CSRF.formField
+<html>
+    <head>
+        <title>@title</title>
+        @partials._head()
+    </head>
+    <body>
+        <div id="loader">
+            <img src="@routes.Assets.at("images/loader.gif")" height="100px">
+        </div>
+        <main>
+            @helper.CSRF.formField
             <div class="page-content">
-                    <div class="row page-title">
-                        <div class="col-md-12">
-                            <h3>@pageHead</h3>
-                            <nav class="nav-icons row">
-                                @for(menuLink <- Application.menuLinks) {
-                                    @if((!menuLink.adminLocked && !menuLink.coachLocked) || (menuLink.coachLocked && currentRole != null && currentRole.equals("Coach")) || (menuLink.adminLocked && currentRole != null && currentRole.equals("Admin"))) {
-                                        <div @if(pageHead.equals(menuLink.menuText)) {
-                                            class="currentPage"}>@partials.components._tooltipIconLink(menuLink.href, menuLink.mdlIcon, "bottom", menuLink.menuText, 32)</div>
-                                    }
+                <div class="row page-title">
+                    <div class="col-md-12">
+                        <nav class="nav-icons row">
+                            @for(menuLink <- Application.menuLinks) {
+                                @if((!menuLink.adminLocked && !menuLink.coachLocked) || (menuLink.coachLocked && currentRole != null && currentRole.equals("Coach")) || (menuLink.adminLocked && currentRole != null && currentRole.equals("Admin"))) {
+                                    <a href="@menuLink.href" class="nav-icon @if(title.equals(menuLink.menuText)) {currentPage}">
+                                        <i class="material-icons">@menuLink.mdlIcon</i><span class="icon-text">@menuLink.menuText</span></a>
                                 }
-                                <div id="sign-out">@partials.components._tooltipIconLink("", "exit_to_app", "bottom", "Sign Out", 32)</div>
-                            </nav>
-                        </div>
-                        @if(!currentSettings.getSiteAlert.equals("")) {
-                            <div class="col-md-6 site-alert">
-                                <div class="row">
-                                    <div class="col-md-1">
-                                        <i class="material-icons md-32">error</i>
-                                    </div>
-                                    <div class="col-md-11">
-                                        <div>@currentSettings.getSiteAlert</div>
-                                    </div>
+                            }
+                            <a id="sign-out" href="javascript:void(0)" class="nav-icon"><i class="material-icons">
+                                exit_to_app</i><span class="icon-text">Sign Out</span></a>
+                        </nav>
+                    </div>
+                    @if(!currentSettings.getSiteAlert.equals("")) {
+                        <div class="col-md-6 site-alert">
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <i class="material-icons md-32">error</i>
+                                </div>
+                                <div class="col-md-11">
+                                    <div>@currentSettings.getSiteAlert</div>
                                 </div>
                             </div>
-                        }
-                    </div>
-                    <div class="container-fluid content mb-3">
-                        <br/>
-                        <div class="row">
-                        @content
                         </div>
-                    </div>
-                    @partials._footer()
+                    }
                 </div>
-            </main>
-        </body>
-    </html>
+                <div class="container-fluid content mb-3">
+                    <br/>
+                    <div class="row">
+                    @content
+                    </div>
+                </div>
+                @partials._footer()
+            </div>
+        </main>
+    </body>
+</html>
