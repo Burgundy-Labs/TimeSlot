@@ -12,10 +12,6 @@ public class DashboardController extends Controller {
         if(currentRole == null) {
             return unauthorized(views.html.error_pages.unauthorized.render());
         }
-        if(session("newUser") != null && session("newUser").equals("true")){
-            session().remove("newUser");
-            return ok(views.html.dashboard.render()).withCookies(Http.Cookie.builder("newUser", "true").build());
-        }
         return ok(views.html.dashboard.render());
     }
 }

@@ -1,7 +1,6 @@
 @import controllers.Databases.AppointmentsDB
 @currentUser = @{UserController.getCurrentUser}
-<div class="table-responsive">
-<table class="table table-striped appointmentList" cellspacing="0" width="100%" id="next5Appointments">
+<table class="table appointmentList" cellspacing="0" width="100%" id="next5Appointments" style="width:100%">
     <thead>
         <tr>
             <th></th>
@@ -27,7 +26,7 @@
     }
     </tbody>
 </table>
-</div>
+
 
 <script type="text/javascript">
     $(document).ready(function () {

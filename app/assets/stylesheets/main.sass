@@ -1,5 +1,8 @@
 @import "global_variables"
 @import "partials/_media-queries"
+
+i.material-icons:before
+  display: none
 *
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
@@ -29,10 +32,10 @@ main
 
 @for $index from 1 through 6
   h#{$index}
-    font-family: 'Encode Sans Expanded', sans-serif
+    font-family: 'Nunito', sans-serif
 
 p
-  font-family: 'Montserrat', sans-serif
+  font-family: 'Nunito', sans-serif
 
 a
   color: $application-primary
@@ -40,6 +43,11 @@ a
 .mainContainer
   padding: 0
   margin: 0
+
+.user-avatar
+  border-radius: 100%
+  width: 50px
+  height: 50px
 
 .center
   text-align: center
@@ -257,11 +265,12 @@ button
   margin: 10px
 
 .nav-icons
-  float: left
   display: inline-flex
   padding: 0 5px
   .nav-icon
     padding-top: 5px
+    i
+      font-size: 24px
     &:hover
       background-color: darken($primary-color, 5%)
   a
@@ -280,6 +289,7 @@ button
 .icon-text
   padding: 0 10px
   display: block
+  font-size: 12px
 
 #createNewAppointmentForm .badge
   font-size: 90%
@@ -289,11 +299,14 @@ button
   height: 100vh
   display: none
   z-index: 99
-  position: absolute
+  position: fixed
   pointer-events: none
   img
-    margin-left: 50vw
-    margin-top: 50vh
+    position: fixed
+    top: 50%
+    left: 50%
+    margin-top: -100px
+    margin-left: -100px
 
 // Custom Scrollbar
 ::-webkit-scrollbar
