@@ -39,7 +39,7 @@
                             <h4>Center Information</h4>
                         </div>
                         <div class="card-block">
-                            <h6>@Html(SettingsController.getSettings.getCenterInformation)</h6>
+                            <h6>@Html(SettingsController.getSettings.getCenterInformation())</h6>
                         </div>
                     </div>
                 </div>
@@ -155,7 +155,6 @@
                         $('#appointmentCalendar').fullCalendar('next');
                     }
                 });
-
 
         </script>
         @partials.components._createNewAppointmentFlow_Scripts()

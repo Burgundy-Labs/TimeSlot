@@ -96,7 +96,7 @@
                         retrieve: true,
                         dom: 'frtlip',
                         order: [[5, 'asc']],
-                        responsive: true
+                        responsive: true,
                     });
                     t.DataTable().draw();
                     $.ajax({
@@ -162,6 +162,7 @@
                 function updateCoachNotes(appointmentId, coachNotes) {
                     $.confirm({
                         closeIcon: true,
+                        columnClass: "col-12",
                         title: 'Session Notes',
                         content: '' +
                         '<form action="" class="coachNoteForm">' +
@@ -172,6 +173,11 @@
                         '</form>',
                         escapeKey: true,
                         buttons: {
+                            cancel: {
+                                text: "Cancel",
+                                btnClass: "btn",
+                                keys: ["esc"]
+                            },
                             updateNotes: {
                                 text: 'Update Coach Notes',
                                 btnClass: 'btn-primary',
