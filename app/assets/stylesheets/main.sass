@@ -24,6 +24,9 @@ main
   border-radius: 4px
 
 .weekSelect
+  padding-top: 5px
+  margin: 0 auto
+  text-align: center
   .weekText
     width: 400px
     text-align: center
@@ -199,12 +202,20 @@ button
     opacity: 1
     -webkit-backface-visibility: hidden
 
-.userTable, #appointmentList
+.cardTable
   thead
-    background-color: black
+    background-color: #5932C3
     color: white
-  td
+  .table th, .table td
+    border-top: none
     vertical-align: middle
+  .dataTables_wrapper
+    padding: 0
+    margin: 0 auto
+    .row:first-child
+      height: 0
+  table.dataTable
+    margin-top: 0 !important
 
 .success-border
   border: 1px solid $application-secondary

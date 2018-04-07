@@ -1,7 +1,6 @@
 @()
 @main("Center", SettingsController.getSettings.getCenterName) {
     <div class="col-12">
-        <h1>All appointments</h1>
         @partials.components._appointmentListForUser(true)
     </div>
 }
