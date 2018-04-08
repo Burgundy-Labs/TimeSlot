@@ -1,11 +1,11 @@
-@( exception: Throwable)
+@(exception: Throwable)
 <!DOCTYPE html>
 <html>
     <head>
         <title>Server Error</title>
         @partials._head()
-    </head>
-    <body>
+        </head>
+    <body class="body_bg">
         <div class="loginJumbotron">
             <div class="jumbotron d-flex align-items-center">
                 <div class="container">
@@ -17,19 +17,33 @@
                     <br/>
                     <hr/>
                     <br/>
-                        <div class="span4 collapse-group">
-                            <h2>Additional Details <br/><small>(Send these to us!)</small></h2>
-                            <p><a class="btn" data-toggle="collapse" data-target="#viewdetails">View details &raquo;</a></p>
-                            <p class="collapse" id="viewdetails">
-                                <b>Exception Type: </b> @exception.toString <br/>
-                                <b>Stack Trace: </b> @exception.printStackTrace() <br/>
-                                <b>Message: </b> @exception.getMessage <br/>
-                                <b>Cause: </b> @exception.getCause <br/>
-                            </p>
+                    <div class="span4 collapse-group">
+                        <h2>Additional Details <br/><small>(Send these to us!)</small></h2>
+                        <p><a class="btn" data-toggle="collapse" data-target="#viewdetails">View details &raquo;</a></p>
+                        <div class="collapse" id="viewdetails">
+                            <button onclick="copyError()" class="btn btn-primary">Copy Error</button>
+                            <br/>
+                            <br/>
+                            <textarea type="text" id="error" title="error">
+                                @exception.toString
+                                @exception.getStackTrace
+                            </textarea>
                         </div>
+                    </div>
                 </div>
             </div>
         </div>
+        <script type="text/javascript">
+                function copyError() {
+                    let copyText = document.getElementById("error");
+                    copyText.select();
+                    document.execCommand("Copy");
+                    $.alert({
+                        title: 'Copied!',
+                        content: 'Error message copied, click "Send us a Message" and send it over.'
+                    })
+                }
+        </script>
         @partials._footer()
     </body>
 </html>

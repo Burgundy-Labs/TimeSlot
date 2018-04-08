@@ -1,7 +1,6 @@
-@(readAll: Boolean)
-    @currentUser = @{
-        UserController.getCurrentUser
-    }
+@import controllers.Databases.UserDB
+@(userId: String, readAll: Boolean)
+    @currentUser = @{UserDB.getUser(userId)}
     @currentSettings = @{
         SettingsController.getSettings
     }
@@ -9,6 +8,7 @@
         <div class="card-header">
             <h4 class="float-left">Appointment List</h4>
         </div>
+        <div class="card-body">
         <div class="weekSelect row col-12 ">
             <button onClick="prevWeek()" class="btn btn-primary"><i class="material-icons md-18">navigate_before</i></button>
             <div class="weekText"><h3><small><span class="weekSelected"></span></small></h3></div>
@@ -16,7 +16,7 @@
         </div>
         <br/>
         <div class="table-responsive cardTable">
-            <table class="table table-striped appointmentList col-md-12" cellspacing="0" width="100%" id="appointmentList">
+            <table class="table table-striped appointmentList col-md-12" cellspacing="0" width="100%" id="appointmentList" style="width:100%">
                 <thead>
                     <tr>
                         <th></th>
@@ -34,6 +34,7 @@
                 <tbody>
         </tbody>
             </table>
+        </div>
         </div>
     </div>
     @if((currentUser.isCoach != null && currentUser.isCoach) || currentUser.getRole.equals("Coach")) {

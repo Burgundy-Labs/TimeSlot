@@ -1,6 +1,5 @@
 @(user: UsersModel)
-
-@main("User", "User") {
+@main(user.getDisplayName, user.getDisplayName ) {
     <div class="mb-3 col-md-2">
         <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
             <a class="nav-link active" id="userInfoTab" data-toggle="pill" href="#userInfoContent" role="tab" aria-controls="userInfoContent" aria-selected="true">
@@ -22,7 +21,7 @@
                         </div>
                     </div>
                     <hr/>
-                    <h2>Appointments</h2>
+                    @partials.components._appointmentListForUser(user.getUid, false)
                 </div>
             </div>
             <div class="tab-pane fade" id="userSetingsContent" role="tabpanel" aria-labelledby="userSetingsTab">

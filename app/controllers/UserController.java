@@ -29,7 +29,6 @@ public class UserController extends Controller {
         if(userId == null) return notFound();
         UsersModel user = UserDB.getUser(userId);
         if(user == null) return notFound();
-
         return ok(views.html.user.render(user));
     }
 

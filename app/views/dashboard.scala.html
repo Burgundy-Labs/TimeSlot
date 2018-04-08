@@ -6,7 +6,7 @@
     @main("Dashboard", "Your Dashboard") {
         <div class="mb-3 col-md-12 dashCards">
             <div class="row">
-                <div class="mb-3 col-md-4">
+                <div class="mb-2 col-md-4">
                     <div class="card">
                         <div class="card-header">
                             <h4>Hello, @{
@@ -21,7 +21,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="mb-3 col-md-4">
+                <div class="mb-2 col-md-4">
                     <div class="card text-center">
                         <div class="card-header">
                             <h4>Quick-Schedule</h4>
@@ -33,7 +33,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="mb-3 col-md-4">
+                <div class="mb-2 col-md-4">
                     <div class="card">
                         <div class="card-header">
                             <h4>Center Information</h4>
@@ -46,7 +46,7 @@
             </div>
             <br/>
             <div class="row">
-                <div class="mb-3 col-md-6">
+                <div class="mb-2 col-md-6">
                     <div class="card">
                         <div class="card-header">
                             <h4>Appointment Calendar</h4>
@@ -56,7 +56,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="mb-3 col-md-6">
+                <div class="mb-2 col-md-6">
                     <div class="card nextFiveAppointments">
                         <div class="card-header">
                             <h4 class="float-left">Next Five Appointments</h4>
@@ -130,7 +130,7 @@
                                                 $(response).each(function () {
                                                     const event = {
                                                         id: 'background',
-                                                        rendering: 'background',
+                                                        rendering: 'inverse-background',
                                                         backgroundColor: '#B3B3B3',
                                                         start: moment($(this).attr('startDate')),
                                                         end: moment($(this).attr('endDate')),
