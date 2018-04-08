@@ -107,6 +107,14 @@ public class SettingsController extends Controller {
             settings.setStartTime(startTime);
             settings.setEndTime(endTime);
             settings.setMaximumAppointments(json.findPath("maxAppointments").asInt());
+            boolean[] daysOfWeek = {json.findPath("sunday").asBoolean(),
+                    json.findPath("monday").asBoolean(),
+                    json.findPath("tuesday").asBoolean(),
+                    json.findPath("wednesday").asBoolean(),
+                    json.findPath("thursday").asBoolean(),
+                    json.findPath("friday").asBoolean(),
+                    json.findPath("saturday").asBoolean()};
+            settings.setDaysOpenWeekly(daysOfWeek);
             /* Check if user is in DB */
             SettingsDB.changeSettings(settings);
             return ok();

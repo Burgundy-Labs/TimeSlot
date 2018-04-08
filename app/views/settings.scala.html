@@ -86,25 +86,25 @@
                                         Open Days in the Week
                                     </label>
                                     <div class="mb-3 pr-0 col">
-                                        <input id="sunday" class="form-control" type="button" name="sunday" value='Sunday' onclick="toggleDayOfWeek('sunday')">
+                                        <input id="sunday" class="form-control" type="button" data-state="true" name="sunday" value='Sunday' onclick="toggleDayOfWeek('sunday')">
                                     </div>
                                     <div class="mb-3 pr-0 pl-1 col">
-                                        <input id="monday" class="form-control" type="button" name="monday" value='Monday' onclick="toggleDayOfWeek('monday')">
+                                        <input id="monday" class="form-control" type="button" data-state="true" name="monday" value='Monday' onclick="toggleDayOfWeek('monday')">
                                     </div>
                                     <div class="mb-3 pr-0 pl-1 col">
-                                        <input id="tuesday" class="form-control" type="button" name="tuesday" value='Tuesday' onclick="toggleDayOfWeek('tuesday')">
+                                        <input id="tuesday" class="form-control" type="button" data-state="true" name="tuesday" value='Tuesday' onclick="toggleDayOfWeek('tuesday')">
                                     </div>
                                     <div class="mb-3 pr-0 pl-1 col">
-                                        <input id="wednesday" class="form-control" type="button" name="wednesday" value='Wednesday' onclick="toggleDayOfWeek('wednesday')">
+                                        <input id="wednesday" class="form-control" type="button" data-state="true" name="wednesday" value='Wednesday' onclick="toggleDayOfWeek('wednesday')">
                                     </div>
                                     <div class="mb-3 pr-0 pl-1 col">
-                                        <input id="thursday" class="form-control" type="button" name="thursday" value='Thursday' onclick="toggleDayOfWeek('thursday')">
+                                        <input id="thursday" class="form-control" type="button" data-state="true" name="thursday" value='Thursday' onclick="toggleDayOfWeek('thursday')">
                                     </div>
                                     <div class="mb-3 pr-0 pl-1 col">
-                                        <input id="friday" class="form-control" type="button" name="friday" value='Friday' onclick="toggleDayOfWeek('friday')">
+                                        <input id="friday" class="form-control" type="button" data-state="true" name="friday" value='Friday' onclick="toggleDayOfWeek('friday')">
                                     </div>
                                     <div class="mb-3 pr-0 pl-1 col">
-                                        <input id="saturday" class="form-control" type="button" name="saturday" value='Saturday' onclick="toggleDayOfWeek('saturday')">
+                                        <input id="saturday" class="form-control" type="button" data-state="true" name="saturday" value='Saturday' onclick="toggleDayOfWeek('saturday')">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -266,8 +266,16 @@
             }
 
             function toggleDayOfWeek(day) {
-                $('#' + day).css({"background-color":"#17C671"});
-                $('#' + day).css({"color":"#FFFFFF"});
+                var button = document.getElementById(day);
+                if ( button.getAttribute('data-state') == true ) {
+                    button.style.backgroundColor = '#FFFFFF';
+                    button.style.color = '#000000';
+                    button.setAttribute('data-state', 'false');
+                } else {
+                    button.style.backgroundColor = '#17C671';
+                    button.style.color = '#FFFFFF';
+                    button.setAttribute('data-state', 'true');
+                }
             }
 
             function changeSiteAlert() {
@@ -434,6 +442,13 @@
             });
 
             function updateSettings() {
+                var dow = [document.getElementById('sunday').getAttribute("data-state"),
+                    document.getElementById('monday').getAttribute("data-state"),
+                    document.getElementById('tuesday').getAttribute("data-state"),
+                    document.getElementById('wednesday').getAttribute("data-state"),
+                    document.getElementById('thursday').getAttribute("data-state"),
+                    document.getElementById('friday').getAttribute("data-state"),
+                    document.getElementById('saturday').getAttribute("data-state")];
                 const settings = {
                     universityName: $('#universityName').val(),
                     centerName: $('#centerName').val(),
@@ -441,7 +456,14 @@
                     semesterEnd: $('#semesterEnd').val(),
                     startTime: $('#startTime').val(),
                     endTime: $('#endTime').val(),
-                    maxAppointments: $('#maximumAppointments').val()
+                    maxAppointments: $('#maximumAppointments').val(),
+                    monday: tb[1],
+                    tuesday: tb[2],
+                    wednesday: tb[3],
+                    thursday: tb[4],
+                    friday: tb[5],
+                    saturday: tb[6],
+                    sunday:tb[0]
                 };
                 if (Date.parse(settings.semesterStart) >= Date.parse(settings.semesterEnd)) {
                     $.alert({
@@ -469,6 +491,18 @@
                         }
                     });
                     return false;
+                } else if ( tb[0] == false && tb[1] == false && tb[2] == false && tb[3] == false && tb[4] == false && tb[5] == false && tb[6] == false) {
+                    $.alert({
+                        title: 'Alert',
+                        content: 'The center must have at least one day open per week.',
+                        buttons: {
+                            confirm: {
+                                keys: ['enter'],
+                                text: "Okay",
+                                btnClass: "btn-primary",
+                            }
+                        }
+                    });
                 } else {
                     $.ajax({
                         url: '/updateSettings',

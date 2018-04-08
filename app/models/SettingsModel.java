@@ -12,6 +12,7 @@ public class SettingsModel {
     private String siteAlert;
     private String centerInformation;
     private Integer maximumAppointments;
+    private boolean[] daysOpenWeekly;
 
     public static SettingsModel replaceNull(SettingsModel settings) {
         if(settings == null) settings = new SettingsModel();
@@ -74,7 +75,15 @@ public class SettingsModel {
         return centerInformation;
     }
 
-    public void setCenterInformation(String centerInformation) {
-        this.centerInformation = centerInformation;
+    public void setCenterInformation(String centerInformation) { this.centerInformation = centerInformation; }
+
+    public boolean[] getDaysOpenWeekly() {
+        if ( daysOpenWeekly == null ) {
+            boolean[] days = {false, true, true, true, true, true, false};
+            daysOpenWeekly = days;
+        }
+        return daysOpenWeekly;
     }
+
+    public void setDaysOpenWeekly(boolean[] days) { daysOpenWeekly = days; }
 }

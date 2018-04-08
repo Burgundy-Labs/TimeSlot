@@ -201,6 +201,14 @@ public class SettingsDB {
         data.put("siteAlert", settings.getSiteAlert());
         data.put("centerInformation", settings.getCenterInformation());
         data.put("maximumAppointments", settings.getMaximumAppointments());
+        data.put("openSunday", settings.getDaysOpenWeekly()[0]);
+        data.put("openMonday", settings.getDaysOpenWeekly()[1]);
+        data.put("openTuesday", settings.getDaysOpenWeekly()[2]);
+        data.put("openWednesday", settings.getDaysOpenWeekly()[3]);
+        data.put("openThursday", settings.getDaysOpenWeekly()[4]);
+        data.put("openFriday", settings.getDaysOpenWeekly()[5]);
+        data.put("openSaturday", settings.getDaysOpenWeekly()[6]);
+
         /* Write settings to DB */
         ApiFuture<WriteResult> result = docRef.set(data);
         result.isDone();
