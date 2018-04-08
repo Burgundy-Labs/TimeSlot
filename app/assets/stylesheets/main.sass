@@ -3,6 +3,7 @@
 
 i.material-icons:before
   display: none
+
 *
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
@@ -80,9 +81,11 @@ a
   color: white
   background: -webkit-linear-gradient(-25deg, rgb(90, 45, 195), rgb(0, 121, 255))
   background: linear-gradient(-25deg, rgb(90, 45, 195), rgb(0, 121, 255))
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)
   margin-left: 0
   margin-right: 0
+  border-bottom-left-radius: 4px
+  border-bottom-right-radius: 4px
   h3
     padding: 10px
     text-align: center
@@ -98,7 +101,6 @@ a
 .page-content
   height: 100vh
   overflow-y: scroll
-  border-radius: 4px
   transition: all 0.3s cubic-bezier(.25, .8, .25, 1)
   @include mobile-only
     margin-left: 0
@@ -157,7 +159,7 @@ a i.material-icons
     background-color: white
     border-bottom: 10px solid $primary-color
     margin: 0 auto
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)
 
 .appointmentJumbotron
   margin: 0 auto
@@ -174,7 +176,7 @@ a i.material-icons
     background-color: white
     border-bottom: 10px solid $primary-color
     margin: 0 auto
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)
 
   p
     background-color: darken(white, 2%)
@@ -188,8 +190,8 @@ a i.material-icons
   width: 50px
   height: 50px
   border-radius: 100%
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)
-  transition: all 0.3s cubic-bezier(.25,.8,.25,1)
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)
+  transition: all 0.3s cubic-bezier(.25, .8, .25, 1)
 
 .userInfo
   display: block
