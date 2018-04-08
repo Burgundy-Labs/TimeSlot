@@ -1,5 +1,8 @@
 @import "global_variables"
 @import "partials/_media-queries"
+
+i.material-icons:before
+  display: none
 *
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
@@ -9,18 +12,35 @@ html, body
   margin: 0 auto
 
 body
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3e%3crect width='56' height='100' fill='%23ffffff'/%3e%3cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='%23F2F2F2' stroke-width='2'/%3e%3cpath d='M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34' fill='none' stroke='%23F5F7F7' stroke-width='2'/%3e%3c/svg%3e")
+  background: #F1F1F2
+
+.body_bg
+  background-color: #ffffff
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='105' viewBox='0 0 80 105'%3E%3Cg fill-rule='evenodd'%3E%3Cg id='death-star' fill='%23f1f1f2' fill-opacity='0.87'%3E%3Cpath d='M20 10a5 5 0 0 1 10 0v50a5 5 0 0 1-10 0V10zm15 35a5 5 0 0 1 10 0v50a5 5 0 0 1-10 0V45zM20 75a5 5 0 0 1 10 0v20a5 5 0 0 1-10 0V75zm30-65a5 5 0 0 1 10 0v50a5 5 0 0 1-10 0V10zm0 65a5 5 0 0 1 10 0v20a5 5 0 0 1-10 0V75zM35 10a5 5 0 0 1 10 0v20a5 5 0 0 1-10 0V10zM5 45a5 5 0 0 1 10 0v50a5 5 0 0 1-10 0V45zm0-35a5 5 0 0 1 10 0v20a5 5 0 0 1-10 0V10zm60 35a5 5 0 0 1 10 0v50a5 5 0 0 1-10 0V45zm0-35a5 5 0 0 1 10 0v20a5 5 0 0 1-10 0V10z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E")
 
 main
   width: 100%
   height: 100%
 
+.logo
+  float: right
+  padding: 10px
+
+.tab-content
+  background: white
+  padding: 15px
+  border-radius: 4px
+
 .weekSelect
+  padding-top: 5px
+  margin: 0 auto
+  text-align: center
   .weekText
-    width: 350px
+    width: 400px
     text-align: center
   button
-    height: 25px
+    padding: 0
+    height: 32px
   .weekSelected
     vertical-align: middle
     padding: 5px
@@ -29,10 +49,10 @@ main
 
 @for $index from 1 through 6
   h#{$index}
-    font-family: 'Encode Sans Expanded', sans-serif
+    font-family: 'Nunito', sans-serif
 
 p
-  font-family: 'Montserrat', sans-serif
+  font-family: 'Nunito', sans-serif
 
 a
   color: $application-primary
@@ -41,20 +61,31 @@ a
   padding: 0
   margin: 0
 
+.user-avatar
+  border-radius: 100%
+  width: 50px
+  height: 50px
+  border: 3px solid #F1F1F2
+
+.user-avatar-large
+  @extend .user-avatar
+  width: 100px
+  height: 100px
+
 .center
   text-align: center
   margin: 0 auto
 
 .page-title
-  color: #535353
-  background-color: #F8F8F8
+  color: white
+  background: -webkit-linear-gradient(-25deg, rgb(90, 45, 195), rgb(0, 121, 255))
+  background: linear-gradient(-25deg, rgb(90, 45, 195), rgb(0, 121, 255))
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)
   margin-left: 0
   margin-right: 0
   h3
     padding: 10px
-  @include mobile-only
-    margin-top: 65px
+    text-align: center
 
 .site-alert
   background-color: #D9534F
@@ -65,20 +96,15 @@ a
     margin-right: 0
 
 .page-content
-  margin-left: 65px
   height: 100vh
   overflow-y: scroll
   border-radius: 4px
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)
   transition: all 0.3s cubic-bezier(.25, .8, .25, 1)
-  background-color: #ffffff
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='105' viewBox='0 0 80 105'%3E%3Cg fill-rule='evenodd'%3E%3Cg id='death-star' fill='%23eeeeee' fill-opacity='0.4'%3E%3Cpath d='M20 10a5 5 0 0 1 10 0v50a5 5 0 0 1-10 0V10zm15 35a5 5 0 0 1 10 0v50a5 5 0 0 1-10 0V45zM20 75a5 5 0 0 1 10 0v20a5 5 0 0 1-10 0V75zm30-65a5 5 0 0 1 10 0v50a5 5 0 0 1-10 0V10zm0 65a5 5 0 0 1 10 0v20a5 5 0 0 1-10 0V75zM35 10a5 5 0 0 1 10 0v20a5 5 0 0 1-10 0V10zM5 45a5 5 0 0 1 10 0v50a5 5 0 0 1-10 0V45zm0-35a5 5 0 0 1 10 0v20a5 5 0 0 1-10 0V10zm60 35a5 5 0 0 1 10 0v50a5 5 0 0 1-10 0V45zm0-35a5 5 0 0 1 10 0v20a5 5 0 0 1-10 0V10z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E")
   @include mobile-only
     margin-left: 0
 
 .content
-  background: white
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)
+  background: #F1F1F2
   padding-bottom: 50px
 
 a i.material-icons
@@ -92,8 +118,12 @@ a i.material-icons
 
 .dashCards
   .card-header
-    background-color: $application-primary
+    padding-bottom: 5px
+    background-color: #1A1A1A
     color: white
+    h4
+      font-size: 1.2em
+      text-align: center
     h6
       font-weight: bold
     .mb-0 a
@@ -154,45 +184,17 @@ a i.material-icons
 .list-group-item
   color: black
 
-.action-black a
-  color: black
-
-.action-primary a
-  color: $application-primary
-
-.action-secondary a
-    color: $application-secondary
-
-.action-delete a
-  color: $application-tertiary
-
-.nav-pills .nav-link.active
-  background-color: $application-primary
-
-.application-primary
-  color: $application-primary
-
-.primary-background
-  background-color: $application-primary
-
-.application-secondary
-  color: $application-secondary
-
-.secondary-background
-  background-color: $application-secondary
-
-.application-tertiary
-  color: $application-tertiary
-
-.tertiary-background
-  background-color: $application-tertiary
-
 .userAvatar
   width: 50px
   height: 50px
   border-radius: 100%
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)
   transition: all 0.3s cubic-bezier(.25,.8,.25,1)
+
+.userInfo
+  display: block
+  margin: 0 auto
+  text-align: center
 
 #firebaseui-auth-container
   width: 100%
@@ -223,12 +225,25 @@ button
     opacity: 1
     -webkit-backface-visibility: hidden
 
-.userTable, #appointmentList
+.cardTable
   thead
-    background-color: $application-primary
+    background-color: #5932C3
     color: white
-  td
+  th
+    font-weight: normal
+  .table th, .table td
+    border-top: none
     vertical-align: middle
+  .dataTables_wrapper
+    padding: 0
+    margin: 0 auto
+  table.dataTable
+    margin-top: 0 !important
+
+.nextFiveAppointments
+  .dataTables_wrapper
+    .row:first-child
+      height: 0
 
 .success-border
   border: 1px solid $application-secondary
@@ -261,6 +276,33 @@ button
 .appointmentCount
   margin: 10px
 
+.nav-icons
+  display: inline-flex
+  padding: 0 5px
+  .nav-icon
+    padding-top: 5px
+    i
+      font-size: 24px
+    &:hover
+      background-color: darken($primary-color, 5%)
+  a
+    color: white
+    display: block
+    text-align: center
+    width: 125px
+    padding: 0 10px 5px
+    &:hover
+      text-decoration: none
+
+.currentPage
+  background-color: darken($primary-color, 10%)
+  border-radius: 4px
+
+.icon-text
+  padding: 0 10px
+  display: block
+  font-size: 12px
+
 #createNewAppointmentForm .badge
   font-size: 90%
 
@@ -269,10 +311,14 @@ button
   height: 100vh
   display: none
   z-index: 99
-  position: absolute
+  position: fixed
+  pointer-events: none
   img
-    margin-left: 50vw
-    margin-top: 50vh
+    position: fixed
+    top: 50%
+    left: 50%
+    margin-top: -100px
+    margin-left: -100px
 
 // Custom Scrollbar
 ::-webkit-scrollbar

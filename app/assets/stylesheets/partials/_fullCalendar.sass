@@ -1,10 +1,5 @@
 @import "../global_variables"
 
-.fc-event,.fc-unthemed .fc-popover .fc-header
-  background-color: $primary-color
-  border: none
-  width: 100%
-
 .fc-event
   &:hover
     cursor: pointer
@@ -12,25 +7,20 @@
 .fc-title, .fc-time
   color: white
 
-.fc-unthemed .fc-content
-  padding: 2px
+.fc-content
+  padding-left: 5px
 
-.fc-state-default
+.fc-event, .fc-event-dot
   color: $secondary-color
-  background: none
-  background-color: $primary-color
+  border-color: #582EC4
+  background: #582EC4 none
   text-shadow: none
   box-shadow: none
   
 .fc-title, .fc-time
-  color: $secondary-color
-
-.fc-unthemed td.fc-today
-  background: none
-
-.fc-unthemed thead tr
-  background-color: $application-primary
   color: white
+  padding-left: 5px
+  font-size: 1em !important
 
 td .fc-axis
   color: black !important
@@ -38,9 +28,6 @@ td .fc-axis
 .eventDelete
   color: white
   float: right !important
-
-.fc-unthemed td
-  border-color: #757575
 
 .fc-basic-view .fc-body .fc-row
   min-height: 100px

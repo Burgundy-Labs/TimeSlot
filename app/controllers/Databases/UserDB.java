@@ -7,6 +7,7 @@ import controllers.UserController;
 import models.NotificationModel;
 import models.ServiceModel;
 import models.UsersModel;
+import play.Logger;
 
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -94,7 +95,7 @@ public class UserDB {
         return userFound;
     }
 
-    public static UsersModel getUserByID(String ID) {
+    public static UsersModel getUserByAuth_Id(String ID) {
         /* Return null user if none found */
         UsersModel userFound = null;
         /* Get the specific user reference from the DB*/

@@ -175,6 +175,7 @@
                     }
                     $('#availabilitySchedule').fullCalendar({
                         height: 'auto',
+                        themeSystem: 'bootstrap4',
                         allDaySlot: false,
                         validRange: {
                             start: moment('@SettingsController.getSettings.getSemesterStart.toInstant').format("YYYY-MM-DD"),

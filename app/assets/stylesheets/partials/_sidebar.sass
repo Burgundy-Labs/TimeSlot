@@ -1,91 +1,91 @@
-@import "../global_variables"
-@import "../partials/_media-queries"
-//Sidebar
-.sidebar
-  .nav_logo img
-    width: 64px
-    padding: 5px
-  z-index: 99
-  position: fixed
-  transition: 0.2s linear all
-  text-align: center
-  background-color: $primary-color
-  float: left
-  height: 100vh
-  width: 64px
-  display: -webkit-flex
-  display: -ms-flexbox
-  display: flex
-  -webkit-flex-direction: column
-  -ms-flex-direction: column
-  flex-direction: column
-  -webkit-flex-wrap: nowrap
-  -ms-flex-wrap: nowrap
-  flex-wrap: nowrap
-  top: 0
-  left: 0
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23)
-  box-sizing: border-box
-  #lines
-    display: none
-    border-bottom: 17px double black
-    border-top: 6px solid black
-    content: ""
-    height: 5px
-    width: 30px
-  @include mobile-only
-    nav
-      display: inherit
-      margin: 0 auto
-    .nav_logo
-      display: none
-    width: 100%
-    height: 64px
-  .sidebar-navigation
-    div
-      padding: 10px 0 10px 0
-    a
-      color: $secondary-color
-      display: block
-      &:hover
-        color: darken($secondary-color, 15%)
-    @include mobile-only
-      div
-        padding: 4px
-        display: inline-block
-  .currentPage
-    border-right: 5px solid darken($primary-color, 5%)
-    border-radius: 5px
-  @include mobile-only
-    .currentPage
-      border-right: none
-      border-bottom: 5px solid darken($primary-color, 5%)
-  input[type=checkbox]
-    display: none
-  .mdl-layout-title
-    line-height: 64px
-  .mdl-navigation
-    -webkit-flex-direction: column
-    -ms-flex-direction: column
-    flex-direction: column
-    -webkit-align-items: stretch
-    -ms-flex-align: stretch
-    align-items: stretch
-    .mdl-navigation__link
-      display: block
-      transition: 0.2s linear all
-      -webkit-flex-shrink: 0
-      flex-shrink: 0
-      text-align: center
-      margin: 0
-      padding: 15px
-      @if (lightness($secondary-color) > 50)
-        color: $secondary-color
-      @else
-        color: $secondary-color
-      &:hover
-        color: darken($secondary-color, 15%)
-
-
-nav
-  overflow-y: auto
+//@import "../global_variables"
+//@import "../partials/_media-queries"
+////Sidebar
+//.sidebar
+//  .nav_logo img
+//    width: 64px
+//    padding: 5px
+//  z-index: 99
+//  position: fixed
+//  transition: 0.2s linear all
+//  text-align: center
+//  background-color: $primary-color
+//  float: left
+//  height: 100vh
+//  width: 64px
+//  display: -webkit-flex
+//  display: -ms-flexbox
+//  display: flex
+//  -webkit-flex-direction: column
+//  -ms-flex-direction: column
+//  flex-direction: column
+//  -webkit-flex-wrap: nowrap
+//  -ms-flex-wrap: nowrap
+//  flex-wrap: nowrap
+//  top: 0
+//  left: 0
+//  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23)
+//  box-sizing: border-box
+//  #lines
+//    display: none
+//    border-bottom: 17px double black
+//    border-top: 6px solid black
+//    content: ""
+//    height: 5px
+//    width: 30px
+//  @include mobile-only
+//    nav
+//      display: inherit
+//      margin: 0 auto
+//    .nav_logo
+//      display: none
+//    width: 100%
+//    height: 64px
+//  .sidebar-navigation
+//    div
+//      padding: 10px 0 10px 0
+//    a
+//      color: $secondary-color
+//      display: block
+//      &:hover
+//        color: darken($secondary-color, 15%)
+//    @include mobile-only
+//      div
+//        padding: 4px
+//        display: inline-block
+//  .currentPage
+//    border-right: 5px solid darken($primary-color, 5%)
+//    border-radius: 5px
+//  @include mobile-only
+//    .currentPage
+//      border-right: none
+//      border-bottom: 5px solid darken($primary-color, 5%)
+//  input[type=checkbox]
+//    display: none
+//  .mdl-layout-title
+//    line-height: 64px
+//  .mdl-navigation
+//    -webkit-flex-direction: column
+//    -ms-flex-direction: column
+//    flex-direction: column
+//    -webkit-align-items: stretch
+//    -ms-flex-align: stretch
+//    align-items: stretch
+//    .mdl-navigation__link
+//      display: block
+//      transition: 0.2s linear all
+//      -webkit-flex-shrink: 0
+//      flex-shrink: 0
+//      text-align: center
+//      margin: 0
+//      padding: 15px
+//      @if (lightness($secondary-color) > 50)
+//        color: $secondary-color
+//      @else
+//        color: $secondary-color
+//      &:hover
+//        color: darken($secondary-color, 15%)
+//
+//
+//nav
+//  overflow-y: auto

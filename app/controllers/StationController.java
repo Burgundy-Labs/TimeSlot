@@ -14,7 +14,7 @@ public class StationController {
     }
 
     public Result getUserByID(String ID){
-        UsersModel u = UserDB.getUserByID(ID);
+        UsersModel u = UserDB.getUserByAuth_Id(ID);
         if(u == null){
             u = new UsersModel();
             u.setRole(Roles.getRole("Student"));

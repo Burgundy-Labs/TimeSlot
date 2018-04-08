@@ -1,0 +1,43 @@
+@(user: UsersModel)
+@main(user.getDisplayName, user.getDisplayName ) {
+    <div class="mb-3 col-md-2">
+        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <a class="nav-link active" id="userInfoTab" data-toggle="pill" href="#userInfoContent" role="tab" aria-controls="userInfoContent" aria-selected="true">
+                User Information</a>
+            <a class="nav-link" id="userSetingsTab" data-toggle="pill" href="#userSetingsContent" role="tab" aria-controls="userSetingsContent" aria-selected="false">
+                User Settings</a>
+            <a class="nav-link" id="coachSettingsTab" data-toggle="pill" href="#coachSettingsContent" role="tab" aria-controls="coachSettingsContent" aria-selected="false">
+                Coach Settings</a>
+        </div>
+    </div>
+    <div class="mb-3 col-md-10">
+        <div class="tab-content" id="tabContent">
+            <div class="tab-pane fade show active" id="userInfoContent" role="tabpanel" aria-labelledby="userInfoTab">
+                <div class="mb-3 col-md-12">
+                    <div class="userInfo">
+                    <div class="user"><img src="@user.getPhotoURL" class="user-avatar-large mb-2"/><h1>@user.getDisplayName</h1></div>
+                        <div class="userButtons">
+                            @partials.components._tooltipIconLink("mailto:" + user.getEmail, "email", "bottom", user.getEmail, 32)
+                        </div>
+                    </div>
+                    <hr/>
+                    @partials.components._appointmentListForUser(user.getUid, false)
+                </div>
+            </div>
+            <div class="tab-pane fade" id="userSetingsContent" role="tabpanel" aria-labelledby="userSetingsTab">
+                <div class="mb-3 col-md-12">
+
+                </div>
+            </div>
+            <div class="tab-pane fade" id="coachSettingsContent" role="tabpanel" aria-labelledby="coachSettingsTab">
+                <div class="mb-3 col-md-12">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+
+    </script>
+}
+

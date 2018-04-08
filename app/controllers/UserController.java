@@ -25,6 +25,13 @@ public class UserController extends Controller {
         return ok(views.html.users.render());
     }
 
+    public Result userPage(String userId){
+        if(userId == null) return notFound();
+        UsersModel user = UserDB.getUser(userId);
+        if(user == null) return notFound();
+        return ok(views.html.user.render(user));
+    }
+
     public Result updateUser() {
         /* Get user object from request */
         JsonNode json = request().body().asJson();

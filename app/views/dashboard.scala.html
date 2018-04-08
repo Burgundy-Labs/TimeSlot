@@ -4,26 +4,9 @@
         UserController.getCurrentUser
     }
     @main("Dashboard", "Your Dashboard") {
-            <script type="text/javascript">
-                $(document).ready(function(){
-                    if (Cookies.get('newUser') === "true") {
-                        Cookies.remove('newUser');
-                        $(document).ready(function () {
-                            $.alert({
-                                title: "Welcome to Project Burgundy!",
-                                content: "Project Burgundy is a <b>beta</b> web app to handle appointment scheduling at learning centers <br/><br/>" +
-                                "We're MTU students who are constantly working to improve this application and provide a great scheduling experience for students. <br/><br/>" +
-                                "If you find <b>any</b> bugs or have any feature requests, please click on \"Feedback\" in the footer and send us a note! <br/><br/>" +
-                                "<b>Thank you</b> <br/>" +
-                                " - The Project Burgundy Team"
-                            });
-                        });
-                    }
-                });
-            </script>
         <div class="mb-3 col-md-12 dashCards">
             <div class="row">
-                <div class="mb-3 col-md-4">
+                <div class="mb-2 col-md-4">
                     <div class="card">
                         <div class="card-header">
                             <h4>Hello, @{
@@ -32,13 +15,13 @@
                         </div>
                         <div class="card-block">
                             <div class="row col-md-12">
-                                <img src="@currentUser.getPhotoURL" class="mdl-list__item-avatar mb-2"/>
+                                <img src="@currentUser.getPhotoURL" class="user-avatar mb-2"/>
                                 <span class="appointmentCount"></span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="mb-3 col-md-4">
+                <div class="mb-2 col-md-4">
                     <div class="card text-center">
                         <div class="card-header">
                             <h4>Quick-Schedule</h4>
@@ -50,7 +33,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="mb-3 col-md-4">
+                <div class="mb-2 col-md-4">
                     <div class="card">
                         <div class="card-header">
                             <h4>Center Information</h4>
@@ -63,7 +46,7 @@
             </div>
             <br/>
             <div class="row">
-                <div class="mb-3 col-md-6">
+                <div class="mb-2 col-md-6">
                     <div class="card">
                         <div class="card-header">
                             <h4>Appointment Calendar</h4>
@@ -73,7 +56,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="mb-3 col-md-6">
+                <div class="mb-2 col-md-6">
                     <div class="card nextFiveAppointments">
                         <div class="card-header">
                             <h4 class="float-left">Next Five Appointments</h4>
@@ -93,6 +76,7 @@
                         defaultView: 'agendaWeek',
                         height: 'auto',
                         editable: false,
+                        themeSystem: 'bootstrap4',
                         eventClick: function(calEvent, jsEvent, view) {
                             window.location = "/Appointments"
                         },
@@ -137,7 +121,7 @@
                                     });
                                     $(".appointmentCount").html("You have " + upcomingCount + (upcomingCount === 1 ? " remaining appointment this week." : " remaining appointments this week."));
                                     appointments = weekCount;
-                                    @if(currentUser.isCoach) {
+                                    @if(currentUser.getRole.equals("Coach") || currentUser.getRole.equals("Admin") && currentUser.isCoach) {
                                         $.ajax({
                                             async: false,
                                             url: '/availableSlots/' + '@currentUser.getUid' + '/' + moment(start).toISOString() + '/' + moment(end).toISOString(),
@@ -156,7 +140,6 @@
                                                         event.dow = [moment($(this).attr('startDate')).isoWeekday()];
                                                         event.start = moment($(this).attr('startDate')).format("HH:mm");
                                                         event.end = moment($(this).attr('endDate')).format("HH:mm");
-                                                        console.log(event);
                                                     }
                                                     events.push(event);
                                                 });
@@ -172,7 +155,6 @@
                         $('#appointmentCalendar').fullCalendar('next');
                     }
                 });
-
 
         </script>
         @partials.components._createNewAppointmentFlow_Scripts()

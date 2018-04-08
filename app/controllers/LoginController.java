@@ -27,7 +27,6 @@ public class LoginController extends Controller {
         if (u == null) {
             user.setRole(Roles.getRole("Student"));
             UserDB.addUser(user);
-            session("newUser", "true");
         } else {
             if((u.getAuth_id() == null || u.getAuth_id().equals("")) && (json.findPath("auth_id").textValue() != null && !json.findPath("auth_id").textValue().equals(""))) {
                 u.setAuth_id(json.findPath("auth_id").asText().replaceAll("\r",""));
