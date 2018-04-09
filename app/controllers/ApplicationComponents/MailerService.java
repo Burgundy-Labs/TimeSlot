@@ -39,8 +39,8 @@ public class MailerService {
         }
         SettingsModel settings = SettingsController.getSettings();
         /* Coach Email */
-        StringBuilder emailBody = new StringBuilder("<p style=\"font-size:48px;color:#17C671;text-align:center;\">&#x23F3;</p><h1 style=\"text-align:center;\">Appointment Reminder</h1> <h3>Details:</h3>");
         for (String l : appointments.keySet()) {
+            StringBuilder emailBody = new StringBuilder("<p style=\"font-size:48px;color:#17C671;text-align:center;\">&#x23F3;</p><h1 style=\"text-align:center;\">Appointment Reminder</h1> <h3>Details:</h3>");
             for (AppointmentsModel a : appointments.get(l)) {
                 emailBody.append("<div style=\"background-color:#EFF0F1; border-radius:4px; padding: 10px;\">");
                 emailBody.append(a.toHTMLString());

@@ -86,6 +86,7 @@
     </div>
 
     <script type="text/javascript">
+            let appointmentCalendar = $('#newAppointmentCalendar');
             let selectedEvents = [];
             let scheduleUser = {userId: null, userRole: null};
             let startDateTime;
@@ -96,8 +97,7 @@
 
                 /* Refetch events if appointment type changes */
                 $( "#appointmentType").change(function() {
-                    console.log('test');
-                    $('#newAppointmentCalendar').fullCalendar('refetchEvents');
+                    appointmentCalendar.fullCalendar('refetchEvents');
                 });
 
                 $(document).on("change", '#serviceType', function (e) {
@@ -129,13 +129,13 @@
             });
 
             function createMakeAppointmentCalendar() {
-                if ($('#newAppointmentCalendar').is(':visible')) { //if the container is visible on the page
+                if (appointmentCalendar.is(':visible')) { //if the container is visible on the page
                     /* if calendar exists - refresh events */
                     if($('#newAppointmentCalendar>*').length !== 0) {
-                        $('#newAppointmentCalendar').fullCalendar( 'refetchEvents' );
+                        appointmentCalendar.fullCalendar( 'refetchEvents' );
                         return;
                     }
-                    $('#newAppointmentCalendar').fullCalendar({
+                    appointmentCalendar.fullCalendar({
                         validRange: {
                             start: moment('@SettingsController.getSettings.getSemesterStart.toInstant').format("YYYY-MM-DD"),
                             end: moment('@SettingsController.getSettings.getSemesterEnd.toInstant').format("YYYY-MM-DD")
@@ -236,7 +236,7 @@
                                             content: "Please select an appointment in the future."
                                         }
                                 );
-                                $('#newAppointmentCalendar').fullCalendar('unselect');
+                                appointmentCalendar.fullCalendar('unselect');
                                 return false;
                             }
                             let valid = (function () {
@@ -308,7 +308,7 @@
                                     weeklyUsers: canBes[0].weeklyUsers,
                                     oneTimeUsers: canBes[0].oneTimeUsers
                                 };
-                                $('#newAppointmentCalendar').fullCalendar('renderEvent', newAppointment, true);
+                                appointmentCalendar.fullCalendar('renderEvent', newAppointment, true);
                                 selectedEvents.push(newAppointment);
                             }
                         },
@@ -317,7 +317,7 @@
                         }
                     });
                     if ((new Date()).getDay() === 6) {
-                        $('#newAppointmentCalendar').fullCalendar('next');
+                        appointmentCalendar.fullCalendar('next');
                     }
                 } else {
                     setTimeout(createMakeAppointmentCalendar, 50); //wait 50 ms, then try again
@@ -326,7 +326,7 @@
 
             function removeAppointment(eventId) {
                 selectedEvents = selectedEvents.filter(obj => !obj.id === eventId);
-                $('#newAppointmentCalendar').fullCalendar('removeEvents', [eventId]);
+                appointmentCalendar.fullCalendar('removeEvents', [eventId]);
             }
 
             function createAppointment() {
