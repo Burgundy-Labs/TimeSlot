@@ -6,18 +6,18 @@
 @main("Site Settings", "Settings") {
     <!-- Start of Async Drift Code -->
     <script>
-            !function() {
+            !function () {
                 var t;
                 if (t = window.driftt = window.drift = window.driftt || [], !t.init) return t.invoked ? void (window.console && console.error && console.error("Drift snippet included twice.")) : (t.invoked = !0,
-                        t.methods = [ "identify", "config", "track", "reset", "debug", "show", "ping", "page", "hide", "off", "on" ],
-                        t.factory = function(e) {
-                            return function() {
+                        t.methods = ["identify", "config", "track", "reset", "debug", "show", "ping", "page", "hide", "off", "on"],
+                        t.factory = function (e) {
+                            return function () {
                                 var n;
                                 return n = Array.prototype.slice.call(arguments), n.unshift(e), t.push(n), t;
                             };
-                        }, t.methods.forEach(function(e) {
+                        }, t.methods.forEach(function (e) {
                     t[e] = t.factory(e);
-                }), t.load = function(t) {
+                }), t.load = function (t) {
                     var e, n, o, i;
                     e = 3e5, i = Math.ceil(new Date() / e) * e, o = document.createElement("script"),
                             o.type = "text/javascript", o.async = !0, o.crossorigin = "anonymous", o.src = "https://js.driftt.com/include/" + i + "/" + t + ".js",
@@ -43,7 +43,7 @@
             <div class="tab-pane fade show active" id="siteSettingsContent" role="tabpanel" aria-labelledby="siteSettingsTab">
                 <div class="mb-3 col-md-12">
                     <div class="row">
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-7">
                             <form>
                                 <div class="form-group">
                                     <label for="universityName" class="mb-3 col-md-12 mb-3 col-md-form-label">
@@ -105,30 +105,32 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group col-md-12 row">
+                                <div class="form-group">
                                     <label for="weekDays" class="mb-3 col-md-12 mb-3 col-md-form-label">
                                         Open Days in the Week
                                     </label>
-                                    <div class="mb-3 pr-0 col">
-                                        <input id="sunday" class="form-control" type="button" data-state="true" name="sunday" value='Sunday' onclick="toggleDayOfWeek('sunday')">
-                                    </div>
-                                    <div class="mb-3 pr-0 pl-1 col">
-                                        <input id="monday" class="form-control" type="button" data-state="true" name="monday" value='Monday' onclick="toggleDayOfWeek('monday')">
-                                    </div>
-                                    <div class="mb-3 pr-0 pl-1 col">
-                                        <input id="tuesday" class="form-control" type="button" data-state="true" name="tuesday" value='Tuesday' onclick="toggleDayOfWeek('tuesday')">
-                                    </div>
-                                    <div class="mb-3 pr-0 pl-1 col">
-                                        <input id="wednesday" class="form-control" type="button" data-state="true" name="wednesday" value='Wednesday' onclick="toggleDayOfWeek('wednesday')">
-                                    </div>
-                                    <div class="mb-3 pr-0 pl-1 col">
-                                        <input id="thursday" class="form-control" type="button" data-state="true" name="thursday" value='Thursday' onclick="toggleDayOfWeek('thursday')">
-                                    </div>
-                                    <div class="mb-3 pr-0 pl-1 col">
-                                        <input id="friday" class="form-control" type="button" data-state="true" name="friday" value='Friday' onclick="toggleDayOfWeek('friday')">
-                                    </div>
-                                    <div class="mb-3 pr-0 pl-1 col">
-                                        <input id="saturday" class="form-control" type="button" data-state="true" name="saturday" value='Saturday' onclick="toggleDayOfWeek('saturday')">
+                                    <div class="row pl-3">
+                                        <div class="mb-3 pr-0 col-auto">
+                                            <input id="sunday" class="form-control" type="button" data-state="true" name="sunday" value='Sunday' onclick="toggleDayOfWeek('sunday')">
+                                        </div>
+                                        <div class="mb-3 pr-0 pl-1 col-auto">
+                                            <input id="monday" class="form-control" type="button" data-state="true" name="monday" value='Monday' onclick="toggleDayOfWeek('monday')">
+                                        </div>
+                                        <div class="mb-3 pr-0 pl-1 col-auto">
+                                            <input id="tuesday" class="form-control" type="button" data-state="true" name="tuesday" value='Tuesday' onclick="toggleDayOfWeek('tuesday')">
+                                        </div>
+                                        <div class="mb-3 pr-0 pl-1 col-auto">
+                                            <input id="wednesday" class="form-control" type="button" data-state="true" name="wednesday" value='Wednesday' onclick="toggleDayOfWeek('wednesday')">
+                                        </div>
+                                        <div class="mb-3 pr-0 pl-1 col-auto">
+                                            <input id="thursday" class="form-control" type="button" data-state="true" name="thursday" value='Thursday' onclick="toggleDayOfWeek('thursday')">
+                                        </div>
+                                        <div class="mb-3 pr-0 pl-1 col-auto">
+                                            <input id="friday" class="form-control" type="button" data-state="true" name="friday" value='Friday' onclick="toggleDayOfWeek('friday')">
+                                        </div>
+                                        <div class="mb-3 pr-0 pl-1 col-auto">
+                                            <input id="saturday" class="form-control" type="button" data-state="true" name="saturday" value='Saturday' onclick="toggleDayOfWeek('saturday')">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -139,15 +141,15 @@
                                 </div>
                             </form>
                         </div>
-                        <div class="mb-3 col-md-4 offset-1">
+                        <div class="mb-3 col-md-4">
                             <div class="dashCards mb-3 card">
                                 <div class="card-header">
                                     Site Alert
                                 </div>
                                 <div class="card-block">
-                                    <textarea type="text" class="form-control" id="siteAlert" placeholder="Enter a site alert." aria-label="@currentSettings.getSiteAlert">@if(!currentSettings.getSiteAlert.equals("")){@currentSettings.getSiteAlert}</textarea>
+                                    <textarea type="text" class="form-control" id="siteAlert" placeholder="Enter a site alert." aria-label="@currentSettings.getSiteAlert">@if(!currentSettings.getSiteAlert.equals("")) {@currentSettings.getSiteAlert}</textarea>
                                     <br/>
-                                    <button onclick="changeSiteAlert()" class="btn btn-danger col-md-12">
+                                    <button onclick="changeSiteAlert()" class="btn btn-danger mb-2 col-md-12">
                                         Change Site Alert</button>
                                     <button onclick="clearAlert()" class="btn btn col-md-12">Clear Alert</button>
                                 </div>
@@ -157,9 +159,9 @@
                                     Center Information
                                 </div>
                                 <div class="card-block">
-                                    <textarea type="text" class="form-control" id="centerInformation" placeholder="Enter center information." aria-label="@currentSettings.getCenterInformation">@if(!currentSettings.getCenterInformation.equals("")){@currentSettings.getCenterInformation}</textarea>
+                                    <textarea type="text" class="form-control" id="centerInformation" placeholder="Enter center information." aria-label="@currentSettings.getCenterInformation">@if(!currentSettings.getCenterInformation.equals("")) {@currentSettings.getCenterInformation}</textarea>
                                     <br/>
-                                    <button onclick="changeCenterInformation()" class="btn btn-primary col-md-12">
+                                    <button onclick="changeCenterInformation()" class="btn btn-primary mb-2 col-md-12">
                                         Change Center Information</button>
                                     <button onclick="clearCenterInformation()" class="btn btn col-md-12">Clear Message</button>
                                 </div>
@@ -291,7 +293,7 @@
 
             function toggleDayOfWeek(day) {
                 var button = document.getElementById(day);
-                if ( button.getAttribute('data-state') == true ) {
+                if (button.getAttribute('data-state') == true) {
                     button.style.backgroundColor = '#FFFFFF';
                     button.style.color = '#000000';
                     button.setAttribute('data-state', 'false');
@@ -427,8 +429,8 @@
 
             $(document).ready(function () {
                 const appointmentServicesTab = $("#appointmentServicesTab");
-                let select = @currentSettings.getMaximumAppointments - 1;
-                if ( select === -1 ) {
+                let select = @currentSettings.getMaximumAppointments -1;
+                if (select === -1) {
                     $('#universityName')
                     select = document.getElementById("maximumAppointments").length - 1;
                 }
@@ -487,7 +489,7 @@
                     thursday: tb[4],
                     friday: tb[5],
                     saturday: tb[6],
-                    sunday:tb[0]
+                    sunday: tb[0]
                 };
                 if (Date.parse(settings.semesterStart) >= Date.parse(settings.semesterEnd)) {
                     $.alert({
@@ -515,7 +517,7 @@
                         }
                     });
                     return false;
-                } else if ( tb[0] == false && tb[1] == false && tb[2] == false && tb[3] == false && tb[4] == false && tb[5] == false && tb[6] == false) {
+                } else if (tb[0] === false && tb[1] === false && tb[2] === false && tb[3] === false && tb[4] === false && tb[5] === false && tb[6] === false) {
                     $.alert({
                         title: 'Alert',
                         content: 'The center must have at least one day open per week.',
