@@ -19,19 +19,25 @@
             @helper.CSRF.formField
             <div class="page-content">
                 <div class="row page-title">
-                    <div class="col-md-12">
-                        <nav class="nav-icons row">
-                            @for(menuLink <- Application.menuLinks) {
-                                @if((!menuLink.adminLocked && !menuLink.coachLocked) || (menuLink.coachLocked && currentRole != null && currentRole.equals("Coach")) || (menuLink.adminLocked && currentRole != null && currentRole.equals("Admin"))) {
-                                    <a href="@menuLink.href" class="nav-icon @if(title.equals(menuLink.menuText)) {currentPage}">
-                                        <i class="material-icons">@menuLink.mdlIcon</i><span class="icon-text">@menuLink.menuText</span></a>
+                    <nav class="navbar navbar-expand-lg navbar-dark col-12">
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                            <i class="material-icons">menu</i>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                            <div class="navbar-nav row">
+                                @for(menuLink <- Application.menuLinks) {
+                                    @if((!menuLink.adminLocked && !menuLink.coachLocked) || (menuLink.coachLocked && currentRole != null && currentRole.equals("Coach")) || (menuLink.adminLocked && currentRole != null && currentRole.equals("Admin"))) {
+                                        <a href="@menuLink.href" class="nav-icon nav-item nav-link @if(title.equals(menuLink.menuText)) {currentPage}">
+                                            <i class="material-icons">@menuLink.mdlIcon</i><span class="icon-text">@menuLink.menuText</span></a>
+                                    }
                                 }
-                            }
-                            <a id="sign-out" href="javascript:void(0)" class="nav-icon"><i class="material-icons">
-                                exit_to_app</i><span class="icon-text">Sign Out</span></a>
-                        </nav>
-                        <img class="logo" src="@routes.Assets.at("images/TimeSlot_White.svg")" width="200px">
-                    </div>
+                                <a id="sign-out" href="javascript:void(0)" class="nav-icon nav-item nav-link"><i class="material-icons">
+                                    exit_to_app</i><span class="icon-text">Sign Out</span></a>
+                            </div>
+                        </div>
+                        <img class="logo navbar-brand" src="@routes.Assets.at("images/TimeSlot_White.svg")" width="200px">
+
+                    </nav>
                     @if(!currentSettings.getSiteAlert.equals("")) {
                         <div class="col-md-6 site-alert">
                             <div class="row">
@@ -47,7 +53,7 @@
                 </div>
                 <div class="container-fluid content mb-3">
                     <br/>
-                    <div class="row">
+                    <div class="row justify-content-md-center">
                     @content
                     </div>
                 </div>
