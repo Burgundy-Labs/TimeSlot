@@ -261,9 +261,6 @@ public class UserDB {
         List<UsersModel> coachesWithService = new ArrayList<>();
         List<UsersModel> coaches = getCoaches();
         for (UsersModel c : coaches) {
-            if(UserController.getCurrentUser().getUid().equals(c.getUid())){
-                continue;
-            }
             List<ServiceModel> services = getServicesForUser(c.getUid());
             for (ServiceModel s : services) {
                 if (s.getServiceId().equals(serviceId)) {
