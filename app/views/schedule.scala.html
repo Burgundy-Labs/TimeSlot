@@ -5,7 +5,8 @@
     SettingsController.getSettings
 }
 @main("Schedule", "Schedule New Appointment") {
-    <div class="col-md-12">
+    <div class="row col-12 justify-content-md-center">
+    <div class="col-8">
         <div class="row">
             <div class="col-md-12" id="createNewAppointmentForm">
                 <div class="step-app">
@@ -51,13 +52,19 @@
                         <div class="step-tab-panel" id="step3">
                             <div class="row mb-3 col-md-12">
                                 <div class="center">
-                                    <span class="badge" style="background-color: #FFF5CE; border: 1px solid #5f5f5f; margin: 2px">
+                                    <span class="badge" style="background-color: #FFF5CE;
+                                        border: 1px solid #5f5f5f;
+                                        margin: 2px">
                                         One-Time Availability</span>
 
-                                    <span class="badge" style="background-color: #B3D7FF; border: 1px solid #5f5f5f; margin: 2px">
+                                    <span class="badge" style="background-color: #B3D7FF;
+                                        border: 1px solid #5f5f5f;
+                                        margin: 2px">
                                         Weekly Availability</span>
 
-                                    <span class="badge" style="background-color: #BDEDD4; border: 1px solid #5f5f5f; margin: 2px">
+                                    <span class="badge" style="background-color: #BDEDD4;
+                                        border: 1px solid #5f5f5f;
+                                        margin: 2px">
                                         Both One-Time and Weekly Availability</span>
 
                                     <br/>
@@ -71,7 +78,8 @@
                                     <div id="newAppointmentCalendar"></div>
                                 </div>
                                 <div class="col-md-12 center">
-                                    <button class="btn btn-primary col-3 center" onclick="createAppointment()">Create Appointment</button>
+                                    <button class="btn btn-primary col-3 center" onclick="createAppointment()">
+                                        Create Appointment</button>
                                 </div>
                             </div>
                         </div>
@@ -84,7 +92,7 @@
             </div>
         </div>
     </div>
-
+    </div>
     <script type="text/javascript">
             let appointmentCalendar = $('#newAppointmentCalendar');
             let selectedEvents = [];
@@ -96,7 +104,7 @@
                 makeStepper();
 
                 /* Refetch events if appointment type changes */
-                $( "#appointmentType").change(function() {
+                $("#appointmentType").change(function () {
                     appointmentCalendar.fullCalendar('refetchEvents');
                 });
 
@@ -131,8 +139,8 @@
             function createMakeAppointmentCalendar() {
                 if (appointmentCalendar.is(':visible')) { //if the container is visible on the page
                     /* if calendar exists - refresh events */
-                    if($('#newAppointmentCalendar>*').length !== 0) {
-                        appointmentCalendar.fullCalendar( 'refetchEvents' );
+                    if ($('#newAppointmentCalendar>*').length !== 0) {
+                        appointmentCalendar.fullCalendar('refetchEvents');
                         return;
                     }
                     appointmentCalendar.fullCalendar({
@@ -187,7 +195,7 @@
                                         if (event.canBeOneTime && event.canBeWeekly) {
                                             event.backgroundColor = "#1DC570";
                                         }
-                                        if ( appTypeOneTime != appTypeWeekly ) {
+                                        if (appTypeOneTime != appTypeWeekly) {
                                             if (event.canBeOneTime && appTypeOneTime && !appTypeWeekly) {
                                                 event.backgroundColor = "#FFDE5C";
                                                 event.canBeWeekly = false;
@@ -202,10 +210,10 @@
                                                 event.canBeOneTime = false;
                                             }
                                         }
-                                        if ( !appTypeWeekly && !appTypeOneTime ) {
+                                        if (!appTypeWeekly && !appTypeOneTime) {
                                             event.backgroundColor = "#000000";
                                         }
-                                        if ( event.backgroundColor != "#000000" ){
+                                        if (event.backgroundColor != "#000000") {
                                             events.push(event);
                                         }
                                     });
@@ -213,7 +221,7 @@
                                 }
                             })
                         },
-                        viewRender: function(currentView) {
+                        viewRender: function (currentView) {
                             var minDate = moment();
                             if (minDate >= currentView.start && minDate <= currentView.end) {
                                 $(".fc-prev-button").prop('disabled', true);
@@ -225,7 +233,9 @@
                             }
                         },
                         eventRender: function (event, eventElement) {
-                            if(moment(event.start).isBefore(moment().subtract(10, "minutes"))){return false;}
+                            if (moment(event.start).isBefore(moment().subtract(10, "minutes"))) {
+                                return false;
+                            }
                             eventElement.find("div.fc-content").prepend("<button onclick='removeAppointment(\"" + event.id + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
                         },
                         select: function (start, end, jsEvent, view) {
@@ -373,9 +383,12 @@
                         return false;
                     } else {
                         const appointment = selectedEvents[0];
+                        let service = $('#serviceType').find('option:selected').text();
+                        let coachName = $('#coachId').find('option:selected').text();
+                        let appointmentType = $('#appointmentType').find('option:selected').text();
                         const form = {
-                            appointmentType: $('#appointmentType option:selected').text(),
-                            serviceType: $('#serviceType option:selected').text(),
+                            appointmentType: appointmentType,
+                            serviceType: service,
                             coachId: $('#coachId').val(),
                             studentId: firebase.auth().currentUser.uid,
                             startDate: appointment.startDate,
@@ -388,43 +401,47 @@
                         } else if (scheduleUser.userId !== null && scheduleUser.userRole === "Student") {
                             form.studentId = scheduleUser.userId;
                         }
-                        let coachName = $('#coachId option:selected').text();
-                        let appointmentType = $('#appointmentType option:selected').text();
                         $.confirm({
-                            columnClass: "col-11",
-                            title: 'New Appointment',
-                            content: "<div class='appointmentDetails'>Your appointment details: <br/>" +
-                            "<b>Appointment Type:</b> " + appointmentType + " <br/>" +
-                            "<b>Coach:</b> " + coachName + " <br/>" +
-                            "<b>Date:</b> " + moment(appointment.startDate).format('dddd, MMMM Do, YYYY h:mm A') + " - " + moment(appointment.endDate).format('h:mm A') + "<br/>" +
+                            columnClass: "col-12",
+                            title: 'Appointment Details',
+                            content: "<div class='container-fluid'>" +
+                            "<div class='row row-eq-height col-12'>" +
+                            "<div class='appointmentCard mb-2 col-md-3'><div class='top'><h4>Type</h4></div><div class='bottom'><h5>" + appointmentType + "</h5></div></div><br/>" +
+                            "<div class='appointmentCard mb-2 col-md-3'><div class='top'><h4>Service</h4></div><div class='bottom'><h5>" + service + "</h5></div></div><br/>" +
+                            "<div class='appointmentCard mb-2 col-md-3'><div class='top'><h4>Coach</h4></div><div class='bottom'><h5>" + coachName + "</h5></div></div><br/>" +
+                            "</div>" +
+                            "<hr/>" +
+                            "<div class='row row-eq-height col-12'>" +
+                            "<div class='appointmentCard mb-2 col-md-5'>" +
+                            "<div class='top'>" +
+                            "<h4>" +
+                            moment(appointment.startDate).format('dddd MMMM Do') +
+                            "</h4>" +
+                            "</div>" +
+                            "<div class='bottom'>" +
+                            "<h5>" +
+                            moment(appointment.startDate).format('h:mm A') +
+                            "</h5>" +
+                            "</div>" +
+                            "</div>" +
+                            "<div class='col-md-1'><i class='material-icons'>arrow_forward</i></div>" +
+                            "<div class='appointmentCard mb-2 col-md-5'>" +
+                            "<div class='top'>" +
+                            "<h4>" +
+                            moment(appointment.endDate).format('dddd MMMM Do') +
+                            "</h4>" +
+                            "</div>" +
+                            "<div class='bottom'>" +
+                            "<h5>" +
+                            moment(appointment.endDate).format('h:mm A') +
+                            "</h5>" +
+                            "</div>" +
+                            "</div>" +
+                            "</div>" +
                             "</div>",
                             theme: 'modern',
                             escapeKey: 'no',
                             buttons: {
-                                Weekly: {
-                                    text: 'Create Weekly Appointment',
-                                    btnClass: 'btn-primary mb-3 col-md-12',
-                                    action: function () {
-                                        form.weekly = true;
-                                        if (form.coachId === "any") {
-                                            form.coachId = appointment.weeklyUsers[Math.floor(Math.random() * appointment.weeklyUsers.length)];
-                                        }
-                                        /!* Create appointment Here*!/
-                                        $.ajax({
-                                            url: '/createAppointment',
-                                            type: 'POST',
-                                            data: JSON.stringify(form),
-                                            contentType: 'application/json',
-                                            success: function () {
-                                                createAlert("success", "Appointment Created!");
-                                                window.location.href="/Dashboard";
-                                            },
-                                            error: function () {
-                                                createAlert('danger', 'Appointment creation failed.');
-                                            }
-                                        });
-                                    }
-                                },
                                 OneTime: {
                                     text: 'Create One-Time Appointment',
                                     btnClass: 'btn-primary mb-3 col-md-12',
@@ -441,7 +458,31 @@
                                             contentType: 'application/json',
                                             success: function () {
                                                 createAlert("success", "Appointment Created!");
-                                                window.location.href="/Dashboard";
+                                                window.location.href = "/Dashboard";
+                                            },
+                                            error: function () {
+                                                createAlert('danger', 'Appointment creation failed.');
+                                            }
+                                        });
+                                    }
+                                },
+                                Weekly: {
+                                    text: 'Create Weekly Appointment',
+                                    btnClass: 'btn-primary mb-3 col-md-12',
+                                    action: function () {
+                                        form.weekly = true;
+                                        if (form.coachId === "any") {
+                                            form.coachId = appointment.weeklyUsers[Math.floor(Math.random() * appointment.weeklyUsers.length)];
+                                        }
+                                        /!* Create appointment Here*!/
+                                        $.ajax({
+                                            url: '/createAppointment',
+                                            type: 'POST',
+                                            data: JSON.stringify(form),
+                                            contentType: 'application/json',
+                                            success: function () {
+                                                createAlert("success", "Appointment Created!");
+                                                window.location.href = "/Dashboard";
                                             },
                                             error: function () {
                                                 createAlert('danger', 'Appointment creation failed.');
