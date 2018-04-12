@@ -16,20 +16,21 @@ public class AvailabilityDB {
         /* Return null appointment if none found */
         /* Get the specific appointment reference from the DB*/
         ApiFuture<QuerySnapshot> future = FirestoreDB.get().collection("availabilities").whereEqualTo("userId",userId).whereEqualTo("weekly", false).orderBy("startDate", Query.Direction.ASCENDING).whereGreaterThanOrEqualTo("startDate", start).get();
-        List<QueryDocumentSnapshot> documents = null;
+        List<QueryDocumentSnapshot> availabilities = null;
         try {
-            documents = future.get().getDocuments();
+            availabilities = future.get().getDocuments();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-        for (DocumentSnapshot document : documents) {
-            if ( document.getDate("startDate").before(end) ) {
+        assert availabilities != null;
+        for (DocumentSnapshot availability : availabilities) {
+            if ( availability.getDate("startDate").before(end) ) {
                 availabilityTimes.add(new AvailabilityModel(
-                        document.getId(),
-                        document.getString("userId"),
-                        document.getDate("startDate"),
-                        document.getDate("endDate"),
-                        document.getBoolean("weekly")));
+                        availability.getId(),
+                        availability.getString("userId"),
+                        availability.getDate("startDate"),
+                        availability.getDate("endDate"),
+                        availability.getBoolean("weekly")));
             } else {
                 break;
             }

@@ -392,35 +392,28 @@
                             title: 'Appointment Details',
                             content: "<div class='container-fluid'>" +
                             "<div class='row row-eq-height col-12'>" +
-                            "<div class='appointmentCard mb-2 col-md-3'><div class='top'><h4>Type</h4></div><div class='bottom'><h5>" + appointmentType + "</h5></div></div><br/>" +
-                            "<div class='appointmentCard mb-2 col-md-3'><div class='top'><h4>Service</h4></div><div class='bottom'><h5>" + service + "</h5></div></div><br/>" +
-                            "<div class='appointmentCard mb-2 col-md-3'><div class='top'><h4>Coach</h4></div><div class='bottom'><h5>" + coachName + "</h5></div></div><br/>" +
+                            "<div class='appointmentCard mb-2 col-md-5'><div class='top'><h3>Type</h3></div><div class='bottom'><h4>" + appointmentType + "</h4></div></div><br/>" +
+                            "<div class='appointmentCard mb-2 col-md-5'><div class='top'><h3>Service</h3></div><div class='bottom'><h4>" + service + "</h4></div></div><br/>" +
                             "</div>" +
                             "<hr/>" +
                             "<div class='row row-eq-height col-12'>" +
+                            "<div class='appointmentCard mb-2 col-md-5'><div class='top'><h3>Coach</h3></div><div class='bottom'><h4>" + coachName + "</h4></div></div><br/>" +
                             "<div class='appointmentCard mb-2 col-md-5'>" +
                             "<div class='top'>" +
-                            "<h4>" +
+                            "<h3>" +
                             moment(appointment.startDate).format('dddd MMMM Do') +
-                            "</h4>" +
+                            "</h3>" +
                             "</div>" +
                             "<div class='bottom'>" +
-                            "<h5>" +
+                            "<div class='row'>" +
+                            "<h4 class='col-md-5'>" +
                             moment(appointment.startDate).format('h:mm A') +
-                            "</h5>" +
-                            "</div>" +
-                            "</div>" +
-                            "<div class='col-md-1'><i class='material-icons'>arrow_forward</i></div>" +
-                            "<div class='appointmentCard mb-2 col-md-5'>" +
-                            "<div class='top'>" +
-                            "<h4>" +
-                            moment(appointment.endDate).format('dddd MMMM Do') +
+                            "</h4> " +
+                            "<div class='col-md-2'><i class='material-icons'>arrow_forward</i></div>" +
+                            "<h4 class='col-md-5'>" +
+                            moment(appointment.endDate).format('h:mm A') +
                             "</h4>" +
                             "</div>" +
-                            "<div class='bottom'>" +
-                            "<h5>" +
-                            moment(appointment.endDate).format('h:mm A') +
-                            "</h5>" +
                             "</div>" +
                             "</div>" +
                             "</div>" +
