@@ -47,6 +47,6 @@ RUN cd /tmp/build && \
 
 EXPOSE 9000 5005
 
-RUN unzip target/universal/$APP_NAME-$APP_VERSION.zip
+RUN unzip /tmp/build/target/universal/$APP_NAME-$APP_VERSION.zip
 RUN chmod +x $APP_NAME-$APP_VERSION/bin/$APP_NAME
 ENTRYPOINT $APP_NAME-$APP_VERSION/bin/$APP_NAME -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005

@@ -7,7 +7,6 @@ import play.Environment;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Application {
     private static Config config;
