@@ -3,17 +3,22 @@
     @currentUser = @{
         UserController.getCurrentUser
     }
+
+    @centerInformation = @{
+        SettingsController.getSettings.getCenterInformation
+    }
+
     @main("Dashboard", "Your Dashboard") {
         <div class="mb-3 col-md-12 dashCards">
-            <div class="row">
+            <div class="row row-eq-height">
                 <div class="mb-2 col-md-4">
-                    <div class="card">
+                    <div class="card h-100">
                         <div class="card-header">
                             <h3>Hello, @{
                                 UserController.getCurrentUser.getDisplayName
                             } </h3>
                         </div>
-                        <div class="card-block">
+                        <div class="card-block my-auto">
                             <div class="center">
                                 <div><img src="@currentUser.getPhotoURL" class="user-avatar mb-2"/></div>
                                 <span class="appointmentCount"></span>
@@ -22,30 +27,34 @@
                     </div>
                 </div>
                 <div class="mb-2 col-md-4">
-                    <div class="card text-center">
+                    <div class="card h-100 text-center">
                         <div class="card-header">
                             <h3>Quick-Schedule</h3>
                         </div>
-                        <div class="card-block">
-                            <a href="/Schedule" class="btn btn-primary mb-3 p-2 col-12">
+                        <div class="card-block my-auto">
+                            <a href="/Schedule" class="btn btn-primary mb-3 p-4 col-12">
                                 Schedule New Appointment
                             </a>
                         </div>
                     </div>
                 </div>
                 <div class="mb-2 col-md-4">
-                    <div class="card">
+                    <div class="card h-100">
                         <div class="card-header">
                             <h3>Center Information</h3>
                         </div>
-                        <div class="card-block">
-                            <h6>@Html(SettingsController.getSettings.getCenterInformation)</h6>
+                        <div class="card-block my-auto text-center">
+                            <h6>@if(centerInformation.isEmpty) {
+                                There is no center information to display.
+                            } else {
+                                @centerInformation
+                            }</h6>
                         </div>
                     </div>
                 </div>
             </div>
             <br/>
-            <div class="row">
+            <div class="row row-eq-height">
                 <div class="mb-2 col-md-6">
                     <div class="card">
                         <div class="card-header">
@@ -77,7 +86,7 @@
                         height: 'auto',
                         editable: false,
                         themeSystem: 'bootstrap4',
-                        eventClick: function(calEvent, jsEvent, view) {
+                        eventClick: function (calEvent, jsEvent, view) {
                             window.location = "/Appointments"
                         },
                         weekends: false,
@@ -113,7 +122,7 @@
                                             end: moment($(this).attr('endDate')),
                                             dow: [],
                                         };
-                                        if(!event.start.local().isBefore(moment())){
+                                        if (!event.start.local().isBefore(moment())) {
                                             upcomingCount++;
                                         }
                                         weekCount++;
@@ -122,36 +131,36 @@
                                     $(".appointmentCount").html("You have " + upcomingCount + (upcomingCount === 1 ? " remaining appointment this week." : " remaining appointments this week."));
                                     appointments = weekCount;
                                     @if(currentUser.getRole.equals("Coach") || currentUser.getRole.equals("Admin") && currentUser.isCoach) {
-                                        $.ajax({
-                                            async: false,
-                                            url: '/availableSlots/' + '@currentUser.getUid' + '/' + moment(start).toISOString() + '/' + moment(end).toISOString(),
-                                            type: 'GET',
-                                            success: function (response) {
-                                                $(response).each(function () {
-                                                    const event = {
-                                                        id: 'background',
-                                                        rendering: 'inverse-background',
-                                                        backgroundColor: '#B3B3B3',
-                                                        start: moment($(this).attr('startDate')),
-                                                        end: moment($(this).attr('endDate')),
-                                                        dow: []
-                                                    };
-                                                    if ($(this).attr("weekly") === true) {
-                                                        event.dow = [moment($(this).attr('startDate')).isoWeekday()];
-                                                        event.start = moment($(this).attr('startDate')).format("HH:mm");
-                                                        event.end = moment($(this).attr('endDate')).format("HH:mm");
-                                                    }
-                                                    events.push(event);
-                                                });
-                                            }
-                                        });
+                                    $.ajax({
+                                        async: false,
+                                        url: '/availableSlots/' + '@currentUser.getUid' + '/' + moment(start).toISOString() + '/' + moment(end).toISOString(),
+                                        type: 'GET',
+                                        success: function (response) {
+                                            $(response).each(function () {
+                                                const event = {
+                                                    id: 'background',
+                                                    rendering: 'inverse-background',
+                                                    backgroundColor: '#B3B3B3',
+                                                    start: moment($(this).attr('startDate')),
+                                                    end: moment($(this).attr('endDate')),
+                                                    dow: []
+                                                };
+                                                if ($(this).attr("weekly") === true) {
+                                                    event.dow = [moment($(this).attr('startDate')).isoWeekday()];
+                                                    event.start = moment($(this).attr('startDate')).format("HH:mm");
+                                                    event.end = moment($(this).attr('endDate')).format("HH:mm");
+                                                }
+                                                events.push(event);
+                                            });
+                                        }
+                                    });
                                     }
                                     callback(events);
                                 }
                             })
                         },
                     });
-                    if ( (new Date()).getDay() === 6 ) {
+                    if ((new Date()).getDay() === 6) {
                         $('#appointmentCalendar').fullCalendar('next');
                     }
                 });
