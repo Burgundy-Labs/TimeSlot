@@ -3,6 +3,7 @@ package controllers.Databases;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import models.AvailabilityModel;
+import play.Logger;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -15,7 +16,7 @@ public class AvailabilityDB {
         List<AvailabilityModel> availabilityTimes = new ArrayList<>();
         /* Return null appointment if none found */
         /* Get the specific appointment reference from the DB*/
-        ApiFuture<QuerySnapshot> future = FirestoreDB.get().collection("availabilities").whereEqualTo("userId",userId).whereEqualTo("weekly", false).orderBy("startDate", Query.Direction.ASCENDING).whereGreaterThanOrEqualTo("startDate", start).get();
+        ApiFuture<QuerySnapshot> future = FirestoreDB.get().collection("availabilities").whereEqualTo("userId",userId).orderBy("startDate", Query.Direction.ASCENDING).get();
         List<QueryDocumentSnapshot> availabilities = null;
         try {
             availabilities = future.get().getDocuments();
@@ -24,31 +25,21 @@ public class AvailabilityDB {
         }
         assert availabilities != null;
         for (DocumentSnapshot availability : availabilities) {
-            if ( availability.getDate("startDate").before(end) ) {
+            if ( !availability.getBoolean("weekly") && availability.getDate("startDate").before(end) && availability.getDate("endDate").after(start) ) {
                 availabilityTimes.add(new AvailabilityModel(
                         availability.getId(),
                         availability.getString("userId"),
                         availability.getDate("startDate"),
                         availability.getDate("endDate"),
                         availability.getBoolean("weekly")));
-            } else {
-                break;
+            } else if ( availability.getBoolean("weekly") && availability.getDate("startDate").before(end) && availability.getDate("startDate").after(SettingsDB.getSettings().getSemesterStart()) ) {
+                availabilityTimes.add(new AvailabilityModel(
+                        availability.getId(),
+                        availability.getString("userId"),
+                        availability.getDate("startDate"),
+                        availability.getDate("endDate"),
+                        availability.getBoolean("weekly")));
             }
-        }
-        ApiFuture<QuerySnapshot> weeklyFuture = FirestoreDB.get().collection("availabilities").whereEqualTo("userId",userId).whereEqualTo("weekly", true).orderBy("startDate", Query.Direction.ASCENDING).whereLessThanOrEqualTo("startDate", end).get();
-        List<QueryDocumentSnapshot> weeklyDocuments = null;
-        try {
-            weeklyDocuments = weeklyFuture.get().getDocuments();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        for (DocumentSnapshot document : weeklyDocuments) {
-            availabilityTimes.add(new AvailabilityModel(
-                    document.getId(),
-                    document.getString("userId"),
-                    document.getDate("startDate"),
-                    document.getDate("endDate"),
-                    document.getBoolean("weekly")));
         }
         return availabilityTimes;
     }
