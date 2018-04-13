@@ -119,7 +119,7 @@ function updateDate() {
                     4: $(this).attr('serviceType'),
                     5: moment(zonedDate($(this).attr('startDate'))).format("MM/DD/YYYY hh:mm") + " - " + moment(zonedDate($(this).attr('endDate'))).format("hh:mm A"),
                     6: @if(!currentUser.getRole.equals("Student")) {
-                            `<select data-id="${$(this).attr("appointmentId")}" class="custom-select attendanceSelect  ${($(this).attr("present") ? "success" : "danger")}-border" title="Appointment Attendance">
+                            `<select data-id="${$(this).attr("appointmentId")}" class="selectpicker  ${($(this).asttr("present") ? "success" : "danger")}-border" title="Appointment Attendance">
             <option value="${$(this).attr("present")}" selected>
                 ${($(this).attr("present") ? "&#10004;" : "&#x2716;")}
                 </option>

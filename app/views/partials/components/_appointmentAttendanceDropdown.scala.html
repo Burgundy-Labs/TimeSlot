@@ -1,7 +1,7 @@
 @(appointment: AppointmentsModel, currentUser: UsersModel)
 @present = @{appointment.getPresent}
 @if(!currentUser.getRole.equals("Student")) {
-        <select id='select-@appointment.getAppointmentId' class="custom-select @if(present){success} else {danger}-border" title="Appointment Attendance">
+        <select id='select-@appointment.getAppointmentId' class="selectpicker @if(present){success} else {danger}-border" title="Appointment Attendance">
             <option value="@present" selected>
                 @if(present) {&#10004;} else {&#x2716;}
                 </option>

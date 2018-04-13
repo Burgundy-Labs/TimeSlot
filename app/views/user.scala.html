@@ -54,7 +54,7 @@
                                                 <li class="list-group-item">
                                                     <div class="container-fluid">
                                                         <div class="row">
-                                                            <select id="selectedService" title="Services" class="mb-1 col-lg-7 form-control">
+                                                            <select id="selectedService" title="Services" class="mb-1 col-lg-7 form-control selectpicker" data-live-search="true">
                                                             @for(service <- AccountController.getAvailableServices(user.getUid)) {
                                                                 <option value="@service.getServiceId">
                                                                 @service.getService
