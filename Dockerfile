@@ -46,11 +46,9 @@ COPY ["application.conf", "TimeSlot/conf/application.conf"]
 COPY ["credentials.json", "TimeSlot/conf/credentials.json"]
 
 RUN cd TimeSlot && sbt update
-RUN cd TimeSlot && sbt compile
-RUN cd TimeSlot && sbt test
-RUN cd TimeSlot && sbt dist
+RUN cd TimeSlot && sbt assembly
 EXPOSE 9000 5005
-
-RUN unzip target/universal/$APP_NAME-$APP_VERSION.zip
-RUN chmod +x $APP_NAME-$APP_VERSION/bin/$APP_NAME
-ENTRYPOINT $APP_NAME-$APP_VERSION/bin/$APP_NAME -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
+RUN scala target/scala-$APP_VERSION/$APP_NAME-assembly-1.0.jar
+#RUN unzip target/universal/$APP_NAME-$APP_VERSION.zip
+#RUN chmod +x $APP_NAME-$APP_VERSION/bin/$APP_NAME
+#ENTRYPOINT $APP_NAME-$APP_VERSION/bin/$APP_NAME -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
