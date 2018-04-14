@@ -8,7 +8,7 @@ resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 
 scalaVersion := "2.12.4"
 
-libraryDependencies ++= Seq(ehcache, ws, javaWs, guice,
+libraryDependencies ++= Seq(ehcache, guice,
   "org.webjars" % "bootstrap" % "4.0.0-2",
   "com.google.cloud" % "google-cloud-firestore" % "0.42.0-beta",
   "com.google.firebase" % "firebase-admin" % "5.9.0",
