@@ -2,7 +2,7 @@ name := "timeslot"
 
 version := "1.4"
 
-lazy val `project_burgundy` = (project in file(".")).enablePlugins(PlayJava, LauncherJarPlugin, PlayAkkaHttp2Support, SbtWeb, DockerPlugin)
+lazy val `timeslot` = (project in file(".")).enablePlugins(PlayMinimalJava , LauncherJarPlugin, PlayAkkaHttp2Support, SbtWeb)
 
 resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 

@@ -14,6 +14,7 @@ ENV SBT_VERSION   1.1.2
 ENV APP_NAME      timeslot
 ENV APP_VERSION   1.4
 
+
 # Scala expects this file
 RUN touch /usr/lib/jvm/java-8-openjdk-amd64/release
 
@@ -35,18 +36,21 @@ RUN \
 
 # Define working directory
 WORKDIR /root
-
 ENV PROJECT_HOME /usr/src
-COPY ["build.sbt", "/tmp/build/"]
-COPY ["project/plugins.sbt", "project/build.properties", "/tmp/build/project/"]
-RUN cd /tmp/build && \
- sbt update && \
- sbt compile && \
- sbt test && \
- sbt dist
 
+# Pull latest TimeSlot code from Master branch
+RUN git clone https://github.com/Burgundy-Labs/TimeSlot.git -b 1.4
+
+# Pull in this apps credentials + application files (from local storage)
+COPY ["application.conf", "TimeSlot/conf/application.conf"]
+COPY ["credentials.json", "TimeSlot/conf/credentials.json"]
+
+RUN cd TimeSlot && sbt update
+RUN cd TimeSlot && sbt compile
+RUN cd TimeSlot && sbt test
+RUN cd TimeSlot && sbt dist
 EXPOSE 9000 5005
 
-RUN unzip /tmp/build/target/universal/$APP_NAME-$APP_VERSION.zip
+RUN unzip target/universal/$APP_NAME-$APP_VERSION.zip
 RUN chmod +x $APP_NAME-$APP_VERSION/bin/$APP_NAME
 ENTRYPOINT $APP_NAME-$APP_VERSION/bin/$APP_NAME -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
