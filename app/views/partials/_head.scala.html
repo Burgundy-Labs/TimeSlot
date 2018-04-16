@@ -1,5 +1,15 @@
-@* Meta *@
+@* Meta & PWA Declarations *@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#017BFF">
+<link rel="manifest" href="@routes.Assets.at("manifest.json")">
+<link rel="apple-touch-icon" sizes="180x180" href="@routes.Assets.at("images/icons/apple-touch-icon.png")">
+<link rel="icon" type="image/png" sizes="32x32" href="@routes.Assets.at("images/icons/favicon-32x32.png")">
+<link rel="icon" type="image/png" sizes="16x16" href="@routes.Assets.at("images/icons/favicon-16x16.png")">
+<link rel="mask-icon" href="@routes.Assets.at("images/icons/safari-pinned-tab.svg")" color="#5bbad5">
+<meta name="apple-mobile-web-app-title" content="TimeSlot">
+<meta name="application-name" content="TimeSlot">
+<meta name="msapplication-TileColor" content="#603cba">
 @* Icons *@
 <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.ico")">
 @* Stylesheets *@
@@ -16,23 +26,36 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@@3.5.2/animate.min.css">
 @* Add new stylesheets above this line *@
-<link rel="stylesheet" href="@routes.Assets.at("lib/bootstrap/css/bootstrap.css")">
+<link rel="stylesheet" href="@routes.Assets.at("lib/bootstrap/css/bootstrap.min.css")">
 <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")?@Application.getConfig.getString("app.version")">
 @* Scripts *@
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
-<script src="@routes.Assets.at("lib/bootstrap/js/bootstrap.js")"></script>
+<script src="@routes.Assets.at("lib/bootstrap/js/bootstrap.min.js")"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.1/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-range/3.0.3/moment-range.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.14/moment-timezone-with-data.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
-<script src="@routes.Assets.at("third_party/palette/palette.js")"></script>
+<script defer async src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+<script defer async src="@routes.Assets.at("third_party/palette/palette.js")"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
 <script src="https://cdn.firebase.com/libs/firebaseui/2.7.0/firebaseui.js"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=@Application.getConfig.getString("googleAnalyticsUA")"></script>
 <script>
-  var config = {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/assets/javascripts/service-worker.js')
+                    .then(function(registration) {
+                        console.log('Service Worker registration successful with scope: ',
+                                registration.scope);
+                    })
+                    .catch(function(err) {
+                        console.log('Service Worker registration failed: ', err);
+                    });
+        }
+
+  let config = {
       apiKey: "@Application.getConfig.getString("authConfig.apiKey")",
       authDomain: "@Application.getConfig.getString("authConfig.authDomain")",
       databaseURL: "@Application.getConfig.getString("authConfig.databaseURL")",
@@ -57,10 +80,7 @@
           }
       });
   });
-</script>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=@Application.getConfig.getString("googleAnalyticsUA")"></script>
-<script>
+
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());

@@ -6,14 +6,14 @@
     UserController.getCurrentRole
 }
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <title>@pageHead</title>
         @partials._head()
     </head>
     <body>
         <div id="loader">
-            <img src="@routes.Assets.at("images/loader.svg")" width="200px">
+            <img src="@routes.Assets.at("images/loader.svg")" width="200px" alt="Loading">
         </div>
         <main>
             @helper.CSRF.formField
@@ -35,7 +35,7 @@
                                     exit_to_app</i><span class="icon-text">Sign Out</span></a>
                             </div>
                         </div>
-                        <img class="logo navbar-brand" src="@routes.Assets.at("images/TimeSlot_White.svg")" width="200px">
+                        <img class="logo navbar-brand" src="@routes.Assets.at("images/TimeSlot_White.svg")" width="200px" alt="TimeSlot Logo">
 
                     </nav>
                     @if(!currentSettings.getSiteAlert.equals("")) {
