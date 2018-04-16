@@ -82,7 +82,9 @@
         <div class="loginJumbotron">
                 <div class="jumbotron d-flex align-items-center">
                     <div class="container">
-                        <img src="@routes.Assets.at("/images/TimeSlot.svg")" width="300" class="mb-1"/>
+                        <div class="col-sm-12 col-md-6 col-lg-6 center">
+                            <img src="@routes.Assets.at("/images/TimeSlot.svg")" class="mb-2 img-fluid"/>
+                        </div>
                         <h2>@SettingsController.getSettings.getCenterName</h2>
                         <br/>
                         <p>
