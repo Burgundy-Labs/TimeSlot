@@ -1,69 +1,77 @@
 @()
-<div id="createNewAppointmentForm">
-    <div class="step-app">
-        <ul class="step-steps">
-            <li><a href="#step1">Appointment Info</a></li>
-            <li><a href="#step2">Coach Selection</a></li>
-            <li><a href="#step3">Appointment Notes</a></li>
-            <li><a href="#step4">Appointment Time</a></li>
-        </ul>
-        <div class="step-content">
-            <div class="step-tab-panel" id="step1">
-                <div>
-                    <form id="appointmentInfo">
-                    <label for="appointmentType">Type of appointment</label>
-                    <br/>
-                    <select id="appointmentType" name="appointmentType" required>
-                        <option selected disabled hidden> Select an appointment type </option>
-                        @for(appointment <- SettingsController.getAvailableAppointmentTypes) {
-                            <option value="@appointment.getAppointmentTypeId">@appointment.getAppointmentType</option>
-                        }
-                        </select>
-                    <br/>
-                    <br/>
-                    <label for="serviceType">Service desired</label>
-                    <br/>
-                    <select id="serviceType" name="serviceType" required>
-                        <option selected disabled hidden> Select service</option>
-                        @for(service <- SettingsController.getServices) {
-                            <option value="@service.getServiceId">@service.getService</option>
-                        }
-                    </select>
-                    </form>
-                </div>
-            </div>
-            <div class="step-tab-panel" id="step2">
-                <div>
-                    <form id="coachForm">
-                    <label for="coachId">Select a coach</label>
-                    <br/>
-                    <select id="coachId" name="appointmentType" required>
-                    </select>
-                    </form>
-                </div>
-            </div>
-            <div class="step-tab-panel" id="step3">
-                <div>
-                    <div class="form-group">
-                        <label for="appointmentNotes">What will the appointment be about?</label>
-                        <textarea class="form-control" rows="5" id="appointmentNotes"></textarea>
+<div class="col-md-12">
+    <div id="createNewAppointmentForm">
+        <div class="step-app">
+            <ul class="step-steps">
+                <li><a href="#step1">Appointment Info</a></li>
+                <li><a href="#step2">Appointment Notes</a></li>
+                <li><a href="#step3">Appointment Time</a></li>
+            </ul>
+            <div class="step-content">
+                <div class="step-tab-panel" id="step1">
+                    <div>
+                        <form id="appointmentInfo">
+                            <span class="errorInfo"></span>
+                            <label for="appointmentType">Type of appointment</label>
+                            <br/>
+                            <select id="appointmentType" name="appointmentType" required>
+                                <option selected disabled hidden> Select an appointment type </option>
+                                @for(appointment <- SettingsController.getAvailableAppointmentTypes) {
+                                    <option data-weekly="@appointment.getWeekly" data-oneTime="@appointment.getOneTime" value="@appointment.getAppointmentTypeId">@appointment.getAppointmentType</option>
+                                }
+                                </select>
+                            <br/>
+                            <br/>
+                            <label for="serviceType">Service desired</label>
+                            <br/>
+                            <select id="serviceType" name="serviceType" required>
+                                <option selected disabled hidden> Select service</option>
+                                @for(service <- SettingsController.getServices) {
+                                    <option value="@service.getServiceId">@service.getService</option>
+                                }
+                            </select>
+                        </form>
                     </div>
                 </div>
-            </div>
-            <div class="step-tab-panel" id="step4">
-                <div>
-                    <div class="row mb-3 col-md-12">
-                        <div class="center"><span class="badge" style="background-color:#FFB3B3">One-Time Availability</span> <span class="badge" style="background-color:#B3B3FF">Weekly Availability</span> <span class="badge" style="background-color:#D9B3D9">Both One-Time and Weekly Availability</span></div>
+                <div class="step-tab-panel" id="step2">
+                    <div>
+                        <div class="form-group">
+                            <label for="appointmentNotes">What will the appointment be about?</label>
+                            <textarea class="form-control" rows="5" id="appointmentNotes"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="step-tab-panel" id="step3">
+                    <div class="row mb-3">
+                        <div class="center mb-3 col-12">
+                            <span class="badge oneTime col-md-12 col-lg-3" >
+                                One-Time Availability</span>
+
+                            <span class="badge weekly col-md-12 col-lg-3">
+                                Weekly Availability</span>
+
+                            <span class="badge both col-md-12 col-lg-3">
+                                Both One-Time and Weekly Availability</span>
+                        </div>
+                        <div class="center mb-2 col-12">
+                            <label for="coachId">Select a Coach:</label>
+                            <br/>
+                            <select id="coachId" name="coachId" required></select>
+                        </div>
                         <div class="mb-3 col-md-12" id="calendarContainer">
                             <div id="newAppointmentCalendar"></div>
+                        </div>
+                        <div class="col-md-12 center">
+                            <button class="btn btn-primary col-3 center" onclick="createAppointment()">
+                                Create Appointment</button>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="step-footer">
-            <button class="btn" data-direction="prev">Previous</button>
-            <button class="btn btn-primary" data-direction="next">Next</button>
+            <div class="step-footer">
+                <button class="btn" data-direction="prev">Previous</button>
+                <button class="btn btn-primary" data-direction="next">Next</button>
+            </div>
         </div>
     </div>
 </div>

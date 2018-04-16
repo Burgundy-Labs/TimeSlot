@@ -113,8 +113,8 @@ function updateDate() {
             $(response).each(function () {
                 t.DataTable().rows.add([{
                     0: `<img src="${$(this).attr('studentPhoto')}" class="userAvatar"/>`,
-                    1: $(this).attr('studentName'),
-                    2: $(this).attr('coachName'),
+                    1: `<a href='/User/${$(this).attr('studentId')}'>${$(this).attr('studentName')}</a>`,
+                    2: `<a href='/User/${$(this).attr('coachId')}'>${$(this).attr('coachName')}</a>`,
                     3: $(this).attr('appointmentType'),
                     4: $(this).attr('serviceType'),
                     5: moment(zonedDate($(this).attr('startDate'))).format("MM/DD/YYYY hh:mm") + " - " + moment(zonedDate($(this).attr('endDate'))).format("hh:mm A"),

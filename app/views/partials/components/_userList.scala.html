@@ -39,7 +39,7 @@
                     <td>
                         <span class="mdl-list__item-secondary-content">
                             <span class="action-primary">@partials.components._tooltipIconLink("mailto:" + user.getEmail, "email", "bottom", "Email User", 32)</span>
-                            <span class="action-secondary" onclick="createNewAppointment('@user.getRole', '@user.getUid')">@partials.components._tooltipIconLink("javascript:void(0)", "insert_invitation", "bottom", "Schedule Appointment", 32)</span>
+                            <span class="action-secondary" onclick="createAppointmentPopup('@user.getRole', '@user.getUid')">@partials.components._tooltipIconLink("javascript:void(0)", "insert_invitation", "bottom", "Schedule Appointment", 32)</span>
                             @if(currentUser.getRole.equals("Admin")) {
                                 <span class="action-delete"><span id="@user.getUid" onclick="deleteUser(this)">@partials.components._tooltipIconLink("javascript:void(0)", "close", "bottom", "Remove User", 32)</span></span>
                             }
@@ -50,8 +50,17 @@
         </tbody>
     </table>
 </div>
-
 <script type="text/javascript">
+            function createAppointmentPopup(role, studentId) {
+                scheduleUser.userId = studentId;
+                scheduleUser.userRole = role;
+                $.dialog({
+                    title: 'New Appointment',
+                    theme: 'modern',
+                    columnClass: 'col-md-12',
+                    content: `@partials.components._createNewAppointmentFlow()`,
+                });
+            }
         $(document).ready(function () {
             $('#@role-Table').DataTable({
                 dom: 'frtlip',

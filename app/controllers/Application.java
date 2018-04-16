@@ -27,7 +27,7 @@ public class Application {
     }
 
     public static List<MenuLinks> menuLinks = Arrays.asList(
-            new MenuLinks("/Account", "Account", "account_circle", "Manage your account settings and preferences.", true, true),
+            new MenuLinks("/Account", "Account", "account_circle", "Manage your account settings and preferences.", false, false),
             new MenuLinks("/Dashboard", "Dashboard", "dashboard", "Something about the dashboard.", false, false),
             new MenuLinks("/Appointments", "Appointments", "schedule", "View / manage your upcoming and past appointments.", false, false),
             new MenuLinks("/Coaches", "Coaches", "recent_actors", "View all users working at the center.",false, false),
