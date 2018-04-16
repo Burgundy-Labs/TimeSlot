@@ -1,4 +1,4 @@
-@import controllers.Databases.UserDB
+
 @()
     @currentUser = @{
         UserController.getCurrentUser
@@ -8,7 +8,7 @@
         SettingsController.getSettings.getCenterInformation
     }
 
-    @main("Dashboard", "Your Dashboard") {
+    @main("Dashboard", "Dashboard") {
         <div class="mb-3 col-md-12 dashCards">
             <div class="row row-eq-height">
                 <div class="mb-2 col-md-4 animated fadeInUp">
