@@ -1,6 +1,7 @@
 @(user: UsersModel)
 @currentUser = @{UserController.getCurrentUser}
-@main(user.getDisplayName, user.getDisplayName) {
+@pageTitle = @{if(user.getUid.equals(currentUser.getUid)){"Account"} else { user.getDisplayName}}
+@main(pageTitle.toString, user.getDisplayName) {
     <div class="mb-3 col-md-2">
         <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
             <a class="nav-link active" id="userInfoTab" data-toggle="pill" href="#userInfoContent" role="tab" aria-controls="userInfoContent" aria-selected="true">
@@ -15,7 +16,7 @@
             }
         </div>
     </div>
-    <div class="mb-3 col-md-10">
+    <div class="mb-3 col-md-10 animated fadeInUp">
         <div class="tab-content" id="tabContent">
             <div class="tab-pane fade show active" id="userInfoContent" role="tabpanel" aria-labelledby="userInfoTab">
                 <div class="mb-3 col-md-12">
