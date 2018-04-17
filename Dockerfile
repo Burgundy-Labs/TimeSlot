@@ -52,4 +52,4 @@ EXPOSE 9000 5005 9443
 
 RUN unzip TimeSlot/target/universal/$APP_NAME-$APP_VERSION.zip
 RUN chmod +x $APP_NAME-$APP_VERSION/bin/$APP_NAME
-ENTRYPOINT $APP_NAME-$APP_VERSION/bin/$APP_NAME -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
+ENTRYPOINT $APP_NAME-$APP_VERSION/bin/$APP_NAME -Dhttps.port=9443 -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
