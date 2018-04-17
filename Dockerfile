@@ -39,7 +39,7 @@ WORKDIR /root
 ENV PROJECT_HOME /usr/src
 
 # Pull latest TimeSlot code from Master branch
-RUN git clone https://github.com/Burgundy-Labs/TimeSlot.git -b 1.4
+RUN git clone https://github.com/Burgundy-Labs/TimeSlot.git
 
 # Pull in this apps credentials + application files (from local storage)
 COPY ["application.conf", "TimeSlot/conf/application.conf"]
@@ -48,7 +48,7 @@ COPY ["credentials.json", "TimeSlot/conf/credentials.json"]
 RUN cd TimeSlot && sbt update
 RUN cd TimeSlot && sbt compile
 RUN cd TimeSlot && sbt dist
-EXPOSE 9000 5005
+EXPOSE 9000 5005 9443
 
 RUN unzip TimeSlot/target/universal/$APP_NAME-$APP_VERSION.zip
 RUN chmod +x $APP_NAME-$APP_VERSION/bin/$APP_NAME
