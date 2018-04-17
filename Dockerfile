@@ -6,11 +6,11 @@
 #
 
 # Pull base image
-FROM openjdk:8u162
+FROM openjdk:8
 
 # Env variables
 ENV SCALA_VERSION 2.12.5
-ENV SBT_VERSION   1.1.2
+ENV SBT_VERSION   1.1.4
 ENV APP_NAME      timeslot
 ENV APP_VERSION   1.4
 
