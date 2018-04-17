@@ -21,10 +21,12 @@
             <div class="tab-pane fade show active" id="userInfoContent" role="tabpanel" aria-labelledby="userInfoTab">
                 <div class="mb-3 col-md-12">
                     <div class="userInfo">
-                        <div class="user"><img src="@user.getPhotoURL" class="user-avatar-large mb-2"/><h1>@user.getDisplayName</h1></div>
-                        <div class="userButtons">
-                        @partials.components._tooltipIconLink("mailto:" + user.getEmail, "email", "bottom", user.getEmail, 32)
-                        </div>
+                        <div class="user"><img src="@user.getPhotoURL" class="user-avatar-large mb-2"/><h1>@user.getDisplayName</h1
+                            @if(!currentUser.getUid.equals(user.getUid)) {
+                                <div class="userButtons">
+                                @partials.components._tooltipIconLink("mailto:" + user.getEmail, "email", "bottom", user.getEmail, 32)
+                                </div>
+                            }
                     </div>
                     <hr/>
                     @if(!currentUser.getRole.equals("Student") || currentUser.getUid.equals(user.getUid)) {
