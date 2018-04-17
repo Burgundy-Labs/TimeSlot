@@ -8,15 +8,12 @@
 }
 <div class="card">
     <div class="card-header">
-        <h4 class="float-left">Appointment List</h4>
-    </div>
-    <div class="card-body">
         <div class="weekSelect row col-12 ">
             <button onClick="prevWeek()" class="btn btn-primary col-md-2"><i class="material-icons md-18">navigate_before</i> Previous Week</button>
             <div class="weekText col-md-8"><h3><small><span class="weekSelected"></span></small></h3></div>
             <button onClick="nextWeek()" class="btn btn-primary col-md-2">Next Week <i class="material-icons md-18">navigate_next</i></button>
-        </div>
-        <br/>
+        </div>    </div>
+    <div class="card-body">
         <div class="table-responsive cardTable">
             <table class="table table-striped appointmentList col-md-12 animated fadeInUp" cellspacing="0" width="100%" id="appointmentList" style="width: 100%">
                 <thead>
