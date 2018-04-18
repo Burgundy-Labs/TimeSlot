@@ -1,0 +1,117 @@
+// Configuration variables
+
+$cuetip-namespace: "tooltip" !default;
+$cuetip-class-prefix: "#{$cuetip-namespace}--" !default;
+$cuetip-default-position: "top" !default;
+
+$cuetip-has-tail: true !default;
+$cuetip-cursor: inherit !default;
+$cuetip-z-index: 9999 !default;
+
+$cuetip-color-foreground: #fff !default;
+$cuetip-color-background: #333 !default;
+$cuetip-padding: .25em !default;
+$cuetip-border-radius: .3em !default;
+
+$cuetip-tail-size: .25em !default;
+$cuetip-offset: .5em !default;
+
+
+// Internally used variables, mixins, and functions
+
+@mixin __cuetip-common__ {
+  display: none;
+  pointer-events: none;
+  position: absolute;
+  transform: translate#{__cuetip-position__($cuetip-default-position, 3)}(unquote('(-50%)'));
+  #{__cuetip-position__($cuetip-default-position, 2)}: 50%;
+}
+
+@mixin __cuetip-common-hover__ {
+  display: inline-block;
+}
+
+@mixin __cuetip-reset__ {
+  top: auto;
+  right: auto;
+  bottom: auto;
+  left: auto;
+}
+
+$__cuetip-positions__: ("top", "right", "bottom", "left");
+
+$__cuetip-map__: (
+        "top":    ("bottom", "left", "X", "#{$cuetip-color-background} transparent transparent transparent"),
+        "right":  ("left",   "top",  "Y", "transparent #{$cuetip-color-background} transparent transparent"),
+        "bottom": ("top",    "left", "X", "transparent transparent #{$cuetip-color-background} transparent"),
+        "left":   ("right",  "top",  "Y", "transparent transparent transparent #{$cuetip-color-background}")
+);
+
+@function __cuetip-position__($position, $index) {
+  @return nth(map-get($__cuetip-map__, $position), $index);
+}
+
+
+// Actual styling
+
+[data-#{$cuetip-namespace}] {
+  position: relative;
+  cursor: $cuetip-cursor;
+
+  @if ($cuetip-has-tail) {
+    // Tooltip tail
+    &::before {
+      @include __cuetip-common__;
+      content: "";
+      // Offset the tail from the element
+      #{__cuetip-position__($cuetip-default-position, 1)}: calc(100% - #{$cuetip-tail-size} + #{$cuetip-offset});
+      border-width: $cuetip-tail-size;
+      border-style: solid;
+      border-color: #{__cuetip-position__($cuetip-default-position, 4)};
+    }
+
+    // Create variations for each position
+    @each $position in $__cuetip-positions__ {
+      &.#{$cuetip-class-prefix}#{$position}::before {
+        @include __cuetip-reset__;
+        #{__cuetip-position__($position, 1)}: calc(100% - #{$cuetip-tail-size} + #{$cuetip-offset});
+        border-color: #{__cuetip-position__($position, 4)};
+        transform: translate#{__cuetip-position__($position, 3)}(unquote('(-50%)'));
+        #{__cuetip-position__($position, 2)}: 50%;
+      }
+    }
+  }
+
+  // Tooltip body
+  &::after {
+    @include __cuetip-common__;
+    content: attr(data-#{$cuetip-namespace});
+    white-space: nowrap;
+    background: $cuetip-color-background;
+    color: $cuetip-color-foreground;
+    padding: $cuetip-padding;
+    border-radius: $cuetip-border-radius;
+    // Offset the body from the tail
+    #{__cuetip-position__($cuetip-default-position, 1)}: calc(100% + #{$cuetip-tail-size} + #{$cuetip-offset});
+  }
+
+  // Create variations for each position
+  @each $position in $__cuetip-positions__ {
+    &.#{$cuetip-class-prefix}#{$position}::after {
+      @include __cuetip-reset__;
+      #{__cuetip-position__($position, 1)}: calc(100% + #{$cuetip-tail-size} + #{$cuetip-offset});
+      transform: translate#{__cuetip-position__($position, 3)}(unquote('(-50%)'));
+      #{__cuetip-position__($position, 2)}: 50%;
+    }
+  }
+
+  @if ($cuetip-has-tail) {
+    &:hover::before {
+      @include __cuetip-common-hover__;
+    }
+  }
+
+  &:hover::after {
+    @include __cuetip-common-hover__;
+  }
+}
