@@ -20,6 +20,7 @@
             <div class="page-content">
                 <div class="row page-title">
                     <nav class="navbar navbar-expand-lg navbar-dark col-12">
+                        <div class="co-sm-6 col-6">
                         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                             <i class="material-icons">menu</i>
                         </button>
@@ -35,8 +36,10 @@
                                     exit_to_app</i><span class="icon-text">Sign Out</span></a>
                             </div>
                         </div>
-                        <img class="logo navbar-brand" src="@routes.Assets.at("images/TimeSlot_White.svg")" width="200px" alt="TimeSlot Logo">
-
+                        </div>
+                        <div class="col-sm-6 col-6">
+                        <img class="logo navbar-brand float-right" src="@routes.Assets.at("images/TimeSlot_White.svg")" width="200px" alt="TimeSlot Logo">
+                        </div>
                     </nav>
                     @if(!currentSettings.getSiteAlert.equals("")) {
                         <div class="col-md-6 site-alert">
