@@ -19,6 +19,18 @@
                     </div>
                 </div>
             </div>
+            <div class="row row-eq-height">
+                <div class="mb-2 col-md-3 animated fadeInUp">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Appointments</h3>
+                        </div>
+                        <div>
+                            <h5>There are</h5><h1><span id="appointmentCount"></span></h1><h5>Appointments</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="row" id="reports">
                 <div class="mb-3 col-md-4">
                     <h1 class="center">Appointment Types</h1>
@@ -39,6 +51,10 @@
         </div>
 
         <script type="text/javascript">
+                let rangeData = {
+                    appointments: 0
+                };
+
                 let reportStart = $('#reportStart');
                 let reportEnd = $('#reportEnd');
                 let Charts = [];
@@ -93,7 +109,8 @@
                                 }
                             })
                         }
-                    })
+                    });
+                    $("#appointmentCount").html(rangeData.appointments);
                 }
         </script>
 
