@@ -4,9 +4,12 @@ import com.google.inject.Inject;
 import com.typesafe.config.Config;
 import controllers.ApplicationComponents.MenuLinks;
 import play.Environment;
+import play.mvc.Result;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static play.mvc.Results.forbidden;
 
 public class Application {
     private static Config config;
@@ -35,6 +38,17 @@ public class Application {
             new MenuLinks("/Settings","Site Settings", "settings","Manage settings related to the center",true,false ) ,
             new MenuLinks("/Reports", "Reports", "assessment", "View reports and statistics about the center", true, false)
     );
+
+    public static Result restrictByRole(String role) {
+        String currentRole = UserController.getCurrentRole();
+        // User not authorized
+        if (currentRole == null || !currentRole.equals(role)) {
+            return forbidden(views.html.error_pages.unauthorized.render());
+        } else {
+            //  Check passed
+            return null;
+        }
+    }
 }
 
 

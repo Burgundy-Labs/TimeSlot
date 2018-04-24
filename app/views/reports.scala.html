@@ -1,117 +1,199 @@
 @()
-    @main("Reports", "Reports") {
-        <div class="col-md-12" id="report-container">
-            <div class="row">
-                <div class="form-group mb-3 col-md-6">
-                    <div class="row">
-                        <label for="reportStart" class="mb-3 col-md-12 mb-3 col-md-form-label">Start Date</label>
-                        <div class="mb-3 col-md-12">
-                            <input id="reportStart" class="form-control" type="date" name="reportStart" value="" onchange="createCharts()">
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group mb-3 col-md-6">
-                    <div class="row">
-                        <label for="reportEnd" class="mb-3 col-md-12 mb-3 col-md-form-label">End Date</label>
-                        <div class="mb-3 col-md-12">
-                            <input id="reportEnd" class="form-control" type="date" name="reportEnd" value="" onchange="createCharts()">
-                        </div>
+@main("Reports", "Reports") {
+    <div class="col-md-12 container-fluid" id="report-container">
+        <div class="row">
+            <div class="form-group mb-3 col-md-6">
+                <div class="row">
+                    <label for="reportStart" class="mb-3 col-md-12 mb-3 col-md-form-label">Start Date</label>
+                    <div class="mb-3 col-md-12">
+                        <input id="reportStart" class="form-control" type="date" name="reportStart" value="" onchange="createCharts()">
                     </div>
                 </div>
             </div>
-            <div class="row row-eq-height">
-                <div class="mb-2 col-md-3 animated fadeInUp">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3>Appointments</h3>
-                        </div>
-                        <div>
-                            <h5>There are</h5><h1><span id="appointmentCount"></span></h1><h5>Appointments</h5>
-                        </div>
+            <div class="form-group mb-3 col-md-6">
+                <div class="row">
+                    <label for="reportEnd" class="mb-3 col-md-12 mb-3 col-md-form-label">End Date</label>
+                    <div class="mb-3 col-md-12">
+                        <input id="reportEnd" class="form-control" type="date" name="reportEnd" value="" onchange="createCharts()">
                     </div>
-                </div>
-            </div>
-            <div class="row" id="reports">
-                <div class="mb-3 col-md-4">
-                    <h1 class="center">Appointment Types</h1>
-                    <br/>
-                    <canvas id="Type"></canvas>
-                </div>
-                <div class="mb-3 col-md-4">
-                    <h1 class="center">Services</h1>
-                    <br/>
-                    <canvas id="Service"></canvas>
-                </div>
-                <div class="mb-3 col-md-4">
-                    <h1 class="center">Weekly/One-Time</h1>
-                    <br/>
-                    <canvas id="Weekly"></canvas>
                 </div>
             </div>
         </div>
+        <div class="row">
+            <h3>View Data</h3>
+            <select id="propertySelect" title="Property Filter">
+                <option disabled value="" selected>Select a Property</option>
+            </select>
+            <button class="btn btn-primary" onclick="addProperty()">Add Property</button>
+        </div>
+        <div class="row row-eq-height dashCards center" id="blocks">
+        </div>
 
-        <script type="text/javascript">
-                let rangeData = {
-                    appointments: 0
-                };
-
-                let reportStart = $('#reportStart');
-                let reportEnd = $('#reportEnd');
-                let Charts = [];
-                let chartData = [];
-                /* Create Charts On Page Load*/
-                $(document).ready(function () {
-                    reportStart.val(moment().subtract(7, "days").format("YYYY-MM-DD"));
-                    reportEnd.val(moment().format("YYYY-MM-DD"));
-                    createCharts();
-                });
-
-                function createCharts() {
-                    getData();
-                    makeCharts();
+    <script type="text/javascript">
+            let reportStart = $('#reportStart');
+            let reportEnd = $('#reportEnd');
+            let appointmentList = [];
+            let properties = [
+                {
+                    name: "Weekly",
+                    property: "weekly"
+                },
+                {
+                    name: "Date",
+                    property: "Date"
+                },
+                {
+                    name: "Appointment Type",
+                    property: "appointmentType"
                 }
+            ];
+            /* Create Charts On Page Load*/
+            $(document).ready(function () {
+                let $dropdown = $("#propertySelect");
+                properties.forEach(function(property) {
+                    $dropdown.append($("<option />").val(property.property).text(property.name));
+                });
+                reportStart.val(moment().subtract(7, "days").format("YYYY-MM-DD"));
+                reportEnd.val(moment().format("YYYY-MM-DD"));
+                getData();
+            });
 
-                function makeCharts() {
-                    for (let i = 0; i< Charts.length; i++) {
-                        let labels = [];
-                        let data = [];
-                        $.each(chartData[i], function( key, value ) {
-                            labels.push(key);
-                            data.push(value);
-                        });
-                        const chartone = document.getElementById(Charts[i]).getContext('2d');
-                        if(chartone !== null) {
-                            new Chart(chartone, {
-                                type: 'doughnut',
-                                data: {
-                                    datasets: [{
-                                        data: data,
-                                        backgroundColor: palette('tol', data.length).map(function (hex) {
-                                            return '#' + hex;
-                                        })
-                                    }],
-                                    labels: labels,
-                                },
-                            })
+            function addProperty() {
+                let selected = $("#propertySelect");
+                let dashboard = $("#blocks");
+                if(selected.val() === null) return;
+                dashboard.append(`<div class="mb-2 col-auto animated fadeInUp" id="${selected.val()}-block"> +
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h3 class="float-left">${selected.find(":selected").text()}</h3>
+                                                <button  onclick="removeBlock('${selected.val()}-block')" class="float-right no-button btn-dark"><i class="material-icons md-18">remove_circle</i></button>
+                                            </div>
+                                            <div>
+                                                <canvas id="${selected.val()}"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>`);
+                if(selected.val() === "Date") {
+                    makeDateChart();
+                } else {
+                    makePropertyChart(selected.val(), selected.val());
+                }
+            }
+
+            function removeBlock(block) {
+                $("#" + block).remove();
+            }
+
+            function makePropertyChart(property, chartId) {
+                let labels = appointmentList.map(a => a[property]).reduce(function(a,b) {
+                    if(a.indexOf(b) < 0) a.push(b);
+                    return a;
+                }, []);
+                let data = [];
+                let appointmentData = appointmentList.map(a => a[property]);
+                for(let i = 0; i < appointmentData.length; i++ ) {
+                    for (let j = 0; j < labels.length; j++) {
+                        if(appointmentData[i] === labels[j]){
+                            if(data[j] === undefined) {
+                                data[j] = 0;
+                            } else {
+                                data[j]++;
+                            }
                         }
                     }
                 }
-                function getData() {
-                    $.ajax({
-                        async: false,
-                        url: '/AppointmentStatistics/'+ moment(reportStart.val()).valueOf()+"/"+moment(reportEnd.val()).valueOf(),
-                        type: 'GET',
-                        success: function (response) {
-                            $(response).each(function (){
-                                for (let i=0; i < Object.getOwnPropertyNames(this).length; i++){
-                                    Charts.push(Object.getOwnPropertyNames(this)[i]);
-                                    chartData.push(Object.values(this)[i]);
-                                }
-                            })
-                        }
-                    });
-                    $("#appointmentCount").html(rangeData.appointments);
+                const appointmentTypeChart = document.getElementById(chartId).getContext('2d');
+                if (appointmentTypeChart !== null) {
+                    new Chart(appointmentTypeChart, {
+                        type: 'doughnut',
+                        data: {
+                            datasets: [{
+                                data: data,
+                                backgroundColor: palette('cb-RdYlBu', data.length).map(function (hex) {
+                                    return '#' + hex;
+                                })
+                            }],
+                            labels: labels,
+                        },
+                    })
                 }
-        </script>
+            }
 
-    }
+            function makeDateChart() {
+                let labels = appointmentList.map(a => moment(a["startDate"]).format('MM/DD/YYYY')).reduce(function(a,b) {
+                    if(a.indexOf(b) < 0) a.push(b);
+                    return a;
+                }, []);
+                let data = [];
+                let appointmentData = appointmentList.map(a => moment(a["startDate"]).format('MM/DD/YYYY'));
+                for(let i = 0; i < appointmentData.length; i++ ) {
+                    for (let j = 0; j < labels.length; j++) {
+                        if(appointmentData[i] === labels[j]){
+                            if(data[j] === undefined) {
+                                data[j] = 0;
+                            } else {
+                                data[j]++;
+                            }
+                        }
+                    }
+                }
+                const appointmentTypeChart = document.getElementById("Date").getContext('2d');
+                if (appointmentTypeChart !== null) {
+                    new Chart(appointmentTypeChart, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: "Appointments",
+                                data: data,
+                                backgroundColor: "#0377FD",
+                            }],
+                        },
+                        options: {
+                            maintainAspectRatio: false,
+                            responsive: true,
+                            tooltips: {
+                                mode: 'index',
+                                intersect: false,
+                            },
+                            hover: {
+                                mode: 'nearest',
+                                intersect: true
+                            },
+                            scales: {
+                                xAxes: [{
+                                    display: true,
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Day'
+                                    }
+                                }],
+                                yAxes: [{
+                                    display: true,
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Value'
+                                    }
+                                }]
+                            }
+                        }
+                    })
+                }
+            }
+
+            function getData() {
+                $.ajax({
+                    async: false,
+                    url: '/AppointmentStatistics/' + moment(reportStart.val()).valueOf() + "/" + moment(reportEnd.val()).valueOf(),
+                    type: 'GET',
+                    success: function (response) {
+                        appointmentList = [];
+                        $(response).each(function () {
+                            appointmentList.push(this);
+                        })
+                    }
+                });
+            }
+    </script>
+
+}
