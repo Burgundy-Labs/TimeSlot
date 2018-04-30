@@ -93,7 +93,7 @@ a
     text-align: center
 
 .site-alert
-  background-color: #D9534F
+  background-color: $application-tertiary
   color: white
   padding: 10px
   .row
@@ -111,7 +111,8 @@ a
 .dashCards
   .card-header
     padding-bottom: 5px
-    background-color: #3D5997
+    background-color: $secondary-color
+    text-align: center
     color: white
     h4
       font-size: 1.2em
@@ -126,7 +127,6 @@ a
 
 .card-block
   padding: 15px
-
 
 .nav-link
   color: black
@@ -168,7 +168,6 @@ a
     border-bottom: 10px solid $primary-color
     margin: 0 auto
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)
-
   p
     background-color: darken(white, 2%)
     padding: 5px
@@ -191,9 +190,6 @@ a
 
 #firebaseui-auth-container
   width: 100%
-
-.stepper
-  list-style-type: none
 
 button
   &:hover
@@ -220,7 +216,7 @@ button
 
 .cardTable
   thead
-    background-color: $primary-color
+    background-color: darken($secondary-color, 10%)
     color: white
   th
     font-weight: normal
@@ -238,7 +234,7 @@ button
     .row:first-child
       height: 0
 
-.success-border
+.success-border .dropdown-toggle.btn-default
   border: 1px solid $application-secondary
   background: $application-secondary
   color: white

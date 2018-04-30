@@ -6,7 +6,7 @@
 @currentSettings = @{
     SettingsController.getSettings
 }
-<div class="card">
+<div class="card dashCards">
     <div class="card-header">
         <div class="weekSelect row col-12 ">
             <button onClick="prevWeek()" class="btn btn-primary col-md-2"><i class="material-icons md-18">navigate_before</i> Previous Week</button>
@@ -39,17 +39,16 @@
 <script type="text/javascript">
 @if(!currentUser.getRole.equals("Student")) {
 
-$(document).on('click', '.attendanceSelect', function () {
-    $(this).data('prev', $(this).val());
-});
-
 $(document).on('change', '.attendanceSelect', function () {
     let e = $(this);
+    let d = e.closest("div");
     let newPresence = $(this).val();
     let appointment = {
         appointmentId: $(this).data('id'),
         present: newPresence
     };
+    console.log(appointment);
+    if(appointment.appointmentId == null){ return }
     $.ajax({
         url: '/updatePresence',
         type: 'POST',
@@ -57,11 +56,11 @@ $(document).on('change', '.attendanceSelect', function () {
         contentType: 'application/json',
         success: function () {
             if (newPresence === 'true') {
-                e.removeClass('danger-border');
-                e.addClass('success-border');
+                d.removeClass('danger-border');
+                d.addClass('success-border');
             } else {
-                e.removeClass('success-border');
-                e.addClass('danger-border');
+                d.removeClass('success-border');
+                d.addClass('danger-border');
             }
             createAlert('info', 'Attendance Changed');
         },
@@ -117,7 +116,7 @@ function updateDate() {
                     4: $(this).attr('serviceType'),
                     5: moment(zonedDate($(this).attr('startDate'))).format("MM/DD/YYYY hh:mm") + " - " + moment(zonedDate($(this).attr('endDate'))).format("hh:mm A"),
                     6: @if(!currentUser.getRole.equals("Student")) {
-                            `<select data-id="${$(this).attr("appointmentId")}" class="selectpicker ${($(this).attr("present") ? "success" : "danger")}-border" title="Appointment Attendance">
+                            `<select data-id="${$(this).attr("appointmentId")}" class="selectpicker attendanceSelect ${($(this).attr("present") ? "success" : "danger")}-border" title="Appointment Attendance">
             <option value="${$(this).attr("present")}" selected>
                 ${($(this).attr("present") ? "&#10004;" : "&#x2716;")}
                 </option>
