@@ -37,7 +37,7 @@
     </div>
 </div>
 <script type="text/javascript">
-@if((currentUser.isCoach != null && currentUser.isCoach) || currentUser.getRole.equals("Coach")) {
+@if(!currentUser.getRole.equals("Student")) {
 
 $(document).on('click', '.attendanceSelect', function () {
     $(this).data('prev', $(this).val());
@@ -72,6 +72,7 @@ $(document).on('change', '.attendanceSelect', function () {
     });
 });
 }
+
 let selectedDate;
 $(document).ready(function () {
     if (moment().weekday() >= 5 || moment().weekday() === 0) {
@@ -116,7 +117,7 @@ function updateDate() {
                     4: $(this).attr('serviceType'),
                     5: moment(zonedDate($(this).attr('startDate'))).format("MM/DD/YYYY hh:mm") + " - " + moment(zonedDate($(this).attr('endDate'))).format("hh:mm A"),
                     6: @if(!currentUser.getRole.equals("Student")) {
-                            `<select data-id="${$(this).attr("appointmentId")}" class="selectpicker  ${($(this).attr("present") ? "success" : "danger")}-border" title="Appointment Attendance">
+                            `<select data-id="${$(this).attr("appointmentId")}" class="selectpicker ${($(this).attr("present") ? "success" : "danger")}-border" title="Appointment Attendance">
             <option value="${$(this).attr("present")}" selected>
                 ${($(this).attr("present") ? "&#10004;" : "&#x2716;")}
                 </option>
