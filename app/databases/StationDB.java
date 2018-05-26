@@ -1,8 +1,7 @@
-package controllers.Databases;
+package databases;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
-import models.AppointmentsModel;
 import models.UsersModel;
 
 import java.util.*;

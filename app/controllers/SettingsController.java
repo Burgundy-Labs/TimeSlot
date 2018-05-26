@@ -1,13 +1,11 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import controllers.Databases.SettingsDB;
+import databases.SettingsDB;
 import models.AppointmentTypeModel;
 import models.ServiceModel;
 import models.SettingsModel;
-import models.UsersModel;
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.Result;
 
 import javax.xml.bind.DatatypeConverter;

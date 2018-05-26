@@ -1,4 +1,4 @@
-package controllers.Databases;
+package databases;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;

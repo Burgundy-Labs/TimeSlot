@@ -1,6 +1,6 @@
 package controllers;
 
-import controllers.Databases.AppointmentsDB;
+import databases.AppointmentsDB;
 import models.AppointmentsModel;
 import play.libs.Json;
 import play.mvc.Controller;

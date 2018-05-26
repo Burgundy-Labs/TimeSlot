@@ -2,7 +2,7 @@ package modules;
 
 import ApplicationComponents.*;
 import com.google.inject.AbstractModule;
-import controllers.Databases.FirestoreDB;
+import databases.FirestoreDB;
 
 public class StartupModule extends AbstractModule {
 

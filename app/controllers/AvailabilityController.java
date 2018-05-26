@@ -1,9 +1,9 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import controllers.Databases.AppointmentsDB;
-import controllers.Databases.AvailabilityDB;
-import controllers.Databases.UserDB;
+import databases.AppointmentsDB;
+import databases.AvailabilityDB;
+import databases.UserDB;
 import models.AppointmentsModel;
 import models.AvailabilityModel;
 import models.UsersModel;

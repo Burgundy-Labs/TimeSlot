@@ -1,9 +1,8 @@
-package controllers.Databases;
+package databases;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import models.AvailabilityModel;
-import play.Logger;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;

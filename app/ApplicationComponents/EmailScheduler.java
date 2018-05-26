@@ -1,7 +1,7 @@
 package ApplicationComponents;
 
 import com.google.inject.Singleton;
-import controllers.Databases.AppointmentsDB;
+import databases.AppointmentsDB;
 import models.AppointmentsModel;
 import play.Logger;
 

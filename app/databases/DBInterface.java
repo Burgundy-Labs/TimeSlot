@@ -1,4 +1,4 @@
-package controllers.Databases;
+package databases;
 
 /* Contract for required DB interactions */
 public interface DBInterface<T> {
@@ -10,4 +10,8 @@ public interface DBInterface<T> {
     boolean addOrUpdate(T object);
     /* Return T being deleted */
     T delete(String ID);
+    /* Delete all data*/
+    T deleteAll();
+    /* Export all data from the DB */
+    void export();
 }

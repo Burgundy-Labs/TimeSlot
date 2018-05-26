@@ -1,16 +1,7 @@
-import controllers.Databases.FirestoreDB;
-import modules.StartupModule;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import play.mvc.Http;
-import play.twirl.api.Content;
-
-import java.util.Collections;
-import java.util.Map;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Simple (JUnit) tests that can call all parts of a play app.

@@ -2,8 +2,8 @@ package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import ApplicationComponents.MailerService;
-import controllers.Databases.AppointmentsDB;
-import controllers.Databases.SettingsDB;
+import databases.AppointmentsDB;
+import databases.SettingsDB;
 import models.AppointmentsModel;
 import play.libs.Json;
 import play.mvc.Controller;

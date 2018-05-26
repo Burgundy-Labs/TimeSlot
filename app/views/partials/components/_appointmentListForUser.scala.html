@@ -1,4 +1,4 @@
-@import controllers.Databases.UserDB
+@import databases.UserDB
 @(userId: String, readAll: Boolean)
 @currentUser = @{
     UserDB.getUser(userId)

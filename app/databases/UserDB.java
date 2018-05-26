@@ -1,9 +1,10 @@
-package controllers.Databases;
+package databases;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import models.ServiceModel;
 import models.UsersModel;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -82,6 +83,16 @@ public class UserDB implements DBInterface<UsersModel> {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public UsersModel deleteAll() {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public void export() {
+        throw new NotImplementedException();
     }
 
     public void addServiceToUser(String ID, ServiceModel service) {

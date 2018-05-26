@@ -1,6 +1,6 @@
 package controllers;
 
-import controllers.Databases.UserDB;
+import databases.UserDB;
 import models.UsersModel;
 import play.libs.Json;
 import play.mvc.Result;
