@@ -10,9 +10,11 @@ import java.util.concurrent.ExecutionException;
 
 /* DB classes contain the methods necessary to manage their corresponding models.
 * AppointmentsDB works with AppointmentsModel to retrieve and remove appointments in the Firestore DB.*/
+/* TODO implement as DBInterface */
 public class AppointmentsDB {
+    private UserDB userDB = new UserDB();
 
-    public static AppointmentsModel getAppointment(String appointmentId) {
+    public  AppointmentsModel getAppointment(String appointmentId) {
         /* Return null appointment if none found */
         AppointmentsModel appointmentFound = null;
         /* Get the specific appointment reference from the DB*/
@@ -52,7 +54,7 @@ public class AppointmentsDB {
         return appointmentFound;
     }
 
-    public static synchronized List<AppointmentsModel> getAppointmentsForUser(String role, String userId) {
+    public List<AppointmentsModel> getAppointmentsForUser(String role, String userId) {
         List<AppointmentsModel> appointmentList = new ArrayList<>();
         /* Asynchronously retrieve all appointments */
         ApiFuture<QuerySnapshot> coachQuery = FirestoreDB.get().collection("appointments").orderBy("start_date", Query.Direction.ASCENDING).whereEqualTo("coachId",userId).get();
@@ -119,7 +121,7 @@ public class AppointmentsDB {
         return appointmentList;
     }
 
-    public static synchronized List<AppointmentsModel> getNextFiveAppointmentsForUser(String role, String userId) {
+    public List<AppointmentsModel> getNextFiveAppointmentsForUser(String role, String userId) {
         List<AppointmentsModel> appointmentList = new ArrayList<>();
         /* Asynchronously retrieve all appointments */
         ApiFuture<QuerySnapshot> coachQuery = FirestoreDB.get().collection("appointments").whereGreaterThan("start_date",new Date()).orderBy("start_date", Query.Direction.ASCENDING).whereEqualTo("coachId",userId).limit(5).get();
@@ -189,10 +191,10 @@ public class AppointmentsDB {
         return appointmentList;
     }
 
-    public static synchronized List<AppointmentsModel> getAppointmentsByUserAndDate(String userId, Date start, Date end) {
-        UsersModel user = UserDB.getUser(userId);
+    public List<AppointmentsModel> getAppointmentsByUserAndDate(String userId, Date start, Date end) {
+        UsersModel user = userDB.get(userId);
         List<AppointmentsModel> appointmentList = getAppointmentsByDate(start, end);
-        if( user.getRole().equals("Coach") || (user.isCoach() != null && user.isCoach())){
+        if( user.getRole().equals("Coach")){
             appointmentList.removeIf(i -> !i.getCoachId().equals(user.getUid()) && !i.getStudentId().equals(user.getUid()));
         } else {
             appointmentList.removeIf(i -> !i.getStudentId().equals(user.getUid()));
@@ -200,7 +202,7 @@ public class AppointmentsDB {
         return appointmentList;
     }
 
-    public static synchronized List<AppointmentsModel> getAppointmentsByDate(Date start, Date end) {
+    public List<AppointmentsModel> getAppointmentsByDate(Date start, Date end) {
         List<AppointmentsModel> appointmentList = new ArrayList<>();
         /* Asynchronously retrieve all appointments */
         ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("appointments").orderBy("start_date", Query.Direction.ASCENDING).whereGreaterThanOrEqualTo("start_date",start).get();
@@ -244,7 +246,7 @@ public class AppointmentsDB {
     }
 
 
-    public static synchronized List<AppointmentsModel> getWeeklyAppointmentsByWeeklyId(String weeklyId) {
+    public List<AppointmentsModel> getWeeklyAppointmentsByWeeklyId(String weeklyId) {
         List<AppointmentsModel> appointmentList = new ArrayList<>();
         /* Asynchronously retrieve all appointments */
         ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("appointments").whereEqualTo("weeklyId", weeklyId).get();
@@ -283,7 +285,7 @@ public class AppointmentsDB {
         return appointmentList;
     }
 
-    public static synchronized List<AppointmentsModel> getAppointments() {
+    public List<AppointmentsModel> getAppointments() {
         List<AppointmentsModel> appointmentList = new ArrayList<>();
         /* Asynchronously retrieve all appointments */
         ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("appointments").get();
@@ -322,7 +324,7 @@ public class AppointmentsDB {
         return appointmentList;
     }
 
-    public static synchronized AppointmentsModel addAppointment(AppointmentsModel appointment) {
+    public AppointmentsModel addAppointment(AppointmentsModel appointment) {
         /* Get DB instance */
         DocumentReference docRef;
         if(appointment.getAppointmentId() == null) {
@@ -332,8 +334,8 @@ public class AppointmentsDB {
         }
         Map<String, Object> data = new HashMap<>();
         /* Create user model for DB insert */
-        UsersModel student = UserDB.getUser(appointment.getStudentId());
-        UsersModel coach = UserDB.getUser(appointment.getCoachId());
+        UsersModel student = userDB.get(appointment.getStudentId());
+        UsersModel coach = userDB.get(appointment.getCoachId());
         data.put("start_date", appointment.getStartDate());
         data.put("end_date", appointment.getEndDate());
         data.put("studentId", appointment.getStudentId());
@@ -362,7 +364,7 @@ public class AppointmentsDB {
         return appointment;
     }
 
-    public static AppointmentsModel removeAppointment(String appointmentId){
+    public AppointmentsModel removeAppointment(String appointmentId){
         AppointmentsModel appointment = getAppointment(appointmentId);
         if(!(appointment == null) && !appointment.getStartDate().before(new Date())){
             ApiFuture<WriteResult> writeResult = FirestoreDB.get().collection("appointments").document(appointmentId).delete();

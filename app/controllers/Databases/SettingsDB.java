@@ -14,6 +14,7 @@ import java.util.concurrent.ExecutionException;
 
 /* DB classes contain the methods necessary to manage their corresponding models.
 * UserDB works with UsersModel to retrieve and remove users in the Firestore DB.*/
+/* TODO implement as DBInterface */
 public class SettingsDB {
 
     public static synchronized SettingsModel getSettings() {

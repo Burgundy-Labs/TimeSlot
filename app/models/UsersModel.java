@@ -1,31 +1,23 @@
 package models;
 
-import controllers.ApplicationComponents.Roles;
-
 public class UsersModel {
     private String displayName;
     private String email;
-    private boolean emailVerified;
     private String photoURL;
     private String uid;
-    private String phoneNumber;
-    private Roles role;
-    private Boolean isCoach;
+    private String role;
     private String auth_id;
 
     public UsersModel() {
 
     }
 
-    public UsersModel(String displayName, String email, boolean emailVerified, String photoURL, String uid, String phoneNumber, Roles role, Boolean isCoach, String auth_id) {
+    public UsersModel(String displayName, String email, String photoURL, String uid, String role, String auth_id) {
         this.displayName = displayName;
         this.email = email;
-        this.emailVerified = emailVerified;
         this.photoURL = photoURL;
         this.uid = uid;
-        this.phoneNumber = phoneNumber;
         this.role = role;
-        this.isCoach = isCoach;
         this.auth_id = auth_id;
     }
 
@@ -45,14 +37,6 @@ public class UsersModel {
         this.email = email;
     }
 
-    public boolean isEmailVerified() {
-        return emailVerified;
-    }
-
-    public void setEmailVerified(boolean emailVerified) {
-        this.emailVerified = emailVerified;
-    }
-
     public String getPhotoURL() {
         return photoURL;
     }
@@ -69,28 +53,12 @@ public class UsersModel {
         this.uid = uid;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
     public String getRole() {
-        return role.role();
+        return role;
     }
 
-    public void setRole(Roles role) {
+    public void setRole(String role) {
         this.role = role;
-    }
-
-    public Boolean isCoach() {
-        return isCoach;
-    }
-
-    public void setIsCoach(Boolean coach) {
-        isCoach = coach;
     }
 
     public String getAuth_id() {

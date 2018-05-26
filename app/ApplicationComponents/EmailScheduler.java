@@ -1,4 +1,4 @@
-package controllers.ApplicationComponents;
+package ApplicationComponents;
 
 import com.google.inject.Singleton;
 import controllers.Databases.AppointmentsDB;
@@ -14,6 +14,8 @@ import java.util.concurrent.TimeUnit;
 
 @Singleton
 public class EmailScheduler {
+    private AppointmentsDB appointmentsDB = new AppointmentsDB();
+
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     public EmailScheduler() {
         schedule(new AppointmentEmailTask());
@@ -43,7 +45,7 @@ public class EmailScheduler {
             Calendar endDay = Calendar.getInstance();
             endDay.set(Calendar.HOUR_OF_DAY, 24);
             Logger.info("Checking for daily appointments.");
-            List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsByDate(startDay.getTime(), endDay.getTime());
+            List<AppointmentsModel> appointments = appointmentsDB.getAppointmentsByDate(startDay.getTime(), endDay.getTime());
             HashMap<String, ArrayList<AppointmentsModel>> coachAppointments = new HashMap<>();
             HashMap<String, ArrayList<AppointmentsModel>> studentAppointments = new HashMap<>();
             for(AppointmentsModel a : appointments){

@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutionException;
 
 /* DB classes contain the methods necessary to manage their corresponding models.
 * AppointmentsDB works with AppointmentsModel to retrieve and remove appointments in the Firestore DB.*/
+/* TODO remove completely in favor of discussed Appointment scheduling approach */
 public class AvailabilityDB {
 
     public static List<AvailabilityModel> getAvailabilitesForUser(String userId, Date start, Date end) {

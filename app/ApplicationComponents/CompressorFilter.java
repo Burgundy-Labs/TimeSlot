@@ -1,4 +1,4 @@
-package controllers.ApplicationComponents;
+package ApplicationComponents;
 
 import com.mohiva.play.htmlcompressor.HTMLCompressorFilter;
 import com.mohiva.play.xmlcompressor.XMLCompressorFilter;

@@ -1,7 +1,6 @@
-package controllers.ApplicationComponents;
+package ApplicationComponents;
 
 import com.google.inject.Inject;
-import controllers.Application;
 import controllers.SettingsController;
 import models.AppointmentsModel;
 import models.SettingsModel;
@@ -13,8 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
+/* TODO create email template class for methods to use for consistence & reuse - look into a parameterized partial */
 public class MailerService {
 
     private static MailerClient mailerClient;

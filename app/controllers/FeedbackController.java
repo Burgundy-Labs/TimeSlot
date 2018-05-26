@@ -1,7 +1,7 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import controllers.ApplicationComponents.MailerService;
+import ApplicationComponents.MailerService;
 import play.mvc.Controller;
 import play.mvc.Result;
 

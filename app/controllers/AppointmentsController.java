@@ -1,7 +1,7 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import controllers.ApplicationComponents.MailerService;
+import ApplicationComponents.MailerService;
 import controllers.Databases.AppointmentsDB;
 import controllers.Databases.SettingsDB;
 import models.AppointmentsModel;

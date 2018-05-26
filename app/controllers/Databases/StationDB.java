@@ -8,8 +8,11 @@ import models.UsersModel;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
+/* TODO explore alternative architecture such as "Center DB" or location based */
 public class StationDB {
-    public static synchronized void addUserInCenter(UsersModel user) {
+    private UserDB userDB = new UserDB();
+
+    public void addUserInCenter(UsersModel user) {
         DocumentReference docRefForLogs = FirestoreDB.get().collection("station").document("station").collection("log").document();
         Map<String, Object> log = new HashMap<>();
         log.put("userId", user.getUid());
@@ -25,7 +28,7 @@ public class StationDB {
         result.isDone();
     }
 
-    public static synchronized void removeUserInCenter(UsersModel user) {
+    public void removeUserInCenter(UsersModel user) {
         ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("station").document("station").collection("inCenter").whereEqualTo("userId", user.getUid()).get();
         QuerySnapshot querySnapshot = null;
         try {
@@ -52,7 +55,7 @@ public class StationDB {
         }
     }
 
-    public static synchronized List<UsersModel> getUsersInCenter(){
+    public List<UsersModel> getUsersInCenter(){
         List<UsersModel> userModels = new ArrayList<>();
         /* Asynchronously retrieve all users */
         ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("station").document("station").collection("inCenter").get();
@@ -67,7 +70,7 @@ public class StationDB {
         List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
         /* Iterate users and add them to a list for return */
         for (DocumentSnapshot document : documents) {
-            UsersModel user = UserDB.getUser(document.getString("userId"));
+            UsersModel user = userDB.get(document.getString("userId"));
             userModels.add(user);
         }
         return userModels;

@@ -1,7 +1,6 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import controllers.ApplicationComponents.Roles;
 import controllers.Databases.UserDB;
 import models.UsersModel;
 import play.libs.Json;

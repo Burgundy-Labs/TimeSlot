@@ -1,4 +1,4 @@
-package controllers.ApplicationComponents;
+package ApplicationComponents;
 
 public class MenuLinks {
     public String href;
@@ -7,6 +7,7 @@ public class MenuLinks {
     public String desc;
     public boolean adminLocked; // admin only
     public boolean coachLocked;
+
     public MenuLinks(String href, String menuText, String mdlIcon, String desc, boolean adminLocked, boolean coachLocked) {
         this.href = href;
         this.menuText = menuText;

@@ -1,9 +1,7 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import controllers.ApplicationComponents.Roles;
 import controllers.Databases.UserDB;
-import models.NotificationModel;
 import models.ServiceModel;
 import models.UsersModel;
 import play.Logger;
@@ -11,11 +9,11 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 public class UserController extends Controller {
+    private UserDB userDB = new UserDB();
     public Result index() {
         String currentRole = UserController.getCurrentRole();
         /* Force redirect to Login is the user isn't signed in */
@@ -27,7 +25,7 @@ public class UserController extends Controller {
 
     public Result userPage(String userId){
         if(userId == null) return notFound();
-        UsersModel user = UserDB.getUser(userId);
+        UsersModel user = userDB.get(userId);
         if(user == null) return notFound();
         return ok(views.html.user.render(user));
     }
@@ -38,7 +36,7 @@ public class UserController extends Controller {
         /* Get user from json request */
         UsersModel user = Json.fromJson(json, UsersModel.class);
         /* Check if user is in DB */
-        UserDB.addUser(user);
+        userDB.addOrUpdate(user);
         return ok();
     }
 
@@ -52,9 +50,9 @@ public class UserController extends Controller {
         String userId = json.get("uid").asText();
         String role = json.get("role").asText();
         /* Check if user is in DB */
-        UsersModel u = UserDB.getUser(userId);
-        u.setRole(Roles.getRole(role));
-        UserDB.addUser(u);
+        UsersModel u = userDB.get(userId);
+        u.setRole(role);
+        userDB.addOrUpdate(u);
         return ok();
     }
 
@@ -68,7 +66,7 @@ public class UserController extends Controller {
         String serviceText = json.get("serviceName").asText();
         String serviceId = json.get("serviceId").asText();
         ServiceModel service = new ServiceModel(serviceId, serviceText);
-        UserDB.addServiceToUser(userId, service);
+        userDB.addServiceToUser(userId, service);
         return ok();
     }
 
@@ -76,7 +74,7 @@ public class UserController extends Controller {
         JsonNode json = request().body().asJson();
         String userId = json.get("userId").asText();
         String serviceId = json.get("serviceId").asText();
-        UserDB.removeServiceFromUser(userId, serviceId);
+        userDB.removeServiceFromUser(userId, serviceId);
         return ok();
     }
 
@@ -87,7 +85,7 @@ public class UserController extends Controller {
         try {
             JsonNode json = request().body().asJson();
             String userId = json.get("userId").asText();
-            if(UserDB.removeUser(userId)){
+            if(userDB.delete(userId) != null){
                 return ok();
             } else {
                 return internalServerError();
@@ -99,19 +97,19 @@ public class UserController extends Controller {
     }
 
     public Result getCoachesByService(String serviceId) {
-        List<UsersModel> coaches = UserDB.getCoachesByService(serviceId);
+        List<UsersModel> coaches = userDB.getCoachesByService(serviceId);
         coaches.sort(Comparator.comparing(UsersModel::getDisplayName));
         return ok(Json.toJson(coaches));
     }
 
-    public static UsersModel getCurrentUser() {
+    public UsersModel getCurrentUser() {
         String s = session("currentUser");
         if(s == null || s.isEmpty()) {
             UsersModel u = new UsersModel();
-            u.setRole(Roles.getRole("Student"));
+            u.setRole("Student");
             return u;
     }
-        return UserDB.getUser(s);
+        return userDB.get(s);
     }
 
     public static String getCurrentRole(){

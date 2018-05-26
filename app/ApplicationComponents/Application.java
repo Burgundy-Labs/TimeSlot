@@ -1,8 +1,8 @@
-package controllers;
+package ApplicationComponents;
 
 import com.google.inject.Inject;
 import com.typesafe.config.Config;
-import controllers.ApplicationComponents.MenuLinks;
+import controllers.UserController;
 import play.Environment;
 import play.mvc.Result;
 
@@ -11,6 +11,7 @@ import java.util.List;
 
 import static play.mvc.Results.forbidden;
 
+/* TODO look into better use of DI to remove static methods */
 public class Application {
     private static Config config;
     private static Environment environment;
