@@ -106,7 +106,7 @@ public class UserDB implements DBInterface<UsersModel> {
         result.isDone();
     }
 
-    public List<ServiceModel> getServices(String ID) {
+    public List<ServiceModel> getServicesForUser(String ID) {
         List<ServiceModel> servicesList = new ArrayList<>();
         /* Asynchronously retrieve all users */
         ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("users").document(ID).collection("services").get();
@@ -185,7 +185,7 @@ public class UserDB implements DBInterface<UsersModel> {
         List<UsersModel> coachesWithService = new ArrayList<>();
         List<UsersModel> coaches = getAllByRole("Coach");
         for (UsersModel c : coaches) {
-            List<ServiceModel> services = getServices(c.getUid());
+            List<ServiceModel> services = getServicesForUser(c.getUid());
             for (ServiceModel s : services) {
                 if (s.getServiceId().equals(serviceId)) {
                     coachesWithService.add(c);

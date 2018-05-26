@@ -102,14 +102,14 @@ public class UserController extends Controller {
         return ok(Json.toJson(coaches));
     }
 
-    public UsersModel getCurrentUser() {
+    public static UsersModel getCurrentUser() {
         String s = session("currentUser");
         if(s == null || s.isEmpty()) {
             UsersModel u = new UsersModel();
             u.setRole("Student");
             return u;
     }
-        return userDB.get(s);
+        return new UserDB().get(s);
     }
 
     public static String getCurrentRole(){

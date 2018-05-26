@@ -17,6 +17,7 @@ import javax.xml.bind.DatatypeConverter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+/* TODO remove entirely and replicate functionality in Appointment Controller */
 public class AvailabilityController extends Controller {
 
     public Result createAvailability() {
@@ -57,46 +58,6 @@ public class AvailabilityController extends Controller {
 
         return ok(Json.toJson(avails));
     }
-
-//    private List<AvailabilityModel> availableSlotsForAny(Date startDate, Date endDate, String serviceId) {
-//        List<UsersModel> coaches = UserDB.getCoachesByService(serviceId);                                 // Gets all coaches that have availability for the serviceId
-//        List<AvailabilityModel> availabilities = new ArrayList<>();                                       // Creates a blank list for availabilities for availabilities of all the coaches
-//        for (UsersModel coach : coaches) {                                                              // For all the coaches who have availabilities for the severiceId
-//            availabilities.addAll(availableSlotsForCoach(coach.getUid(), startDate, endDate));            // Add all of the availabilities during the current week from the coach
-//        }
-//        List<AvailabilityModel> newAvailabilites = new ArrayList<>();                                     // Creates a new list of availabilities
-//        HashMap<String, AvailabilityModel> avails = new HashMap<>();
-//        for (AvailabilityModel availability : availabilities) {
-//            AvailabilityModel newAv = new AvailabilityModel(null,
-//                    "any",
-//                    availability.getStartDate(),
-//                    availability.getEndDate(),
-//                    false);
-//            String key = availability.getStartDate().toString() + availability.getEndDate().toString();
-//            AvailabilityModel currentAv = availability;
-//            if (avails.containsKey(key)) {
-//                if (currentAv.getCanBeOneTime() && !currentAv.getCanBeWeekly()) {                   // If the availability can be one time and not weekly
-//                    avails.get(key).addOneTimeUser(currentAv.getUserid());                                      // Add the user id into the array of one time users
-//                } else { // Otherwise
-//                    avails.get(key).addWeeklyUser(currentAv.getUserid());                                       // Add the user id into the array of weekly users
-//                    avails.get(key).addOneTimeUser(currentAv.getUserid());                                      // Add the user id into the array of one time users
-//                }
-//            } else {
-//                if (!newAv.getWeeklyUsers().isEmpty()) {                                                    // If the weekly users is not empty
-//                    newAv.setCanBeWeekly(true);                                                               // Set can be weekly to true
-//                    newAv.setCanBeOneTime(true);                                                              // Set can be one time to true
-//                } else {
-//                    newAv.setCanBeOneTime(true);                                                              // Set can be one time to true
-//                    newAv.setCanBeWeekly(false);                                                              // Set can be weekly to false
-//                }
-//                avails.put(key, newAv);
-//            }
-//        }
-//        newAvailabilites.addAll(avails.values());
-//        return newAvailabilites;
-//    }
-
-
 
     private List<AvailabilityModel> availableSlotsForAny(Date startDate, Date endDate, String serviceId) {
         List<UsersModel> coaches = UserDB.getCoachesByService(serviceId);                                 // Gets all coaches that have availability for the serviceId

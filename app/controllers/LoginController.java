@@ -9,6 +9,8 @@ import play.mvc.Http;
 import play.mvc.Result;
 
 public class LoginController extends Controller {
+    private UserDB userDB = new UserDB();
+
     public Result index() {
         return ok(views.html.login.render());
     }
@@ -22,17 +24,17 @@ public class LoginController extends Controller {
         /* Get user from json request */
         UsersModel user = Json.fromJson(json, UsersModel.class);
         /* Check if user is in DB */
-        UsersModel u = UserDB.getUser(user.getUid());
+        UsersModel u = userDB.get(user.getUid());
         if (u == null) {
-            user.setRole(Roles.getRole("Student"));
-            UserDB.addUser(user);
+            user.setRole("Student");
+            userDB.addOrUpdate(user);
         } else {
             if((u.getAuth_id() == null || u.getAuth_id().equals("")) && (json.findPath("auth_id").textValue() != null && !json.findPath("auth_id").textValue().equals(""))) {
                 u.setAuth_id(json.findPath("auth_id").asText().replaceAll("\r",""));
             }
             user = u;
         }
-        UserDB.addUser(user);
+        userDB.addOrUpdate(user);
         /* Store UID in Session */
         session("currentUser", user.getUid());
         session("currentRole", user.getRole());

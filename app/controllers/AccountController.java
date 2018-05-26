@@ -11,6 +11,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public class AccountController extends Controller {
+    UserDB userDB = new UserDB();
+
     public Result index() {
         String currentRole = UserController.getCurrentRole();
         if (currentRole == null) {
@@ -21,19 +23,9 @@ public class AccountController extends Controller {
     }
 
 
-    public Result isCoachChecked() {
-        JsonNode json = request().body().asJson();
-        Boolean checked = json.findPath("checked").asBoolean();
-        String userId = json.findPath("userId").asText();
-        UsersModel u = UserDB.getUser(userId);
-        u.setIsCoach(checked);
-        UserDB.addUser(u);
-        return ok();
-    }
-
-    public static List<ServiceModel> getAvailableServices(String userId) {
+    public List<ServiceModel> getAvailableServices(String userId) {
         List<ServiceModel> availableServices = SettingsController.getServices();
-        List<ServiceModel> coachServices = UserDB.getServicesForUser(userId);
+        List<ServiceModel> coachServices = userDB.getServicesForUser(userId);
 
         for (Iterator<ServiceModel> serviceIterator = availableServices.iterator(); serviceIterator.hasNext(); ) {
             ServiceModel service = serviceIterator.next();
@@ -46,8 +38,8 @@ public class AccountController extends Controller {
         return availableServices;
     }
 
-    public static List<ServiceModel> getServicesForUser(String userId) {
-        List<ServiceModel> coachServices = UserDB.getServicesForUser(userId);
+    public List<ServiceModel> getServicesForUser(String userId) {
+        List<ServiceModel> coachServices = userDB.getServicesForUser(userId);
         return coachServices;
     }
 }
