@@ -1,6 +1,6 @@
 @()
 @main("Reports", "Reports") {
-    <div class="col-md-12 container-fluid" id="report-container">
+    <div class="col-md-12" id="report-container">
         <div class="row">
             <div class="form-group mb-3 col-md-6">
                 <div class="row">
@@ -22,11 +22,63 @@
         <div class="row">
             <h3>View Data</h3>
             <select id="propertySelect" title="Property Filter">
-                <option disabled value="" selected>Select a Property</option>
+                <option disabled value="">Select a Property</option>
             </select>
-            <button class="btn btn-primary" onclick="addProperty()">Add Property</button>
         </div>
-        <div class="row row-eq-height dashCards center" id="blocks">
+        <div class="row row-eq-height dashCards center">
+            <div class="mb-2 col-md-3 animated fadeInUp">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Appointment Types</h3>
+                    </div>
+                    <div>
+                        <canvas id="Type"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-2 col-md-3 animated fadeInUp">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Services</h3>
+                    </div>
+                    <div>
+                        <canvas id="Service"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-2 col-md-3 animated fadeInUp">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Weekly / One-Time</h3>
+                    </div>
+                    <div>
+                        <canvas id="Weekly"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-2 col-md-3 animated fadeInUp">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Presence</h3>
+                    </div>
+                    <div>
+                        <canvas id="Present"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row row-eq-height dashCards center">
+            <div class="mb-2 col-md-12 animated fadeInUp">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Appointments by Day</h3>
+                    </div>
+                    <div class="h-25">
+                        <canvas id="Date"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
         </div>
 
     <script type="text/javascript">
@@ -40,7 +92,7 @@
                 },
                 {
                     name: "Date",
-                    property: "Date"
+                    property: "startTime"
                 },
                 {
                     name: "Appointment Type",
@@ -53,35 +105,19 @@
                 properties.forEach(function(property) {
                     $dropdown.append($("<option />").val(property.property).text(property.name));
                 });
+
                 reportStart.val(moment().subtract(7, "days").format("YYYY-MM-DD"));
                 reportEnd.val(moment().format("YYYY-MM-DD"));
-                getData();
+                createCharts();
             });
 
-            function addProperty() {
-                let selected = $("#propertySelect");
-                let dashboard = $("#blocks");
-                if(selected.val() === null) return;
-                dashboard.append(`<div class="mb-2 col-auto animated fadeInUp" id="${selected.val()}-block"> +
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h3 class="float-left">${selected.find(":selected").text()}</h3>
-                                                <button  onclick="removeBlock('${selected.val()}-block')" class="float-right no-button btn-dark"><i class="material-icons md-18">remove_circle</i></button>
-                                            </div>
-                                            <div>
-                                                <canvas id="${selected.val()}"></canvas>
-                                            </div>
-                                        </div>
-                                    </div>`);
-                if(selected.val() === "Date") {
-                    makeDateChart();
-                } else {
-                    makePropertyChart(selected.val(), selected.val());
-                }
-            }
-
-            function removeBlock(block) {
-                $("#" + block).remove();
+            function createCharts() {
+                getData();
+                makePropertyChart("appointmentType", "Type");
+                makePropertyChart("serviceType", "Service");
+                makePropertyChart("weekly", "Weekly");
+                makePropertyChart("present", "Present");
+                makeDateChart();
             }
 
             function makePropertyChart(property, chartId) {
