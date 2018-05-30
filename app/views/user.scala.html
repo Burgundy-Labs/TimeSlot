@@ -2,6 +2,8 @@
 @currentUser = @{
     UserController.getCurrentUser
 }
+@accountController = @{new AccountController() }
+
 @pageTitle = @{
     if(user.getUid.equals(currentUser.getUid)) {
         "Account"
@@ -74,7 +76,7 @@
                                                     <div class="container-fluid">
                                                         <div class="row">
                                                             <select id="selectedService" title="Services" class="mb-1 col-lg-7 form-control selectpicker" data-live-search="true">
-                                                            @for(service <- AccountController.getAvailableServices(user.getUid)) {
+                                                            @for(service <- accountController.getAvailableServices(user.getUid)) {
                                                                 <option value="@service.getServiceId">
                                                                 @service.getService
                                                                 </option>
@@ -87,7 +89,7 @@
                                                         </div>
                                                     </div>
                                                 </li>
-                                                @for(service <- AccountController.getServicesForUser(user.getUid)) {
+                                                @for(service <- accountController.getServicesForUser(user.getUid)) {
                                                     <li class="list-group-item d-flex justify-content-between align-items-center @service.getServiceId">
                                                         <h6 class="mb-1">@service.getService</h6>
                                                         <button class="btn btn-primary btn-danger" onclick="removeService('@service.getServiceId')">Remove</button>
