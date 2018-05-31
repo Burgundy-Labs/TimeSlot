@@ -12,14 +12,14 @@ public class StationDB {
     private UserDB userDB = new UserDB();
 
     public void addUserInCenter(UsersModel user) {
-        DocumentReference docRefForLogs = FirestoreDB.get().collection("station").document("station").collection("log").document();
+        DocumentReference docRefForLogs = FirestoreHandler.get().collection("station").document("station").collection("log").document();
         Map<String, Object> log = new HashMap<>();
         log.put("userId", user.getUid());
         log.put("timeIn", new Date());
         ApiFuture<WriteResult> resultLog = docRefForLogs.set(log);
         resultLog.isDone();
 
-        DocumentReference docRefForInStation = FirestoreDB.get().collection("station").document("station").collection("inCenter").document();
+        DocumentReference docRefForInStation = FirestoreHandler.get().collection("station").document("station").collection("inCenter").document();
         Map<String, Object> data = new HashMap<>();
         data.put("userId", user.getUid());
         data.put("logId", docRefForLogs.getId());
@@ -28,7 +28,7 @@ public class StationDB {
     }
 
     public void removeUserInCenter(UsersModel user) {
-        ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("station").document("station").collection("inCenter").whereEqualTo("userId", user.getUid()).get();
+        ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("station").document("station").collection("inCenter").whereEqualTo("userId", user.getUid()).get();
         QuerySnapshot querySnapshot = null;
         try {
             querySnapshot = query.get();
@@ -38,10 +38,10 @@ public class StationDB {
         assert querySnapshot != null;
         if ( querySnapshot.getDocuments().size() > 0 ) {
             QueryDocumentSnapshot document = querySnapshot.getDocuments().get(0);
-            ApiFuture<WriteResult> writeResult = FirestoreDB.get().collection("station").document("station").collection("inCenter").document(document.getId()).delete();
+            ApiFuture<WriteResult> writeResult = FirestoreHandler.get().collection("station").document("station").collection("inCenter").document(document.getId()).delete();
             try {
                 writeResult.get();
-                DocumentReference docRefForLogs = FirestoreDB.get().collection("station").document("station").collection("log").document(document.getString("logId"));
+                DocumentReference docRefForLogs = FirestoreHandler.get().collection("station").document("station").collection("log").document(document.getString("logId"));
                 Map<String, Object> log = new HashMap<>();
                 log.put("userId", user.getUid());
                 log.put("timeIn", docRefForLogs.get().get().get("timeIn"));
@@ -57,7 +57,7 @@ public class StationDB {
     public List<UsersModel> getUsersInCenter(){
         List<UsersModel> userModels = new ArrayList<>();
         /* Asynchronously retrieve all users */
-        ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("station").document("station").collection("inCenter").get();
+        ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("station").document("station").collection("inCenter").get();
         QuerySnapshot querySnapshot = null;
         try {
             /* Attempt to get a list of all users - blocking */

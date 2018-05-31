@@ -1,5 +1,6 @@
 @import ApplicationComponents.Application
-@()
+@userController = @{ new UserController() }
+@settingsController = @{ new SettingsController() }
 <!DOCTYPE html>
 <html>
     <head>
@@ -10,7 +11,7 @@
     <body class="body_bg">
         <script type="text/javascript">
                 // FirebaseUI config.
-                @if(UserController.getCurrentRole == null) {
+                @if(userController.getCurrentRole == null) {
                         localStorage.clear();
                 }
                 if ( localStorage.getItem("firebaseui::rememberedAccounts") !== null ) {
@@ -74,7 +75,7 @@
                     tosUrl: '/Terms'
                 };
 
-                // Initialize the FirebaseUI Widget using FirestoreDB.
+                // Initialize the FirebaseUI Widget using FirestoreHandler.
                 var ui = new firebaseui.auth.AuthUI(firebase.auth());
                 ui.disableAutoSignIn();
                 // The start method will wait until the DOM is loaded.
@@ -87,7 +88,7 @@
                         <div class="col-sm-12 col-md-6 col-lg-6 center">
                             <img src="@routes.Assets.at("/images/TimeSlot.svg")" class="mb-2 img-fluid"/>
                         </div>
-                        <h2>@SettingsController.getSettings.getCenterName</h2>
+                        <h2>@settingsController.getSettings.getCenterName</h2>
                         <br/>
                         <p>
                             Please sign in below to view, schedule, and manage appointments.

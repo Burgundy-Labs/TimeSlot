@@ -1,7 +1,5 @@
-@()
-@currentSettings = @{
-    SettingsController.getSettings
-}
+@settingsController = @{new SettingsController() }
+@currentSettings = @{settingsController.getSettings() }
 
 @main("Site Settings", "Settings") {
     <!-- Start of Async Drift Code -->
@@ -200,7 +198,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                            @for(appointmentType <- SettingsController.getAppointmentTypes) {
+                                            @for(appointmentType <- settingsController.getAppointmentTypes) {
                                                 <tr class="@appointmentType.getAppointmentTypeId">
                                                     <td>
                                                     @appointmentType.getAppointmentType
@@ -244,7 +242,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                            @for(service <- SettingsController.getServices) {
+                                            @for(service <- settingsController.getServices) {
                                                 <tr class="@service.getServiceId">
                                                     <td>
                                                     @service.getService

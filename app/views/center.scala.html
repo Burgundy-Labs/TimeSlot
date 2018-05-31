@@ -1,6 +1,7 @@
-@()
-@main("Center", SettingsController.getSettings.getCenterName) {
+@settingsController = @{new SettingsController()}
+@userController = @{new UserController()}
+@main("Center", settingsController.getSettings.getCenterName) {
     <div class="col-12">
-        @partials.components._appointmentListForUser(UserController.getCurrentUser.getUid, true)
+        @partials.components._appointmentListForUser(userController.getCurrentUser.getUid, true)
     </div>
 }

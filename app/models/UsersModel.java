@@ -1,24 +1,28 @@
 package models;
 
+import java.util.Arrays;
+
 public class UsersModel {
-    private String displayName;
+    private String displayName; // User's full name
     private String email;
-    private String photoURL;
-    private String uid;
-    private String role;
-    private String auth_id;
+    private String photoURL; // Google-hosted profile photo
+    private String uid; // Unique identifier provided by Google
+    private String role; // "User", "Coach", "Admin"
+    private String auth_id; // Used to identify RFID / Phone sign-in
+    private String[] attributes; // Used to store additional information ("isCoach")
 
     public UsersModel() {
 
     }
 
-    public UsersModel(String displayName, String email, String photoURL, String uid, String role, String auth_id) {
+    public UsersModel(String displayName, String email, String photoURL, String uid, String role, String auth_id, String[] attributes) {
         this.displayName = displayName;
         this.email = email;
         this.photoURL = photoURL;
         this.uid = uid;
         this.role = role;
         this.auth_id = auth_id;
+        this.attributes = attributes;
     }
 
     public String getDisplayName() {
@@ -68,4 +72,14 @@ public class UsersModel {
     public void setAuth_id(String ID) {
         this.auth_id = ID;
     }
+
+    public String[] getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(String[] attributes) {
+        this.attributes = attributes;
+    }
+
+
 }

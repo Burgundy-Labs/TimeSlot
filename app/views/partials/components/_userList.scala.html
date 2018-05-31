@@ -1,6 +1,7 @@
-@import databases.UserDB
-@import ApplicationComponents.Roles
 @(role: String, currentUser: UsersModel)
+@import databases.UserDB
+@userController = @{new UserController()}
+@userDB = @{new UserDB()}
 <div class="panel panel-default table-responsive cardTable">
     <table class="table table-striped userTable animated fadeInUp" cellspacing="0" width="100%" id="@role-Table">
         <thead>
@@ -13,7 +14,7 @@
             </tr>
         </thead>
         <tbody>
-            @for(user <- if(role.equals("Admin")) UserDB.getAdmins else if (role.equals("Coach")) UserDB.getCoaches else UserDB.getStudents) {
+            @for(user <- if(role.equals("Admin")) userDB.getAllByRole("Admin") else if (role.equals("Coach")) userDB.getAllByRole("Coach") else userDB.getAllByRole("Student")) {
                 <tr>
                     <td>
                         <img class="userAvatar" src="@user.getPhotoURL" alt="Card image cap">
@@ -25,9 +26,9 @@
                         @if(currentUser.getRole.equals("Admin")) {
                             <select id='select' data-id="@user.getUid" data-displayName="@user.getDisplayName" class="selectpicker">
                                 <option selected>@user.getRole</option>
-                                @for(role <- Roles.getRoles) {
-                                    @if(!Roles.getRole(user.getRole).equals(role)) {
-                                        <option value="@role.role()">@role.role()</option>
+                                @for(role <- userController.getRoles) {
+                                    @if(!user.getRole.equals(role)) {
+                                        <option value="@role">@role</option>
                                     }
                                 }
                             </select>

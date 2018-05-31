@@ -1,177 +1,171 @@
-
-@()
-    @currentUser = @{
-        UserController.getCurrentUser
-    }
-
-    @centerInformation = @{
-        SettingsController.getSettings.getCenterInformation
-    }
-
-    @main("Dashboard", "Dashboard") {
-        <div class="mb-3 col-md-12 dashCards">
-            <div class="row row-eq-height">
-                <div class="mb-2 col-md-4 animated fadeInUp">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h3>Hello, @{
-                                UserController.getCurrentUser.getDisplayName
-                            } </h3>
-                        </div>
-                        <div class="card-block my-auto">
-                            <div class="center">
-                                <div><img src="@currentUser.getPhotoURL" class="user-avatar mb-2" alt="User Avatar Image"/></div>
-                                <span class="appointmentCount"></span>
-                            </div>
-                        </div>
+@userController = @{new UserController()}
+@settingsController = @{new SettingsController()}
+@currentUser = @{userController.getCurrentUser}
+@centerInformation = @{settingsController.getSettings.getCenterInformation}
+@main("Dashboard", "Dashboard") {
+    <div class="mb-3 col-md-12 dashCards">
+        <div class="row row-eq-height">
+            <div class="mb-2 col-md-4 animated fadeInUp">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h3>Hello, @{
+                            userController.getCurrentUser.getDisplayName
+                        } </h3>
                     </div>
-                </div>
-                <div class="mb-2 col-md-4 animated fadeInUp">
-                    <div class="card h-100 text-center">
-                        <div class="card-header">
-                            <h3>Quick-Schedule</h3>
-                        </div>
-                        <div class="card-block my-auto">
-                            <a href="/Schedule" class="btn btn-primary mb-3 p-3 col-12">
-                                Schedule New Appointment
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-2 col-md-4 animated fadeInUp">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h3>Center Information</h3>
-                        </div>
-                        <div class="card-block my-auto text-center">
-                            <h6>@if(centerInformation.isEmpty) {
-                                There is no center information to display.
-                            } else {
-                                @centerInformation
-                            }</h6>
+                    <div class="card-block my-auto">
+                        <div class="center">
+                            <div><img src="@currentUser.getPhotoURL" class="user-avatar mb-2" alt="User Avatar Image"/></div>
+                            <span class="appointmentCount"></span>
                         </div>
                     </div>
                 </div>
             </div>
-            <br/>
-            <div class="row row-eq-height">
-                <div class="mb-2 col-md-6 animated fadeInUp">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3>Appointment Calendar</h3>
-                        </div>
-                        <div>
-                            <div id="appointmentCalendar"></div>
-                        </div>
+            <div class="mb-2 col-md-4 animated fadeInUp">
+                <div class="card h-100 text-center">
+                    <div class="card-header">
+                        <h3>Quick-Schedule</h3>
+                    </div>
+                    <div class="card-block my-auto">
+                        <a href="/Schedule" class="btn btn-primary mb-3 p-3 col-12">
+                            Schedule New Appointment
+                        </a>
                     </div>
                 </div>
-                <div class="mb-2 col-md-6 animated fadeInUp">
-                    <div class="card nextFiveAppointments">
-                        <div class="card-header">
-                            <h3>Next Five Appointments</h3>
-                        </div>
-                        @partials.components._nextFiveAppointments()
+            </div>
+            <div class="mb-2 col-md-4 animated fadeInUp">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h3>Center Information</h3>
+                    </div>
+                    <div class="card-block my-auto text-center">
+                        <h6>@if(centerInformation.isEmpty) {
+                            There is no center information to display.
+                        } else {
+                            @centerInformation
+                        }</h6>
                     </div>
                 </div>
             </div>
         </div>
-        <script type="text/javascript">
-                let appointments;
-                $(document).ready(function () {
-                    $('#appointmentCalendar').fullCalendar({
-                        header: false,
-                        defaultView: 'agendaWeek',
-                        height: 'auto',
-                        editable: false,
-                        themeSystem: 'bootstrap4',
-                        eventClick: function (calEvent, jsEvent, view) {
-                            window.location = "/Appointments"
-                        },
-                        weekends: false,
-                        minTime: moment('@SettingsController.getSettings.getStartTime.toInstant').format("HH:mm"),
-                        maxTime: moment('@SettingsController.getSettings.getEndTime.toInstant').format("HH:mm"),
-                        allDaySlot: false,
-                        selectable: false,
-                        eventSources: [
-                            {
-                                events: function (start, end, timezone, callback) {
-                                    const events = [];
-                                    $.ajax({
-                                        url: '/appointmentsForUser/' + '@currentUser.getRole' + '/' + '@currentUser.getUid' + '/' + moment(start).toISOString() + '/' + moment(end).toISOString(),
-                                        type: 'GET',
-                                        success: function (response) {
-                                            let upcomingCount = 0;
-                                            let weekCount = 0;
-                                            $(response).each(function () {
-                                                const userID = '@currentUser.getUid';
-                                                const role = '@currentUser.getRole';
-                                                let title = "";
-                                                if (userID === $(this).attr("studentId")) {
-                                                    if (role !== "Student") {
-                                                        title = $(this).attr("studentName")
-                                                    } else {
-                                                        title = $(this).attr("coachName")
-                                                    }
-                                                } else {
+        <br/>
+        <div class="row row-eq-height">
+            <div class="mb-2 col-md-6 animated fadeInUp">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Appointment Calendar</h3>
+                    </div>
+                    <div>
+                        <div id="appointmentCalendar"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-2 col-md-6 animated fadeInUp">
+                <div class="card nextFiveAppointments">
+                    <div class="card-header">
+                        <h3>Next Five Appointments</h3>
+                    </div>
+                    @partials.components._nextFiveAppointments()
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+            let appointments;
+            $(document).ready(function () {
+                $('#appointmentCalendar').fullCalendar({
+                    header: false,
+                    defaultView: 'agendaWeek',
+                    height: 'auto',
+                    editable: false,
+                    themeSystem: 'bootstrap4',
+                    eventClick: function (calEvent, jsEvent, view) {
+                        window.location = "/Appointments"
+                    },
+                    weekends: false,
+                    minTime: moment('@settingsController.getSettings.getStartTime.toInstant').format("HH:mm"),
+                    maxTime: moment('@settingsController.getSettings.getEndTime.toInstant').format("HH:mm"),
+                    allDaySlot: false,
+                    selectable: false,
+                    eventSources: [
+                        {
+                            events: function (start, end, timezone, callback) {
+                                const events = [];
+                                $.ajax({
+                                    url: '/appointmentsForUser/' + '@currentUser.getRole' + '/' + '@currentUser.getUid' + '/' + moment(start).toISOString() + '/' + moment(end).toISOString(),
+                                    type: 'GET',
+                                    success: function (response) {
+                                        let upcomingCount = 0;
+                                        let weekCount = 0;
+                                        $(response).each(function () {
+                                            const userID = '@currentUser.getUid';
+                                            const role = '@currentUser.getRole';
+                                            let title = "";
+                                            if (userID === $(this).attr("studentId")) {
+                                                if (role !== "Student") {
                                                     title = $(this).attr("studentName")
+                                                } else {
+                                                    title = $(this).attr("coachName")
                                                 }
-                                                const event = {
-                                                    id: $(this).attr('availabilityId'),
-                                                    title: title,
-                                                    start: moment($(this).attr('startDate')),
-                                                    end: moment($(this).attr('endDate')),
-                                                    dow: [],
-                                                };
-                                                if (!event.start.local().isBefore(moment())) {
-                                                    upcomingCount++;
-                                                }
-                                                weekCount++;
-                                                events.push(event);
-                                            });
-                                            $(".appointmentCount").html("You have " + upcomingCount + (upcomingCount === 1 ? " remaining appointment this week." : " remaining appointments this week."));
-                                            appointments = weekCount;
-                                            callback(events);
-                                        }
-                                    })
-                                }
-                            },
-                            @if(currentUser.getRole.equals("Coach") || currentUser.getRole.equals("Admin") && currentUser.isCoach) {
-                            {
-                                events: function (start, end, timezone, callback) {
-                                    const events = [];
-                                    $.ajax({
-                                        url: '/availableSlots/' + '@currentUser.getUid' + '/' + moment(start).toISOString() + '/' + moment(end).toISOString(),
-                                        type: 'GET',
-                                        success: function (response) {
-                                            $(response).each(function () {
-                                                const event = {
-                                                    id: 'background',
-                                                    rendering: 'inverse-background',
-                                                    backgroundColor: '#B3B3B3',
-                                                    start: moment($(this).attr('startDate')),
-                                                    end: moment($(this).attr('endDate')),
-                                                    dow: []
-                                                };
-                                                if ($(this).attr("weekly") === true) {
-                                                    event.dow = [moment($(this).attr('startDate')).isoWeekday()];
-                                                    event.start = moment($(this).attr('startDate')).format("HH:mm");
-                                                    event.end = moment($(this).attr('endDate')).format("HH:mm");
-                                                }
-                                                events.push(event);
-                                            });
-                                            callback(events);
-                                        }
-                                    });
-                                }
-                            },
+                                            } else {
+                                                title = $(this).attr("studentName")
+                                            }
+                                            const event = {
+                                                id: $(this).attr('availabilityId'),
+                                                title: title,
+                                                start: moment($(this).attr('startDate')),
+                                                end: moment($(this).attr('endDate')),
+                                                dow: [],
+                                            };
+                                            if (!event.start.local().isBefore(moment())) {
+                                                upcomingCount++;
+                                            }
+                                            weekCount++;
+                                            events.push(event);
+                                        });
+                                        $(".appointmentCount").html("You have " + upcomingCount + (upcomingCount === 1 ? " remaining appointment this week." : " remaining appointments this week."));
+                                        appointments = weekCount;
+                                        callback(events);
+                                    }
+                                })
                             }
-                        ]
-                    });
-                    if ((new Date()).getDay() === 6) {
-                        $('#appointmentCalendar').fullCalendar('next');
-                    }
+                        },
+                        @if(currentUser.getRole.equals("Coach") || currentUser.getRole.equals("Admin") && userController.hasAttribute(currentUser, "isCoach")) {
+                        {
+                            events: function (start, end, timezone, callback) {
+                                const events = [];
+                                $.ajax({
+                                    url: '/availableSlots/' + '@currentUser.getUid' + '/' + moment(start).toISOString() + '/' + moment(end).toISOString(),
+                                    type: 'GET',
+                                    success: function (response) {
+                                        $(response).each(function () {
+                                            const event = {
+                                                id: 'background',
+                                                rendering: 'inverse-background',
+                                                backgroundColor: '#B3B3B3',
+                                                start: moment($(this).attr('startDate')),
+                                                end: moment($(this).attr('endDate')),
+                                                dow: []
+                                            };
+                                            if ($(this).attr("weekly") === true) {
+                                                event.dow = [moment($(this).attr('startDate')).isoWeekday()];
+                                                event.start = moment($(this).attr('startDate')).format("HH:mm");
+                                                event.end = moment($(this).attr('endDate')).format("HH:mm");
+                                            }
+                                            events.push(event);
+                                        });
+                                        callback(events);
+                                    }
+                                });
+                            }
+                        },
+                        }
+                    ]
                 });
+                if ((new Date()).getDay() === 6) {
+                    $('#appointmentCalendar').fullCalendar('next');
+                }
+            });
 
-        </script>
-        @partials.components._createNewAppointmentFlow_Scripts()
-    }
+    </script>
+    @partials.components._createNewAppointmentFlow_Scripts()
+}

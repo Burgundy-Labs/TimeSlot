@@ -6,6 +6,7 @@ import models.ServiceModel;
 import models.UsersModel;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.io.File;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
@@ -18,7 +19,7 @@ public class UserDB implements DBInterface<UsersModel> {
         /* Return null user if none found */
         UsersModel userFound = null;
         /* Get the specific user reference from the DB*/
-        DocumentReference docRef = FirestoreDB.get().collection("users").document(ID);
+        DocumentReference docRef = FirestoreHandler.get().collection("users").document(ID);
         ApiFuture<DocumentSnapshot> future = docRef.get();
         DocumentSnapshot document = null;
         try {
@@ -38,7 +39,7 @@ public class UserDB implements DBInterface<UsersModel> {
     public Iterable<UsersModel> getAll() {
         List<UsersModel> userList = new ArrayList<>();
         /* Asynchronously retrieve all users */
-        ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("users").get();
+        ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("users").get();
         QuerySnapshot querySnapshot = null;
         try {
             /* Attempt to get a list of all users - blocking */
@@ -64,17 +65,17 @@ public class UserDB implements DBInterface<UsersModel> {
             user.setRole("Admin");
         }
         /* Get DB instance */
-        DocumentReference docRef = FirestoreDB.get().collection("users").document(user.getUid());
+        DocumentReference docRef = FirestoreHandler.get().collection("users").document(user.getUid());
         /* Asynchronously write user into DB */
         ApiFuture<WriteResult> result = docRef.set(user);
         return result.isDone();
     }
 
     @Override
-    public UsersModel delete(String ID) {
+    public UsersModel remove(String ID) {
      /* Asynchronously remove user from DB */
         UsersModel userToDelete = get(ID);
-        ApiFuture<WriteResult> writeResult = FirestoreDB.get().collection("users").document(ID).delete();
+        ApiFuture<WriteResult> writeResult = FirestoreHandler.get().collection("users").document(ID).delete();
         try {
             /* Verify that action is complete */
             writeResult.get();
@@ -86,18 +87,18 @@ public class UserDB implements DBInterface<UsersModel> {
     }
 
     @Override
-    public UsersModel deleteAll() {
+    public UsersModel removeAll() {
         throw new NotImplementedException();
     }
 
     @Override
-    public void export() {
+    public File export() {
         throw new NotImplementedException();
     }
 
     public void addServiceToUser(String ID, ServiceModel service) {
         /* Get DB instance */
-        DocumentReference docRef = FirestoreDB.get().collection("users").document(ID).collection("services").document(service.getServiceId());
+        DocumentReference docRef = FirestoreHandler.get().collection("users").document(ID).collection("services").document(service.getServiceId());
         Map<String, Object> data = new HashMap<>();
         /* Create user model for DB insert */
         data.put("service", service.getService());
@@ -109,7 +110,7 @@ public class UserDB implements DBInterface<UsersModel> {
     public List<ServiceModel> getServicesForUser(String ID) {
         List<ServiceModel> servicesList = new ArrayList<>();
         /* Asynchronously retrieve all users */
-        ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("users").document(ID).collection("services").get();
+        ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("users").document(ID).collection("services").get();
         QuerySnapshot querySnapshot = null;
         try {
             /* Attempt to get a list of all users - blocking */
@@ -132,7 +133,7 @@ public class UserDB implements DBInterface<UsersModel> {
 
     public boolean removeServiceFromUser(String ID, String serviceId) {
         /* Asynchronously remove user from DB */
-        ApiFuture<WriteResult> writeResult = FirestoreDB.get().collection("users").document(ID).collection("services").document(serviceId).delete();
+        ApiFuture<WriteResult> writeResult = FirestoreHandler.get().collection("users").document(ID).collection("services").document(serviceId).delete();
         try {
             /* Verify that action is complete */
             writeResult.get();
@@ -147,7 +148,7 @@ public class UserDB implements DBInterface<UsersModel> {
         /* Return null user if none found */
         UsersModel userFound = null;
         /* Get the specific user reference from the DB*/
-        ApiFuture<QuerySnapshot> docRef = FirestoreDB.get().collection("users").whereEqualTo("auth_id", ID).get();
+        ApiFuture<QuerySnapshot> docRef = FirestoreHandler.get().collection("users").whereEqualTo("auth_id", ID).get();
         List<QueryDocumentSnapshot> documents = null;
         try {
             documents = docRef.get().getDocuments();
@@ -162,7 +163,7 @@ public class UserDB implements DBInterface<UsersModel> {
     public List<UsersModel> getAllByRole(String role) {
         List<UsersModel> userList = new ArrayList<>();
         /* Asynchronously retrieve all users */
-        ApiFuture<QuerySnapshot> query = FirestoreDB.get().collection("users").get();
+        ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("users").get();
         QuerySnapshot querySnapshot = null;
         try {
             /* Attempt to get a list of all users - blocking */

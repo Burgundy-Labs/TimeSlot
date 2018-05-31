@@ -18,10 +18,10 @@
         });
 
         $(document).on('change', '#select-@appointment.getAppointmentId', function () {
-            var newPresence = $(this).val();
-            var appointment = {
-              appointmentId: '@appointment.getAppointmentId',
-              present: newPresence
+            const newPresence = $(this).val();
+            const appointment = {
+                appointmentId: '@appointment.getAppointmentId',
+                present: newPresence
             };
             $.ajax({
                 url: '/updatePresence',

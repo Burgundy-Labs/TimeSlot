@@ -1,11 +1,11 @@
 @import databases.UserDB
 @(userId: String, readAll: Boolean)
-@currentUser = @{
-    UserDB.getUser(userId)
-}
-@currentSettings = @{
-    SettingsController.getSettings
-}
+@userDB = @{new UserDB()}
+@settingsController = @{new SettingsController()}
+@userController = @{new UserController()}
+@currentUser = @{userDB.get(userId)}
+@currentSettings = @{settingsController.getSettings}
+
 <div class="card dashCards">
     <div class="card-header">
         <div class="weekSelect row col-12 ">
@@ -131,7 +131,7 @@ function updateDate() {
                             } else {
                             `<button class="no-button"><span class="action-primary"><a href="mailto:${$(this).attr("studentEmail")}" data-tooltip="Email Student"  class="tooltip--bottom"><i class="material-icons md-32">email</i></a></span></button>`
                     }
-                    @if(currentUser.getRole.equals("Coach") || (currentUser.isCoach != null && currentUser.isCoach)) {
+                    @if(currentUser.getRole.equals("Coach") || userController.hasAttribute(currentUser, "isCoach")) {
                     + `
                             ${$(this).attr("coachNotes") === "" ?
                             `<button id="notesFor-${$(this).attr("appointmentId")}" class="no-button" onclick="updateCoachNotes('${$(this).attr("appointmentId")}', '${$(this).attr("coachNotes")}')"><span class="action-black" id="appointmentNotes"><a href="javascript:void(0)" data-tooltip="Session Notes" class="tooltip--bottom"><i class="material-icons md-32">assignment</i></a> </span></button>`

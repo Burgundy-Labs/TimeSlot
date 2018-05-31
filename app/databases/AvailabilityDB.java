@@ -16,7 +16,7 @@ public class AvailabilityDB {
         List<AvailabilityModel> availabilityTimes = new ArrayList<>();
         /* Return null appointment if none found */
         /* Get the specific appointment reference from the DB*/
-        ApiFuture<QuerySnapshot> future = FirestoreDB.get().collection("availabilities").whereEqualTo("userId",userId).orderBy("startDate", Query.Direction.ASCENDING).get();
+        ApiFuture<QuerySnapshot> future = FirestoreHandler.get().collection("availabilities").whereEqualTo("userId",userId).orderBy("startDate", Query.Direction.ASCENDING).get();
         List<QueryDocumentSnapshot> availabilities = null;
         try {
             availabilities = future.get().getDocuments();
@@ -48,7 +48,7 @@ public class AvailabilityDB {
         List<AvailabilityModel> availabilityTimes = new ArrayList<>();
         /* Return null appointment if none found */
         /* Get the specific appointment reference from the DB*/
-        ApiFuture<QuerySnapshot> future = FirestoreDB.get().collection("availabilities").get();
+        ApiFuture<QuerySnapshot> future = FirestoreHandler.get().collection("availabilities").get();
         List<QueryDocumentSnapshot> documents = null;
         try {
             documents = future.get().getDocuments();
@@ -70,9 +70,9 @@ public class AvailabilityDB {
         /* Get DB instance */
         DocumentReference docRef;
         if(availability.getavailabilityId() == null) {
-             docRef = FirestoreDB.get().collection("availabilities").document();
+             docRef = FirestoreHandler.get().collection("availabilities").document();
         } else {
-             docRef = FirestoreDB.get().collection("availabilities").document(availability.getavailabilityId());
+             docRef = FirestoreHandler.get().collection("availabilities").document(availability.getavailabilityId());
         }
         Map<String, Object> data = new HashMap<>();
         /* Create availability model for DB insert */
@@ -88,7 +88,7 @@ public class AvailabilityDB {
 
     public static boolean removeAvailability(String availabilityId){
         /* Asynchronously remove appointment from DB */
-        ApiFuture<WriteResult> writeResult = FirestoreDB.get().collection("availabilities").document(availabilityId).delete();
+        ApiFuture<WriteResult> writeResult = FirestoreHandler.get().collection("availabilities").document(availabilityId).delete();
         try {
             /* Verify that action is complete */
             writeResult.get();

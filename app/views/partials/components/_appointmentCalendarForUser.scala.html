@@ -1,11 +1,10 @@
-    @currentUser = @{
-        UserController.getCurrentUser
-    }
-    @currentSettings = @{
-        SettingsController.getSettings
-    }
-    <div id="appointmentCalendar"></div>
-    <script type="text/javascript">
+@userController = @{new UserController()}
+@settingsController = @{new SettingsController()}
+@currentUser = @{userController.getCurrentUser}
+@currentSettings = @{settingsController.getSettings}
+
+<div id="appointmentCalendar"></div>
+<script type="text/javascript">
   $('#appointmentCalendar').fullCalendar({
       header: {
           left: 'month,basicWeek,agenda',

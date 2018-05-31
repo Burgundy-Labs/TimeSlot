@@ -1,5 +1,7 @@
 @import databases.AppointmentsDB
-@currentUser = @{UserController.getCurrentUser}
+@appointmentsDB = @{new AppointmentsDB()}
+@userController = @{new UserController()}
+@currentUser = @{userController.getCurrentUser}
 <div class="table-responsive cardTable">
 <table class="table table-striped appointmentList" cellspacing="0" width="100%" id="next5Appointments" style="width:100%">
     <thead>
@@ -12,7 +14,7 @@
         </tr>
     </thead>
     <tbody class="mb-3 col-md-12">
-    @for(appointment <- AppointmentsDB.getNextFiveAppointmentsForUser(currentUser.getRole, currentUser.getUid)) {
+    @for(appointment <- appointmentsDB.getNextFiveAppointmentsForUser(currentUser.getRole, currentUser.getUid)) {
         <tr>
             <td>
                 <img src="@if(currentUser.getRole.equals("Student")){ @appointment.getCoachPhoto }else{ @appointment.getStudentPhoto}" class="userAvatar"/>

@@ -1,3 +1,4 @@
+@userController = @{new UserController()}
 @main("Appointments", "Appointments") {
     <div class="col-md-12">
         <ul class="nav nav-pills mb-3" id="appointment-view-tab" role="tablist">
@@ -12,7 +13,7 @@
         </ul>
         <div class="tab-content" id="appointment-view-tabContent">
             <div class="tab-pane fade show active" id="appointment-list" role="tabpanel" aria-labelledby="appointment-list-tab">
-            @partials.components._appointmentListForUser(UserController.getCurrentUser.getUid, false)
+            @partials.components._appointmentListForUser(userController.getCurrentUser.getUid, false)
             </div>
             <div class="tab-pane fade" id="appointment-calendar" role="tabpanel" aria-labelledby="appointment-calendar-tab">
             @partials.components._appointmentCalendarForUser()

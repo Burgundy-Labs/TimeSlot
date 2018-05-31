@@ -15,9 +15,10 @@ import java.util.Date;
 import java.util.List;
 
 public class SettingsController extends Controller {
+    private UserController userController = new UserController();
 
     public Result index() {
-        String currentRole = UserController.getCurrentRole();
+        String currentRole = userController.getCurrentRole();
         if( currentRole ==  null || !currentRole.equals("Admin")){
             return forbidden(views.html.error_pages.unauthorized.render());
         } else {
@@ -26,7 +27,7 @@ public class SettingsController extends Controller {
     }
 
     public Result appointmentTypeFrequency() {
-        if(!UserController.getCurrentRole().equals("Admin")){
+        if(!userController.getCurrentRole().equals("Admin")){
             return forbidden(views.html.error_pages.unauthorized.render());
         }
         JsonNode json = request().body().asJson();
@@ -43,7 +44,7 @@ public class SettingsController extends Controller {
         return ok();
     }
     public Result changeSiteAlert(){
-        if(!UserController.getCurrentRole().equals("Admin")){
+        if(!userController.getCurrentRole().equals("Admin")){
             return forbidden(views.html.error_pages.unauthorized.render());
         }
         JsonNode json = request().body().asJson();
@@ -55,7 +56,7 @@ public class SettingsController extends Controller {
     }
 
     public Result changeCenterInformation(){
-        if(!UserController.getCurrentRole().equals("Admin")){
+        if(!userController.getCurrentRole().equals("Admin")){
             return forbidden(views.html.error_pages.unauthorized.render());
         }
         JsonNode json = request().body().asJson();
@@ -67,7 +68,7 @@ public class SettingsController extends Controller {
     }
 
     public Result changeMaximumAppointments() {
-        if(!UserController.getCurrentRole().equals("Admin")){
+        if(!userController.getCurrentRole().equals("Admin")){
             return forbidden(views.html.error_pages.unauthorized.render());
         }
         JsonNode json = request().body().asJson();
@@ -79,7 +80,7 @@ public class SettingsController extends Controller {
     }
 
     public Result updateSettings() {
-        if(!UserController.getCurrentRole().equals("Admin")){
+        if(!userController.getCurrentRole().equals("Admin")){
             return forbidden(views.html.error_pages.unauthorized.render());
         }
         /* Get user object from request */
@@ -121,7 +122,7 @@ public class SettingsController extends Controller {
     }
 
     public Result createAppointmentType() {
-        if(!UserController.getCurrentRole().equals("Admin")){
+        if(!userController.getCurrentRole().equals("Admin")){
             return forbidden(views.html.error_pages.unauthorized.render());
         }
         JsonNode json = request().body().asJson();
@@ -131,18 +132,18 @@ public class SettingsController extends Controller {
         return ok();
     }
 
-    public static List<AppointmentTypeModel> getAppointmentTypes() {
+    public List<AppointmentTypeModel> getAppointmentTypes() {
         return SettingsDB.getAppointmentTypes();
     }
 
-    public static List<AppointmentTypeModel> getAvailableAppointmentTypes() {
+    public List<AppointmentTypeModel> getAvailableAppointmentTypes() {
         List<AppointmentTypeModel> appointmentTypes = SettingsDB.getAppointmentTypes();
         appointmentTypes.removeIf(a -> (!a.getOneTime() && !a.getWeekly()));
         return appointmentTypes;
     }
 
     public Result createService() {
-        if(!UserController.getCurrentRole().equals("Admin")){
+        if(!userController.getCurrentRole().equals("Admin")){
             return forbidden(views.html.error_pages.unauthorized.render());
         }
         JsonNode json = request().body().asJson();
@@ -153,7 +154,7 @@ public class SettingsController extends Controller {
     }
 
     public Result removeAppointmentType() {
-        if(!UserController.getCurrentRole().equals("Admin")){
+        if(!userController.getCurrentRole().equals("Admin")){
             return forbidden(views.html.error_pages.unauthorized.render());
         }
         JsonNode json = request().body().asJson();
@@ -163,7 +164,7 @@ public class SettingsController extends Controller {
     }
 
     public Result removeService() {
-        if(!UserController.getCurrentRole().equals("Admin")){
+        if(!userController.getCurrentRole().equals("Admin")){
             return forbidden(views.html.error_pages.unauthorized.render());
         }
         JsonNode json = request().body().asJson();
@@ -172,16 +173,16 @@ public class SettingsController extends Controller {
         return ok();
     }
 
-    public static List<ServiceModel> getServices() {
+    public List<ServiceModel> getServices() {
         return SettingsDB.getServices();
     }
 
-    public static SettingsModel getSettings() {
+    public SettingsModel getSettings() {
         return  SettingsDB.getSettings();
     }
 
-    public static boolean getAppointmentTypeOneTime(String appointmentType) { return SettingsDB.getAppointmentTypeByName(appointmentType).getOneTime(); }
+    public boolean getAppointmentTypeOneTime(String appointmentType) { return SettingsDB.getAppointmentTypeByName(appointmentType).getOneTime(); }
 
-    public static boolean getAppointmentTypeWeekly(String appointmentType) { return SettingsDB.getAppointmentTypeByName(appointmentType).getWeekly(); }
+    public boolean getAppointmentTypeWeekly(String appointmentType) { return SettingsDB.getAppointmentTypeByName(appointmentType).getWeekly(); }
 
 }

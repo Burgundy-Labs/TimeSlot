@@ -1,11 +1,9 @@
 @import ApplicationComponents.Application
 @(title: String, pageHead: String)(content: Html)
-@currentSettings = @{
-    SettingsController.getSettings
-}
-@currentRole = @{
-    UserController.getCurrentRole
-}
+@settingsController = @{ new SettingsController() }
+@userController = @{ new UserController() }
+@currentSettings = @{ settingsController.getSettings }
+@currentRole = @{ userController.getCurrentRole }
 <!DOCTYPE html>
 <html lang="en">
     <head>

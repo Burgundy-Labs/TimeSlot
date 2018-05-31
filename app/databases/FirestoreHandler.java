@@ -1,16 +1,16 @@
 package databases;
+import ApplicationComponents.Application;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
-import controllers.Application;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class FirestoreDB  {
+public class FirestoreHandler {
 
     public static Firestore get(){
         File serviceAccount = Application.getEnvironment().getFile("conf/credentials.json");

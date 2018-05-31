@@ -1,5 +1,5 @@
 @import ApplicationComponents.Application
-@()
+@userController = @{ new UserController() }
 <!DOCTYPE html>
 <html>
     <head>
@@ -9,7 +9,7 @@
     <body>
         <script type="text/javascript">
                 // FirebaseUI config.
-                @if(UserController.getCurrentRole == null) {
+                @if(userController.getCurrentRole == null) {
                 localStorage.clear();
                 }
                 if (localStorage.getItem("firebaseui::rememberedAccounts") !== null) {
@@ -81,7 +81,7 @@
                     tosUrl: '/Terms'
                 };
 
-                // Initialize the FirebaseUI Widget using FirestoreDB.
+                // Initialize the FirebaseUI Widget using FirestoreHandler.
                 var ui = new firebaseui.auth.AuthUI(firebase.auth());
                 ui.disableAutoSignIn();
                 // The start method will wait until the DOM is loaded.

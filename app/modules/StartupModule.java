@@ -2,7 +2,7 @@ package modules;
 
 import ApplicationComponents.*;
 import com.google.inject.AbstractModule;
-import databases.FirestoreDB;
+import databases.FirestoreHandler;
 
 public class StartupModule extends AbstractModule {
 
@@ -10,7 +10,7 @@ public class StartupModule extends AbstractModule {
      /* Start required handlers and services */
      bind(ErrorHandler.class).asEagerSingleton();
      bind(CompressorFilter.class).asEagerSingleton();
-     bind(FirestoreDB.class).asEagerSingleton();
+     bind(FirestoreHandler.class).asEagerSingleton();
      bind(Application.class).asEagerSingleton();
      bind(MailerService.class).asEagerSingleton();
      bind(EmailScheduler.class).asEagerSingleton();

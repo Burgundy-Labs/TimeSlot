@@ -1,9 +1,7 @@
 @(user: UsersModel)
-@currentUser = @{
-    UserController.getCurrentUser
-}
-@accountController = @{new AccountController() }
-
+@accountController = @{ new AccountController() }
+@userController = @{ new UserController() }
+@currentUser = @{ userController.getCurrentUser }
 @pageTitle = @{
     if(user.getUid.equals(currentUser.getUid)) {
         "Account"
@@ -101,7 +99,7 @@
                                             <div class="mb-3 col-md-4">
                                                 <h4>Account Settings</h4>
                                                 <div class="input-group container">
-                                                    <input onclick="isCoachCheck()" type="checkbox" class="form-check-input" @if(user.isCoach) {checked} id="isCoachCheck">
+                                                    <input onclick="isCoachCheck()" type="checkbox" class="form-check-input" @if(userController.hasAttribute(user, "isCoach")) {checked} id="isCoachCheck">
                                                     <label class="form-check-label" for="isCoachCheck">
                                                         Act as coach</label>
                                                 </div>

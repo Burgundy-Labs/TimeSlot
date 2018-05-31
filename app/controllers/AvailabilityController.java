@@ -19,6 +19,8 @@ import java.util.concurrent.TimeUnit;
 
 /* TODO remove entirely and replicate functionality in Appointment Controller */
 public class AvailabilityController extends Controller {
+    private AppointmentsDB appointmentsDB = new AppointmentsDB();
+    private UserDB userDB = new UserDB();
 
     public Result createAvailability() {
         String userRole = UserController.getCurrentRole();
@@ -60,7 +62,7 @@ public class AvailabilityController extends Controller {
     }
 
     private List<AvailabilityModel> availableSlotsForAny(Date startDate, Date endDate, String serviceId) {
-        List<UsersModel> coaches = UserDB.getCoachesByService(serviceId);                                 // Gets all coaches that have availability for the serviceId
+        List<UsersModel> coaches = userDB.getCoachesByService(serviceId);                                 // Gets all coaches that have availability for the serviceId
         List<AvailabilityModel> availabilities = new ArrayList<>();                                       // Creates a blank list for availabilities for availabilities of all the coaches
         for (UsersModel coach : coaches) {                                                              // For all the coaches who have availabilities for the severiceId
             availabilities.addAll(availableSlotsForCoach(coach.getUid(), startDate, endDate));            // Add all of the availabilities during the current week from the coach
@@ -103,7 +105,7 @@ public class AvailabilityController extends Controller {
 
     private List<AvailabilityModel> availableSlotsForCoach(String userId, Date startDate, Date endDate) {
         List<AvailabilityModel> availabilities = AvailabilityDB.getAvailabilitesForUser(userId, startDate, endDate);
-        List<AppointmentsModel> appointments = AppointmentsDB.getAppointmentsForUser("Coach", userId);
+        List<AppointmentsModel> appointments = appointmentsDB.getAppointmentsForUser("Coach", userId);
         availabilities = makeAvailabilities(userId, availabilities);
         List<AvailabilityModel> oneAvail = new ArrayList<>();
         List<AvailabilityModel> weeklyAvail = new ArrayList<>();

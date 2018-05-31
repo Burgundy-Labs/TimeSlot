@@ -1,5 +1,7 @@
 package databases;
 
+import java.io.File;
+
 /* Contract for required DB interactions */
 public interface DBInterface<T> {
     /* Return T*/
@@ -9,9 +11,9 @@ public interface DBInterface<T> {
     /* True if success, False on failure */
     boolean addOrUpdate(T object);
     /* Return T being deleted */
-    T delete(String ID);
+    T remove(String ID);
     /* Delete all data*/
-    T deleteAll();
+    T removeAll();
     /* Export all data from the DB */
-    void export();
+    File export();
 }

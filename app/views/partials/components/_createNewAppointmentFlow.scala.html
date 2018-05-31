@@ -1,4 +1,4 @@
-@()
+@settingsController = @{new SettingsController()}
 <div class="col-md-12">
     <div id="createNewAppointmentForm">
         <div class="step-app">
@@ -16,7 +16,7 @@
                             <br/>
                             <select id="appointmentType" name="appointmentType" required>
                                 <option selected disabled hidden> Select an appointment type </option>
-                                @for(appointment <- SettingsController.getAvailableAppointmentTypes) {
+                                @for(appointment <- settingsController.getAvailableAppointmentTypes) {
                                     <option data-weekly="@appointment.getWeekly" data-oneTime="@appointment.getOneTime" value="@appointment.getAppointmentTypeId">@appointment.getAppointmentType</option>
                                 }
                                 </select>
@@ -26,7 +26,7 @@
                             <br/>
                             <select id="serviceType" name="serviceType" required>
                                 <option selected disabled hidden> Select service</option>
-                                @for(service <- SettingsController.getServices) {
+                                @for(service <- settingsController.getServices) {
                                     <option value="@service.getServiceId">@service.getService</option>
                                 }
                             </select>

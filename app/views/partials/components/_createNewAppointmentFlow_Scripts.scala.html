@@ -1,9 +1,8 @@
-    @currentUser = @{
-        UserController.getCurrentUser
-    }
-        @currentSettings = @{
-        SettingsController.getSettings
-    }
+@userController = @{new UserController()}
+@settingsController = @{new SettingsController()}
+@currentUser = @{userController.getCurrentUser}
+@currentSettings = @{settingsController.getSettings}
+
     <script type="text/javascript">
             let appointmentCalendar = $('#newAppointmentCalendar');
             let selectedEvents = [];
@@ -56,8 +55,8 @@
                     }
                     appointmentCalendar.fullCalendar({
                         validRange: {
-                            start: moment('@SettingsController.getSettings.getSemesterStart.toInstant').format("YYYY-MM-DD"),
-                            end: moment('@SettingsController.getSettings.getSemesterEnd.toInstant').format("YYYY-MM-DD")
+                            start: moment('@settingsController.getSettings.getSemesterStart.toInstant').format("YYYY-MM-DD"),
+                            end: moment('@settingsController.getSettings.getSemesterEnd.toInstant').format("YYYY-MM-DD")
                         },
                         height: 'auto',
                         themeSystem: 'bootstrap4',
