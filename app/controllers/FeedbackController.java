@@ -6,6 +6,8 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 public class FeedbackController extends Controller {
+    private MailerService mailerService = new MailerService();
+
     public Result feedback() {
         return ok(views.html.feedback.render());
     }
@@ -15,7 +17,7 @@ public class FeedbackController extends Controller {
         String name = json.findPath("name").asText();
         String email = json.findPath("email").asText();
         String feedback = json.findPath("feedback").asText();
-        MailerService.sendEmail(
+        mailerService.sendEmail(
                 "New Feedback From " + name,
                 name,
                 email,

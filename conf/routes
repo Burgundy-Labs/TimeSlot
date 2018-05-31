@@ -25,7 +25,7 @@ GET         /Reports                                                            
 GET         /AppointmentStatistics/:reportStart/:reportEnd                       controllers.ReportsController.getAppointmentDate(reportStart: Long, reportEnd: Long)
 GET         /getUserByID/:ID                                                     controllers.StationController.getUserByID(ID: String)
 GET         /User/:ID                                                            controllers.UserController.userPage(ID: String)
-GET         /Schedule                                                            controllers.SchedulerController.index
+GET         /Schedule                                                            controllers.ScheduleController.index
 # POST requests
 POST        /signedIn                                                            controllers.LoginController.signedIn()
 POST        /updateUser                                                          controllers.UserController.updateUser()

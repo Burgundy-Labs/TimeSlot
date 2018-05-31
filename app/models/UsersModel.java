@@ -74,7 +74,7 @@ public class UsersModel {
     }
 
     public String[] getAttributes() {
-        return attributes;
+        return attributes == null ? new String[]{} : attributes;
     }
 
     public void setAttributes(String[] attributes) {

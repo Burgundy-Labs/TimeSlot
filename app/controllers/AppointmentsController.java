@@ -13,10 +13,12 @@ import javax.xml.bind.DatatypeConverter;
 import java.util.*;
 
 public class AppointmentsController extends Controller {
-    AppointmentsDB appointmentsDB = new AppointmentsDB();
+    private AppointmentsDB appointmentsDB = new AppointmentsDB();
+    private MailerService mailerService = new MailerService();
+    private UserController userController = new UserController();
 
     public Result index() {
-        String currentRole = UserController.getCurrentRole();
+        String currentRole = userController.getCurrentRole();
         /* Force redirect to Login is the user isn't signed in */
         if (currentRole == null) {
             return unauthorized(views.html.error_pages.unauthorized.render());
@@ -56,7 +58,7 @@ public class AppointmentsController extends Controller {
         appointment = appointmentsDB.addAppointment(appointment);
         /* Check if user is in DB */
         AppointmentsModel finalAppointment = appointment;
-        new Thread(() -> MailerService.sendAppointmentConfirmation(finalAppointment)).start();
+        new Thread(() -> mailerService.sendAppointmentConfirmation(finalAppointment)).start();
         return ok();
     }
 
@@ -112,7 +114,7 @@ public class AppointmentsController extends Controller {
                 }
             }
         }
-        new Thread(() -> MailerService.sendAppointmentCancellation(appointment, json.findPath("cancelNotes").asText())).start();
+        new Thread(() -> mailerService.sendAppointmentCancellation(appointment, json.findPath("cancelNotes").asText())).start();
         return ok();
     }
 
@@ -138,7 +140,7 @@ public class AppointmentsController extends Controller {
     }
 
     public Result appointmentsByDate(String role, String userId, String start, String end) {
-        if (!UserController.getCurrentRole().equals("Admin")) {
+        if (!userController.getCurrentRole().equals("Admin")) {
             return unauthorized();
         }
         Date startDate = DatatypeConverter.parseDateTime(start).getTime();

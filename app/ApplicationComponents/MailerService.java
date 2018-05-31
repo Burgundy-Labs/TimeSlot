@@ -14,16 +14,21 @@ import java.util.Date;
 import java.util.HashMap;
 
 /* TODO create email template class for methods to use for consistence & reuse - look into a parameterized partial */
+/* TODO test mailer service to ensure emails send with DI usage in Appointments Controller */
 public class MailerService {
-
+    private SettingsController settingsController = new SettingsController();
     private static MailerClient mailerClient;
 
     @Inject
-    MailerService(MailerClient mailerClient) {
+    public MailerService(MailerClient mailerClient) {
         MailerService.mailerClient = mailerClient;
     }
 
-    public static void sendEmail(String subject, String fromName, String fromEmail, String toName, String toEmail, String bodyHtml) {
+    public MailerService() {
+
+    }
+
+    public void sendEmail(String subject, String fromName, String fromEmail, String toName, String toEmail, String bodyHtml) {
         Email email = new Email()
                 .setSubject(subject)
                 .setFrom(fromName + "<" + fromEmail + ">")
@@ -32,11 +37,11 @@ public class MailerService {
         mailerClient.send(email);
     }
 
-    static void sendAppointmentReminder(HashMap<String, ArrayList<AppointmentsModel>> appointments, String type) {
+    public void sendAppointmentReminder(HashMap<String, ArrayList<AppointmentsModel>> appointments, String type) {
         if (appointments.size() == 0) {
             return;
         }
-        SettingsModel settings = SettingsController.getSettings();
+        SettingsModel settings = settingsController.getSettings();
         /* Coach Email */
         for (String l : appointments.keySet()) {
             StringBuilder emailBody = new StringBuilder("<p style=\"font-size:48px;color:#17C671;text-align:center;\">&#x23F3;</p><h1 style=\"text-align:center;\">Appointment Reminder</h1> <h3>Details:</h3>");
@@ -71,8 +76,8 @@ public class MailerService {
         }
     }
 
-    public static void sendAppointmentConfirmation(AppointmentsModel appointment) {
-        SettingsModel settings = SettingsController.getSettings();
+    public void sendAppointmentConfirmation(AppointmentsModel appointment) {
+        SettingsModel settings = settingsController.getSettings();
         /* Coach Email */
         Email email = new Email()
                 .setSubject("New Appointment With " + appointment.getStudentName() + " on " + DateFormat.getDateTimeInstance().format(appointment.getStartDate()) + " at the " + settings.getCenterName())
@@ -115,8 +120,8 @@ public class MailerService {
         mailerClient.send(email);
     }
 
-    public static void sendAppointmentCancellation(AppointmentsModel appointment, String cancellationNotes) {
-        SettingsModel settings = SettingsController.getSettings();
+    public void sendAppointmentCancellation(AppointmentsModel appointment, String cancellationNotes) {
+        SettingsModel settings = settingsController.getSettings();
         /* Coach Email */
         Email email = new Email()
                 .setSubject("Appointment With " + appointment.getStudentName() + " on " + DateFormat.getDateTimeInstance().format(appointment.getStartDate()) + " at the " + settings.getCenterName() + " CANCELLED")

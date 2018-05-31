@@ -21,9 +21,10 @@ import java.util.concurrent.TimeUnit;
 public class AvailabilityController extends Controller {
     private AppointmentsDB appointmentsDB = new AppointmentsDB();
     private UserDB userDB = new UserDB();
+    private UserController userController = new UserController();
 
     public Result createAvailability() {
-        String userRole = UserController.getCurrentRole();
+        String userRole = userController.getCurrentRole();
         if (userRole == null || userRole.equals("Student")) {
             return forbidden(views.html.error_pages.unauthorized.render());
         }
@@ -206,7 +207,7 @@ public class AvailabilityController extends Controller {
     }
 
     public Result removeAvailability() {
-        String userRole = UserController.getCurrentRole();
+        String userRole = userController.getCurrentRole();
         if (userRole == null || userRole.equals("Student")) {
             return forbidden(views.html.error_pages.unauthorized.render());
         }

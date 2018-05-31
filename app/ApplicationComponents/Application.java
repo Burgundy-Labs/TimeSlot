@@ -15,11 +15,16 @@ import static play.mvc.Results.forbidden;
 public class Application {
     private static Config config;
     private static Environment environment;
+    private UserController userController = new UserController();
 
     @Inject
     public Application(Config config, Environment environment) {
         Application.config = config;
         Application.environment = environment;
+    }
+
+    public Application() {
+
     }
 
     public static Environment getEnvironment(){
@@ -40,8 +45,8 @@ public class Application {
             new MenuLinks("/Reports", "Reports", "assessment", "View reports and statistics about the center", true, false)
     );
 
-    public static Result restrictByRole(String role) {
-        String currentRole = UserController.getCurrentRole();
+    public Result restrictByRole(String role) {
+        String currentRole = userController.getCurrentRole();
         // User not authorized
         if (currentRole == null || !currentRole.equals(role)) {
             return forbidden(views.html.error_pages.unauthorized.render());

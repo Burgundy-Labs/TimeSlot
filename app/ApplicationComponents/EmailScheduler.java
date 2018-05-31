@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @Singleton
 public class EmailScheduler {
     private AppointmentsDB appointmentsDB = new AppointmentsDB();
-
+    private MailerService mailerService = new MailerService();
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     public EmailScheduler() {
         schedule(new AppointmentEmailTask());
@@ -52,8 +52,8 @@ public class EmailScheduler {
                 coachAppointments.computeIfAbsent(a.getCoachId(), k -> new ArrayList<>()).add(a);
                 studentAppointments.computeIfAbsent(a.getStudentId(), k -> new ArrayList<>()).add(a);
             }
-            MailerService.sendAppointmentReminder(studentAppointments, "Student");
-            MailerService.sendAppointmentReminder(coachAppointments, "Coach");
+            mailerService.sendAppointmentReminder(studentAppointments, "Student");
+            mailerService.sendAppointmentReminder(coachAppointments, "Coach");
         }
     }
 }

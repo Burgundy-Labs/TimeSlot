@@ -1,7 +1,8 @@
 @(user: UsersModel)
-@accountController = @{ new AccountController() }
-@userController = @{ new UserController() }
-@currentUser = @{ userController.getCurrentUser }
+@accountController = @{new AccountController()}
+@userController = @{new UserController()}
+@settingsController = @{new SettingsController()}
+@currentUser = @{userController.getCurrentUser}
 @pageTitle = @{
     if(user.getUid.equals(currentUser.getUid)) {
         "Account"
@@ -237,11 +238,11 @@
                     themeSystem: 'bootstrap4',
                     allDaySlot: false,
                     validRange: {
-                        start: moment('@SettingsController.getSettings.getSemesterStart.toInstant').format("YYYY-MM-DD"),
-                        end: moment('@SettingsController.getSettings.getSemesterEnd.toInstant').format("YYYY-MM-DD")
+                        start: moment('@settingsController.getSettings.getSemesterStart.toInstant').format("YYYY-MM-DD"),
+                        end: moment('@settingsController.getSettings.getSemesterEnd.toInstant').format("YYYY-MM-DD")
                     },
-                    minTime: moment('@SettingsController.getSettings.getStartTime.toInstant').format("HH:mm"),
-                    maxTime: moment('@SettingsController.getSettings.getEndTime.toInstant').format("HH:mm"),
+                    minTime: moment('@settingsController.getSettings.getStartTime.toInstant').format("HH:mm"),
+                    maxTime: moment('@settingsController.getSettings.getEndTime.toInstant').format("HH:mm"),
                     events: function (start, end, timezone, callback) {
                         $.ajax({
                             url: '/availableSlots/' + '@user.getUid' + '/' + moment(start).toISOString() + '/' + moment(end).toISOString(),

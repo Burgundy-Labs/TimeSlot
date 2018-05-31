@@ -1,5 +1,6 @@
 @import ApplicationComponents.Application
-@userController = @{ new UserController() }
+@userController = @{new UserController()}
+@settingsController = @{new SettingsController()}
 <!DOCTYPE html>
 <html>
     <head>
@@ -92,10 +93,10 @@
             <div class="jumbotron d-flex align-items-center">
                 <div class="container">
                     <h1>Sign-In Station<br/>
-                        <small>@SettingsController.getSettings.getCenterName</small></h1>
+                        <small>@settingsController.getSettings.getCenterName</small></h1>
                     <p>
                         Please <b>tap your ID card</b>
-                        or sign-in below to view, schedule, and manage appointments at the @SettingsController.getSettings.getCenterName.
+                        or sign-in below to view, schedule, and manage appointments at the @settingsController.getSettings.getCenterName.
                     </p>
                     <div id="firebaseui-auth-container" class="btn"></div>
                     <div id="sign-out"></div>
