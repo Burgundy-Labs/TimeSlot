@@ -14,8 +14,6 @@ import java.util.List;
 public class UserController extends Controller {
     /* Roles used throughout TimeSlot */
     private String[] roles = { "Student" , "Coach", "Admin" };
-
-
     private UserDB userDB = new UserDB();
 
     public Result index() {

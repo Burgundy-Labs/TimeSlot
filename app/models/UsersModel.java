@@ -9,13 +9,14 @@ public class UsersModel {
     private String uid; // Unique identifier provided by Google
     private String role; // "User", "Coach", "Admin"
     private String auth_id; // Used to identify RFID / Phone sign-in
+    private boolean subscribed; // bool for sending email reminders
     private String[] attributes; // Used to store additional information ("isCoach")
 
     public UsersModel() {
 
     }
 
-    public UsersModel(String displayName, String email, String photoURL, String uid, String role, String auth_id, String[] attributes) {
+    public UsersModel(String displayName, String email, String photoURL, String uid, String role, String auth_id, String[] attributes, boolean subscribed) {
         this.displayName = displayName;
         this.email = email;
         this.photoURL = photoURL;
@@ -23,6 +24,7 @@ public class UsersModel {
         this.role = role;
         this.auth_id = auth_id;
         this.attributes = attributes;
+        this.subscribed = subscribed;
     }
 
     public String getDisplayName() {
@@ -82,4 +84,11 @@ public class UsersModel {
     }
 
 
+    public boolean isSubscribed() {
+        return subscribed;
+    }
+
+    public void setSubscribed(boolean subscribed) {
+        this.subscribed = subscribed;
+    }
 }

@@ -1,5 +1,6 @@
 package controllers;
 
+import ApplicationComponents.Authenticate;
 import com.fasterxml.jackson.databind.JsonNode;
 import databases.UserDB;
 import models.UsersModel;

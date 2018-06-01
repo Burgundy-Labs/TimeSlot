@@ -1,5 +1,6 @@
 package controllers;
 
+import ApplicationComponents.Authenticate;
 import com.fasterxml.jackson.databind.JsonNode;
 import databases.SettingsDB;
 import models.AppointmentTypeModel;
@@ -163,10 +164,8 @@ public class SettingsController extends Controller {
         return ok();
     }
 
+    @Authenticate(role="Admin")
     public Result removeService() {
-        if(!userController.getCurrentRole().equals("Admin")){
-            return forbidden(views.html.error_pages.unauthorized.render());
-        }
         JsonNode json = request().body().asJson();
         String serviceId = json.findPath("serviceId").asText();
         SettingsDB.removeService(serviceId);
