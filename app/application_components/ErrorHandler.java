@@ -1,4 +1,4 @@
-package ApplicationComponents;
+package application_components;
 
 import com.typesafe.config.Config;
 import play.Environment;

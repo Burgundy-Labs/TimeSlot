@@ -23,7 +23,7 @@ window.addEventListener('load', function () {
 });
 
 
-function signout() {
+function signOut() {
     firebase.auth().signOut().then(function() {
         sessionStorage.clear();
         localStorage.clear();

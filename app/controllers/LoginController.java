@@ -1,6 +1,5 @@
 package controllers;
 
-import ApplicationComponents.Authenticate;
 import com.fasterxml.jackson.databind.JsonNode;
 import databases.UserDB;
 import models.UsersModel;
@@ -22,23 +21,26 @@ public class LoginController extends Controller {
     public Result signedIn() {
         /* Get user object from request */
         JsonNode json = request().body().asJson();
-        /* Get user from json request */
-        UsersModel user = Json.fromJson(json, UsersModel.class);
         /* Check if user is in DB */
-        UsersModel u = userDB.get(user.getUid());
+        UsersModel u = userDB.get(json.get("uid").asText());
         if (u == null) {
-            user.setRole("Student");
-            userDB.addOrUpdate(user);
+            /* If user was not found - create a new one and add them */
+            u = new UsersModel();
+            u.setRole("Student");
+            u.setDisplayName(json.get("displayName").asText());
+            u.setUid(json.get("uid").asText());
+            u.setEmail(json.get("email").asText());
+            u.setSubscribed(true);
+            userDB.addOrUpdate(u);
         } else {
             if((u.getAuth_id() == null || u.getAuth_id().equals("")) && (json.findPath("auth_id").textValue() != null && !json.findPath("auth_id").textValue().equals(""))) {
                 u.setAuth_id(json.findPath("auth_id").asText().replaceAll("\r",""));
             }
-            user = u;
         }
-        userDB.addOrUpdate(user);
+        userDB.addOrUpdate(u);
         /* Store UID in Session */
-        session("currentUser", user.getUid());
-        session("currentRole", user.getRole());
+        session("currentUser", u.getUid());
+        session("currentRole", u.getRole());
         /* Add user to DB with 'student' role (default) */
         if(json.findPath("auth_id") != null && !json.findPath("auth_id").asText().equals("")){
             return ok().withCookies(Http.Cookie.builder("auth_id", json.findPath("auth_id").textValue().replace("\r","")).build());

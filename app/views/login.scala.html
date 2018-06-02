@@ -1,4 +1,4 @@
-@import ApplicationComponents.Application
+@import application_components.Application
 @userController = @{ new UserController() }
 @settingsController = @{ new SettingsController() }
 <!DOCTYPE html>
@@ -23,10 +23,8 @@
                             let userSignIn = {
                                 displayName: user.displayName,
                                 email: user.email,
-                                emailVerified: user.emailVerified,
                                 photoURL: user.photoURL,
                                 uid: user.uid,
-                                phoneNumber: user.phoneNumber
                             };
                             /* TODO: get mtu.edu from DB */
                             if(!(user.email.split('@@')[1] === 'mtu.edu')){
@@ -39,7 +37,7 @@
                                             text: "Okay",
                                             btnClass: "btn-primary",
                                             action: function() {
-                                                signout();
+                                                signOut();
                                             }
                                         }
                                     }

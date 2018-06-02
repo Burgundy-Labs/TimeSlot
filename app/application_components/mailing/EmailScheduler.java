@@ -1,4 +1,4 @@
-package ApplicationComponents;
+package application_components.mailing;
 
 import com.google.inject.Singleton;
 import databases.AppointmentsDB;

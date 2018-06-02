@@ -1,0 +1,11 @@
+@import application_components.mailing.EmailModel
+@(model: EmailModel)
+
+<p style="font-size:48px;color:#C4183C; text-align:center;">@model.getIcon</p>
+<h1 style="text-align:center;">@model.getTitle</h1>
+
+@model.getBody.toHtml
+
+@for(button <- model.getEmailButtons) {
+    @button.toHtml
+}

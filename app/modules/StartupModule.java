@@ -1,6 +1,8 @@
 package modules;
 
-import ApplicationComponents.*;
+import application_components.*;
+import application_components.mailing.EmailScheduler;
+import application_components.mailing.MailerService;
 import com.google.inject.AbstractModule;
 import databases.FirestoreHandler;
 

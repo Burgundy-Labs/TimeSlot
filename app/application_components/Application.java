@@ -1,11 +1,10 @@
-package ApplicationComponents;
+package application_components;
 
 import com.google.inject.Inject;
 import com.typesafe.config.Config;
 import controllers.UserController;
 import play.Environment;
 import play.mvc.Result;
-import play.mvc.Security;
 
 import java.util.Arrays;
 import java.util.List;

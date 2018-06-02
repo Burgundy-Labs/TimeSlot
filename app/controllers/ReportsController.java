@@ -1,6 +1,6 @@
 package controllers;
 
-import ApplicationComponents.Application;
+import application_components.Application;
 import databases.AppointmentsDB;
 import models.AppointmentsModel;
 import play.libs.Json;

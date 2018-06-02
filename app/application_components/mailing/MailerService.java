@@ -1,5 +1,6 @@
-package ApplicationComponents;
+package application_components.mailing;
 
+import application_components.Application;
 import com.google.inject.Inject;
 import controllers.SettingsController;
 import models.AppointmentsModel;

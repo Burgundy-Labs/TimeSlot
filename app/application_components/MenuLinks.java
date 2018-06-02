@@ -1,4 +1,4 @@
-package ApplicationComponents;
+package application_components;
 
 public class MenuLinks {
     public String href;

@@ -1,7 +1,5 @@
 package models;
 
-import java.util.Arrays;
-
 public class UsersModel {
     private String displayName; // User's full name
     private String email;
@@ -12,9 +10,7 @@ public class UsersModel {
     private boolean subscribed; // bool for sending email reminders
     private String[] attributes; // Used to store additional information ("isCoach")
 
-    public UsersModel() {
-
-    }
+    public UsersModel() { }
 
     public UsersModel(String displayName, String email, String photoURL, String uid, String role, String auth_id, String[] attributes, boolean subscribed) {
         this.displayName = displayName;
@@ -82,7 +78,6 @@ public class UsersModel {
     public void setAttributes(String[] attributes) {
         this.attributes = attributes;
     }
-
 
     public boolean isSubscribed() {
         return subscribed;

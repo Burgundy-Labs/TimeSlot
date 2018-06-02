@@ -1,4 +1,4 @@
-package ApplicationComponents;
+package application_components;
 
 import play.mvc.Action;
 import play.mvc.Http;
