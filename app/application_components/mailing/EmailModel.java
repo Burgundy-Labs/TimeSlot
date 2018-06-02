@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+
+/* Defines the general structure of email components */
 public class EmailModel {
     private String icon = ""; // Icon displayed before title of email
     private String title = ""; // Major heading to email
