@@ -44,17 +44,6 @@ public class Application {
             new MenuLinks("/Settings","Site Settings", "settings","Manage settings related to the center",true,false ) ,
             new MenuLinks("/Reports", "Reports", "assessment", "View reports and statistics about the center", true, false)
     );
-
-    public Result restrictByRole(String role) {
-        String currentRole = userController.getCurrentRole();
-        // User not authorized
-        if (currentRole == null || !currentRole.equals(role)) {
-            return forbidden(views.html.error_pages.unauthorized.render());
-        } else {
-            //  Check passed
-            return null;
-        }
-    }
 }
 
 

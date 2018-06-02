@@ -1,5 +1,6 @@
 package controllers;
 
+import application_components.Authenticate;
 import com.fasterxml.jackson.databind.JsonNode;
 import application_components.mailing.MailerService;
 import databases.AppointmentsDB;
@@ -15,14 +16,9 @@ import java.util.*;
 public class AppointmentsController extends Controller {
     private AppointmentsDB appointmentsDB = new AppointmentsDB();
     private MailerService mailerService = new MailerService();
-    private UserController userController = new UserController();
 
+    @Authenticate
     public Result index() {
-        String currentRole = userController.getCurrentRole();
-        /* Force redirect to Login is the user isn't signed in */
-        if (currentRole == null) {
-            return unauthorized(views.html.error_pages.unauthorized.render());
-        }
         return ok(views.html.appointments.render());
     }
 
@@ -139,10 +135,8 @@ public class AppointmentsController extends Controller {
         return ok(Json.toJson(appointments));
     }
 
+    @Authenticate(role="Admin")
     public Result appointmentsByDate(String role, String userId, String start, String end) {
-        if (!userController.getCurrentRole().equals("Admin")) {
-            return unauthorized();
-        }
         Date startDate = DatatypeConverter.parseDateTime(start).getTime();
         Date endDate = DatatypeConverter.parseDateTime(end).getTime();
         Calendar endc = Calendar.getInstance();

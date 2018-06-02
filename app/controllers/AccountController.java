@@ -1,5 +1,6 @@
 package controllers;
 
+import application_components.Authenticate;
 import com.fasterxml.jackson.databind.JsonNode;
 import databases.UserDB;
 import models.ServiceModel;
@@ -15,11 +16,8 @@ public class AccountController extends Controller {
     private UserController userController = new UserController();
     private SettingsController settingsController = new SettingsController();
 
+    @Authenticate
     public Result index() {
-        String currentRole = userController.getCurrentRole();
-        if (currentRole == null) {
-            return unauthorized(views.html.error_pages.unauthorized.render());
-        }
         UsersModel currentUser = userController.getCurrentUser();
         return ok(views.html.user.render(currentUser));
     }

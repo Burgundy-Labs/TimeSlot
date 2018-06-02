@@ -1,5 +1,6 @@
 package controllers;
 
+import application_components.Authenticate;
 import com.fasterxml.jackson.databind.JsonNode;
 import databases.AppointmentsDB;
 import databases.AvailabilityDB;
@@ -17,18 +18,15 @@ import javax.xml.bind.DatatypeConverter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-/* TODO remove entirely and replicate functionality in Appointment Controller */
+/* TODO remove AvailabilityDB and replicate functionality with nulled appointment values  */
 public class AvailabilityController extends Controller {
     private AppointmentsDB appointmentsDB = new AppointmentsDB();
     private UserDB userDB = new UserDB();
     private UserController userController = new UserController();
 
+    @Authenticate(role="Coach")
     public Result createAvailability() {
-        String userRole = userController.getCurrentRole();
-        if (userRole == null || userRole.equals("Student")) {
-            return forbidden(views.html.error_pages.unauthorized.render());
-        }
-   /* Get user object from request */
+     /* Get user object from request */
         JsonNode json = request().body().asJson();
         /* Get user from json request */
         AvailabilityModel availability = new AvailabilityModel();

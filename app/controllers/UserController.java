@@ -1,5 +1,6 @@
 package controllers;
 
+import application_components.Authenticate;
 import com.fasterxml.jackson.databind.JsonNode;
 import databases.UserDB;
 import models.ServiceModel;
@@ -42,10 +43,8 @@ public class UserController extends Controller {
         return ok();
     }
 
+    @Authenticate(role="Admin")
     public Result updateUserRole() {
-        if (!getCurrentRole().equals("Admin")) {
-            return forbidden(views.html.error_pages.unauthorized.render());
-        }
         /* Get user object from request */
         JsonNode json = request().body().asJson();
         /* Get user from json request */
@@ -58,11 +57,8 @@ public class UserController extends Controller {
         return ok();
     }
 
+    @Authenticate(role="Coach")
     public Result addServiceToCoach() {
-        String currentRole = getCurrentRole();
-        if (currentRole.equals("Student")) {
-            return forbidden(views.html.error_pages.unauthorized.render());
-        }
         JsonNode json = request().body().asJson();
         String userId = json.get("userId").asText();
         String serviceText = json.get("serviceName").asText();
@@ -72,6 +68,7 @@ public class UserController extends Controller {
         return ok();
     }
 
+    @Authenticate(role="Coach")
     public Result removeServiceFromCoach() {
         JsonNode json = request().body().asJson();
         String userId = json.get("userId").asText();
@@ -80,10 +77,8 @@ public class UserController extends Controller {
         return ok();
     }
 
+    @Authenticate(role="Admin")
     public Result removeUser() {
-        if (!getCurrentRole().equals("Admin")) {
-            return forbidden(views.html.error_pages.unauthorized.render());
-        }
         try {
             JsonNode json = request().body().asJson();
             String userId = json.get("userId").asText();
@@ -115,7 +110,6 @@ public class UserController extends Controller {
     }
 
     public void addAttributes(UsersModel user, String... attributes) {
-
         String[] o = user.getAttributes();
         String[] n = new String[o.length + attributes.length];
         System.arraycopy(o, 0, n, 0, o.length);

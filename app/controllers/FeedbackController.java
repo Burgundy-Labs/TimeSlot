@@ -12,6 +12,7 @@ public class FeedbackController extends Controller {
         return ok(views.html.feedback.render());
     }
 
+    /* TOOD use EmailBuilder for Feedback Email */
     public Result sendFeedback() {
         JsonNode json = request().body().asJson();
         String name = json.findPath("name").asText();

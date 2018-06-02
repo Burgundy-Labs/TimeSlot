@@ -18,19 +18,13 @@ import java.util.List;
 public class SettingsController extends Controller {
     private UserController userController = new UserController();
 
+    @Authenticate(role="Admin")
     public Result index() {
-        String currentRole = userController.getCurrentRole();
-        if( currentRole ==  null || !currentRole.equals("Admin")){
-            return forbidden(views.html.error_pages.unauthorized.render());
-        } else {
-            return ok(views.html.settings.render());
-        }
+        return ok(views.html.settings.render());
     }
 
+    @Authenticate(role="Admin")
     public Result appointmentTypeFrequency() {
-        if(!userController.getCurrentRole().equals("Admin")){
-            return forbidden(views.html.error_pages.unauthorized.render());
-        }
         JsonNode json = request().body().asJson();
         String frequency = json.findPath("frequency").asText();
         Boolean enabled = json.findPath("checked").asBoolean();
@@ -44,10 +38,9 @@ public class SettingsController extends Controller {
         SettingsDB.addAppointmentType(appointmentType);
         return ok();
     }
+
+    @Authenticate(role="Admin")
     public Result changeSiteAlert(){
-        if(!userController.getCurrentRole().equals("Admin")){
-            return forbidden(views.html.error_pages.unauthorized.render());
-        }
         JsonNode json = request().body().asJson();
         String siteAlert = json.findPath("siteAlert").asText();
         SettingsModel s = SettingsDB.getSettings();
@@ -56,10 +49,8 @@ public class SettingsController extends Controller {
         return ok();
     }
 
+    @Authenticate(role="Admin")
     public Result changeCenterInformation(){
-        if(!userController.getCurrentRole().equals("Admin")){
-            return forbidden(views.html.error_pages.unauthorized.render());
-        }
         JsonNode json = request().body().asJson();
         String centerInformation = json.findPath("centerInformation").asText();
         SettingsModel s = SettingsDB.getSettings();
@@ -68,10 +59,8 @@ public class SettingsController extends Controller {
         return ok();
     }
 
+    @Authenticate(role="Admin")
     public Result changeMaximumAppointments() {
-        if(!userController.getCurrentRole().equals("Admin")){
-            return forbidden(views.html.error_pages.unauthorized.render());
-        }
         JsonNode json = request().body().asJson();
         Integer maximumAppointments = json.findPath("maximumAppointments").asInt();
         SettingsModel s = SettingsDB.getSettings();
@@ -80,10 +69,8 @@ public class SettingsController extends Controller {
         return ok();
     }
 
+    @Authenticate(role="Admin")
     public Result updateSettings() {
-        if(!userController.getCurrentRole().equals("Admin")){
-            return forbidden(views.html.error_pages.unauthorized.render());
-        }
         /* Get user object from request */
         JsonNode json = request().body().asJson();
         /* Get user from json request */
@@ -122,10 +109,8 @@ public class SettingsController extends Controller {
         return notAcceptable();
     }
 
+    @Authenticate(role="Admin")
     public Result createAppointmentType() {
-        if(!userController.getCurrentRole().equals("Admin")){
-            return forbidden(views.html.error_pages.unauthorized.render());
-        }
         JsonNode json = request().body().asJson();
         String appointmentTypeName = json.findPath("appointmentTypeName").asText();
         AppointmentTypeModel appointmentType = new AppointmentTypeModel(null, appointmentTypeName);
@@ -143,10 +128,8 @@ public class SettingsController extends Controller {
         return appointmentTypes;
     }
 
+    @Authenticate(role="Admin")
     public Result createService() {
-        if(!userController.getCurrentRole().equals("Admin")){
-            return forbidden(views.html.error_pages.unauthorized.render());
-        }
         JsonNode json = request().body().asJson();
         String serviceName = json.findPath("serviceName").asText();
         ServiceModel service = new ServiceModel(null, serviceName);
@@ -154,10 +137,8 @@ public class SettingsController extends Controller {
         return ok();
     }
 
+    @Authenticate(role="Admin")
     public Result removeAppointmentType() {
-        if(!userController.getCurrentRole().equals("Admin")){
-            return forbidden(views.html.error_pages.unauthorized.render());
-        }
         JsonNode json = request().body().asJson();
         String appointmentTypeId = json.findPath("appointmentTypeId").asText();
         SettingsDB.removeAppointmentType(appointmentTypeId);
