@@ -10,9 +10,9 @@ import java.util.Map;
 public class EmailModel {
     private String icon = ""; // Icon displayed before title of email
     private String title = ""; // Major heading to email
-    private EmailBody body; // Map of sections separated by section title and body
+    private EmailBody emailBody; // Map of sections separated by section title and body
     private List<EmailButton> emailButtons;
-
+    private EmailFooter emailFooter;
     public EmailModel(){}
 
     public static class EmailButton {
@@ -60,6 +60,19 @@ public class EmailModel {
         }
     }
 
+    public static class EmailFooter {
+        String footerText;
+        String footerStyle = "";
+
+        public EmailFooter(String footerText) {
+            this.footerText = footerText;
+        }
+
+        public String toHtml() {
+            return "<div style=\"" + this.footerStyle + "\">" + this.footerText+ "</div>";
+        }
+    }
+
 
     public String getIcon() {
         return icon;
@@ -77,12 +90,12 @@ public class EmailModel {
         this.title = title;
     }
 
-    public EmailBody getBody() {
-        return body;
+    public EmailBody getEmailBody() {
+        return emailBody;
     }
 
-    public void setBody(EmailBody body) {
-        this.body = body;
+    public void setEmailBody(EmailBody body) {
+        this.emailBody = body;
     }
 
     public List<EmailButton> getEmailButtons() {
@@ -91,6 +104,14 @@ public class EmailModel {
 
     public void setEmailButtons(List<EmailButton> emailButtons) {
         this.emailButtons = emailButtons;
+    }
+
+    public EmailFooter getEmailFooter() {
+        return emailFooter;
+    }
+
+    public void setEmailFooter(EmailFooter emailFooter) {
+        this.emailFooter = emailFooter;
     }
 
 }

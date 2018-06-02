@@ -3,9 +3,12 @@
 
 <p style="font-size:48px;color:#C4183C; text-align:center;">@model.getIcon</p>
 <h1 style="text-align:center;">@model.getTitle</h1>
-
-@model.getBody.toHtml
-
+<br/>
+@model.getEmailBody.toHtml
+<br/>
 @for(button <- model.getEmailButtons) {
     @button.toHtml
+    <br/>
 }
+<br/>
+@model.getEmailFooter.toHtml

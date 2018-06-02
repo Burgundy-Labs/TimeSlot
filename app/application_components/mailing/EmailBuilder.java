@@ -22,7 +22,7 @@ public class EmailBuilder implements IconInterface{
         /* Compose the sections of an email (section title, content) */
         HashMap<String,String> sections = new HashMap<>();
         sections.put("Appointment Details", appointment.toHTMLString());
-        model.setBody(new EmailModel.EmailBody(sections));
+        model.setEmailBody(new EmailModel.EmailBody(sections));
 
         /* Add call-to-action buttons at bottom of email */
         List<EmailModel.EmailButton> emailButtons = new ArrayList<>();
