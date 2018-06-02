@@ -7,7 +7,6 @@ import com.google.inject.AbstractModule;
 import databases.FirestoreHandler;
 
 public class StartupModule extends AbstractModule {
-
     protected void configure() {
      /* Start required handlers and services */
      bind(ErrorHandler.class).asEagerSingleton();

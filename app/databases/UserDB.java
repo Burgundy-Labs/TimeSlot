@@ -91,11 +91,6 @@ public class UserDB implements DBInterface<UsersModel> {
         throw new NotImplementedException();
     }
 
-    @Override
-    public File export() {
-        throw new NotImplementedException();
-    }
-
     public void addServiceToUser(String ID, ServiceModel service) {
         /* Get DB instance */
         DocumentReference docRef = FirestoreHandler.get().collection("users").document(ID).collection("services").document(service.getServiceId());

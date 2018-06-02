@@ -1,6 +1,7 @@
 package databases;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 
 /* Contract for required DB interactions */
 public interface DBInterface<T> {
@@ -15,5 +16,12 @@ public interface DBInterface<T> {
     /* Delete all data*/
     T removeAll();
     /* Export all data from the DB */
-    File export();
+    default String export() {
+        try {
+            return new DatabaseExporter<T>().exportToCSV(this, this.getClass());
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
