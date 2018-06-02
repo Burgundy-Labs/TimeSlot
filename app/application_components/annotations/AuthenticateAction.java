@@ -1,4 +1,4 @@
-package application_components;
+package application_components.annotations;
 
 import play.mvc.Action;
 import play.mvc.Http;
@@ -11,14 +11,23 @@ import java.util.concurrent.CompletionStage;
 public class AuthenticateAction extends Action<Authenticate> {
     @Override
     public CompletionStage<Result> call(Http.Context ctx) {
+        /* Check to ensure user role exists (signed in) */
+        if(ctx.session().get("currentRole") == null) {
+            /* If user is not signed in - redirect to login */
+            return CompletableFuture.supplyAsync(() -> ok(views.html.login.render()));
+        }
+        /* Else ensure logged in user has proper role */
         String role = configuration.role();
         switch(role) {
             case "Admin":
             case "Coach":
                 return authenticateRole(role, ctx);
             case "Student":
-            default:
+                /* If Student (or blank Authenticate annotation) allow access - ensures logged in user only */
                 return delegate.call(ctx);
+            default:
+                /* If unknown role entered - default to forbidden */
+                return CompletableFuture.supplyAsync(() -> forbidden(views.html.error_pages.unauthorized.render()));
         }
     }
 

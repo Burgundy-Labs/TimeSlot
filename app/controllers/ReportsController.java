@@ -1,7 +1,6 @@
 package controllers;
 
-import application_components.Application;
-import application_components.Authenticate;
+import application_components.annotations.Authenticate;
 import databases.AppointmentsDB;
 import models.AppointmentsModel;
 import play.libs.Json;

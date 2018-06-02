@@ -1,6 +1,6 @@
 package controllers;
 
-import application_components.Authenticate;
+import application_components.annotations.Authenticate;
 import com.fasterxml.jackson.databind.JsonNode;
 import databases.AppointmentsDB;
 import databases.AvailabilityDB;

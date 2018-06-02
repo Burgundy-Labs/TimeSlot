@@ -1,7 +1,6 @@
 package controllers;
 
-import application_components.Authenticate;
-import com.fasterxml.jackson.databind.JsonNode;
+import application_components.annotations.Authenticate;
 import databases.UserDB;
 import models.ServiceModel;
 import models.UsersModel;
@@ -21,7 +20,6 @@ public class AccountController extends Controller {
         UsersModel currentUser = userController.getCurrentUser();
         return ok(views.html.user.render(currentUser));
     }
-
 
     public List<ServiceModel> getAvailableServices(String userId) {
         List<ServiceModel> availableServices = settingsController.getServices();
