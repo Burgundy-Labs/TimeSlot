@@ -16,8 +16,8 @@ public class EmailModel {
     public EmailModel(){}
 
     public static class EmailButton {
-        private String text;
-        private String url;
+        private String text = "";
+        private String url = "";
         private String buttonStyles = "background-color:#0067F4; color: white; border-radius: 4px; padding: 10px; " +
                 "margin:0 auto; display:block; width: 90%; text-align: center; font-size: 18px; " +
                 "text-decoration:none;";
@@ -38,7 +38,7 @@ public class EmailModel {
     }
 
     public static class EmailBody {
-        Map<String, String> sections;
+        Map<String, String> sections = new HashMap<>();
         String bodyStyle = "background-color:#EFF0F1; border-radius:4px; padding: 10px;";
 
         public EmailBody(Map<String, String> sections) {
@@ -61,7 +61,7 @@ public class EmailModel {
     }
 
     public static class EmailFooter {
-        String footerText;
+        String footerText = "";
         String footerStyle = "";
 
         public EmailFooter(String footerText) {
