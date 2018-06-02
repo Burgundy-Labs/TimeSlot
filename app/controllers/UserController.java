@@ -21,16 +21,16 @@ public class UserController extends Controller {
         String currentRole = getCurrentRole();
         /* Force redirect to Login is the user isn't signed in */
         if (currentRole == null) {
-            return ok(views.html.login.render());
+            return ok(views.html.pages.login.render());
         }
-        return ok(views.html.users.render());
+        return ok(views.html.pages.users.render());
     }
 
     public Result userPage(String userId) {
         if (userId == null) return notFound();
         UsersModel user = userDB.get(userId);
         if (user == null) return notFound();
-        return ok(views.html.user.render(user));
+        return ok(views.html.pages.user.render(user));
     }
 
     public Result updateUser() {

@@ -14,7 +14,7 @@ public class ReportsController extends Controller {
 
     @Authenticate(role="Admin")
     public Result index() {
-        return ok(views.html.reports.render());
+        return ok(views.html.pages.reports.render());
     }
 
     @Authenticate(role="Admin")

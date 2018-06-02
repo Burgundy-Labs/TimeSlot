@@ -8,6 +8,6 @@ public class CenterController extends Controller {
 
     @Authenticate
     public Result index() {
-        return ok(views.html.center.render());
+        return ok(views.html.pages.center.render());
     }
 }

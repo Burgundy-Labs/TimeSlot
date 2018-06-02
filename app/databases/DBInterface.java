@@ -1,6 +1,5 @@
 package databases;
 
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
 /* Contract for required DB interactions */

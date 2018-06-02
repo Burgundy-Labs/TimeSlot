@@ -9,7 +9,7 @@ public class FeedbackController extends Controller {
     private MailerService mailerService = new MailerService();
 
     public Result feedback() {
-        return ok(views.html.feedback.render());
+        return ok(views.html.pages.feedback.render());
     }
 
     /* TOOD use EmailBuilder for Feedback Email */

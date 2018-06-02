@@ -207,7 +207,7 @@ public class AvailabilityController extends Controller {
     public Result removeAvailability() {
         String userRole = userController.getCurrentRole();
         if (userRole == null || userRole.equals("Student")) {
-            return forbidden(views.html.error_pages.unauthorized.render());
+            return forbidden(views.html.pages.error_pages.unauthorized.render());
         }
         JsonNode json = request().body().asJson();
         String availabilityId = json.findPath("availabilityId").asText();

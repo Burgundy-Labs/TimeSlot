@@ -18,7 +18,7 @@ public class AccountController extends Controller {
     @Authenticate
     public Result index() {
         UsersModel currentUser = userController.getCurrentUser();
-        return ok(views.html.user.render(currentUser));
+        return ok(views.html.pages.user.render(currentUser));
     }
 
     public List<ServiceModel> getAvailableServices(String userId) {

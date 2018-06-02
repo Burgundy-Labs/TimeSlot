@@ -19,7 +19,7 @@ public class AppointmentsController extends Controller {
 
     @Authenticate
     public Result index() {
-        return ok(views.html.appointments.render());
+        return ok(views.html.pages.appointments.render());
     }
 
     public Result updatePresence() {

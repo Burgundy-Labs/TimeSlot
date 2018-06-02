@@ -31,11 +31,11 @@ public class ErrorHandler extends DefaultHttpErrorHandler implements HttpErrorHa
     public CompletionStage<Result> onClientError(RequestHeader request, int statusCode, String message) {
         switch (statusCode) {
             case 401:
-                return CompletableFuture.completedFuture(null).thenApplyAsync(a -> Results.unauthorized(views.html.error_pages.unauthorized.render()), httpExecutionContext.current());
+                return CompletableFuture.completedFuture(null).thenApplyAsync(a -> Results.unauthorized(views.html.pages.error_pages.unauthorized.render()), httpExecutionContext.current());
             case 403:
-                return CompletableFuture.completedFuture(null).thenApplyAsync(a -> Results.forbidden(views.html.error_pages.unauthorized.render()), httpExecutionContext.current());
+                return CompletableFuture.completedFuture(null).thenApplyAsync(a -> Results.forbidden(views.html.pages.error_pages.unauthorized.render()), httpExecutionContext.current());
             case 404:
-                return CompletableFuture.completedFuture(null).thenApplyAsync(a -> Results.notFound(views.html.error_pages.notfound.render()), httpExecutionContext.current());
+                return CompletableFuture.completedFuture(null).thenApplyAsync(a -> Results.notFound(views.html.pages.error_pages.notfound.render()), httpExecutionContext.current());
             default:
                 break;
         }
@@ -44,7 +44,7 @@ public class ErrorHandler extends DefaultHttpErrorHandler implements HttpErrorHa
 
     @Override
     public CompletionStage<Result> onServerError(RequestHeader request, Throwable exception) {
-        return CompletableFuture.completedFuture(exception).thenApplyAsync(a -> Results.internalServerError(views.html.error_pages.servererror.render(exception))
+        return CompletableFuture.completedFuture(exception).thenApplyAsync(a -> Results.internalServerError(views.html.pages.error_pages.servererror.render(exception))
                 , httpExecutionContext.current());
     }
 }

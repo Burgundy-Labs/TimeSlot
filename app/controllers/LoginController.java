@@ -12,7 +12,7 @@ public class LoginController extends Controller {
     private UserDB userDB = new UserDB();
 
     public Result index() {
-        return ok(views.html.login.render());
+        return ok(views.html.pages.login.render());
     }
     /*
     *  Retrieves information from currently signed in user (just signed in)

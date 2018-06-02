@@ -6,8 +6,10 @@ import models.ServiceModel;
 import models.UsersModel;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 /* DB classes contain the methods necessary to manage their corresponding models.
@@ -129,14 +131,7 @@ public class UserDB implements DBInterface<UsersModel> {
     public boolean removeServiceFromUser(String ID, String serviceId) {
         /* Asynchronously remove user from DB */
         ApiFuture<WriteResult> writeResult = FirestoreHandler.get().collection("users").document(ID).collection("services").document(serviceId).delete();
-        try {
-            /* Verify that action is complete */
-            writeResult.get();
-            return writeResult.isDone();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return writeResult.isDone();
     }
 
     public UsersModel getByAuth_ID(String ID) {

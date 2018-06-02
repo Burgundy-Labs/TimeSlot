@@ -52,9 +52,9 @@ public class SettingsDB {
         }
     }
 
-    public static synchronized void addAppointmentType(AppointmentTypeModel appointmentType){
+    public static synchronized void addAppointmentType(AppointmentTypeModel appointmentType) {
         DocumentReference docRef;
-        if(appointmentType.getAppointmentTypeId() == null) {
+        if (appointmentType.getAppointmentTypeId() == null) {
             docRef = FirestoreHandler.get().collection("settings").document("settings").collection("appointmentTypes").document();
         } else {
             docRef = FirestoreHandler.get().collection("settings").document("settings").collection("appointmentTypes").document(appointmentType.getAppointmentTypeId());
@@ -67,7 +67,7 @@ public class SettingsDB {
         result.isDone();
     }
 
-    public static synchronized List<AppointmentTypeModel> getAppointmentTypes(){
+    public static synchronized List<AppointmentTypeModel> getAppointmentTypes() {
         List<AppointmentTypeModel> appointmentTypesList = new ArrayList<>();
         /* Asynchronously retrieve all users */
         ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("settings").document("settings").collection("appointmentTypes").get();
@@ -82,18 +82,18 @@ public class SettingsDB {
         List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
         /* Iterate users and add them to a list for return */
         for (DocumentSnapshot document : documents) {
-                AppointmentTypeModel appointmentType = new AppointmentTypeModel(
-                        document.getId(),
-                        document.getString("appointmentType"),
-                        document.getBoolean("weekly"),
-                        document.getBoolean("oneTime")
-                );
-                appointmentTypesList.add(appointmentType);
-            }
+            AppointmentTypeModel appointmentType = new AppointmentTypeModel(
+                    document.getId(),
+                    document.getString("appointmentType"),
+                    document.getBoolean("weekly"),
+                    document.getBoolean("oneTime")
+            );
+            appointmentTypesList.add(appointmentType);
+        }
         return appointmentTypesList;
     }
 
-    public static synchronized AppointmentTypeModel getAppointmentType(String appointmentTypeId){
+    public static synchronized AppointmentTypeModel getAppointmentType(String appointmentTypeId) {
         AppointmentTypeModel appointmentType;
         /* Asynchronously retrieve all users */
         ApiFuture<DocumentSnapshot> query = FirestoreHandler.get().collection("settings").document("settings").collection("appointmentTypes").document(appointmentTypeId).get();
@@ -105,23 +105,23 @@ public class SettingsDB {
             e.printStackTrace();
         }
         assert documentSnapshot != null;
-            appointmentType = new AppointmentTypeModel(
-                    documentSnapshot.getId(),
-                    documentSnapshot.getString("appointmentType"),
-                    documentSnapshot.getBoolean("weekly"),
-                    documentSnapshot.getBoolean("oneTime")
-            );
+        appointmentType = new AppointmentTypeModel(
+                documentSnapshot.getId(),
+                documentSnapshot.getString("appointmentType"),
+                documentSnapshot.getBoolean("weekly"),
+                documentSnapshot.getBoolean("oneTime")
+        );
         return appointmentType;
     }
 
-    public static synchronized AppointmentTypeModel getAppointmentTypeByName(String appointmentTypeName){
+    public static synchronized AppointmentTypeModel getAppointmentTypeByName(String appointmentTypeName) {
         AppointmentTypeModel appointmentType;
         /* Asynchronously retrieve all users */
         ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("settings").document("settings").collection("appointmentTypes").whereEqualTo("appointmentType", appointmentTypeName).get();
         DocumentSnapshot documentSnapshot = null;
         try {
             /* Attempt to get a list of all users - blocking */
-            if ( query.get().getDocumentChanges().size() > 0 ) {
+            if (query.get().getDocumentChanges().size() > 0) {
                 documentSnapshot = query.get().getDocuments().get(0);
             }
         } catch (InterruptedException | ExecutionException e) {
@@ -139,7 +139,7 @@ public class SettingsDB {
 
     public static synchronized void addService(ServiceModel service) {
         DocumentReference docRef;
-        if(service.getServiceId() == null) {
+        if (service.getServiceId() == null) {
             docRef = FirestoreHandler.get().collection("settings").document("settings").collection("services").document();
         } else {
             docRef = FirestoreHandler.get().collection("settings").document("settings").collection("services").document(service.getServiceId());
@@ -166,7 +166,7 @@ public class SettingsDB {
         }
     }
 
-    public static synchronized List<ServiceModel> getServices(){
+    public static synchronized List<ServiceModel> getServices() {
         List<ServiceModel> serviceModel = new ArrayList<>();
         /* Asynchronously retrieve all users */
         ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("settings").document("settings").collection("services").get();

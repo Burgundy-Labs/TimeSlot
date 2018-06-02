@@ -20,7 +20,7 @@ public class SettingsController extends Controller {
 
     @Authenticate(role="Admin")
     public Result index() {
-        return ok(views.html.settings.render());
+        return ok(views.html.pages.settings.render());
     }
 
     @Authenticate(role="Admin")

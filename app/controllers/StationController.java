@@ -10,7 +10,7 @@ import static play.mvc.Results.ok;
 public class StationController {
     UserDB userDB = new UserDB();
     public Result index() {
-        return ok(views.html.station.render());
+        return ok(views.html.pages.station.render());
     }
 
     public Result getUserByID(String ID){

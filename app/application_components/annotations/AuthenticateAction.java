@@ -14,7 +14,7 @@ public class AuthenticateAction extends Action<Authenticate> {
         /* Check to ensure user role exists (signed in) */
         if(ctx.session().get("currentRole") == null) {
             /* If user is not signed in - redirect to login */
-            return CompletableFuture.supplyAsync(() -> ok(views.html.login.render()));
+            return CompletableFuture.supplyAsync(() -> ok(views.html.pages.login.render()));
         }
         /* Else ensure logged in user has proper role */
         String role = configuration.role();
@@ -27,7 +27,7 @@ public class AuthenticateAction extends Action<Authenticate> {
                 return delegate.call(ctx);
             default:
                 /* If unknown role entered - default to forbidden */
-                return CompletableFuture.supplyAsync(() -> forbidden(views.html.error_pages.unauthorized.render()));
+                return CompletableFuture.supplyAsync(() -> forbidden(views.html.pages.error_pages.unauthorized.render()));
         }
     }
 
@@ -38,7 +38,7 @@ public class AuthenticateAction extends Action<Authenticate> {
             return delegate.call(ctx);
         }
         else if(ctx.session().get("currentRole") == null || !ctx.session().get("currentRole").equalsIgnoreCase(role)) {
-            return CompletableFuture.supplyAsync(() -> forbidden(views.html.error_pages.unauthorized.render()));
+            return CompletableFuture.supplyAsync(() -> forbidden(views.html.pages.error_pages.unauthorized.render()));
         }
         return delegate.call(ctx);
     }

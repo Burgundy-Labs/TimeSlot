@@ -3,7 +3,7 @@ package databases;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class DatabaseExporter<T> {
+class DatabaseExporter<T> {
 
     public String exportToCSV(DBInterface<T> db, Class dbClass) throws InvocationTargetException, IllegalAccessException {
         Iterable<T> objects = db.getAll();
