@@ -10,15 +10,16 @@ import java.util.concurrent.ExecutionException;
 
 /* DB classes contain the methods necessary to manage their corresponding models.
 * AppointmentsDB works with AppointmentsModel to retrieve and remove appointments in the Firestore DB.*/
-/* TODO implement as DBInterface */
-public class AppointmentsDB {
+public class AppointmentsDB implements DBInterface<AppointmentsModel> {
     private UserDB userDB = new UserDB();
 
-    public  AppointmentsModel getAppointment(String appointmentId) {
-        /* Return null appointment if none found */
+
+    @Override
+    public AppointmentsModel get(String ID) {
+         /* Return null appointment if none found */
         AppointmentsModel appointmentFound = null;
         /* Get the specific appointment reference from the DB*/
-        DocumentReference docRef = FirestoreHandler.get().collection("appointments").document(appointmentId);
+        DocumentReference docRef = FirestoreHandler.get().collection("appointments").document(ID);
         ApiFuture<DocumentSnapshot> future = docRef.get();
         DocumentSnapshot document = null;
         try {
@@ -29,29 +30,75 @@ public class AppointmentsDB {
         }
         assert document != null;
         if (document.exists()) {
-            appointmentFound = new AppointmentsModel(
-                    document.getId(),
-                    document.getDate("start_date"),
-                    document.getDate("end_date"),
-                    document.getString("studentId"),
-                    document.getString("studentName"),
-                    document.getString("studentEmail"),
-                    document.getString("studentPhoto"),
-                    document.getString("coachId"),
-                    document.getString("coachName"),
-                    document.getString("coachEmail"),
-                    document.getString("coachPhoto"),
-                    document.getString("appointment_notes"),
-                    document.getString("coach_notes"),
-                    document.getBoolean("present"),
-                    document.getString("appointment_type"),
-                    document.getString("service_type"),
-                    document.getBoolean("weekly"),
-                    document.getString("weeklyId"));
-        } else {
-            /* Log something */
+            appointmentFound = document.toObject(AppointmentsModel.class);
         }
         return appointmentFound;
+    }
+
+    @Override
+    public Iterable<AppointmentsModel> getAll() {
+        List<AppointmentsModel> appointmentList = new ArrayList<>();
+        /* Asynchronously retrieve all appointments */
+        ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("appointments").get();
+        QuerySnapshot querySnapshot = null;
+        try {
+            /* Attempt to get a list of all appointments - blocking */
+            querySnapshot = query.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        assert querySnapshot != null;
+        List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
+        /* Iterate appointments and add them to a list for return */
+        for (DocumentSnapshot document : documents) {
+            AppointmentsModel appointment = document.toObject(AppointmentsModel.class);
+            appointmentList.add(appointment);
+        }
+        return appointmentList;
+    }
+
+    @Override
+    public boolean addOrUpdate(AppointmentsModel appointment) {
+        /* Get DB instance */
+        DocumentReference docRef;
+        if(appointment.getAppointmentId() == null) {
+            docRef = FirestoreHandler.get().collection("appointments").document();
+        } else {
+            docRef = FirestoreHandler.get().collection("appointments").document(appointment.getAppointmentId());
+        }
+        /* Create user model for DB insert */
+        UsersModel student = userDB.get(appointment.getStudentId());
+        UsersModel coach = userDB.get(appointment.getCoachId());
+        if(student != null ) {
+        /* Student Details */
+            appointment.setStudentName(student.getDisplayName());
+            appointment.setStudentEmail(student.getEmail());
+            appointment.setStudentPhoto(student.getPhotoURL());
+        }
+        if(coach != null ) {
+        /* Coach Details */
+            appointment.setCoachName(coach.getDisplayName());
+            appointment.setCoachEmail(coach.getEmail());
+            appointment.setCoachPhoto(coach.getPhotoURL());
+        }
+        /* Asynchronously write appointment into DB */
+        ApiFuture<WriteResult> result = docRef.set(appointment);
+        return result.isDone();
+    }
+
+    @Override
+    public AppointmentsModel remove(String ID) {
+        AppointmentsModel appointment = get(ID);
+        if(!(appointment == null) && !appointment.getStartDate().before(new Date())){
+            ApiFuture<WriteResult> writeResult = FirestoreHandler.get().collection("appointments").document(appointmentId).delete();
+        }
+        /* Asynchronously remove appointment from DB */
+        return appointment;
+    }
+
+    @Override
+    public AppointmentsModel removeAll() {
+        return null;
     }
 
     public List<AppointmentsModel> getAppointmentsForUser(String role, String userId) {
@@ -75,47 +122,11 @@ public class AppointmentsDB {
         List<QueryDocumentSnapshot> documentsStudent = querySnapshotStudent.getDocuments();
         /* Iterate appointments and add them to a list for return */
         for (DocumentSnapshot document : documentsCoach) {
-            AppointmentsModel appointment = new AppointmentsModel(
-                    document.getId(),
-                    document.getDate("start_date"),
-                    document.getDate("end_date"),
-                    document.getString("studentId"),
-                    document.getString("studentName"),
-                    document.getString("studentEmail"),
-                    document.getString("studentPhoto"),
-                    document.getString("coachId"),
-                    document.getString("coachName"),
-                    document.getString("coachEmail"),
-                    document.getString("coachPhoto"),
-                    document.getString("appointment_notes"),
-                    document.getString("coach_notes"),
-                    document.getBoolean("present"),
-                    document.getString("appointment_type"),
-                    document.getString("service_type"),
-                    document.getBoolean("weekly"),
-                    document.getString("weeklyId"));
+            AppointmentsModel appointment = document.toObject(AppointmentsModel.class);
             appointmentList.add(appointment);
         }
         for (DocumentSnapshot document : documentsStudent) {
-            AppointmentsModel appointment = new AppointmentsModel(
-                    document.getId(),
-                    document.getDate("start_date"),
-                    document.getDate("end_date"),
-                    document.getString("studentId"),
-                    document.getString("studentName"),
-                    document.getString("studentEmail"),
-                    document.getString("studentPhoto"),
-                    document.getString("coachId"),
-                    document.getString("coachName"),
-                    document.getString("coachEmail"),
-                    document.getString("coachPhoto"),
-                    document.getString("appointment_notes"),
-                    document.getString("coach_notes"),
-                    document.getBoolean("present"),
-                    document.getString("appointment_type"),
-                    document.getString("service_type"),
-                    document.getBoolean("weekly"),
-                    document.getString("weeklyId"));
+            AppointmentsModel appointment = document.toObject(AppointmentsModel.class);
             appointmentList.add(appointment);
         }
         return appointmentList;
@@ -141,47 +152,11 @@ public class AppointmentsDB {
         List<QueryDocumentSnapshot> documentsStudent = querySnapshotStudent.getDocuments();
         /* Iterate appointments and add them to a list for return */
         for (DocumentSnapshot document : documentsCoach) {
-            AppointmentsModel appointment = new AppointmentsModel(
-                    document.getId(),
-                    document.getDate("start_date"),
-                    document.getDate("end_date"),
-                    document.getString("studentId"),
-                    document.getString("studentName"),
-                    document.getString("studentEmail"),
-                    document.getString("studentPhoto"),
-                    document.getString("coachId"),
-                    document.getString("coachName"),
-                    document.getString("coachEmail"),
-                    document.getString("coachPhoto"),
-                    document.getString("appointment_notes"),
-                    document.getString("coach_notes"),
-                    document.getBoolean("present"),
-                    document.getString("appointment_type"),
-                    document.getString("service_type"),
-                    document.getBoolean("weekly"),
-                    document.getString("weeklyId"));
+            AppointmentsModel appointment = document.toObject(AppointmentsModel.class);
             appointmentList.add(appointment);
         }
         for (DocumentSnapshot document : documentsStudent) {
-            AppointmentsModel appointment = new AppointmentsModel(
-                    document.getId(),
-                    document.getDate("start_date"),
-                    document.getDate("end_date"),
-                    document.getString("studentId"),
-                    document.getString("studentName"),
-                    document.getString("studentEmail"),
-                    document.getString("studentPhoto"),
-                    document.getString("coachId"),
-                    document.getString("coachName"),
-                    document.getString("coachEmail"),
-                    document.getString("coachPhoto"),
-                    document.getString("appointment_notes"),
-                    document.getString("coach_notes"),
-                    document.getBoolean("present"),
-                    document.getString("appointment_type"),
-                    document.getString("service_type"),
-                    document.getBoolean("weekly"),
-                    document.getString("weeklyId"));
+            AppointmentsModel appointment = document.toObject(AppointmentsModel.class);
             appointmentList.add(appointment);
         }
         appointmentList.sort(Comparator.comparing(AppointmentsModel::getStartDate));
@@ -218,25 +193,7 @@ public class AppointmentsDB {
         /* Iterate appointments and add them to a list for return */
         for (DocumentSnapshot document : documents) {
             if(document.getDate("end_date").before(end)){
-            AppointmentsModel appointment = new AppointmentsModel(
-                    document.getId(),
-                    document.getDate("start_date"),
-                    document.getDate("end_date"),
-                    document.getString("studentId"),
-                    document.getString("studentName"),
-                    document.getString("studentEmail"),
-                    document.getString("studentPhoto"),
-                    document.getString("coachId"),
-                    document.getString("coachName"),
-                    document.getString("coachEmail"),
-                    document.getString("coachPhoto"),
-                    document.getString("appointment_notes"),
-                    document.getString("coach_notes"),
-                    document.getBoolean("present"),
-                    document.getString("appointment_type"),
-                    document.getString("service_type"),
-                    document.getBoolean("weekly"),
-                    document.getString("weeklyId"));
+            AppointmentsModel appointment = document.toObject(AppointmentsModel.class);
             appointmentList.add(appointment);
             } else {
                 break;
@@ -261,116 +218,9 @@ public class AppointmentsDB {
         List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
         /* Iterate appointments and add them to a list for return */
         for (DocumentSnapshot document : documents) {
-                AppointmentsModel appointment = new AppointmentsModel(
-                        document.getId(),
-                        document.getDate("start_date"),
-                        document.getDate("end_date"),
-                        document.getString("studentId"),
-                        document.getString("studentName"),
-                        document.getString("studentEmail"),
-                        document.getString("studentPhoto"),
-                        document.getString("coachId"),
-                        document.getString("coachName"),
-                        document.getString("coachEmail"),
-                        document.getString("coachPhoto"),
-                        document.getString("appointment_notes"),
-                        document.getString("coach_notes"),
-                        document.getBoolean("present"),
-                        document.getString("appointment_type"),
-                        document.getString("service_type"),
-                        document.getBoolean("weekly"),
-                        document.getString("weeklyId"));
+                AppointmentsModel appointment = document.toObject(AppointmentsModel.class);
                 appointmentList.add(appointment);
         }
         return appointmentList;
     }
-
-    public List<AppointmentsModel> getAppointments() {
-        List<AppointmentsModel> appointmentList = new ArrayList<>();
-        /* Asynchronously retrieve all appointments */
-        ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("appointments").get();
-        QuerySnapshot querySnapshot = null;
-        try {
-            /* Attempt to get a list of all appointments - blocking */
-            querySnapshot = query.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        assert querySnapshot != null;
-        List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
-        /* Iterate appointments and add them to a list for return */
-        for (DocumentSnapshot document : documents) {
-            AppointmentsModel appointment = new AppointmentsModel(
-                    document.getId(),
-                    document.getDate("start_date"),
-                    document.getDate("end_date"),
-                    document.getString("studentId"),
-                    document.getString("studentName"),
-                    document.getString("studentEmail"),
-                    document.getString("studentPhoto"),
-                    document.getString("coachId"),
-                    document.getString("coachName"),
-                    document.getString("coachEmail"),
-                    document.getString("coachPhoto"),
-                    document.getString("appointment_notes"),
-                    document.getString("coach_notes"),
-                    document.getBoolean("present"),
-                    document.getString("appointment_type"),
-                    document.getString("service_type"),
-                    document.getBoolean("weekly"),
-                    document.getString("weeklyId"));
-            appointmentList.add(appointment);
-        }
-        return appointmentList;
-    }
-
-    public AppointmentsModel addAppointment(AppointmentsModel appointment) {
-        /* Get DB instance */
-        DocumentReference docRef;
-        if(appointment.getAppointmentId() == null) {
-            docRef = FirestoreHandler.get().collection("appointments").document();
-        } else {
-            docRef = FirestoreHandler.get().collection("appointments").document(appointment.getAppointmentId());
-        }
-        Map<String, Object> data = new HashMap<>();
-        /* Create user model for DB insert */
-        UsersModel student = userDB.get(appointment.getStudentId());
-        UsersModel coach = userDB.get(appointment.getCoachId());
-        data.put("start_date", appointment.getStartDate());
-        data.put("end_date", appointment.getEndDate());
-        data.put("studentId", appointment.getStudentId());
-        data.put("studentName",student.getDisplayName());
-        data.put("studentEmail", student.getEmail());
-        data.put("studentPhoto", student.getPhotoURL());
-        data.put("coachId", appointment.getCoachId());
-        data.put("coachName", coach.getDisplayName());
-        data.put("coachEmail", coach.getEmail());
-        data.put("coachPhoto", coach.getPhotoURL());
-        data.put("appointment_notes", appointment.getAppointmentNotes());
-        data.put("coach_notes", appointment.getCoachNotes() != null ? appointment.getCoachNotes() : "");
-        data.put("present", appointment.getPresent());
-        data.put("appointment_type", appointment.getAppointmentType());
-        data.put("service_type",appointment.getServiceType());
-        data.put("weekly", appointment.isWeekly());
-        data.put("weeklyId", appointment.getWeeklyId());
-        /* Asynchronously write appointment into DB */
-        ApiFuture<WriteResult> result = docRef.set(data);
-
-        /* Add required email information to appointment model for emails */
-        appointment.setCoachName(coach.getDisplayName());
-        appointment.setCoachEmail(coach.getEmail());
-        appointment.setStudentName(student.getDisplayName());
-        appointment.setStudentEmail(student.getEmail());
-        return appointment;
-    }
-
-    public AppointmentsModel removeAppointment(String appointmentId){
-        AppointmentsModel appointment = getAppointment(appointmentId);
-        if(!(appointment == null) && !appointment.getStartDate().before(new Date())){
-            ApiFuture<WriteResult> writeResult = FirestoreHandler.get().collection("appointments").document(appointmentId).delete();
-        }
-        /* Asynchronously remove appointment from DB */
-        return appointment;
-    }
-
 }

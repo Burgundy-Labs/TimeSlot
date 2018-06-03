@@ -37,9 +37,8 @@ public class ErrorHandler extends DefaultHttpErrorHandler implements HttpErrorHa
             case 404:
                 return CompletableFuture.completedFuture(null).thenApplyAsync(a -> Results.notFound(views.html.pages.error_pages.notfound.render()), httpExecutionContext.current());
             default:
-                break;
+                return super.onClientError(request, statusCode, message);
         }
-        return super.onClientError(request, statusCode, message);
     }
 
     @Override
