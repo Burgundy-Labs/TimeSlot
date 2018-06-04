@@ -24,9 +24,9 @@ public class AppointmentsController extends Controller {
 
     public Result updatePresence() {
         JsonNode json = request().body().asJson();
-        AppointmentsModel appointment = appointmentsDB.getAppointment(json.findPath("appointmentId").textValue());
+        AppointmentsModel appointment = appointmentsDB.get(json.findPath("appointmentId").textValue());
         appointment.setPresent(json.findPath("present").asBoolean());
-        appointmentsDB.addAppointment(appointment);
+        appointmentsDB.addOrUpdate(appointment);
         return ok();
     }
 
@@ -51,7 +51,7 @@ public class AppointmentsController extends Controller {
         } else {
             appointment.setWeeklyId("");
         }
-        appointment = appointmentsDB.addAppointment(appointment);
+        appointmentsDB.addOrUpdate(appointment);
         /* Check if user is in DB */
         AppointmentsModel finalAppointment = appointment;
         new Thread(() -> mailerService.sendAppointmentConfirmation(finalAppointment)).start();
@@ -92,7 +92,7 @@ public class AppointmentsController extends Controller {
             newAppointment.setServiceType(json.findPath("serviceType").textValue());
             newAppointment.setWeekly(json.findPath("weekly").asBoolean());
             newAppointment.setWeeklyId(uniqueId);
-            appointmentsDB.addAppointment(newAppointment);
+            appointmentsDB.addOrUpdate(newAppointment);
             currentDate.add(Calendar.DAY_OF_YEAR, 7);
             endDate.add(Calendar.DAY_OF_YEAR, 7);
         }
@@ -101,12 +101,12 @@ public class AppointmentsController extends Controller {
     public Result cancelAppointment() {
         JsonNode json = request().body().asJson();
         String appointmentId = json.findPath("appointmentId").textValue();
-        AppointmentsModel appointment = appointmentsDB.removeAppointment(appointmentId);
+        AppointmentsModel appointment = appointmentsDB.remove(appointmentId);
         if (appointment.isWeekly()) {
             List<AppointmentsModel> appointments = appointmentsDB.getAppointmentsForUser("Student", appointment.getStudentId());
             for (AppointmentsModel ap : appointments) {
                 if (ap.getWeeklyId() != null && ap.getWeeklyId().equals(json.findPath("weeklyId").asText()) && ap.getStartDate().after(new Date())) {
-                    appointmentsDB.removeAppointment(ap.getAppointmentId());
+                    appointmentsDB.remove(ap.getAppointmentId());
                 }
             }
         }
@@ -118,9 +118,9 @@ public class AppointmentsController extends Controller {
         JsonNode json = request().body().asJson();
         String appointmentId = json.findPath("appointmentId").textValue();
         String coachNotes = json.findPath("coachNotes").textValue();
-        AppointmentsModel appointment = appointmentsDB.getAppointment(appointmentId);
+        AppointmentsModel appointment = appointmentsDB.get(appointmentId);
         appointment.setCoachNotes(coachNotes);
-        appointmentsDB.addAppointment(appointment);
+        appointmentsDB.addOrUpdate(appointment);
         return ok();
     }
 

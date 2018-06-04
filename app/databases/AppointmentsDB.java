@@ -90,7 +90,7 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
     public AppointmentsModel remove(String ID) {
         AppointmentsModel appointment = get(ID);
         if(!(appointment == null) && !appointment.getStartDate().before(new Date())){
-            ApiFuture<WriteResult> writeResult = FirestoreHandler.get().collection("appointments").document(appointmentId).delete();
+            ApiFuture<WriteResult> writeResult = FirestoreHandler.get().collection("appointments").document(ID).delete();
         }
         /* Asynchronously remove appointment from DB */
         return appointment;
