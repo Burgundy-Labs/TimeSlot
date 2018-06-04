@@ -70,6 +70,11 @@ public class UserDB implements DBInterface<UsersModel> {
         DocumentReference docRef = FirestoreHandler.get().collection("users").document(user.getUid());
         /* Asynchronously write user into DB */
         ApiFuture<WriteResult> result = docRef.set(user);
+        try {
+            result.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
         return result.isDone();
     }
 

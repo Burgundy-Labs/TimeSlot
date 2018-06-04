@@ -1,5 +1,8 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UsersModel {
     private String displayName; // User's full name
     private String email;
@@ -8,11 +11,11 @@ public class UsersModel {
     private String role; // "User", "Coach", "Admin"
     private String auth_id; // Used to identify RFID / Phone sign-in
     private boolean subscribed; // bool for sending email reminders
-    private String[] attributes; // Used to store additional information ("isCoach")
+    private List<String> attributes; // Used to store additional information ("isCoach")
 
     public UsersModel() { }
 
-    public UsersModel(String displayName, String email, String photoURL, String uid, String role, String auth_id, String[] attributes, boolean subscribed) {
+    public UsersModel(String displayName, String email, String photoURL, String uid, String role, String auth_id, List<String> attributes, boolean subscribed) {
         this.displayName = displayName;
         this.email = email;
         this.photoURL = photoURL;
@@ -71,11 +74,11 @@ public class UsersModel {
         this.auth_id = ID;
     }
 
-    public String[] getAttributes() {
-        return attributes == null ? new String[]{} : attributes;
+    public List<String> getAttributes() {
+        return attributes == null ? new ArrayList<>() : attributes;
     }
 
-    public void setAttributes(String[] attributes) {
+    public void setAttributes(List<String> attributes) {
         this.attributes = attributes;
     }
 

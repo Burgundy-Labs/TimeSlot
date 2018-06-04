@@ -9,6 +9,8 @@ import play.Logger;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -110,34 +112,20 @@ public class UserController extends Controller {
     }
 
     public void addAttributes(UsersModel user, String... attributes) {
-        String[] o = user.getAttributes();
-        String[] n = new String[o.length + attributes.length];
-        System.arraycopy(o, 0, n, 0, o.length);
-        System.arraycopy(attributes, 0, n, attributes.length, attributes.length);
-        user.setAttributes(n);
+        List<String> o = user.getAttributes();
+        o.addAll(Arrays.asList(attributes));
+        user.setAttributes(o);
     }
 
     public void removeAttribute(UsersModel user, String attribute) {
-        String[] o = user.getAttributes();
-        for (int i = 0; i < o.length; i++) {
-            if (o[i].equalsIgnoreCase(attribute)) {
-                String[] n = new String[o.length - 1];
-                System.arraycopy(o, 0, n, 0, i);
-                System.arraycopy(o, i + 1, n, i, o.length - i - 1);
-                user.setAttributes(n);
-            }
-        }
+        List<String> o = user.getAttributes();
+        o.remove(attribute);
+        user.setAttributes(o);
     }
 
     public boolean hasAttribute(UsersModel user, String attribute) {
-        String[] attributes = user.getAttributes();
-        boolean found = false;
-        for (String s : attributes) {
-            if (s.equalsIgnoreCase(attribute)) {
-                found = true;
-            }
-        }
-        return found;
+        List<String> attributes = user.getAttributes();
+        return (attributes.contains(attribute));
     }
 
     public String getCurrentRole() {
