@@ -7,6 +7,7 @@ import models.UsersModel;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 /* DB classes contain the methods necessary to manage their corresponding models.
 * AppointmentsDB works with AppointmentsModel to retrieve and remove appointments in the Firestore DB.*/
@@ -101,6 +102,24 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
         return null;
     }
 
+
+    /* TODO test method + add overrides for type / service / dates */
+    public List<AppointmentsModel> getAvailableAppointments() {
+        List<AppointmentsModel> appointmentList = new ArrayList<>();
+        /* Asynchronously retrieve all appointments */
+        ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("appointments").whereEqualTo("studentId", null).get();
+        QuerySnapshot querySnapshot = null;
+        try {
+            /* Attempt to get a list of all appointments - blocking */
+            querySnapshot = query.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        assert querySnapshot != null;
+        List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
+        appointmentList = documents.stream().map(d -> d.toObject(AppointmentsModel.class)).collect(Collectors.toList());
+        return appointmentList;
+    }
     public List<AppointmentsModel> getAppointmentsForUser(String role, String userId) {
         List<AppointmentsModel> appointmentList = new ArrayList<>();
         /* Asynchronously retrieve all appointments */
