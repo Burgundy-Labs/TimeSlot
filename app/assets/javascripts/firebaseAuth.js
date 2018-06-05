@@ -17,7 +17,7 @@ window.addEventListener('load', function () {
     initApp();
     if(document.getElementById('sign-out')) {
         document.getElementById('sign-out').addEventListener('click', function () {
-            signout();
+            signOut();
         });
     }
 });
