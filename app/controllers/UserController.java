@@ -103,14 +103,14 @@ public class UserController extends Controller {
         return ok(Json.toJson(coaches));
     }
 
-    public Optional<UsersModel> getCurrentUser() {
+    public UsersModel getCurrentUser() {
         String s = session("currentUser");
         if (s == null || s.isEmpty()) {
             UsersModel u = new UsersModel();
             u.setRole("Student");
-            return Optional.of(u);
+            return u;
         }
-        return new UserDB().get(s);
+        return new UserDB().get(s).orElseThrow(NullPointerException::new);
     }
 
     public void addAttributes(UsersModel user, String... attributes) {

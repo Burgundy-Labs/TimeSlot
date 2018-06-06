@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 /* TODO remove AvailabilityDB and replicate functionality with nulled appointment values  */
 public class AvailabilityController extends Controller {
     private AppointmentsDB appointmentsDB = new AppointmentsDB();
+    private AvailabilityDB availabilityDB = new AvailabilityDB();
     private UserDB userDB = new UserDB();
     private UserController userController = new UserController();
 
@@ -36,14 +37,14 @@ public class AvailabilityController extends Controller {
         availability.setEndDate(DatatypeConverter.parseDateTime(json.findPath("endDate").textValue()).getTime());
         availability.setWeekly(json.findPath("weekly").booleanValue());
         /* Check if user is in DB */
-        AvailabilityDB.addAvailability(availability);
+        availabilityDB.addAvailability(availability);
         return ok();
     }
 
     public Result availableSlots(String userId, String start, String end) {
         Date startDate = DatatypeConverter.parseDateTime(start).getTime();
         Date endDate = DatatypeConverter.parseDateTime(end).getTime();
-        List<AvailabilityModel> availabilities = AvailabilityDB.getAvailabilitesForUser(userId, startDate, endDate);
+        List<AvailabilityModel> availabilities = availabilityDB.getAvailabilitesForUser(userId, startDate, endDate);
         return ok(Json.toJson(availabilities));
     }
 
@@ -103,7 +104,7 @@ public class AvailabilityController extends Controller {
     }
 
     private List<AvailabilityModel> availableSlotsForCoach(String userId, Date startDate, Date endDate) {
-        List<AvailabilityModel> availabilities = AvailabilityDB.getAvailabilitesForUser(userId, startDate, endDate);
+        List<AvailabilityModel> availabilities = availabilityDB.getAvailabilitesForUser(userId, startDate, endDate);
         List<AppointmentsModel> appointments = appointmentsDB.getAppointmentsForUser("Coach", userId);
         availabilities = makeAvailabilities(userId, availabilities);
         List<AvailabilityModel> oneAvail = new ArrayList<>();
@@ -211,7 +212,7 @@ public class AvailabilityController extends Controller {
         }
         JsonNode json = request().body().asJson();
         String availabilityId = json.findPath("availabilityId").asText();
-        AvailabilityDB.removeAvailability(availabilityId);
+        availabilityDB.removeAvailability(availabilityId);
         return ok();
     }
 }
