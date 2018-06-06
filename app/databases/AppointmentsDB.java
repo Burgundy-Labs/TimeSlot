@@ -16,7 +16,7 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
 
 
     @Override
-    public AppointmentsModel get(String ID) {
+    public Optional<AppointmentsModel> get(String ID) {
          /* Return null appointment if none found */
         AppointmentsModel appointmentFound = null;
         /* Get the specific appointment reference from the DB*/
@@ -33,7 +33,7 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
         if (document.exists()) {
             appointmentFound = document.toObject(AppointmentsModel.class);
         }
-        return appointmentFound;
+        return Optional.of(appointmentFound);
     }
 
     @Override
@@ -68,40 +68,37 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
             docRef = FirestoreHandler.get().collection("appointments").document(appointment.getAppointmentId());
         }
         /* Create user model for DB insert */
-        UsersModel student = userDB.get(appointment.getStudentId());
-        UsersModel coach = userDB.get(appointment.getCoachId());
-        if(student != null ) {
+        Optional<UsersModel> s = userDB.get(appointment.getStudentId());
+        Optional<UsersModel> c = userDB.get(appointment.getCoachId());
+        UsersModel student = s.orElseThrow(NullPointerException::new);
+        UsersModel coach = c.orElseThrow(NullPointerException::new);
         /* Student Details */
-            appointment.setStudentName(student.getDisplayName());
-            appointment.setStudentEmail(student.getEmail());
-            appointment.setStudentPhoto(student.getPhotoURL());
-        }
-        if(coach != null ) {
+        appointment.setStudentName(student.getDisplayName());
+        appointment.setStudentEmail(student.getEmail());
+        appointment.setStudentPhoto(student.getPhotoURL());
         /* Coach Details */
-            appointment.setCoachName(coach.getDisplayName());
-            appointment.setCoachEmail(coach.getEmail());
-            appointment.setCoachPhoto(coach.getPhotoURL());
-        }
+        appointment.setCoachName(coach.getDisplayName());
+        appointment.setCoachEmail(coach.getEmail());
+        appointment.setCoachPhoto(coach.getPhotoURL());
         /* Asynchronously write appointment into DB */
         ApiFuture<WriteResult> result = docRef.set(appointment);
         return result.isDone();
     }
 
     @Override
-    public AppointmentsModel remove(String ID) {
-        AppointmentsModel appointment = get(ID);
-        if(!(appointment == null) && !appointment.getStartDate().before(new Date())){
+    public Optional<AppointmentsModel> remove(String ID) {
+        AppointmentsModel appointment = get(ID).orElseThrow(NullPointerException::new);
+        if(!appointment.getStartDate().before(new Date())){
             ApiFuture<WriteResult> writeResult = FirestoreHandler.get().collection("appointments").document(ID).delete();
         }
         /* Asynchronously remove appointment from DB */
-        return appointment;
+        return Optional.of(appointment);
     }
 
     @Override
     public AppointmentsModel removeAll() {
         return null;
     }
-
 
     /* TODO test method + add overrides for type / service / dates */
     public List<AppointmentsModel> getAvailableAppointments() {
@@ -120,6 +117,7 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
         appointmentList = documents.stream().map(d -> d.toObject(AppointmentsModel.class)).collect(Collectors.toList());
         return appointmentList;
     }
+
     public List<AppointmentsModel> getAppointmentsForUser(String role, String userId) {
         List<AppointmentsModel> appointmentList = new ArrayList<>();
         /* Asynchronously retrieve all appointments */
@@ -186,7 +184,8 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
     }
 
     public List<AppointmentsModel> getAppointmentsByUserAndDate(String userId, Date start, Date end) {
-        UsersModel user = userDB.get(userId);
+        Optional<UsersModel> u = userDB.get(userId);
+        UsersModel user = u.orElseThrow(NullPointerException::new);
         List<AppointmentsModel> appointmentList = getAppointmentsByDate(start, end);
         if( user.getRole().equals("Coach")){
             appointmentList.removeIf(i -> !i.getCoachId().equals(user.getUid()) && !i.getStudentId().equals(user.getUid()));

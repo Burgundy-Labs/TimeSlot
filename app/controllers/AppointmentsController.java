@@ -15,6 +15,7 @@ import java.util.*;
 
 public class AppointmentsController extends Controller {
     private AppointmentsDB appointmentsDB = new AppointmentsDB();
+    private SettingsDB settingsDB = new SettingsDB();
     private MailerService mailerService = new MailerService();
 
     @Authenticate
@@ -22,6 +23,7 @@ public class AppointmentsController extends Controller {
         return ok(views.html.pages.appointments.render());
     }
 
+    @Authenticate(role = "Coach")
     public Result updatePresence() {
         JsonNode json = request().body().asJson();
         AppointmentsModel appointment = appointmentsDB.get(json.findPath("appointmentId").textValue());
@@ -30,6 +32,7 @@ public class AppointmentsController extends Controller {
         return ok();
     }
 
+    @Authenticate
     public Result createAppointment() {
         /* Get user object from request */
         JsonNode json = request().body().asJson();
@@ -53,17 +56,17 @@ public class AppointmentsController extends Controller {
         }
         appointmentsDB.addOrUpdate(appointment);
         /* Check if user is in DB */
-        AppointmentsModel finalAppointment = appointment;
-        new Thread(() -> mailerService.sendAppointmentConfirmation(finalAppointment)).start();
+        new Thread(() -> mailerService.sendAppointmentConfirmation(appointment)).start();
         return ok();
     }
 
+    @Authenticate
     private void createWeeklyAppointments(JsonNode json, String uniqueId) {
         Calendar startDate = DatatypeConverter.parseDateTime(json.findPath("startDate").textValue());
         Calendar currentDate = DatatypeConverter.parseDateTime(json.findPath("startDate").textValue());
         Calendar endDate = DatatypeConverter.parseDateTime(json.findPath("endDate").textValue());
         Calendar semesterEnd = Calendar.getInstance();
-        semesterEnd.setTime(SettingsDB.getSettings().getSemesterEnd());
+        semesterEnd.setTime(settingsDB.get(null).orElseThrow(NullPointerException::new).getSemesterEnd());
         currentDate.add(Calendar.DAY_OF_YEAR, 7);
         endDate.add(Calendar.DAY_OF_YEAR, 7);
         while (currentDate.before(semesterEnd)) {

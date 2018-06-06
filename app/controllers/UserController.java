@@ -13,6 +13,7 @@ import play.mvc.Result;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 public class UserController extends Controller {
     /* Roles used throughout TimeSlot */
@@ -30,9 +31,9 @@ public class UserController extends Controller {
 
     public Result userPage(String userId) {
         if (userId == null) return notFound();
-        UsersModel user = userDB.get(userId);
+        Optional<UsersModel> user = userDB.get(userId);
         if (user == null) return notFound();
-        return ok(views.html.pages.user.render(user));
+        return ok(views.html.pages.user.render(user.orElseThrow(NullPointerException::new)));
     }
 
     public Result updateUser() {
@@ -53,9 +54,10 @@ public class UserController extends Controller {
         String userId = json.get("uid").asText();
         String role = json.get("role").asText();
         /* Check if user is in DB */
-        UsersModel u = userDB.get(userId);
-        u.setRole(role);
-        userDB.addOrUpdate(u);
+        Optional<UsersModel> u = userDB.get(userId);
+        UsersModel user = u.orElseThrow(NullPointerException::new);
+        user.setRole(role);
+        userDB.addOrUpdate(user);
         return ok();
     }
 
@@ -101,12 +103,12 @@ public class UserController extends Controller {
         return ok(Json.toJson(coaches));
     }
 
-    public UsersModel getCurrentUser() {
+    public Optional<UsersModel> getCurrentUser() {
         String s = session("currentUser");
         if (s == null || s.isEmpty()) {
             UsersModel u = new UsersModel();
             u.setRole("Student");
-            return u;
+            return Optional.of(u);
         }
         return new UserDB().get(s);
     }

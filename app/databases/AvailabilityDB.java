@@ -11,8 +11,9 @@ import java.util.concurrent.ExecutionException;
 * AppointmentsDB works with AppointmentsModel to retrieve and remove appointments in the Firestore DB.*/
 /* TODO remove completely in favor of discussed Appointment scheduling approach */
 public class AvailabilityDB {
+    private SettingsDB settingsDB = new SettingsDB();
 
-    public static List<AvailabilityModel> getAvailabilitesForUser(String userId, Date start, Date end) {
+    public List<AvailabilityModel> getAvailabilitesForUser(String userId, Date start, Date end) {
         List<AvailabilityModel> availabilityTimes = new ArrayList<>();
         /* Return null appointment if none found */
         /* Get the specific appointment reference from the DB*/
@@ -32,7 +33,7 @@ public class AvailabilityDB {
                         availability.getDate("startDate"),
                         availability.getDate("endDate"),
                         availability.getBoolean("weekly")));
-            } else if ( availability.getBoolean("weekly") && availability.getDate("startDate").before(end) && availability.getDate("startDate").after(SettingsDB.getSettings().getSemesterStart()) ) {
+            } else if ( availability.getBoolean("weekly") && availability.getDate("startDate").before(end) && availability.getDate("startDate").after(settingsDB.get(null).orElseThrow(NullPointerException::new).getSemesterStart()) ) {
                 availabilityTimes.add(new AvailabilityModel(
                         availability.getId(),
                         availability.getString("userId"),
@@ -44,7 +45,7 @@ public class AvailabilityDB {
         return availabilityTimes;
     }
 
-    public static synchronized List<AvailabilityModel> getAvailabilities() {
+    public synchronized List<AvailabilityModel> getAvailabilities() {
         List<AvailabilityModel> availabilityTimes = new ArrayList<>();
         /* Return null appointment if none found */
         /* Get the specific appointment reference from the DB*/
@@ -66,7 +67,7 @@ public class AvailabilityDB {
         return availabilityTimes;
     }
 
-    public static synchronized void addAvailability(AvailabilityModel availability) {
+    public synchronized void addAvailability(AvailabilityModel availability) {
         /* Get DB instance */
         DocumentReference docRef;
         if(availability.getavailabilityId() == null) {
@@ -86,7 +87,7 @@ public class AvailabilityDB {
         result.isDone();
     }
 
-    public static boolean removeAvailability(String availabilityId){
+    public boolean removeAvailability(String availabilityId){
         /* Asynchronously remove appointment from DB */
         ApiFuture<WriteResult> writeResult = FirestoreHandler.get().collection("availabilities").document(availabilityId).delete();
         try {

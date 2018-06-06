@@ -14,9 +14,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public class SettingsController extends Controller {
-    private UserController userController = new UserController();
+    private SettingsDB settingsDB = new SettingsDB();
 
     @Authenticate(role="Admin")
     public Result index() {
@@ -29,13 +30,13 @@ public class SettingsController extends Controller {
         String frequency = json.findPath("frequency").asText();
         Boolean enabled = json.findPath("checked").asBoolean();
         String appointmentTypeId = json.findPath("id").asText();
-        AppointmentTypeModel appointmentType = SettingsDB.getAppointmentType(appointmentTypeId);
+        AppointmentTypeModel appointmentType = settingsDB.getAppointmentType(appointmentTypeId);
         if(frequency.equals("oneTime")) {
             appointmentType.setOneTime(enabled);
         } else if(frequency.equals("weekly")){
             appointmentType.setWeekly(enabled);
         }
-        SettingsDB.addAppointmentType(appointmentType);
+        settingsDB.addAppointmentType(appointmentType);
         return ok();
     }
 
@@ -43,9 +44,9 @@ public class SettingsController extends Controller {
     public Result changeSiteAlert(){
         JsonNode json = request().body().asJson();
         String siteAlert = json.findPath("siteAlert").asText();
-        SettingsModel s = SettingsDB.getSettings();
+        SettingsModel s = getSettings();
         s.setSiteAlert(siteAlert);
-        SettingsDB.changeSettings(s);
+        settingsDB.addOrUpdate(s);
         return ok();
     }
 
@@ -53,9 +54,9 @@ public class SettingsController extends Controller {
     public Result changeCenterInformation(){
         JsonNode json = request().body().asJson();
         String centerInformation = json.findPath("centerInformation").asText();
-        SettingsModel s = SettingsDB.getSettings();
+        SettingsModel s = getSettings();
         s.setCenterInformation(centerInformation);
-        SettingsDB.changeSettings(s);
+        settingsDB.addOrUpdate(s);
         return ok();
     }
 
@@ -63,9 +64,9 @@ public class SettingsController extends Controller {
     public Result changeMaximumAppointments() {
         JsonNode json = request().body().asJson();
         Integer maximumAppointments = json.findPath("maximumAppointments").asInt();
-        SettingsModel s = SettingsDB.getSettings();
+        SettingsModel s = getSettings();
         s.setMaximumAppointments(maximumAppointments);
-        SettingsDB.changeSettings(s);
+        settingsDB.addOrUpdate(s);
         return ok();
     }
 
@@ -103,7 +104,7 @@ public class SettingsController extends Controller {
                     json.findPath("saturday").asBoolean()};
             settings.setDaysOpenWeekly(daysOfWeek);
             /* Check if user is in DB */
-            SettingsDB.changeSettings(settings);
+            settingsDB.addOrUpdate(settings);
             return ok();
         } catch (Exception e) { e.printStackTrace(); }
         return notAcceptable();
@@ -114,16 +115,16 @@ public class SettingsController extends Controller {
         JsonNode json = request().body().asJson();
         String appointmentTypeName = json.findPath("appointmentTypeName").asText();
         AppointmentTypeModel appointmentType = new AppointmentTypeModel(null, appointmentTypeName);
-        SettingsDB.addAppointmentType(appointmentType);
+        settingsDB.addAppointmentType(appointmentType);
         return ok();
     }
 
     public List<AppointmentTypeModel> getAppointmentTypes() {
-        return SettingsDB.getAppointmentTypes();
+        return settingsDB.getAppointmentTypes();
     }
 
     public List<AppointmentTypeModel> getAvailableAppointmentTypes() {
-        List<AppointmentTypeModel> appointmentTypes = SettingsDB.getAppointmentTypes();
+        List<AppointmentTypeModel> appointmentTypes = settingsDB.getAppointmentTypes();
         appointmentTypes.removeIf(a -> (!a.getOneTime() && !a.getWeekly()));
         return appointmentTypes;
     }
@@ -133,7 +134,7 @@ public class SettingsController extends Controller {
         JsonNode json = request().body().asJson();
         String serviceName = json.findPath("serviceName").asText();
         ServiceModel service = new ServiceModel(null, serviceName);
-        SettingsDB.addService(service);
+        settingsDB.addService(service);
         return ok();
     }
 
@@ -141,7 +142,7 @@ public class SettingsController extends Controller {
     public Result removeAppointmentType() {
         JsonNode json = request().body().asJson();
         String appointmentTypeId = json.findPath("appointmentTypeId").asText();
-        SettingsDB.removeAppointmentType(appointmentTypeId);
+        settingsDB.removeAppointmentType(appointmentTypeId);
         return ok();
     }
 
@@ -149,20 +150,20 @@ public class SettingsController extends Controller {
     public Result removeService() {
         JsonNode json = request().body().asJson();
         String serviceId = json.findPath("serviceId").asText();
-        SettingsDB.removeService(serviceId);
+        settingsDB.removeService(serviceId);
         return ok();
     }
 
     public List<ServiceModel> getServices() {
-        return SettingsDB.getServices();
+        return settingsDB.getServices();
     }
 
     public SettingsModel getSettings() {
-        return  SettingsDB.getSettings();
+        return settingsDB.get(null).orElseThrow(NullPointerException::new);
     }
 
-    public boolean getAppointmentTypeOneTime(String appointmentType) { return SettingsDB.getAppointmentTypeByName(appointmentType).getOneTime(); }
+    public boolean getAppointmentTypeOneTime(String appointmentType) { return settingsDB.getAppointmentTypeByName(appointmentType).getOneTime(); }
 
-    public boolean getAppointmentTypeWeekly(String appointmentType) { return SettingsDB.getAppointmentTypeByName(appointmentType).getWeekly(); }
+    public boolean getAppointmentTypeWeekly(String appointmentType) { return settingsDB.getAppointmentTypeByName(appointmentType).getWeekly(); }
 
 }

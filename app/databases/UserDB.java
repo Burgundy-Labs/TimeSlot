@@ -4,12 +4,8 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import models.ServiceModel;
 import models.UsersModel;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 /* DB classes contain the methods necessary to manage their corresponding models.
@@ -17,7 +13,7 @@ import java.util.concurrent.ExecutionException;
 public class UserDB implements DBInterface<UsersModel> {
 
     @Override
-    public UsersModel get(String ID) {
+    public Optional<UsersModel> get(String ID) {
         /* Return null user if none found */
         UsersModel userFound = null;
         /* Get the specific user reference from the DB*/
@@ -30,11 +26,11 @@ public class UserDB implements DBInterface<UsersModel> {
             e.printStackTrace();
         }
         assert document != null;
-
         if (document.exists()) {
             userFound = document.toObject(UsersModel.class);
         }
-        return userFound;
+        assert userFound != null;
+        return Optional.of(userFound);
     }
 
     @Override
@@ -79,23 +75,23 @@ public class UserDB implements DBInterface<UsersModel> {
     }
 
     @Override
-    public UsersModel remove(String ID) {
+    public Optional<UsersModel> remove(String ID) {
      /* Asynchronously remove user from DB */
-        UsersModel userToDelete = get(ID);
+        Optional<UsersModel> userToDelete = get(ID);
         ApiFuture<WriteResult> writeResult = FirestoreHandler.get().collection("users").document(ID).delete();
         try {
             /* Verify that action is complete */
             writeResult.get();
-            return userToDelete;
+            return Optional.of(userToDelete.orElseThrow(NullPointerException::new));
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
-            return null;
+            return Optional.empty();
         }
     }
 
     @Override
     public UsersModel removeAll() {
-        throw new NotImplementedException();
+        return null;
     }
 
     public void addServiceToUser(String ID, ServiceModel service) {

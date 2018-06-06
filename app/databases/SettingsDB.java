@@ -6,18 +6,15 @@ import models.AppointmentTypeModel;
 import models.ServiceModel;
 import models.SettingsModel;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 /* DB classes contain the methods necessary to manage their corresponding models.
 * UserDB works with UsersModel to retrieve and remove users in the Firestore DB.*/
-/* TODO implement as DBInterface */
-public class SettingsDB {
+public class SettingsDB implements DBInterface<SettingsModel> {
 
-    public static synchronized SettingsModel getSettings() {
+    /* ID not used for settings get */
+    public Optional<SettingsModel> get(String ID) {
         DocumentReference docRef = FirestoreHandler.get().collection("settings").document("settings");
         ApiFuture<DocumentSnapshot> future = docRef.get();
         DocumentSnapshot document = null;
@@ -32,10 +29,52 @@ public class SettingsDB {
             settings = document.toObject(SettingsModel.class);
         }
         settings = SettingsModel.replaceNull(settings);
-        return settings;
+        return Optional.of(settings);
+    }
+    @Override
+    public boolean addOrUpdate(SettingsModel settings) {
+        DocumentReference docRef = FirestoreHandler.get().collection("settings").document("settings");
+        Map<String, Object> data = new HashMap<>();
+        data.put("universityName", settings.getUniversityName());
+        data.put("centerName", settings.getCenterName());
+        data.put("semesterStart", settings.getSemesterStart());
+        data.put("semesterEnd", settings.getSemesterEnd());
+        data.put("startTime", settings.getStartTime());
+        data.put("endTime", settings.getEndTime());
+        data.put("siteAlert", settings.getSiteAlert());
+        data.put("centerInformation", settings.getCenterInformation());
+        data.put("maximumAppointments", settings.getMaximumAppointments());
+        data.put("openSunday", settings.getDaysOpenWeekly()[0]);
+        data.put("openMonday", settings.getDaysOpenWeekly()[1]);
+        data.put("openTuesday", settings.getDaysOpenWeekly()[2]);
+        data.put("openWednesday", settings.getDaysOpenWeekly()[3]);
+        data.put("openThursday", settings.getDaysOpenWeekly()[4]);
+        data.put("openFriday", settings.getDaysOpenWeekly()[5]);
+        data.put("openSaturday", settings.getDaysOpenWeekly()[6]);
+        /* Write settings to DB */
+        ApiFuture<WriteResult> result = docRef.set(data);
+        return result.isDone();
     }
 
-    public static boolean removeAppointmentType(String appointmentTypeId) {
+    /*Not applicable to settings */
+    @Override
+    public Iterable<SettingsModel> getAll() {
+        return null;
+    }
+
+    /* Not applicable to settings */
+    @Override
+    public Optional<SettingsModel> remove(String ID) {
+        return Optional.empty();
+    }
+
+    /* Not applicable to settings */
+    @Override
+    public SettingsModel removeAll() {
+        return null;
+    }
+
+    public boolean removeAppointmentType(String appointmentTypeId) {
         /* Asynchronously remove user from DB */
         ApiFuture<WriteResult> writeResult = FirestoreHandler.get()
                 .collection("settings")
@@ -52,7 +91,7 @@ public class SettingsDB {
         }
     }
 
-    public static synchronized void addAppointmentType(AppointmentTypeModel appointmentType) {
+    public synchronized void addAppointmentType(AppointmentTypeModel appointmentType) {
         DocumentReference docRef;
         if (appointmentType.getAppointmentTypeId() == null) {
             docRef = FirestoreHandler.get().collection("settings").document("settings").collection("appointmentTypes").document();
@@ -67,7 +106,7 @@ public class SettingsDB {
         result.isDone();
     }
 
-    public static synchronized List<AppointmentTypeModel> getAppointmentTypes() {
+    public synchronized List<AppointmentTypeModel> getAppointmentTypes() {
         List<AppointmentTypeModel> appointmentTypesList = new ArrayList<>();
         /* Asynchronously retrieve all users */
         ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("settings").document("settings").collection("appointmentTypes").get();
@@ -93,7 +132,7 @@ public class SettingsDB {
         return appointmentTypesList;
     }
 
-    public static synchronized AppointmentTypeModel getAppointmentType(String appointmentTypeId) {
+    public synchronized AppointmentTypeModel getAppointmentType(String appointmentTypeId) {
         AppointmentTypeModel appointmentType;
         /* Asynchronously retrieve all users */
         ApiFuture<DocumentSnapshot> query = FirestoreHandler.get().collection("settings").document("settings").collection("appointmentTypes").document(appointmentTypeId).get();
@@ -114,7 +153,7 @@ public class SettingsDB {
         return appointmentType;
     }
 
-    public static synchronized AppointmentTypeModel getAppointmentTypeByName(String appointmentTypeName) {
+    public synchronized AppointmentTypeModel getAppointmentTypeByName(String appointmentTypeName) {
         AppointmentTypeModel appointmentType;
         /* Asynchronously retrieve all users */
         ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("settings").document("settings").collection("appointmentTypes").whereEqualTo("appointmentType", appointmentTypeName).get();
@@ -137,7 +176,7 @@ public class SettingsDB {
         return appointmentType;
     }
 
-    public static synchronized void addService(ServiceModel service) {
+    public synchronized void addService(ServiceModel service) {
         DocumentReference docRef;
         if (service.getServiceId() == null) {
             docRef = FirestoreHandler.get().collection("settings").document("settings").collection("services").document();
@@ -150,7 +189,7 @@ public class SettingsDB {
         result.isDone();
     }
 
-    public static synchronized boolean removeService(String serviceID) {
+    public synchronized boolean removeService(String serviceID) {
         ApiFuture<WriteResult> writeResult = FirestoreHandler.get()
                 .collection("settings")
                 .document("settings")
@@ -166,7 +205,7 @@ public class SettingsDB {
         }
     }
 
-    public static synchronized List<ServiceModel> getServices() {
+    public synchronized List<ServiceModel> getServices() {
         List<ServiceModel> serviceModel = new ArrayList<>();
         /* Asynchronously retrieve all users */
         ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("settings").document("settings").collection("services").get();
@@ -188,30 +227,5 @@ public class SettingsDB {
             serviceModel.add(service);
         }
         return serviceModel;
-    }
-
-    public static synchronized void changeSettings(SettingsModel settings) {
-        DocumentReference docRef = FirestoreHandler.get().collection("settings").document("settings");
-        Map<String, Object> data = new HashMap<>();
-        data.put("universityName", settings.getUniversityName());
-        data.put("centerName", settings.getCenterName());
-        data.put("semesterStart", settings.getSemesterStart());
-        data.put("semesterEnd", settings.getSemesterEnd());
-        data.put("startTime", settings.getStartTime());
-        data.put("endTime", settings.getEndTime());
-        data.put("siteAlert", settings.getSiteAlert());
-        data.put("centerInformation", settings.getCenterInformation());
-        data.put("maximumAppointments", settings.getMaximumAppointments());
-        data.put("openSunday", settings.getDaysOpenWeekly()[0]);
-        data.put("openMonday", settings.getDaysOpenWeekly()[1]);
-        data.put("openTuesday", settings.getDaysOpenWeekly()[2]);
-        data.put("openWednesday", settings.getDaysOpenWeekly()[3]);
-        data.put("openThursday", settings.getDaysOpenWeekly()[4]);
-        data.put("openFriday", settings.getDaysOpenWeekly()[5]);
-        data.put("openSaturday", settings.getDaysOpenWeekly()[6]);
-
-        /* Write settings to DB */
-        ApiFuture<WriteResult> result = docRef.set(data);
-        result.isDone();
     }
 }
