@@ -3,7 +3,7 @@
 @userDB = @{new UserDB()}
 @settingsController = @{new SettingsController()}
 @userController = @{new UserController()}
-@currentUser = @{userDB.get(userId)}
+@currentUser = @{userController.getCurrentUser()}
 @currentSettings = @{settingsController.getSettings}
 
 <div class="card dashCards">
@@ -48,7 +48,7 @@ $(document).on('change', '.attendanceSelect', function () {
         present: newPresence
     };
     console.log(appointment);
-    if(appointment.appointmentId == null){ return }
+    if(appointment.appointmentId === null){ return }
     $.ajax({
         url: '/updatePresence',
         type: 'POST',
