@@ -26,7 +26,7 @@ public class AppointmentsController extends Controller {
     @Authenticate(role = "Coach")
     public Result updatePresence() {
         JsonNode json = request().body().asJson();
-        AppointmentsModel appointment = appointmentsDB.get(json.findPath("appointmentId").textValue());
+        AppointmentsModel appointment = appointmentsDB.get(json.findPath("appointmentId").textValue()).orElseThrow(NullPointerException::new);
         appointment.setPresent(json.findPath("present").asBoolean());
         appointmentsDB.addOrUpdate(appointment);
         return ok();
@@ -104,7 +104,7 @@ public class AppointmentsController extends Controller {
     public Result cancelAppointment() {
         JsonNode json = request().body().asJson();
         String appointmentId = json.findPath("appointmentId").textValue();
-        AppointmentsModel appointment = appointmentsDB.remove(appointmentId);
+        AppointmentsModel appointment = appointmentsDB.remove(appointmentId).orElseThrow(NullPointerException::new);
         if (appointment.isWeekly()) {
             List<AppointmentsModel> appointments = appointmentsDB.getAppointmentsForUser("Student", appointment.getStudentId());
             for (AppointmentsModel ap : appointments) {
@@ -121,7 +121,7 @@ public class AppointmentsController extends Controller {
         JsonNode json = request().body().asJson();
         String appointmentId = json.findPath("appointmentId").textValue();
         String coachNotes = json.findPath("coachNotes").textValue();
-        AppointmentsModel appointment = appointmentsDB.get(appointmentId);
+        AppointmentsModel appointment = appointmentsDB.get(appointmentId).orElseThrow(NullPointerException::new);
         appointment.setCoachNotes(coachNotes);
         appointmentsDB.addOrUpdate(appointment);
         return ok();
