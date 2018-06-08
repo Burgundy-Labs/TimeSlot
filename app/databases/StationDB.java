@@ -69,7 +69,7 @@ public class StationDB {
         List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
         /* Iterate users and add them to a list for return */
         for (DocumentSnapshot document : documents) {
-            UsersModel user = userDB.get(document.getString("userId"));
+            UsersModel user = userDB.get(document.getString("userId")).orElseThrow(NullPointerException::new);
             userModels.add(user);
         }
         return userModels;
