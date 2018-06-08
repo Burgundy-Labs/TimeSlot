@@ -1,3 +1,7 @@
+function disableLinks() {
+    $("a[data-placement='right']").attr("href", "/Login");
+}
+
 initApp = function () {
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
@@ -13,16 +17,6 @@ initApp = function () {
     });
 };
 
-window.addEventListener('load', function () {
-    initApp();
-    if(document.getElementById('sign-out')) {
-        document.getElementById('sign-out').addEventListener('click', function () {
-            signOut();
-        });
-    }
-});
-
-
 function signOut() {
     firebase.auth().signOut().then(function() {
         sessionStorage.clear();
@@ -33,6 +27,11 @@ function signOut() {
     });
 }
 
-function disableLinks() {
-    $("a[data-placement='right']").attr('href', '/Login');
-}
+window.addEventListener("load", function () {
+    initApp();
+    if(document.getElementById("sign-out")) {
+        document.getElementById("sign-out").addEventListener("click", function () {
+            signOut();
+        });
+    }
+});
