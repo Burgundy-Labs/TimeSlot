@@ -26,7 +26,7 @@ public class CompressorFilter extends EssentialFilter implements HttpFilters {
 
     @Override
     public List<EssentialFilter> getFilters() {
-        return new ArrayList<EssentialFilter>() {{
+        return new ArrayList<>() {{
             add(htmlCompressorFilter.asJava());
             add(xmlCompressorFilter.asJava());
         }};

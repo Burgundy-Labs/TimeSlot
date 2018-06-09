@@ -13,7 +13,6 @@ public class EmailModel {
     private EmailBody emailBody; // Map of sections separated by section title and body
     private List<EmailButton> emailButtons;
     private EmailFooter emailFooter;
-    public EmailModel(){}
 
     public static class EmailButton {
         private String text = "";
