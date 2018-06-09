@@ -4,7 +4,7 @@ function startTimeout() {
     if(localStorage.getItem("timeoutDisabled") === null){
         localStorage.setItem("timeoutDisabled", false);
     }
-    cheet('↑ ↑ ↓ ↓ ← → ← →', function () {
+    cheet("↑ ↑ ↓ ↓ ← → ← →", function () {
         localStorage.setItem("timeoutDisabled", true);
         createAlert("info", "Timeout has been disabled.");
     });
