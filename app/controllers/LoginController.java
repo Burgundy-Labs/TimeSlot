@@ -25,10 +25,9 @@ public class LoginController extends Controller {
         JsonNode json = request().body().asJson();
         /* Check if user is in DB */
         Optional<UsersModel> u = userDB.get(json.get("uid").asText());
-        UsersModel user = u.orElseThrow(NullPointerException::new);
-        if (user == null) {
+        UsersModel user = new UsersModel();
+        if(!u.isPresent()) {
             /* If user was not found - create a new one and add them */
-            user = new UsersModel();
             user.setRole("Student");
             user.setDisplayName(json.get("displayName").asText());
             user.setPhotoURL(json.get("photoURL").asText());
@@ -37,8 +36,10 @@ public class LoginController extends Controller {
             user.setSubscribed(true);
             userDB.addOrUpdate(user);
         } else {
+            user = u.get();
             userDB.addOrUpdate(user);
         }
+
         /* Store UID in Session */
         session("currentUser", user.getUid());
         session("currentRole", user.getRole());
