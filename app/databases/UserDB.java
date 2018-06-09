@@ -29,8 +29,7 @@ public class UserDB implements DBInterface<UsersModel> {
         if (document.exists()) {
             userFound = document.toObject(UsersModel.class);
         }
-        assert userFound != null;
-        return Optional.of(userFound);
+        return Optional.ofNullable(userFound);
     }
 
     @Override
