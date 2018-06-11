@@ -37,7 +37,7 @@ public class EmailModel {
     }
 
     public static class EmailBody {
-        Map<String, String> sections = new HashMap<>();
+        private Map<String, String> sections = new HashMap<>();
         String bodyStyle = "background-color:#EFF0F1; border-radius:4px; padding: 10px;";
 
         public EmailBody(Map<String, String> sections) {
@@ -60,8 +60,8 @@ public class EmailModel {
     }
 
     public static class EmailFooter {
-        String footerText = "";
-        String footerStyle = "";
+        private String footerText = "";
+        private String footerStyle = "";
 
         public EmailFooter(String footerText) {
             this.footerText = footerText;
