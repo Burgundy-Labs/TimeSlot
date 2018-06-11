@@ -2,7 +2,6 @@ package application_components;
 
 import com.google.inject.Inject;
 import com.typesafe.config.Config;
-import controllers.UserController;
 import play.Environment;
 
 import java.util.Arrays;
