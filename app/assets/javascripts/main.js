@@ -1,6 +1,6 @@
 $(function () {
-    $('[data-toggle="tooltip"]').tooltip();
-    $('[data-toggle="popover"]').popover({html: true});
+    $("[data-toggle='tooltip']").tooltip();
+    $("[data-toggle='popover']").popover({html: true});
 });
 
 function createAlert(alertType, messageHTML) {
@@ -9,7 +9,7 @@ function createAlert(alertType, messageHTML) {
             "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>\n" +
             "<span aria-hidden='true'>&times;</span>\n" +
             "</button>" +
-            '<div>' + messageHTML + '</div>'
+            "<div>" + messageHTML + "</div>"
         ).fadeTo(2000, 500).slideUp(500);
 }
 
