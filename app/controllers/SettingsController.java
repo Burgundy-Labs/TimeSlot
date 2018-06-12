@@ -14,7 +14,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 public class SettingsController extends Controller {
     private SettingsDB settingsDB = new SettingsDB();
@@ -31,9 +30,9 @@ public class SettingsController extends Controller {
         Boolean enabled = json.findPath("checked").asBoolean();
         String appointmentTypeId = json.findPath("id").asText();
         AppointmentTypeModel appointmentType = settingsDB.getAppointmentType(appointmentTypeId);
-        if(frequency.equals("oneTime")) {
+        if("oneTime".equals(frequency)) {
             appointmentType.setOneTime(enabled);
-        } else if(frequency.equals("weekly")){
+        } else if("weekly".equals(frequency)){
             appointmentType.setWeekly(enabled);
         }
         settingsDB.addAppointmentType(appointmentType);

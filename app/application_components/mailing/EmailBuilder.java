@@ -13,7 +13,7 @@ import java.util.List;
 */
 public class EmailBuilder implements IconInterface{
 
-    public String AppointmentReminder(AppointmentsModel appointment) {
+    public String appointmentReminder(AppointmentsModel appointment) {
         /* Define basic email model properties */
         EmailModel model = new EmailModel();
         model.setIcon(IconInterface.ALARM_CLOCK);

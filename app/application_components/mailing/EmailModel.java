@@ -37,8 +37,8 @@ public class EmailModel {
     }
 
     public static class EmailBody {
-        private Map<String, String> sections = new HashMap<>();
-        String bodyStyle = "background-color:#EFF0F1; border-radius:4px; padding: 10px;";
+        private Map<String, String> sections;
+        private String bodyStyle = "background-color:#EFF0F1; border-radius:4px; padding: 10px;";
 
         public EmailBody(Map<String, String> sections) {
             this.sections = new HashMap<>();

@@ -22,10 +22,8 @@ class DatabaseExporter<T> {
         sb.append('\n');
         for (Object o : objects) {
             for (Method m : methods) {
-                if (m.getParameterTypes().length == 0) {
-                    if (m.getName().startsWith("get") || m.getName().startsWith("is")) {
-                        sb.append(m.invoke(o).toString()).append(',');
-                    }
+                if ((m.getParameterTypes().length == 0) && (m.getName().startsWith("get") || m.getName().startsWith("is"))) {
+                    sb.append(m.invoke(o).toString()).append(',');
                 }
             }
             sb.append('\n');

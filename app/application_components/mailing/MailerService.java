@@ -52,9 +52,9 @@ public class MailerService {
                 emailBody.append("</div>");
                 emailBody.append("<br/>");
                 emailBody.append("<a style=\"background-color:#0067F4; color: white; border-radius: 4px; padding: 10px; margin:0 auto; display:block; width: 90%; text-align: center; font-size: 18px; text-decoration:none; \" href=\"" + "https://www.google.com/calendar/render?action=TEMPLATE" + "&text=").append(settings.getCenterName().replaceAll(" ", "+")).append("+Appointment+With+");
-                if (type.equals("Student")) {
+                if ("Student".equals(type)) {
                     emailBody.append(a.getCoachName().replaceAll(" ", "+"));
-                } else if (type.equals("Coach")) {
+                } else if ("Coach".equals(type)) {
                     emailBody.append(a.getStudentName().replaceAll(" ", "+"));
                 }
                 emailBody.append("&dates=").append(a.getStartDate().toInstant().toString().replaceAll("-", "").replaceAll(":", "")).append("/").append(a.getEndDate().toInstant().toString().replaceAll("-", "").replaceAll(":", "")).append("&details=").append(a.toString().replace("\n", "%0A").replace(" ", "+")).append("&location=").append(settings.getCenterName().replaceAll(" ", "+")).append("&sf=true").append("&output=xml\"").append("target=\"_blank\" rel=\"nofollow\">Add to my calendar</a> <br/>");

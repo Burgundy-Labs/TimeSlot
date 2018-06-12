@@ -52,7 +52,7 @@ public class AvailabilityController extends Controller {
         Date startDate = DatatypeConverter.parseDateTime(start).getTime();
         Date endDate = DatatypeConverter.parseDateTime(end).getTime();
         List<AvailabilityModel> avails;
-        if (userId.equals("any")) {
+        if ("any".equals(userId)) {
             avails = availableSlotsForAny(startDate, endDate, serviceId);
         } else {
             avails = availableSlotsForCoach(userId, startDate, endDate);
@@ -67,8 +67,7 @@ public class AvailabilityController extends Controller {
         for (UsersModel coach : coaches) {                                                              // For all the coaches who have availabilities for the severiceId
             availabilities.addAll(availableSlotsForCoach(coach.getUid(), startDate, endDate));            // Add all of the availabilities during the current week from the coach
         }
-        List<AvailabilityModel> newAvailabilites = new ArrayList<>();                                     // Creates a new list of availabilities
-        HashMap<String, AvailabilityModel> avails = new HashMap<>();
+        List<AvailabilityModel> newAvailabilities = new ArrayList<>();                                     // Creates a new list of availabilities
         for (int i = 0; i < availabilities.size(); i++) {
 
             AvailabilityModel newAv = new AvailabilityModel(null,
@@ -98,9 +97,9 @@ public class AvailabilityController extends Controller {
                 newAv.setCanBeOneTime(true);                                                              // Set can be one time to true
                 newAv.setCanBeWeekly(false);                                                              // Set can be weekly to false
             }
-            newAvailabilites.add(newAv);                                                                  // Add the new availabilities to the new list of availabilities
+            newAvailabilities.add(newAv);                                                                  // Add the new availabilities to the new list of availabilities
         }
-        return newAvailabilites;                                                                          // Return the list of new availabilities
+        return newAvailabilities;                                                                          // Return the list of new availabilities
     }
 
     private List<AvailabilityModel> availableSlotsForCoach(String userId, Date startDate, Date endDate) {
