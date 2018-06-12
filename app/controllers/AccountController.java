@@ -9,7 +9,6 @@ import play.mvc.Result;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 public class AccountController extends Controller {
     private UserDB userDB = new UserDB();

@@ -25,19 +25,23 @@ public class AvailabilityController extends Controller {
     private UserDB userDB = new UserDB();
     private UserController userController = new UserController();
 
+
+    /* Will now create an appointment with no student attached */
     @Authenticate(role="Coach")
     public Result createAvailability() {
      /* Get user object from request */
         JsonNode json = request().body().asJson();
         /* Get user from json request */
-        AvailabilityModel availability = new AvailabilityModel();
-        availability.setavailabilityId(json.findPath("availabilityId").textValue());
-        availability.setUserid(json.findPath("userId").textValue());
+        AppointmentsModel availability = new AppointmentsModel();
+        availability.setAppointmentId(json.findPath("appointmentID").textValue());
+        availability.setCoachId(json.findPath("userId").textValue());
         availability.setStartDate(DatatypeConverter.parseDateTime(json.findPath("startDate").textValue()).getTime());
         availability.setEndDate(DatatypeConverter.parseDateTime(json.findPath("endDate").textValue()).getTime());
+        // TODO add logic to create weekly empty appointments (look at old avail / weekly appmnt code)
+        // TODO Potentially add a "create weekly appointment" method in DB for easier use
         availability.setWeekly(json.findPath("weekly").booleanValue());
         /* Check if user is in DB */
-        availabilityDB.addAvailability(availability);
+        appointmentsDB.addOrUpdate(availability);
         return ok();
     }
 
