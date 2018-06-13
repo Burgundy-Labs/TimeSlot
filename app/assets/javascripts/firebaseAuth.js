@@ -6,10 +6,10 @@ initApp = function () {
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
             // User is signed in.
-            $('#sign-out').show();
+            $("#sign-out").show();
         } else {
             // User is signed out.
-            $('#sign-out').hide();
+            $("#sign-out").hide();
             disableLinks();
         }
     }, function (error) {

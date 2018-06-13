@@ -66,10 +66,10 @@ public class MailerService {
                     .setSubject("Appointment Reminder: " + dateString + " at the " + settings.getCenterName())
                     .setFrom("Project Burgundy <" + Application.getConfig().getString("play.mailer.user") + ">")
                     .setBodyHtml(emailBody.toString());
-            if (type.equals("Student")) {
+            if ("Studet".equals(type)) {
                 email.addTo(appointments.get(l).get(0).getStudentName() + "<" + appointments.get(l).get(0).getStudentEmail() + ">");
 
-            } else if (type.equals("Coach")) {
+            } else if ("Coach".equals(type)) {
                 email.addTo(appointments.get(l).get(0).getCoachName() + "<" + appointments.get(l).get(0).getCoachEmail() + ">");
 
             }

@@ -1,4 +1,24 @@
 var idleTime = 0;
+function timerIncrement() {
+    idleTime = idleTime + 1;
+    if (idleTime === 2 && Boolean(localStorage.getItem("timeoutDisabled"))) {
+        if (window.location.pathname !== "/Login") {
+            $.alert({
+                title: "Alert",
+                content: "You have been signed out due to inactivity.",
+                buttons: {
+                    confirm: {
+                        text: "Okay",
+                        btnClass: "btn-primary",
+                        action: function() {
+                            $("#sign-out").click();
+                        }
+                    }
+                }
+            });
+        }
+    }
+}
 
 function startTimeout() {
     if(localStorage.getItem("timeoutDisabled") === null){
@@ -17,23 +37,3 @@ function startTimeout() {
     });
 }
 
-function timerIncrement() {
-    idleTime = idleTime + 1;
-    if (idleTime === 2 && Boolean(localStorage.getItem("timeoutDisabled"))) {
-        if (window.location.pathname !== "/Login") {
-            $.alert({
-                title: 'Alert',
-                content: 'You have been signed out due to inactivity.',
-                buttons: {
-                    confirm: {
-                        text: "Okay",
-                        btnClass: "btn-primary",
-                        action: function() {
-                            $('#sign-out').click();
-                        }
-                    }
-            }
-            });
-        }
-    }
-}

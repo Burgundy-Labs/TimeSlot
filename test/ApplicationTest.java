@@ -1,7 +1,6 @@
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.mockito.Mockito.mock;
 
 /**
  * Simple (JUnit) tests that can call all parts of a play app.
