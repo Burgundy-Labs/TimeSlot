@@ -291,14 +291,14 @@
 
             function toggleDayOfWeek(day) {
                 var button = document.getElementById(day);
-                if (button.getAttribute('data-state') == true) {
+                if (button.getAttribute('data-state') == "false") {
                     button.style.backgroundColor = '#FFFFFF';
                     button.style.color = '#000000';
-                    button.setAttribute('data-state', 'false');
+                    button.setAttribute('data-state', "true");
                 } else {
                     button.style.backgroundColor = '#17C671';
                     button.style.color = '#FFFFFF';
-                    button.setAttribute('data-state', 'true');
+                    button.setAttribute('data-state', "false");
                 }
             }
 
