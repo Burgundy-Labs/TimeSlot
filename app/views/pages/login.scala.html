@@ -27,7 +27,7 @@
                                 uid: user.uid,
                             };
                             /* TODO: get mtu.edu from DB */
-                            if(!(user.email.split('@@')[1] === 'mtu.edu')){
+                            if(!(user.email.split('@@')[1] === 'mtu.edu') || user.email){
                                 $.alert({
                                     title: 'Alert',
                                     content: 'Please sign-in using an @@mtu.edu email address',
