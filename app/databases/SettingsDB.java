@@ -58,9 +58,7 @@ public class SettingsDB implements DBInterface<SettingsModel> {
 
     /*Not applicable to settings */
     @Override
-    public Iterable<SettingsModel> getAll() {
-        return null;
-    }
+    public Iterable<SettingsModel> getAll() { return null; }
 
     /* Not applicable to settings */
     @Override
@@ -70,8 +68,8 @@ public class SettingsDB implements DBInterface<SettingsModel> {
 
     /* Not applicable to settings */
     @Override
-    public SettingsModel removeAll() {
-        return null;
+    public boolean removeAll() {
+        return false;
     }
 
     public boolean removeAppointmentType(String appointmentTypeId) {

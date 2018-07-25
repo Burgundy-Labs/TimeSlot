@@ -96,8 +96,17 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
     }
 
     @Override
-    public AppointmentsModel removeAll() {
-        return null;
+    public boolean removeAll() {
+        try {
+            ApiFuture<QuerySnapshot> appointmentFuture = FirestoreHandler.get().collection("appointments").get();
+            List<QueryDocumentSnapshot> appointmentsToDelete = appointmentFuture.get().getDocuments();
+            for (QueryDocumentSnapshot appointment : appointmentsToDelete) {
+                remove(appointment.getId());
+            }
+            return true;
+        } catch (InterruptedException | ExecutionException e) {
+            return false;
+        }
     }
 
     /* TODO test method + add overrides for type / service / dates */

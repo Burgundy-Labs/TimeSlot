@@ -9,13 +9,15 @@ public interface DBInterface<T> {
     Optional<T> get(String ID);
     /* Return all T's in DB*/
     Iterable<T> getAll();
+
     /* True if success, False on failure */
     boolean addOrUpdate(T object);
+
     /* Return T being deleted */
     Optional<T> remove(String ID);
-
     /* Delete all data*/
-    T removeAll();
+    boolean removeAll();
+
     /* Export all data from the DB */
     default String export() {
         try {
