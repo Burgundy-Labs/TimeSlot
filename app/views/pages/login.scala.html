@@ -1,20 +1,25 @@
 @import application_components.Application
-@userController = @{ new UserController() }
-@settingsController = @{ new SettingsController() }
+@userController = @{
+    new UserController()
+}
+@settingsController = @{
+    new SettingsController()
+}
 <!DOCTYPE html>
 <html>
     <head>
         <title>Login</title>
         <script type="text/javascript" src="@routes.Assets.at("javascripts/outdated.js")"></script>
         @partials._head()
-        </head>
+    </head>
     <body class="body_bg">
         <script type="text/javascript">
                 // FirebaseUI config.
+                let allowedEmails = "@Application.getConfig.getStringList("allowedDomain")";
                 @if(userController.getCurrentRole == null) {
-                        localStorage.clear();
+                localStorage.clear();
                 }
-                if ( localStorage.getItem("firebaseui::rememberedAccounts") !== null ) {
+                if (localStorage.getItem("firebaseui::rememberedAccounts") !== null) {
                     window.location = "/Dashboard";
                 }
                 let uiConfig = {
@@ -26,8 +31,23 @@
                                 photoURL: user.photoURL,
                                 uid: user.uid,
                             };
-                            /* TODO: get mtu.edu from DB */
-                            if(!(user.email.split('@@')[1] === 'mtu.edu') || user.email){
+                            if ((allowedEmails.includes(user.email.split('@@')[1]) || allowedEmails.includes("*"))) {
+                                /* POST signed in user to Login Controller*/
+                                $.ajax({
+                                    url: '/signedIn',
+                                    type: 'POST',
+                                    data: JSON.stringify(userSignIn),
+                                    contentType: 'application/json',
+                                    success: function () {
+                                        window.location = "/Dashboard";
+                                    },
+                                    error: function (err) {
+                                        console.log(err.responseText);
+                                        console.log(err);
+                                    }
+                                });
+                                return false;
+                            } else {
                                 $.alert({
                                     title: 'Alert',
                                     content: 'Please sign-in using an @@mtu.edu email address',
@@ -36,26 +56,10 @@
                                             keys: ['enter'],
                                             text: "Okay",
                                             btnClass: "btn-primary",
-                                            action: function() {
+                                            action: function () {
                                                 signOut();
                                             }
                                         }
-                                    }
-                                });
-                                return false;
-                            } else {
-                                /* POST signed in user to Login Controller*/
-                                $.ajax({
-                                    url: '/signedIn',
-                                    type: 'POST',
-                                    data: JSON.stringify(userSignIn),
-                                    contentType: 'application/json',
-                                    success: function() {
-                                        window.location = "/Dashboard";
-                                    },
-                                    error: function (err) {
-                                        console.log(err.responseText);
-                                        console.log(err);
                                     }
                                 });
                                 return false;
@@ -70,7 +74,7 @@
                     }],
 
                     credentialHelper: firebaseui.auth.CredentialHelper.GOOGLE_YOLO,
-                // Terms of service url.
+                    // Terms of service url.
                     tosUrl: '/Terms'
                 };
 
@@ -82,21 +86,21 @@
         </script>
         @helper.CSRF.formField
         <div class="loginJumbotron">
-                <div class="jumbotron d-flex align-items-center">
-                    <div class="container">
-                        <div class="col-sm-12 col-md-6 col-lg-6 center">
-                            <img src="@routes.Assets.at("/images/TimeSlot.svg")" class="mb-2 img-fluid"/>
-                        </div>
-                        <h2>@settingsController.getSettings.getCenterName</h2>
-                        <br/>
-                        <p>
-                            Please sign in below to view, schedule, and manage appointments.
-                        </p>
-                        <div id="firebaseui-auth-container" class="btn"></div>
-                        <div id="sign-out"></div>
+            <div class="jumbotron d-flex align-items-center">
+                <div class="container">
+                    <div class="col-sm-12 col-md-6 col-lg-6 center">
+                        <img src="@routes.Assets.at("/images/TimeSlot.svg")" class="mb-2 img-fluid"/>
                     </div>
+                    <h2>@settingsController.getSettings.getCenterName</h2>
+                    <br/>
+                    <p>
+                            Please sign in below to view, schedule, and manage appointments.
+                    </p>
+                    <div id="firebaseui-auth-container" class="btn"></div>
+                    <div id="sign-out"></div>
                 </div>
             </div>
+        </div>
         @partials._footer()
     </body>
 </html>
