@@ -66,7 +66,7 @@ public class MailerService {
                     .setSubject("Appointment Reminder: " + dateString + " at the " + settings.getCenterName())
                     .setFrom("Project Burgundy <" + Application.getConfig().getString("play.mailer.user") + ">")
                     .setBodyHtml(emailBody.toString());
-            if ("Studet".equals(type)) {
+            if ("Student".equals(type)) {
                 email.addTo(appointments.get(l).get(0).getStudentName() + "<" + appointments.get(l).get(0).getStudentEmail() + ">");
 
             } else if ("Coach".equals(type)) {
