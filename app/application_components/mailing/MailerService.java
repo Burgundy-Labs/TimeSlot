@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-/* TODO create email template class for methods to use for consistence & reuse - look into a parameterized partial */
-/* TODO test mailer service to ensure emails send with DI usage in Appointments Controller */
 public class MailerService {
     private SettingsController settingsController = new SettingsController();
     private static MailerClient mailerClient;
@@ -25,9 +23,7 @@ public class MailerService {
         MailerService.mailerClient = mailerClient;
     }
 
-    public MailerService() {
-
-    }
+    public MailerService() { }
 
     public void sendEmail(String subject, String fromName, String fromEmail, String toName, String toEmail, String bodyHtml) {
         Email email = new Email()

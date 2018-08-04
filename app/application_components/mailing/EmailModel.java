@@ -15,8 +15,8 @@ public class EmailModel {
     private EmailFooter emailFooter;
 
     public static class EmailButton {
-        private String text = "";
-        private String url = "";
+        private String text;
+        private String url;
         private String buttonStyles = "background-color:#0067F4; color: white; border-radius: 4px; padding: 10px; " +
                 "margin:0 auto; display:block; width: 90%; text-align: center; font-size: 18px; " +
                 "text-decoration:none;";
@@ -60,7 +60,7 @@ public class EmailModel {
     }
 
     public static class EmailFooter {
-        private String footerText = "";
+        private String footerText;
         private String footerStyle = "";
 
         public EmailFooter(String footerText) {
