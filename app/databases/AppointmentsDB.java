@@ -68,19 +68,32 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
         } else {
             docRef = FirestoreHandler.get().collection("appointments").document(appointment.getAppointmentId());
         }
+
         /* Create user model for DB insert */
-        Optional<UsersModel> s = userDB.get(appointment.getStudentId());
-        Optional<UsersModel> c = userDB.get(appointment.getCoachId());
-        UsersModel student = s.orElseThrow(NullPointerException::new);
-        UsersModel coach = c.orElseThrow(NullPointerException::new);
+
         /* Student Details */
-        appointment.setStudentName(student.getDisplayName());
-        appointment.setStudentEmail(student.getEmail());
-        appointment.setStudentPhoto(student.getPhotoURL());
+        if (appointment.getStudentId() == null) {
+            appointment.setStudentEmail(null);
+            appointment.setStudentId(null);
+            appointment.setStudentName(null);
+            appointment.setStudentPhoto(null);
+        } else {
+            Optional<UsersModel> s = userDB.get(appointment.getStudentId());
+            UsersModel student = s.orElseThrow(NullPointerException::new);
+            appointment.setStudentName(student.getDisplayName());
+            appointment.setStudentEmail(student.getEmail());
+            appointment.setStudentPhoto(student.getPhotoURL());
+        }
+
         /* Coach Details */
+        Optional<UsersModel> c = userDB.get(appointment.getCoachId());
+        UsersModel coach = c.orElseThrow(NullPointerException::new);
         appointment.setCoachName(coach.getDisplayName());
         appointment.setCoachEmail(coach.getEmail());
         appointment.setCoachPhoto(coach.getPhotoURL());
+
+        appointment.setAppointmentId(docRef.getId());
+
         /* Asynchronously write appointment into DB */
         ApiFuture<WriteResult> result = docRef.set(appointment);
         return result.isDone();
@@ -89,7 +102,7 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
     @Override
     public Optional<AppointmentsModel> remove(String ID) {
         AppointmentsModel appointment = get(ID).orElseThrow(NullPointerException::new);
-        if(!appointment.getStartDate().before(new Date())){
+        if(appointment.getStartDate().after(new Date())){
             ApiFuture<WriteResult> writeResult = FirestoreHandler.get().collection("appointments").document(ID).delete();
         }
         /* Asynchronously remove appointment from DB */
@@ -129,6 +142,23 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
         return appointmentList;
     }
 
+    public List<AppointmentsModel> getByWeeklyId(String weeklyId) {
+        List<AppointmentsModel> appointmentList = new ArrayList<>();
+        /* Asynchronously retrieve all appointments */
+        ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("appointments").whereEqualTo("weeklyId", weeklyId).get();
+        QuerySnapshot querySnapshot = null;
+        try {
+            /* Attempt to get a list of all appointments - blocking */
+            querySnapshot = query.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        assert querySnapshot != null;
+        List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
+        appointmentList = documents.stream().map(d -> d.toObject(AppointmentsModel.class)).collect(Collectors.toList());
+        return appointmentList;
+    }
+
     /* Returns all available appointments for a coach */
     public List<AppointmentsModel> getAvailableAppointments(UsersModel coachID) {
         List<AppointmentsModel> appointmentList = new ArrayList<>();
@@ -150,7 +180,7 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
     public List<AppointmentsModel> getAvailableAppointments(UsersModel coachID, Date start, Date end) {
         List<AppointmentsModel> appointmentList = new ArrayList<>();
         /* Asynchronously retrieve all appointments */
-        ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("appointments").whereEqualTo("coachId", coachID).whereEqualTo("studentId", null).whereGreaterThan("start_date", start).whereGreaterThan("end_date", end).get();
+        ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("appointments").whereEqualTo("coachId", coachID).whereEqualTo("studentId", null).whereGreaterThan("start_date", start).whereGreaterThan("start_date", end).get();
         QuerySnapshot querySnapshot = null;
         try {
             /* Attempt to get a list of all appointments - blocking */
@@ -189,6 +219,30 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
             appointmentList.add(appointment);
         }
         for (DocumentSnapshot document : documentsStudent) {
+            AppointmentsModel appointment = document.toObject(AppointmentsModel.class);
+            appointmentList.add(appointment);
+        }
+        return appointmentList;
+    }
+
+    public List<AppointmentsModel> getCoachAvailablitiliy(String userId, Date start, Date end) {
+        List<AppointmentsModel> appointmentList = new ArrayList<>();
+
+        /* Asynchronously retrieve all appointments */
+        ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("appointments").whereEqualTo("coachId", userId).whereGreaterThan("startDate", start).whereLessThan("startDate", end).get();
+
+        QuerySnapshot querySnapshot = null;
+        try {
+            /* Attempt to get a list of all appointments - blocking */
+            querySnapshot = query.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        assert querySnapshot != null;
+        List<QueryDocumentSnapshot> documentsCoach = querySnapshot.getDocuments();
+
+        /* Iterate appointments and add them to a list for return */
+        for (DocumentSnapshot document : documentsCoach) {
             AppointmentsModel appointment = document.toObject(AppointmentsModel.class);
             appointmentList.add(appointment);
         }

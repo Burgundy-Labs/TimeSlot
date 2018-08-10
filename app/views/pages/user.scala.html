@@ -118,7 +118,6 @@
     @if(!user.getRole.equals("Student")) {
         <script type="text/javascript">
                 let availabilitySchedule = $('#availabilitySchedule');
-
                 function isCoachCheck() {
                     let checked = $("#isCoachCheck").is(':checked');
                     let userId = '@user.getUid';
@@ -230,94 +229,112 @@
                     } else {
                         dropDown.prepend("<option id='default' value='' selected disabled hidden>Select A Service</option>");
                     }
-
+                    renderCalendar();
                 });
 
-                availabilitySchedule.fullCalendar({
-                    height: 'auto',
-                    themeSystem: 'bootstrap4',
-                    allDaySlot: false,
-                    validRange: {
-                        start: moment('@settingsController.getSettings.getSemesterStart.toInstant').format("YYYY-MM-DD"),
-                        end: moment('@settingsController.getSettings.getSemesterEnd.toInstant').format("YYYY-MM-DD")
-                    },
-                    minTime: moment('@settingsController.getSettings.getStartTime.toInstant').format("HH:mm"),
-                    maxTime: moment('@settingsController.getSettings.getEndTime.toInstant').format("HH:mm"),
-                    events: function (start, end, timezone, callback) {
-                        $.ajax({
-                            url: '/availableSlots/' + '@user.getUid' + '/' + moment(start).toISOString() + '/' + moment(end).toISOString(),
-                            type: 'GET',
-                            success: function (response) {
-                                let events = [];
-                                $(response).each(function () {
-                                    const event = {
-                                        id: $(this).attr('availabilityId'),
-                                        title: "One-Time",
-                                        start: moment($(this).attr('startDate')),
-                                        end: moment($(this).attr('endDate')),
-                                        dow: []
-                                    };
-                                    if ($(this).attr("weekly") === true) {
-                                        event.title = "Weekly";
-                                        event.dow = [moment($(this).attr('startDate')).isoWeekday()];
-                                        event.start = moment($(this).attr('startDate')).format("HH:mm");
-                                        event.end = moment($(this).attr('endDate')).format("HH:mm");
-                                    }
-                                    events.push(event);
-                                });
-                                callback(events);
+
+                function renderCalendar() {
+                    if (!availabilitySchedule.is(':visible')) {
+                        setTimeout(function () {
+                            renderCalendar();
+                        }, 100);
+                    } else {
+                        calendar();
+                    }
+                }
+
+                function calendar() {
+                    availabilitySchedule.fullCalendar({
+                        height: 'auto',
+                        themeSystem: 'bootstrap4',
+                        allDaySlot: false,
+                        validRange: {
+                            start: moment('@settingsController.getSettings.getSemesterStart.toInstant').format("YYYY-MM-DD"),
+                            end: moment('@settingsController.getSettings.getSemesterEnd.toInstant').format("YYYY-MM-DD")
+                        },
+                        minTime: moment('@settingsController.getSettings.getStartTime.toInstant').format("HH:mm"),
+                        maxTime: moment('@settingsController.getSettings.getEndTime.toInstant').format("HH:mm"),
+                        events: function (start, end, timezone, callback) {
+                            $.ajax({
+                                url: '/availableSlots/' + '@user.getUid' + '/' + moment(start).toISOString() + '/' + moment(end).toISOString(),
+                                type: 'GET',
+                                success: function (response) {
+                                    let events = [];
+                                    $(response).each(function () {
+                                        const event = {
+                                            id: $(this).attr('appointmentId'),
+                                            title: "One-Time",
+                                            start: moment($(this).attr('startDate')),
+                                            end: moment($(this).attr('endDate')),
+                                            dow: []
+                                        };
+                                        if ( event.start < new Date() || $(this).studentId != null ) {
+                                            event.color = "#696969";
+                                        }
+                                        if ($(this).attr("weekly") === true) {
+                                            event.title = "Weekly";
+                                            event.dow = [moment($(this).attr('startDate')).isoWeekday()];
+                                            event.start = moment($(this).attr('startDate')).format("HH:mm");
+                                            event.end = moment($(this).attr('endDate')).format("HH:mm");
+                                        }
+                                        events.push(event);
+                                    });
+                                    callback(events);
+                                }
+                            })
+                        },
+                        eventOverlap: false,
+                        selectOverlap: false,
+                        disableDragging: true,
+                        eventRender: function (event, eventElement) {
+                            if ( event.color != "#696969" ) {
+                                eventElement.find("div.fc-content").prepend("<button onclick='removeAvailability(\"" + event.id + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
                             }
-                        })
-                    },
-                    eventOverlap: false,
-                    selectOverlap: false,
-                    disableDragging: true,
-                    eventRender: function (event, eventElement) {
-                        eventElement.find("div.fc-content").prepend("<button onclick='removeAvailability(\"" + event.id + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
-                    },
-                    weekends: false,
-                    selectable: true,
-                    defaultView: 'agendaWeek',
-                    navLinks: false,
-                    eventLimit: false,
-                    select: function (start, end, jsEvent, view) {
-                        const newAvailability = {
-                            userId: '@user.getUid',
-                            startDate: moment(start).format(),
-                            endDate: moment(end).format(),
-                            weekly: false
-                        };
-                        $.confirm({
-                            title: 'Availability',
-                            content: 'Is this slot available weekly?',
-                            columnClass: "col-md-11",
-                            theme: 'modern',
-                            escapeKey: 'cancel',
-                            buttons: {
-                                yes: {
-                                    text: 'Yes, weekly',
-                                    btnClass: 'btn-primary',
-                                    action: function () {
-                                        newAvailability.weekly = true;
-                                        createAvailability(newAvailability);
-                                    }
-                                },
-                                no: {
-                                    text: 'No, one-time',
-                                    btnClass: 'btn-primary',
-                                    action: function () {
-                                        createAvailability(newAvailability);
-                                    }
-                                },
-                                cancel: {
-                                    text: 'Cancel Creating Availability',
-                                    action: function () {
+                        },
+                        weekends: false,
+                        selectable: true,
+                        defaultView: 'agendaWeek',
+                        navLinks: false,
+                        eventLimit: false,
+                        select: function (start, end, jsEvent, view) {
+                            const newAvailability = {
+                                userId: '@user.getUid',
+                                startDate: moment(start).format(),
+                                endDate: moment(end).format(),
+                                weekly: false
+                            };
+                            $.confirm({
+                                title: 'Availability',
+                                content: 'Is this slot available weekly?',
+                                columnClass: "col-md-11",
+                                theme: 'modern',
+                                escapeKey: 'cancel',
+                                buttons: {
+                                    yes: {
+                                        text: 'Yes, weekly',
+                                        btnClass: 'btn-primary',
+                                        action: function () {
+                                            newAvailability.weekly = true;
+                                            createAvailability(newAvailability);
+                                        }
+                                    },
+                                    no: {
+                                        text: 'No, one-time',
+                                        btnClass: 'btn-primary',
+                                        action: function () {
+                                            createAvailability(newAvailability);
+                                        }
+                                    },
+                                    cancel: {
+                                        text: 'Cancel Creating Availability',
+                                        action: function () {
+                                        }
                                     }
                                 }
-                            }
-                        });
-                    }
-                });
+                            });
+                        }
+                    });
+                }
 
                 function removeAvailability(id) {
                     $.confirm({
@@ -332,9 +349,9 @@
                                 keys: ['enter'],
                                 action: function () {
                                     $.ajax({
-                                        url: '/removeAvailability',
+                                        url: '/removeAppointment',
                                         type: 'POST',
-                                        data: JSON.stringify({availabilityId: id}),
+                                        data: JSON.stringify({appointmentId: id}),
                                         contentType: 'application/json',
                                         success: function () {
                                             setTimeout(function () {
@@ -360,7 +377,7 @@
 
                 function createAvailability(newAvailability) {
                     $.ajax({
-                        url: '/createAvailability',
+                        url: '/createAppointment',
                         type: 'POST',
                         data: JSON.stringify(newAvailability),
                         contentType: 'application/json',

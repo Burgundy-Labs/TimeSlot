@@ -17,7 +17,7 @@ GET         /Help                                                               
 GET         /Terms                                                               controllers.StaticController.terms
 GET         /Station                                                             controllers.StationController.index
 GET         /Feedback                                                            controllers.FeedbackController.feedback
-GET         /availableSlots/:userId/:start/:end                                  controllers.AvailabilityController.availableSlots(userId: String, start: String, end: String)
+GET         /availableSlots/:userId/:start/:end                                  controllers.AppointmentsController.appointmentsAsCoach(userId: String, start: String, end: String)
 GET         /availableSlotsForAppointments/:userId/:start/:end/:serviceId        controllers.AvailabilityController.availableSlotsForAppointments(userId: String, start: String, end: String, serviceId: String)
 GET         /appointmentsForUser/:role/:userId/:start/:end                       controllers.AppointmentsController.appointmentsForUser(role: String, userId: String, start: String, end: String)
 GET         /appointmentsByDate/:role/:userId/:start/:end                        controllers.AppointmentsController.appointmentsByDate(role: String, userId: String, start: String, end: String)
@@ -40,6 +40,7 @@ POST        /createService                                                      
 POST        /removeService                                                       controllers.SettingsController.removeService()
 POST        /createAppointment                                                   controllers.AppointmentsController.createAppointment()
 POST        /cancelAppointment                                                   controllers.AppointmentsController.cancelAppointment()
+POST        /removeAppointment                                                   controllers.AppointmentsController.removeAppointment()
 POST        /updateCoachNotes                                                    controllers.AppointmentsController.updateCoachNotes()
 POST        /updatePresence                                                      controllers.AppointmentsController.updatePresence()
 POST        /createAvailability                                                  controllers.AvailabilityController.createAvailability()

@@ -39,14 +39,14 @@ public class AppointmentsController extends Controller {
         /* Get user from json request */
         String uniqueId = UUID.randomUUID().toString();
         AppointmentsModel appointment = new AppointmentsModel();
-        appointment.setCoachId(json.findPath("coachId").textValue());
-        appointment.setStudentId(json.findPath("studentId").textValue());
-        appointment.setAppointmentType(json.findPath("appointmentType").textValue());
+        appointment.setCoachId(json.findPath("userId").textValue());
+        appointment.setStudentId(null);
+        appointment.setAppointmentType("");
         appointment.setStartDate(DatatypeConverter.parseDateTime(json.findPath("startDate").textValue()).getTime());
         appointment.setEndDate(DatatypeConverter.parseDateTime(json.findPath("endDate").textValue()).getTime());
-        appointment.setAppointmentNotes(json.findPath("appointmentNotes").textValue());
-        appointment.setPresent(Boolean.getBoolean(json.findPath("present").textValue()));
-        appointment.setServiceType(json.findPath("serviceType").textValue());
+        appointment.setAppointmentNotes("");
+        appointment.setPresent(false);
+        appointment.setServiceType("");
         appointment.setWeekly(json.findPath("weekly").asBoolean());
         if (appointment.isWeekly()) {
             appointment.setWeeklyId(uniqueId);
@@ -56,7 +56,9 @@ public class AppointmentsController extends Controller {
         }
         appointmentsDB.addOrUpdate(appointment);
         /* Check if user is in DB */
-        new Thread(() -> mailerService.sendAppointmentConfirmation(appointment)).start();
+
+        // new Thread(() -> mailerService.sendAppointmentConfirmation(appointment)).start();
+
         return ok();
     }
 
@@ -71,9 +73,9 @@ public class AppointmentsController extends Controller {
         endDate.add(Calendar.DAY_OF_YEAR, 7);
         while (currentDate.before(semesterEnd)) {
             AppointmentsModel newAppointment = new AppointmentsModel();
-            newAppointment.setCoachId(json.findPath("coachId").textValue());
-            newAppointment.setStudentId(json.findPath("studentId").textValue());
-            newAppointment.setAppointmentType(json.findPath("appointmentType").textValue());
+            newAppointment.setCoachId(json.findPath("userId").textValue());
+            newAppointment.setStudentId(null);
+            newAppointment.setAppointmentType("");
 
             Calendar startWeeklyDate = Calendar.getInstance();
             startWeeklyDate.setTime(currentDate.getTime());
@@ -90,9 +92,9 @@ public class AppointmentsController extends Controller {
 
             newAppointment.setStartDate(startWeeklyDate.getTime());
             newAppointment.setEndDate(endWeeklyDate.getTime());
-            newAppointment.setAppointmentNotes(json.findPath("appointmentNotes").textValue());
-            newAppointment.setPresent(Boolean.getBoolean(json.findPath("present").textValue()));
-            newAppointment.setServiceType(json.findPath("serviceType").textValue());
+            newAppointment.setAppointmentNotes("");
+            newAppointment.setPresent(false);
+            newAppointment.setServiceType("");
             newAppointment.setWeekly(json.findPath("weekly").asBoolean());
             newAppointment.setWeeklyId(uniqueId);
             appointmentsDB.addOrUpdate(newAppointment);
@@ -117,6 +119,22 @@ public class AppointmentsController extends Controller {
         return ok();
     }
 
+    public Result removeAppointment() {
+        JsonNode json = request().body().asJson();
+        String appointmentId = json.findPath("appointmentId").textValue();
+        Boolean removeAll = json.findPath("removeAll").asBoolean();
+        AppointmentsModel appointment = appointmentsDB.remove(appointmentId).orElseThrow(NullPointerException::new);
+        if (appointment.isWeekly() && removeAll) {
+            List<AppointmentsModel> appointments = appointmentsDB.getByWeeklyId(appointment.getWeeklyId());
+            for (AppointmentsModel ap : appointments) {
+                if (ap.getStartDate().after(new Date()) && appointment.getStudentId() == null) {
+                    appointmentsDB.remove(ap.getAppointmentId());
+                }
+            }
+        }
+        return ok();
+    }
+
     public Result updateCoachNotes() {
         JsonNode json = request().body().asJson();
         String appointmentId = json.findPath("appointmentId").textValue();
@@ -130,11 +148,22 @@ public class AppointmentsController extends Controller {
     public Result appointmentsForUser(String role, String userId, String start, String end) {
         Date startDate = DatatypeConverter.parseDateTime(start).getTime();
         Date endDate = DatatypeConverter.parseDateTime(end).getTime();
+        Calendar endb = Calendar.getInstance();
+        endb.setTime(endDate);
+        endb.set(Calendar.HOUR_OF_DAY, 24);
+        endDate = endb.getTime();
+        List<AppointmentsModel> appointments = appointmentsDB.getAppointmentsByUserAndDate(userId, startDate, endDate);
+        return ok(Json.toJson(appointments));
+    }
+
+    public Result appointmentsAsCoach(String userId, String start, String end) {
+        Date startDate = DatatypeConverter.parseDateTime(start).getTime();
+        Date endDate = DatatypeConverter.parseDateTime(end).getTime();
         Calendar endc = Calendar.getInstance();
         endc.setTime(endDate);
         endc.set(Calendar.HOUR_OF_DAY, 24);
         endDate = endc.getTime();
-        List<AppointmentsModel> appointments = appointmentsDB.getAppointmentsByUserAndDate(userId, startDate, endDate);
+        List<AppointmentsModel> appointments = appointmentsDB.getCoachAvailablitiliy(userId, startDate, endDate);
         return ok(Json.toJson(appointments));
     }
 
