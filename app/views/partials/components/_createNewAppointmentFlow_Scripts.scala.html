@@ -73,7 +73,7 @@
                             const coachId = $("#coachId").find(":selected").val();
                             const service = $("#serviceType").find(":selected").val();
                             $.ajax({
-                                url: '/availableSlotsForAppointments/' + coachId + '/' + moment(start).toISOString() + '/' + moment(end).toISOString() + '/' + service,
+                                url: '/availableSlotsForAppointments/' + coachId + '/' + moment(new Date()).subtract(10, 'm').toISOString() + '/' + moment(end).toISOString() + '/' + service,
                                 type: 'GET',
                                 success: function (response) {
                                     const events = [];
@@ -151,7 +151,7 @@
                             eventElement.find("div.fc-content").prepend("<button onclick='removeAppointment(\"" + event.id + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
                         },
                         select: function (start, end, jsEvent, view) {
-                            /* ALlow scheduling appointments in the past for up to 10 minutes (walk-ins, etc) */
+                            /* Allow scheduling appointments in the past for up to 10 minutes (walk-ins, etc) */
                             if (start.local().isBefore(moment().subtract(10, 'minutes'))) {
                                 $.alert({
                                             title: "Cannot create appointment in the past",

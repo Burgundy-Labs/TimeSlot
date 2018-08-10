@@ -5,18 +5,25 @@ import com.fasterxml.jackson.databind.JsonNode;
 import application_components.mailing.MailerService;
 import databases.AppointmentsDB;
 import databases.SettingsDB;
+import databases.UserDB;
 import models.AppointmentsModel;
+import models.AvailabilityModel;
+import models.UsersModel;
+import org.apache.commons.lang3.time.DateUtils;
+import org.joda.time.DateTime;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
 import javax.xml.bind.DatatypeConverter;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class AppointmentsController extends Controller {
     private AppointmentsDB appointmentsDB = new AppointmentsDB();
     private SettingsDB settingsDB = new SettingsDB();
     private MailerService mailerService = new MailerService();
+    private UserDB userDB = new UserDB();
 
     @Authenticate
     public Result index() {
@@ -143,6 +150,95 @@ public class AppointmentsController extends Controller {
         appointment.setCoachNotes(coachNotes);
         appointmentsDB.addOrUpdate(appointment);
         return ok();
+    }
+
+    public Result availableSlotsForAppointments(String coachId, String start, String end, String service) {
+        Date startDate = DatatypeConverter.parseDateTime(start).getTime();
+        Date endDate = DatatypeConverter.parseDateTime(end).getTime();
+        Calendar calEnd = Calendar.getInstance();
+        calEnd.setTime(endDate);
+        calEnd.set(Calendar.HOUR_OF_DAY, 24);
+        endDate = calEnd.getTime();
+        List<AppointmentsModel> appointments = new ArrayList<>();
+        if (coachId.equals("any")) {
+            List<UsersModel> coaches = userDB.getCoachesByService(service);
+            for ( UsersModel coach : coaches ) {
+                appointments.addAll(appointmentsDB.getOpenAppointmentsByUserAndDate(coach.getUid(), startDate, endDate));
+            }
+        } else {
+            appointments = appointmentsDB.getOpenAppointmentsByUserAndDate(coachId, startDate, endDate);
+        }
+        List<AvailabilityModel> availabilities = new ArrayList<>();
+        for ( AppointmentsModel app : appointments ) {
+            AvailabilityModel av = new AvailabilityModel(app.getAppointmentId(), app.getCoachId(), app.getStartDate(), app.getEndDate(), app.isWeekly());
+            av.setCanBeWeekly(app.isWeekly());
+            av.setCanBeOneTime(true);
+            if ( app.isWeekly() ) {
+                List<AppointmentsModel> weeklyAppointments = appointmentsDB.getWeeklyAppointmentsByWeeklyId(app.getWeeklyId());
+                for (AppointmentsModel appointment : weeklyAppointments){
+                    if ( appointment.getStudentId() != null ) {
+                        av.setCanBeWeekly(false);
+                        break;
+                    }
+                }
+            }
+            long duration = av.getEndDate().getTime() - av.getStartDate().getTime();
+            long diffInMinutes = TimeUnit.MILLISECONDS.toMinutes(duration);
+            if (diffInMinutes / 30 != 1 && diffInMinutes != 0) {
+                for (int i = 0; i < diffInMinutes / 30; i++) {
+                    AvailabilityModel newAvail = new AvailabilityModel
+                            (av.getavailabilityId(),
+                                    app.getCoachId(),
+                                    DateUtils.addMinutes(av.getStartDate(), 30 * i),
+                                    DateUtils.addMinutes(av.getStartDate(), 30 * (i + 1)),
+                                    av.getWeekly()
+                            );
+                    newAvail.setCanBeWeekly(av.getCanBeWeekly());
+                    newAvail.setCanBeOneTime(av.getCanBeOneTime());
+                    availabilities.add(newAvail);
+                }
+            } else {
+                availabilities.add(av);
+            }
+        }
+
+        return ok(Json.toJson(availableSlotsForAny(availabilities)));
+    }
+
+    private List<AvailabilityModel> availableSlotsForAny(List<AvailabilityModel> availabilities) {
+
+        List<AvailabilityModel> newAvailabilities = new ArrayList<>();                                     // Creates a new list of availabilities
+        for (int i = 0; i < availabilities.size(); i++) {
+            AvailabilityModel newAv = new AvailabilityModel(availabilities.get(i).getavailabilityId(),
+                    "any",
+                    availabilities.get(i).getStartDate(),
+                    availabilities.get(i).getEndDate(),
+                    false);
+            // New availability model where the ID is null, the userID is any, and has the same start and end date as the original availability at i
+            for (int j = i; j < availabilities.size(); j++) {                                           // For j from i to the size of the availability list size
+                AvailabilityModel currentAv = availabilities.get(j);                                      // Current Availability in the J loop
+                if (currentAv.getStartDate().equals(newAv.getStartDate())) {                            // If the current availability in the J loop is at the same time as the availability in the I look that was made
+                    if (currentAv.getCanBeOneTime() && !currentAv.getCanBeWeekly()) {                   // If the availability can be one time and not weekly
+                        newAv.addOneTimeUser(currentAv.getUserid());                                      // Add the user id into the array of one time users
+                    } else { // Otherwise
+                        newAv.addWeeklyUser(currentAv.getUserid());                                       // Add the user id into the array of weekly users
+                        newAv.addOneTimeUser(currentAv.getUserid());                                      // Add the user id into the array of one time users
+                    }
+                    availabilities.remove(j);                                                             // Remove the availability from the list of availabilities
+                    j--;                                                                                  // Decrease j by one so that the loop goes to the next one
+                }
+            }
+            i--;                                                                                          // Decrease i by one so that the loop goes to the next one
+            if (!newAv.getWeeklyUsers().isEmpty()) {                                                    // If the weekly users is not empty
+                newAv.setCanBeWeekly(true);                                                               // Set can be weekly to true
+                newAv.setCanBeOneTime(true);                                                              // Set can be one time to true
+            } else {
+                newAv.setCanBeOneTime(true);                                                              // Set can be one time to true
+                newAv.setCanBeWeekly(false);                                                              // Set can be weekly to false
+            }
+            newAvailabilities.add(newAv);                                                                  // Add the new availabilities to the new list of availabilities
+        }
+        return newAvailabilities;                                                                          // Return the list of new availabilities
     }
 
     public Result appointmentsForUser(String role, String userId, String start, String end) {

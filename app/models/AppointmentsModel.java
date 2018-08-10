@@ -228,7 +228,7 @@ public class AppointmentsModel {
     }
 
     public boolean isWeekly() {
-        return weekly;
+        return (weeklyId == "") ? false : true;
     }
 
     public void setWeekly(boolean weekly) {

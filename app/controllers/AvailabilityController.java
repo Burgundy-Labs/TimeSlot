@@ -57,7 +57,7 @@ public class AvailabilityController extends Controller {
         Date endDate = DatatypeConverter.parseDateTime(end).getTime();
         List<AvailabilityModel> avails;
         if ("any".equals(userId)) {
-            avails = availableSlotsForAny(startDate, endDate, serviceId);
+            avails = new ArrayList<>(); //availableSlotsForAny(startDate, endDate, serviceId);
         } else {
             avails = availableSlotsForCoach(userId, startDate, endDate);
         }
@@ -65,46 +65,7 @@ public class AvailabilityController extends Controller {
         return ok(Json.toJson(avails));
     }
 
-    private List<AvailabilityModel> availableSlotsForAny(Date startDate, Date endDate, String serviceId) {
-        List<UsersModel> coaches = userDB.getCoachesByService(serviceId);                                 // Gets all coaches that have availability for the serviceId
-        List<AvailabilityModel> availabilities = new ArrayList<>();                                       // Creates a blank list for availabilities for availabilities of all the coaches
-        for (UsersModel coach : coaches) {                                                              // For all the coaches who have availabilities for the severiceId
-            availabilities.addAll(availableSlotsForCoach(coach.getUid(), startDate, endDate));            // Add all of the availabilities during the current week from the coach
-        }
-        List<AvailabilityModel> newAvailabilities = new ArrayList<>();                                     // Creates a new list of availabilities
-        for (int i = 0; i < availabilities.size(); i++) {
 
-            AvailabilityModel newAv = new AvailabilityModel(null,
-                    "any",
-                    availabilities.get(i).getStartDate(),
-                    availabilities.get(i).getEndDate(),
-                    false);
-            // New availability model where the ID is null, the userID is any, and has the same start and end date as the original availability at i
-            for (int j = i; j < availabilities.size(); j++) {                                           // For j from i to the size of the availability list size
-                AvailabilityModel currentAv = availabilities.get(j);                                      // Current Availability in the J loop
-                if (currentAv.getStartDate().equals(newAv.getStartDate())) {                            // If the current availability in the J loop is at the same time as the availability in the I look that was made
-                    if (currentAv.getCanBeOneTime() && !currentAv.getCanBeWeekly()) {                   // If the availability can be one time and not weekly
-                        newAv.addOneTimeUser(currentAv.getUserid());                                      // Add the user id into the array of one time users
-                    } else { // Otherwise
-                        newAv.addWeeklyUser(currentAv.getUserid());                                       // Add the user id into the array of weekly users
-                        newAv.addOneTimeUser(currentAv.getUserid());                                      // Add the user id into the array of one time users
-                    }
-                    availabilities.remove(j);                                                             // Remove the availability from the list of availabilities
-                    j--;                                                                                  // Decrease j by one so that the loop goes to the next one
-                }
-            }
-            i--;                                                                                          // Decrease i by one so that the loop goes to the next one
-            if (!newAv.getWeeklyUsers().isEmpty()) {                                                    // If the weekly users is not empty
-                newAv.setCanBeWeekly(true);                                                               // Set can be weekly to true
-                newAv.setCanBeOneTime(true);                                                              // Set can be one time to true
-            } else {
-                newAv.setCanBeOneTime(true);                                                              // Set can be one time to true
-                newAv.setCanBeWeekly(false);                                                              // Set can be weekly to false
-            }
-            newAvailabilities.add(newAv);                                                                  // Add the new availabilities to the new list of availabilities
-        }
-        return newAvailabilities;                                                                          // Return the list of new availabilities
-    }
 
     private List<AvailabilityModel> availableSlotsForCoach(String userId, Date startDate, Date endDate) {
         List<AvailabilityModel> availabilities = availabilityDB.getAvailabilitesForUser(userId, startDate, endDate);
