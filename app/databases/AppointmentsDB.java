@@ -159,6 +159,40 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
         return appointmentList;
     }
 
+    public List<AppointmentsModel> getByWeeklyId(String weeklyId, Date start) {
+        List<AppointmentsModel> appointmentList = new ArrayList<>();
+        /* Asynchronously retrieve all appointments */
+        ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("appointments").whereEqualTo("weeklyId", weeklyId).whereGreaterThan("startDate", start).get();
+        QuerySnapshot querySnapshot = null;
+        try {
+            /* Attempt to get a list of all appointments - blocking */
+            querySnapshot = query.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        assert querySnapshot != null;
+        List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
+        appointmentList = documents.stream().map(d -> d.toObject(AppointmentsModel.class)).collect(Collectors.toList());
+        return appointmentList;
+    }
+
+    public List<AppointmentsModel> getByWeeklyId(String weeklyId, Date start, String studentId) {
+        List<AppointmentsModel> appointmentList = new ArrayList<>();
+        /* Asynchronously retrieve all appointments */
+        ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("appointments").whereEqualTo("weeklyId", weeklyId).whereEqualTo("studentId", studentId).whereGreaterThan("startDate", start).get();
+        QuerySnapshot querySnapshot = null;
+        try {
+            /* Attempt to get a list of all appointments - blocking */
+            querySnapshot = query.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        assert querySnapshot != null;
+        List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
+        appointmentList = documents.stream().map(d -> d.toObject(AppointmentsModel.class)).collect(Collectors.toList());
+        return appointmentList;
+    }
+
     /* Returns all available appointments for a coach */
     public List<AppointmentsModel> getAvailableAppointments(UsersModel coachID) {
         List<AppointmentsModel> appointmentList = new ArrayList<>();
@@ -338,28 +372,6 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
             } else {
                 break;
             }
-        }
-        return appointmentList;
-    }
-
-
-    public List<AppointmentsModel> getWeeklyAppointmentsByWeeklyId(String weeklyId) {
-        List<AppointmentsModel> appointmentList = new ArrayList<>();
-        /* Asynchronously retrieve all appointments */
-        ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("appointments").whereEqualTo("weeklyId", weeklyId).whereGreaterThan("startDate", new Date()).get();
-        QuerySnapshot querySnapshot = null;
-        try {
-            /* Attempt to get a list of all appointments - blocking */
-            querySnapshot = query.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-        assert querySnapshot != null;
-        List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
-        /* Iterate appointments and add them to a list for return */
-        for (DocumentSnapshot document : documents) {
-                AppointmentsModel appointment = document.toObject(AppointmentsModel.class);
-                appointmentList.add(appointment);
         }
         return appointmentList;
     }

@@ -43,7 +43,7 @@ POST        /cancelAppointment                                                  
 POST        /removeAppointment                                                   controllers.AppointmentsController.removeAppointment()
 POST        /updateCoachNotes                                                    controllers.AppointmentsController.updateCoachNotes()
 POST        /updatePresence                                                      controllers.AppointmentsController.updatePresence()
-POST        /createAvailability                                                  controllers.AvailabilityController.createAvailability()
+POST        /createAvailability                                                  controllers.AppointmentsController.createAvailability()
 POST        /removeAvailability                                                  controllers.AvailabilityController.removeAvailability()
 POST        /sendFeedback                                                        controllers.FeedbackController.sendFeedback()
 POST        /appointmentTypeFrequency                                            controllers.SettingsController.appointmentTypeFrequency()

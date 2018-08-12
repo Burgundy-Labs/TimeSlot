@@ -304,6 +304,7 @@
                             endDate: appointment.endDate,
                             appointmentNotes: $('#appointmentNotes').val(),
                             present: false,
+                            appointmentId: appointment.id
                         };
                         if (scheduleUser.userId !== null && scheduleUser.userRole === "Coach") {
                             form.coachId = scheduleUser.userId;
@@ -348,7 +349,7 @@
                                     action: function () {
                                         form.weekly = false;
                                         if (form.coachId === "any") {
-                                            form.coachId = appointment.oneTimeUsers[Math.floor(Math.random() * appointment.oneTimeUsers.length)];
+                                            form.appointmentId = appointment.oneTimeUsers[Math.floor(Math.random() * appointment.oneTimeUsers.length)];
                                         }
                                         /!* Create appointment Here*!/
                                         $.ajax({
@@ -372,7 +373,7 @@
                                     action: function () {
                                         form.weekly = true;
                                         if (form.coachId === "any") {
-                                            form.coachId = appointment.weeklyUsers[Math.floor(Math.random() * appointment.weeklyUsers.length)];
+                                            form.appointmentId = appointment.weeklyUsers[Math.floor(Math.random() * appointment.weeklyUsers.length)];
                                         }
                                         /!* Create appointment Here*!/
                                         $.ajax({

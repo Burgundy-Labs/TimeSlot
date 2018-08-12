@@ -227,8 +227,37 @@ public class AppointmentsModel {
                 "Student Notes: " + appointmentNotes + "";
     }
 
+    public void clearStudentData() {
+        studentEmail = null;
+        studentId = null;
+        studentName = null;
+        studentPhoto = null;
+    }
+
+    public void clearCoachData() {
+        coachEmail = null;
+        coachId = null;
+        coachName = null;
+        coachNotes = null;
+        coachPhoto = null;
+    }
+
+    public void setStudentData(String studentId, String studentEmail, String studentName, String studentPhoto) {
+        this.studentId = studentId;
+        this.studentEmail = studentEmail;
+        this.studentName = studentName;
+        this.studentPhoto = studentPhoto;
+    }
+
+    public void setCoachData(String coachId, String coachEmail, String coachName, String coachPhoto) {
+        this.coachId = coachId;
+        this.coachEmail = coachEmail;
+        this.coachName = coachName;
+        this.coachPhoto = coachPhoto;
+    }
+
     public boolean isWeekly() {
-        return (weeklyId == "") ? false : true;
+        return weekly;
     }
 
     public void setWeekly(boolean weekly) {
@@ -242,4 +271,6 @@ public class AppointmentsModel {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public AppointmentsModel clone() { return new AppointmentsModel(getAppointmentId(), getStartDate(), getEndDate(), getStudentId(), getStudentName(), getStudentEmail(), getStudentPhoto(), getCoachId(), getCoachName(), getCoachEmail(), getCoachPhoto(), getAppointmentNotes(), getCoachNotes(), getPresent(), getAppointmentType(), getServiceType(), this.weekly, getWeeklyId()); }
 }

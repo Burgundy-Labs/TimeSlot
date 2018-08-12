@@ -41,6 +41,112 @@ public class AppointmentsController extends Controller {
 
     @Authenticate
     public Result createAppointment() {
+        JsonNode json = request().body().asJson();
+        AppointmentsModel ap = appointmentsDB.get(json.findPath("appointmentId").asText()).get();
+        Date startDate = DatatypeConverter.parseDateTime(json.findPath("startDate").textValue()).getTime();
+        Date endDate = DatatypeConverter.parseDateTime(json.findPath("endDate").textValue()).getTime();
+        AppointmentsModel appoint = ap.clone();
+        appoint.setDescription(null);
+        appoint.setPresent(false);
+        appoint.setStartDate(startDate);
+        appoint.setEndDate(endDate);
+        String UUID1 = UUID.randomUUID().toString();
+        String UUID2 = UUID.randomUUID().toString();
+        boolean split = false;
+        if ( ap.getStartDate().before(startDate) && ap.getEndDate().equals(endDate) ) {
+            ap.setEndDate(startDate);
+            if (ap.isWeekly()) {
+                ap.setWeeklyId(UUID1);
+            }
+            appoint.setAppointmentId(null);
+            appointmentsDB.addOrUpdate(ap);
+            split = true;
+        } else if ( ap.getStartDate().equals(startDate) && ap.getEndDate().after(endDate) ) {
+            ap.setStartDate(endDate);
+            if (ap.isWeekly()) {
+                ap.setWeeklyId(UUID1);
+            }
+            appoint.setAppointmentId(null);
+            appointmentsDB.addOrUpdate(ap);
+            split = true;
+        } else if ( ap.getStartDate().before(startDate) && ap.getEndDate().after(endDate) ) {
+            AppointmentsModel splitAppoint = ap.clone();
+            appoint.setAppointmentId(null);
+            splitAppoint.setPresent(false);
+            splitAppoint.setAppointmentId(null);
+            splitAppoint.setStartDate(appoint.getEndDate());
+            splitAppoint.setEndDate(ap.getEndDate());
+            ap.setEndDate(startDate);
+            if ( ap.isWeekly() ) {
+                ap.setWeeklyId(UUID1);
+                splitAppoint.setWeeklyId(UUID2);
+            }
+            appointmentsDB.addOrUpdate(ap);
+            appointmentsDB.addOrUpdate(splitAppoint);
+            split = true;
+        }
+
+        UsersModel student = userDB.get(json.findPath("studentId").asText()).get();
+        appoint.setStudentData(student.getUid(), student.getEmail(), student.getDisplayName(), student.getPhotoURL());
+        appointmentsDB.addOrUpdate(appoint);
+        if ( json.findPath("weekly").asBoolean() ) {
+            List<AppointmentsModel> weeklyApps = appointmentsDB.getByWeeklyId(appoint.getWeeklyId(), new Date());
+            int week = 1;
+            Calendar start = DatatypeConverter.parseDateTime(json.findPath("startDate").textValue());
+            Calendar end = DatatypeConverter.parseDateTime(json.findPath("endDate").textValue());
+            if (weeklyApps.get(0) != null ) {
+                int weekDifference = 0;
+                Calendar weeklyDate = DatatypeConverter.parseDate(weeklyApps.get(0).getStartDate().toString());
+                Calendar tempStartDate = (Calendar) start.clone();
+                while ( tempStartDate.get(Calendar.WEEK_OF_YEAR) != weeklyDate.get(Calendar.WEEK_OF_YEAR) ) {
+                    weeklyDate.add(Calendar.DAY_OF_YEAR, -7);
+                    week--;
+                }
+            }
+            for ( AppointmentsModel appointment : weeklyApps ) {
+                AppointmentsModel weeklyApp = appointment.clone();
+                if ( split ) {
+                    start.add(Calendar.DAY_OF_YEAR, 7 * week);
+                    end.add(Calendar.DAY_OF_YEAR, 7 * week);
+                    /* TODO Check if it breaks during daylight savings */
+                    weeklyApp.setStartDate(start.getTime());
+                    weeklyApp.setEndDate(end.getTime());
+                    if ( appointment.getStartDate().before(start.getTime()) && appointment.getEndDate().equals(end.getTime()) ) {
+                        appointment.setEndDate(start.getTime());
+                        appointment.setWeeklyId(UUID1);
+                        weeklyApp.setAppointmentId(null);
+                        appointmentsDB.addOrUpdate(appointment);
+                    } else if ( appointment.getStartDate().equals(start.getTime()) && appointment.getEndDate().after(end.getTime()) ) {
+                        appointment.setStartDate(end.getTime());
+                        appointment.setWeeklyId(UUID1);
+                        weeklyApp.setAppointmentId(null);
+                        appointmentsDB.addOrUpdate(appointment);
+                    } else if ( ap.getStartDate().before(startDate) && ap.getEndDate().after(endDate) ) {
+                        AppointmentsModel splitAppoint = ap.clone();
+                        splitAppoint.setDescription(null);
+                        weeklyApp.setAppointmentId(null);
+                        splitAppoint.setPresent(false);
+                        splitAppoint.setAppointmentId(null);
+                        splitAppoint.setStartDate(weeklyApp.getEndDate());
+                        splitAppoint.setEndDate(appointment.getEndDate());
+                        splitAppoint.setWeeklyId(UUID2);
+                        appointment.setEndDate(start.getTime());
+                        appointment.setWeeklyId(UUID1);
+                        appointmentsDB.addOrUpdate(appointment);
+                        appointmentsDB.addOrUpdate(splitAppoint);
+                    }
+
+                }
+                weeklyApp.setStudentData(student.getUid(), student.getEmail(), student.getDisplayName(), student.getPhotoURL());
+                appointmentsDB.addOrUpdate(weeklyApp);
+                week++;
+            }
+        }
+        return ok();
+    }
+
+    @Authenticate
+    public Result createAvailability() {
         /* Get user object from request */
         JsonNode json = request().body().asJson();
         /* Get user from json request */
@@ -54,7 +160,8 @@ public class AppointmentsController extends Controller {
         appointment.setAppointmentNotes("");
         appointment.setPresent(false);
         appointment.setServiceType("");
-        appointment.setWeekly(json.findPath("weekly").asBoolean());
+        Boolean weekly = json.findPath("weekly").asBoolean();
+        appointment.setWeekly(weekly);
         if (appointment.isWeekly()) {
             appointment.setWeeklyId(uniqueId);
             new Thread(() -> createWeeklyAppointments(json, uniqueId)).start();
@@ -113,16 +220,25 @@ public class AppointmentsController extends Controller {
     public Result cancelAppointment() {
         JsonNode json = request().body().asJson();
         String appointmentId = json.findPath("appointmentId").textValue();
-        AppointmentsModel appointment = appointmentsDB.remove(appointmentId).orElseThrow(NullPointerException::new);
-        if (appointment.isWeekly()) {
-            List<AppointmentsModel> appointments = appointmentsDB.getAppointmentsForUser("Student", appointment.getStudentId());
-            for (AppointmentsModel ap : appointments) {
-                if (ap.getWeeklyId() != null && ap.getWeeklyId().equals(json.findPath("weeklyId").asText()) && ap.getStartDate().after(new Date())) {
-                    appointmentsDB.remove(ap.getAppointmentId());
-                }
-            }
-        }
+        AppointmentsModel appointment = appointmentsDB.get(appointmentId).get();
+        appointment.clearStudentData();
+        appointmentsDB.addOrUpdate(appointment);
         new Thread(() -> mailerService.sendAppointmentCancellation(appointment, json.findPath("cancelNotes").asText())).start();
+        return ok();
+    }
+
+    public Result cancelWeeklyAppointment() {
+        JsonNode json = request().body().asJson();
+        String appointmentId = json.findPath("appointmentId").textValue();
+        AppointmentsModel appointment = appointmentsDB.get(appointmentId).get();
+        List<AppointmentsModel> appointments = appointmentsDB.getByWeeklyId(appointment.getWeeklyId(), appointment.getStartDate(), appointment.getStudentId());
+        appointment.clearStudentData();
+        appointmentsDB.addOrUpdate(appointment);
+        for ( AppointmentsModel ap : appointments  ) {
+            ap.clearStudentData();
+            appointmentsDB.addOrUpdate(ap);
+        }
+        /* TODO add thread to email when canceling weekly appointments */
         return ok();
     }
 
@@ -174,7 +290,7 @@ public class AppointmentsController extends Controller {
             av.setCanBeWeekly(app.isWeekly());
             av.setCanBeOneTime(true);
             if ( app.isWeekly() ) {
-                List<AppointmentsModel> weeklyAppointments = appointmentsDB.getWeeklyAppointmentsByWeeklyId(app.getWeeklyId());
+                List<AppointmentsModel> weeklyAppointments = appointmentsDB.getByWeeklyId(app.getWeeklyId(), app.getStartDate());
                 for (AppointmentsModel appointment : weeklyAppointments){
                     if ( appointment.getStudentId() != null ) {
                         av.setCanBeWeekly(false);
@@ -218,12 +334,10 @@ public class AppointmentsController extends Controller {
             for (int j = i; j < availabilities.size(); j++) {                                           // For j from i to the size of the availability list size
                 AvailabilityModel currentAv = availabilities.get(j);                                      // Current Availability in the J loop
                 if (currentAv.getStartDate().equals(newAv.getStartDate())) {                            // If the current availability in the J loop is at the same time as the availability in the I look that was made
-                    if (currentAv.getCanBeOneTime() && !currentAv.getCanBeWeekly()) {                   // If the availability can be one time and not weekly
-                        newAv.addOneTimeUser(currentAv.getUserid());                                      // Add the user id into the array of one time users
-                    } else { // Otherwise
-                        newAv.addWeeklyUser(currentAv.getUserid());                                       // Add the user id into the array of weekly users
-                        newAv.addOneTimeUser(currentAv.getUserid());                                      // Add the user id into the array of one time users
+                    if (currentAv.getCanBeWeekly()) {                   // If the availability can be one time and not weekly
+                        newAv.addWeeklyUser(currentAv.getavailabilityId());                                       // Add the user id into the array of weekly users
                     }
+                    newAv.addOneTimeUser(currentAv.getavailabilityId());
                     availabilities.remove(j);                                                             // Remove the availability from the list of availabilities
                     j--;                                                                                  // Decrease j by one so that the loop goes to the next one
                 }

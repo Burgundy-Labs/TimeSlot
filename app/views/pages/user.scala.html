@@ -268,7 +268,7 @@
                                             end: moment($(this).attr('endDate')),
                                             dow: []
                                         };
-                                        if ( event.start < new Date() || $(this).studentId != null ) {
+                                        if ( event.start < new Date() || $(this).attr('studentId') ) {
                                             event.color = "#696969";
                                         }
                                         if ($(this).attr("weekly") === true) {
@@ -377,7 +377,7 @@
 
                 function createAvailability(newAvailability) {
                     $.ajax({
-                        url: '/createAppointment',
+                        url: '/createAvailability',
                         type: 'POST',
                         data: JSON.stringify(newAvailability),
                         contentType: 'application/json',
