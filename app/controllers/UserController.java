@@ -32,7 +32,7 @@ public class UserController extends Controller {
     public Result userPage(String userId) {
         if (userId == null) return notFound();
         Optional<UsersModel> user = userDB.get(userId);
-        if (user == null) return notFound();
+        if (!user.isPresent()) return notFound();
         return ok(views.html.pages.user.render(user.orElseThrow(NullPointerException::new)));
     }
 
@@ -86,7 +86,7 @@ public class UserController extends Controller {
         try {
             JsonNode json = request().body().asJson();
             String userId = json.get("userId").asText();
-            if (userDB.remove(userId) != null) {
+            if (userDB.remove(userId).isPresent()) {
                 return ok();
             } else {
                 return internalServerError();
