@@ -86,4 +86,5 @@ public class SettingsModel {
     }
 
     public void setDaysOpenWeekly(boolean[] days) { daysOpenWeekly = days; }
+
 }
