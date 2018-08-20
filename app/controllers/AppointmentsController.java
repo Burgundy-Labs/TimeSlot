@@ -58,6 +58,7 @@ public class AppointmentsController extends Controller {
         if ( availability.isWeekly() ) {
             String UUID1 = UUID.randomUUID().toString();
             String UUID2 = UUID.randomUUID().toString();
+            String UUID3 = UUID.randomUUID().toString();
             Calendar startAppointment = DatatypeConverter.parseDateTime(json.findPath("startDate").textValue());
             Calendar endAppointment = DatatypeConverter.parseDateTime(json.findPath("endDate").textValue());
             Calendar start = DatatypeConverter.parseDateTime(json.findPath("startDate").textValue());
@@ -75,19 +76,20 @@ public class AppointmentsController extends Controller {
                 startAppointment.set(Calendar.MINUTE, start.get(Calendar.MINUTE));
                 endAppointment.set(Calendar.HOUR_OF_DAY, end.get(Calendar.HOUR_OF_DAY));
                 endAppointment.set(Calendar.MINUTE, end.get(Calendar.MINUTE));
+                System.out.println(startAppointment.get(Calendar.HOUR_OF_DAY) + " " + startAppointment.get(Calendar.MINUTE));
                 appointment.setStartDate(startAppointment.getTime());
                 appointment.setEndDate(endAppointment.getTime());
                 if ( appointment.isWeekly() ) {
                     if ( appointment.getStartDate().after(startDate) || appointment.getStartDate().equals(startDate)) {
-                        split(weeklyAvailability, student, appointment.clone(), UUID1, UUID2, true);
+                        split(weeklyAvailability, student, appointment.clone(), UUID1, UUID2, UUID3, true);
                     } else {
-                        split(weeklyAvailability, student, appointment.clone(), UUID1, UUID2, false);
+                        split(weeklyAvailability, student, appointment.clone(), UUID1, UUID2, UUID3, false);
                     }
                 } else {
                     if ( appointment.getStartDate().equals(startDate) ) {
-                        split(weeklyAvailability, student, appointment.clone(), UUID1, UUID2, true);
+                        split(weeklyAvailability, student, appointment.clone(), UUID1, UUID2, UUID3, true);
                     } else {
-                        split(weeklyAvailability, student, appointment.clone(), UUID1, UUID2, false);
+                        split(weeklyAvailability, student, appointment.clone(), UUID1, UUID2, UUID3, false);
                     }
                 }
                 startAppointment.add(Calendar.DAY_OF_YEAR, 7);
@@ -124,15 +126,17 @@ public class AppointmentsController extends Controller {
         return appointment;
     }
 
-    private AppointmentsModel split(AppointmentsModel availability, UsersModel student, AppointmentsModel appointment, String UUID1, String UUID2, boolean isAppointment) {
+    private AppointmentsModel split(AppointmentsModel availability, UsersModel student, AppointmentsModel appointment, String UUID1, String UUID2, String UUID3, boolean isAppointment) {
         if (availability.getStartDate().before(appointment.getStartDate()) && availability.getEndDate().equals(appointment.getEndDate())) {
             availability.setEndDate(appointment.getStartDate());
+            availability.setWeeklyId(UUID3);
             appointment.setAppointmentId(null);
             appointment.setWeeklyId(UUID1);
             availability.setWeekly(true);
             appointmentsDB.addOrUpdate(availability);
         } else if (availability.getStartDate().equals(appointment.getStartDate()) && availability.getEndDate().after(appointment.getEndDate())) {
             availability.setStartDate(appointment.getEndDate());
+            availability.setWeeklyId(UUID3);
             appointment.setAppointmentId(null);
             availability.setWeekly(true);
             appointment.setWeeklyId(UUID1);
@@ -147,6 +151,7 @@ public class AppointmentsController extends Controller {
             newAvailability.setWeekly(true);
             appointment.setAppointmentId(null);
             newAvailability.setWeeklyId(UUID2);
+            availability.setWeeklyId(UUID3);
             appointmentsDB.addOrUpdate(availability);
             appointmentsDB.addOrUpdate(newAvailability);
         } else {
