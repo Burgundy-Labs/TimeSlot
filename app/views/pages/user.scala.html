@@ -100,7 +100,7 @@
                                             <div class="mb-3 col-md-4">
                                                 <h4>Account Settings</h4>
                                                 <div class="input-group container">
-                                                    <input onclick="isCoachCheck()" type="checkbox" class="form-check-input" @if(userController.hasAttribute(user, "isCoach")) {checked} id="isCoachCheck">
+                                                    <input onclick="isCoachCheck()" type="checkbox" class="form-check-input" @if(userController.hasAttribute(user, UserAttributes.IS_COACH.getValue)) {checked} id="isCoachCheck">
                                                     <label class="form-check-label" for="isCoachCheck">
                                                         Act as coach</label>
                                                 </div>
