@@ -76,7 +76,6 @@ public class AppointmentsController extends Controller {
                 startAppointment.set(Calendar.MINUTE, start.get(Calendar.MINUTE));
                 endAppointment.set(Calendar.HOUR_OF_DAY, end.get(Calendar.HOUR_OF_DAY));
                 endAppointment.set(Calendar.MINUTE, end.get(Calendar.MINUTE));
-                System.out.println(startAppointment.get(Calendar.HOUR_OF_DAY) + " " + startAppointment.get(Calendar.MINUTE));
                 appointment.setStartDate(startAppointment.getTime());
                 appointment.setEndDate(endAppointment.getTime());
                 if ( appointment.isWeekly() ) {
@@ -161,7 +160,6 @@ public class AppointmentsController extends Controller {
             appointmentsDB.addOrUpdate(availability);
             return availability;
         }
-        appointment.setWeekly(true);
         if (isAppointment) {
             appointment.setStudentData(student.getUid(), student.getEmail(), student.getDisplayName(), student.getPhotoURL());
         } else {
