@@ -6,9 +6,7 @@ import application_components.mailing.MailerService;
 import databases.AppointmentsDB;
 import databases.SettingsDB;
 import databases.UserDB;
-import models.AppointmentsModel;
-import models.AvailabilityModel;
-import models.UsersModel;
+import models.*;
 import org.apache.commons.lang3.time.DateUtils;
 import org.joda.time.DateTime;
 import play.libs.Json;
@@ -47,6 +45,8 @@ public class AppointmentsController extends Controller {
         Date endDate = DatatypeConverter.parseDateTime(json.findPath("endDate").textValue()).getTime();
         UsersModel student = userDB.get(json.findPath("studentId").asText()).get();
         AppointmentsModel appointment = availability.clone();
+        appointment.setServiceType(json.findPath("serviceType").asText());
+        appointment.setAppointmentType(json.findPath("appointmentType").asText());
         appointment.setDescription(null);
         appointment.setPresent(false);
         appointment.setStartDate(startDate);
@@ -292,6 +292,13 @@ public class AppointmentsController extends Controller {
         return ok();
     }
 
+    public Result openAppointments(String coachId, String start, String end) {
+        Date startDate = DatatypeConverter.parseDateTime(start).getTime();
+        Date endDate = DatatypeConverter.parseDateTime(end).getTime();
+        List<AppointmentsModel> appointments = appointmentsDB.getOpenAppointmentsByUserAndDate(coachId, startDate, endDate);
+        return ok(Json.toJson(appointments));
+    }
+
     public Result availableSlotsForAppointments(String coachId, String start, String end, String service) {
         Date startDate = DatatypeConverter.parseDateTime(start).getTime();
         Date endDate = DatatypeConverter.parseDateTime(end).getTime();
@@ -388,7 +395,12 @@ public class AppointmentsController extends Controller {
         endb.setTime(endDate);
         endb.set(Calendar.HOUR_OF_DAY, 24);
         endDate = endb.getTime();
-        List<AppointmentsModel> appointments = appointmentsDB.getAppointmentsByUserAndDate(userId, startDate, endDate);
+        List<AppointmentsModel> appointments;
+        if ( "Coach".equals(role) || "Admin".equals(role) ) {
+            appointments = appointmentsDB.getAppointmentsAsCoach(userId, startDate, endDate);
+        } else {
+            appointments = appointmentsDB.getAppointmentsAsStudent(userId, startDate, endDate);
+        }
         return ok(Json.toJson(appointments));
     }
 

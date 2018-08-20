@@ -286,8 +286,8 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
     public List<AppointmentsModel> getNextFiveAppointmentsForUser(String role, String userId) {
         List<AppointmentsModel> appointmentList = new ArrayList<>();
         /* Asynchronously retrieve all appointments */
-        ApiFuture<QuerySnapshot> coachQuery = FirestoreHandler.get().collection("appointments").whereGreaterThan("start_date",new Date()).orderBy("start_date", Query.Direction.ASCENDING).whereEqualTo("coachId",userId).limit(5).get();
-        ApiFuture<QuerySnapshot> studentQuery = FirestoreHandler.get().collection("appointments").whereGreaterThan("start_date",new Date()).orderBy("start_date", Query.Direction.ASCENDING).whereEqualTo("studentId",userId).limit(5).get();
+        ApiFuture<QuerySnapshot> coachQuery = FirestoreHandler.get().collection("appointments").whereGreaterThan("startDate", new Date()).orderBy("startDate", Query.Direction.ASCENDING).whereEqualTo("coachId", userId).get();
+        ApiFuture<QuerySnapshot> studentQuery = FirestoreHandler.get().collection("appointments").whereGreaterThan("startDate", new Date()).orderBy("startDate", Query.Direction.ASCENDING).whereEqualTo("studentId", userId).limit(5).get();
         QuerySnapshot querySnapshotCoach = null;
         QuerySnapshot querySnapshotStudent = null;
         try {
@@ -304,7 +304,9 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
         /* Iterate appointments and add them to a list for return */
         for (DocumentSnapshot document : documentsCoach) {
             AppointmentsModel appointment = document.toObject(AppointmentsModel.class);
-            appointmentList.add(appointment);
+            if ( appointment.getStudentId() != null ) {
+                appointmentList.add(appointment);
+            }
         }
         for (DocumentSnapshot document : documentsStudent) {
             AppointmentsModel appointment = document.toObject(AppointmentsModel.class);
@@ -325,6 +327,48 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
             appointmentList.removeIf(i -> !i.getCoachId().equals(user.getUid()) && !i.getStudentId().equals(user.getUid()));
         } else {
             appointmentList.removeIf(i -> !i.getStudentId().equals(user.getUid()));
+        }
+        return appointmentList;
+    }
+
+    public List<AppointmentsModel> getAppointmentsAsStudent(String userId, Date start, Date end) {
+        Optional<UsersModel> u = userDB.get(userId);
+        UsersModel user = u.orElseThrow(NullPointerException::new);
+        ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("appointments").whereEqualTo("studentId", userId).whereGreaterThanOrEqualTo("startDate", start).whereLessThanOrEqualTo("startDate",end).get();
+        QuerySnapshot querySnapshot = null;
+        try {
+            querySnapshot = query.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        assert querySnapshot != null;
+        List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
+        List<AppointmentsModel> appointmentList = new ArrayList<>();
+        for (DocumentSnapshot document : documents) {
+            AppointmentsModel appointment = document.toObject(AppointmentsModel.class);
+            appointmentList.add(appointment);
+        }
+        return appointmentList;
+    }
+
+    public List<AppointmentsModel> getAppointmentsAsCoach(String userId, Date start, Date end) {
+        Optional<UsersModel> u = userDB.get(userId);
+        UsersModel user = u.orElseThrow(NullPointerException::new);
+        ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("appointments").whereEqualTo("coachId", userId).whereGreaterThanOrEqualTo("startDate", start).whereLessThanOrEqualTo("startDate",end).get();
+        QuerySnapshot querySnapshot = null;
+        try {
+            querySnapshot = query.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        assert querySnapshot != null;
+        List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
+        List<AppointmentsModel> appointmentList = new ArrayList<>();
+        for (DocumentSnapshot document : documents) {
+            AppointmentsModel appointment = document.toObject(AppointmentsModel.class);
+            if ( appointment.getStudentId() != null ) {
+                appointmentList.add(appointment);
+            }
         }
         return appointmentList;
     }
