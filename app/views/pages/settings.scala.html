@@ -103,7 +103,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                @*<div class="form-group">
                                     <label for="weekDays" class="mb-3 col-md-12 mb-3 col-md-form-label">
                                         Open Days in the Week
                                     </label>
@@ -130,7 +130,7 @@
                                             <input id="saturday" class="form-control" type="button" data-state="true" name="saturday" value='Saturday' onclick="toggleDayOfWeek('saturday')">
                                         </div>
                                     </div>
-                                </div>
+                                </div>*@
                                 <div class="form-group">
                                     <div class="mb-3 col-md-12">
                                         <button type="submit" onclick="return updateSettings()" class="btn btn-primary">
@@ -289,18 +289,18 @@
                 changeSiteAlert();
             }
 
-            function toggleDayOfWeek(day) {
-                var button = document.getElementById(day);
-                if (button.getAttribute('data-state') == "false") {
-                    button.style.backgroundColor = '#FFFFFF';
-                    button.style.color = '#000000';
-                    button.setAttribute('data-state', "true");
-                } else {
-                    button.style.backgroundColor = '#17C671';
-                    button.style.color = '#FFFFFF';
-                    button.setAttribute('data-state', "false");
-                }
-            }
+            // function toggleDayOfWeek(day) {
+            //     var button = document.getElementById(day);
+            //     if (button.getAttribute('data-state') == "false") {
+            //         button.style.backgroundColor = '#FFFFFF';
+            //         button.style.color = '#000000';
+            //         button.setAttribute('data-state', "true");
+            //     } else {
+            //         button.style.backgroundColor = '#17C671';
+            //         button.style.color = '#FFFFFF';
+            //         button.setAttribute('data-state', "false");
+            //     }
+            // }
 
             function changeSiteAlert() {
                 let siteAlert = $("#siteAlert").val();
@@ -466,13 +466,13 @@
             });
 
             function updateSettings() {
-                var dow = [document.getElementById('sunday').getAttribute("data-state"),
-                    document.getElementById('monday').getAttribute("data-state"),
-                    document.getElementById('tuesday').getAttribute("data-state"),
-                    document.getElementById('wednesday').getAttribute("data-state"),
-                    document.getElementById('thursday').getAttribute("data-state"),
-                    document.getElementById('friday').getAttribute("data-state"),
-                    document.getElementById('saturday').getAttribute("data-state")];
+                // var dow = [document.getElementById('sunday').getAttribute("data-state"),
+                //     document.getElementById('monday').getAttribute("data-state"),
+                //     document.getElementById('tuesday').getAttribute("data-state"),
+                //     document.getElementById('wednesday').getAttribute("data-state"),
+                //     document.getElementById('thursday').getAttribute("data-state"),
+                //     document.getElementById('friday').getAttribute("data-state"),
+                //     document.getElementById('saturday').getAttribute("data-state")];
                 const settings = {
                     universityName: $('#universityName').val(),
                     centerName: $('#centerName').val(),
@@ -481,13 +481,6 @@
                     startTime: $('#startTime').val(),
                     endTime: $('#endTime').val(),
                     maxAppointments: $('#maximumAppointments').val(),
-                    monday: tb[1],
-                    tuesday: tb[2],
-                    wednesday: tb[3],
-                    thursday: tb[4],
-                    friday: tb[5],
-                    saturday: tb[6],
-                    sunday: tb[0]
                 };
                 if (Date.parse(settings.semesterStart) >= Date.parse(settings.semesterEnd)) {
                     $.alert({
@@ -515,18 +508,18 @@
                         }
                     });
                     return false;
-                } else if (tb[0] === false && tb[1] === false && tb[2] === false && tb[3] === false && tb[4] === false && tb[5] === false && tb[6] === false) {
-                    $.alert({
-                        title: 'Alert',
-                        content: 'The center must have at least one day open per week.',
-                        buttons: {
-                            confirm: {
-                                keys: ['enter'],
-                                text: "Okay",
-                                btnClass: "btn-primary",
-                            }
-                        }
-                    });
+                // } else if (tb[0] === false && tb[1] === false && tb[2] === false && tb[3] === false && tb[4] === false && tb[5] === false && tb[6] === false) {
+                //     $.alert({
+                //         title: 'Alert',
+                //         content: 'The center must have at least one day open per week.',
+                //         buttons: {
+                //             confirm: {
+                //                 keys: ['enter'],
+                //                 text: "Okay",
+                //                 btnClass: "btn-primary",
+                //             }
+                //         }
+                //     });
                 } else {
                     $.ajax({
                         url: '/updateSettings',

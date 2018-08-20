@@ -73,7 +73,7 @@
                             const coachId = $("#coachId").find(":selected").val();
                             const service = $("#serviceType").find(":selected").val();
                             $.ajax({
-                                url: '/availableSlotsForAppointments/' + coachId + '/' + moment(new Date()).subtract(10, 'm').toISOString() + '/' + moment(end).toISOString() + '/' + service,
+                                url: '/availableSlotsForAppointments/' + coachId + '/' + moment(start).toISOString() + '/' + moment(end).toISOString() + '/' + service,
                                 type: 'GET',
                                 success: function (response) {
                                     const events = [];

@@ -162,7 +162,7 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
     public List<AppointmentsModel> getByWeeklyId(String weeklyId, Date start) {
         List<AppointmentsModel> appointmentList = new ArrayList<>();
         /* Asynchronously retrieve all appointments */
-        ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("appointments").whereEqualTo("weeklyId", weeklyId).whereGreaterThan("startDate", start).get();
+        ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("appointments").whereEqualTo("weeklyId", weeklyId).whereGreaterThan("startDate", start).orderBy("startDate").get();
         QuerySnapshot querySnapshot = null;
         try {
             /* Attempt to get a list of all appointments - blocking */
