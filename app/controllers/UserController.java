@@ -4,6 +4,7 @@ import application_components.annotations.Authenticate;
 import com.fasterxml.jackson.databind.JsonNode;
 import databases.UserDB;
 import models.ServiceModel;
+import models.UserAttributes;
 import models.UsersModel;
 import play.Logger;
 import play.libs.Json;
@@ -69,6 +70,20 @@ public class UserController extends Controller {
         String serviceId = json.get("serviceId").asText();
         ServiceModel service = new ServiceModel(serviceId, serviceText);
         userDB.addServiceToUser(userId, service);
+        return ok();
+    }
+
+    @Authenticate(role="Coach")
+    public Result isCoach() {
+        JsonNode json = request().body().asJson();
+        String userId = json.get("userId").asText();
+        UsersModel user = userDB.get(userId).orElseThrow(NullPointerException::new);
+        if(hasAttribute(user, UserAttributes.IS_COACH.getValue())){
+            removeAttribute(user, UserAttributes.IS_COACH.getValue());
+        } else {
+            addAttributes(user, UserAttributes.IS_COACH.getValue());
+        }
+        userDB.addOrUpdate(user);
         return ok();
     }
 
