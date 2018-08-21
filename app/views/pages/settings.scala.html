@@ -75,14 +75,14 @@
                                     <label for="startTime" class="mb-3 col-md-12 mb-3 col-md-form-label">
                                         Learning Center Open Time</label>
                                     <div class="mb-3 col-md-12">
-                                        <input id="startTime" class="form-control" type="time" name="startTime">
+                                        <input id="startTime" class="form-control" type="time" name="startTime" value='@currentSettings.getStartTime.format("HH:mm")'>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="endTime" class="mb-3 col-md-12 mb-3 col-md-form-label">
                                         Learning Center Close Time</label>
                                     <div class="mb-3 col-md-12">
-                                        <input id="endTime" class="form-control" type="time" name="endTime">
+                                        <input id="endTime" class="form-control" type="time" name="endTime" value='@currentSettings.getEndTime.format("HH:mm")'>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -267,6 +267,7 @@
         </div>
     </div>
     <script type="text/javascript">
+
             function weeklyCheck(appointmentTypeId) {
                 let checked = $(".weekly-" + appointmentTypeId).is(':checked');
                 let data = {frequency: "weekly", id: appointmentTypeId, checked: checked};
