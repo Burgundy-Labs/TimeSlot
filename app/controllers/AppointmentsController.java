@@ -55,6 +55,12 @@ public class AppointmentsController extends Controller {
             appointment.setWeeklyId(null);
             appointment.setWeekly(false);
         }
+        // Send email
+        AppointmentsModel emailAppointment = appointment.clone();
+        emailAppointment.setStudentData(student.getUid(), student.getEmail(), student.getDisplayName(), student.getPhotoURL());
+        new Thread(() -> mailerService.sendAppointmentConfirmation(emailAppointment)).start();
+
+
         if ( availability.isWeekly() ) {
             String UUID1 = UUID.randomUUID().toString();
             String UUID2 = UUID.randomUUID().toString();
@@ -97,7 +103,6 @@ public class AppointmentsController extends Controller {
         } else {
             split(availability, student, appointment);
         }
-        new Thread(() -> mailerService.sendAppointmentConfirmation(appointment)).start();
         return ok();
     }
 
