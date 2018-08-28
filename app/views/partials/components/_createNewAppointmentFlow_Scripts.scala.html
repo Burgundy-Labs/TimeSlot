@@ -82,7 +82,7 @@
                                     let appTypeWeekly = appointmentType.find('option:selected').attr('data-weekly') === "true";
                                     $(response).each(function () {
                                         const event = {
-                                            id: $(this).attr('availabilityId'),
+                                            id: $(this).attr('appointmentId'),
                                             title: "One-Time",
                                             start: moment($(this).attr('startDate')),
                                             end: moment($(this).attr('endDate')),

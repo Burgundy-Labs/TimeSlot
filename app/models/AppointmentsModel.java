@@ -272,5 +272,14 @@ public class AppointmentsModel {
         this.description = description;
     }
 
-    public AppointmentsModel clone() { return new AppointmentsModel(getAppointmentId(), getStartDate(), getEndDate(), getStudentId(), getStudentName(), getStudentEmail(), getStudentPhoto(), getCoachId(), getCoachName(), getCoachEmail(), getCoachPhoto(), getAppointmentNotes(), getCoachNotes(), getPresent(), getAppointmentType(), getServiceType(), this.weekly, getWeeklyId()); }
+    @Override
+    public AppointmentsModel clone() {
+        AppointmentsModel appointmentsModel;
+        try {
+            appointmentsModel = (AppointmentsModel) super.clone();
+        } catch (CloneNotSupportedException e) {
+            appointmentsModel = new AppointmentsModel(getAppointmentId(), getStartDate(), getEndDate(), getStudentId(), getStudentName(), getStudentEmail(), getStudentPhoto(), getCoachId(), getCoachName(), getCoachEmail(), getCoachPhoto(), getAppointmentNotes(), getCoachNotes(), getPresent(), getAppointmentType(), getServiceType(), this.weekly, getWeeklyId());
+        }
+        return appointmentsModel;
+    }
 }

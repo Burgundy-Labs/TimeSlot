@@ -97,7 +97,7 @@ public class AppointmentsController extends Controller {
         } else {
             split(availability, student, appointment);
         }
-
+        new Thread(() -> mailerService.sendAppointmentConfirmation(appointment)).start();
         return ok();
     }
 
@@ -215,7 +215,6 @@ public class AppointmentsController extends Controller {
             currentStart.set(Calendar.MINUTE, startDate.get(Calendar.MINUTE));
             currentEnd.set(Calendar.HOUR_OF_DAY, endDate.get(Calendar.HOUR_OF_DAY));
             currentEnd.set(Calendar.MINUTE, endDate.get(Calendar.MINUTE));
-            System.out.println(currentStart.get(Calendar.HOUR_OF_DAY) + " " + currentStart.get(Calendar.MINUTE));
             AppointmentsModel newAppointment = new AppointmentsModel();
             newAppointment.setCoachId(json.findPath("userId").textValue());
             newAppointment.setStudentId(null);
@@ -243,9 +242,10 @@ public class AppointmentsController extends Controller {
         JsonNode json = request().body().asJson();
         String appointmentId = json.findPath("appointmentId").textValue();
         AppointmentsModel appointment = appointmentsDB.get(appointmentId).get();
+        AppointmentsModel emailAppointment = appointment.clone();
+        new Thread(() -> mailerService.sendAppointmentCancellation(emailAppointment, json.findPath("cancelNotes").asText())).start();
         appointment.clearStudentData();
         appointmentsDB.addOrUpdate(appointment);
-        new Thread(() -> mailerService.sendAppointmentCancellation(appointment, json.findPath("cancelNotes").asText())).start();
         return ok();
     }
 
@@ -254,13 +254,14 @@ public class AppointmentsController extends Controller {
         String appointmentId = json.findPath("appointmentId").textValue();
         AppointmentsModel appointment = appointmentsDB.get(appointmentId).get();
         List<AppointmentsModel> appointments = appointmentsDB.getByWeeklyId(appointment.getWeeklyId(), appointment.getStartDate(), appointment.getStudentId());
+        AppointmentsModel emailAppointment = appointment.clone();
+        new Thread(() -> mailerService.sendAppointmentCancellation(emailAppointment, json.findPath("cancelNotes").asText())).start();
         appointment.clearStudentData();
         appointmentsDB.addOrUpdate(appointment);
         for ( AppointmentsModel ap : appointments  ) {
             ap.clearStudentData();
             appointmentsDB.addOrUpdate(ap);
         }
-        /* TODO add thread to email when canceling weekly appointments */
         return ok();
     }
 
@@ -322,12 +323,10 @@ public class AppointmentsController extends Controller {
                 List<AppointmentsModel> weeklyAppointments = appointmentsDB.getByWeeklyId(app.getWeeklyId(), app.getStartDate());
                 for (AppointmentsModel appointment : weeklyAppointments){
                     if ( (appointment.getStudentId() != null) && appointment.getStartDate().after(app.getStartDate()) ) {
-                        System.out.println(app.getStartDate() + " " + appointment.getStartDate() + " " + app.getStudentId() + " " + appointment.getStudentId() + " " + appointment.getWeeklyId() + " " + app.getWeeklyId());
                         av.setCanBeWeekly(false);
                         break;
                     }
                 }
-                System.out.println(app.getStartDate() + " " + av.getCanBeWeekly());
             }
             long duration = av.getEndDate().getTime() - av.getStartDate().getTime();
             long diffInMinutes = TimeUnit.MILLISECONDS.toMinutes(duration);
@@ -396,6 +395,7 @@ public class AppointmentsController extends Controller {
         List<AppointmentsModel> appointments;
         if ( "Coach".equals(role) || "Admin".equals(role) ) {
             appointments = appointmentsDB.getAppointmentsAsCoach(userId, startDate, endDate);
+            appointments.addAll(appointmentsDB.getAppointmentsAsStudent(userId, startDate, endDate));
         } else {
             appointments = appointmentsDB.getAppointmentsAsStudent(userId, startDate, endDate);
         }
