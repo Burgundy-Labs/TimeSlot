@@ -44,12 +44,17 @@ public class AppointmentsController extends Controller {
         Date startDate = DatatypeConverter.parseDateTime(json.findPath("startDate").textValue()).getTime();
         Date endDate = DatatypeConverter.parseDateTime(json.findPath("endDate").textValue()).getTime();
         UsersModel student = userDB.get(json.findPath("studentId").asText()).get();
+
         AppointmentsModel appointment = availability.clone();
         appointment.setServiceType(json.findPath("serviceType").asText());
         appointment.setAppointmentType(json.findPath("appointmentType").asText());
         appointment.setPresent(false);
         appointment.setStartDate(startDate);
         appointment.setEndDate(endDate);
+
+        AppointmentsModel emailAppointment = appointment.clone();
+        emailAppointment.setStudentData(student.getUid(), student.getEmail(), student.getDisplayName(), student.getPhotoURL());
+
 
         if (!json.findPath("weekly").asBoolean()) {
             appointment.setWeeklyId(null);
@@ -88,10 +93,7 @@ public class AppointmentsController extends Controller {
         }
 
         // Send email
-        AppointmentsModel emailAppointment = appointment.clone();
-        emailAppointment.setStudentData(student.getUid(), student.getEmail(), student.getDisplayName(), student.getPhotoURL());
         new Thread(() -> mailerService.sendAppointmentConfirmation(emailAppointment)).start();
-
         return ok();
     }
 
