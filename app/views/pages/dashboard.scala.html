@@ -140,16 +140,17 @@
                                         $(response).each(function () {
                                             const event = {
                                                 id: 'background',
-                                                rendering: 'inverse-background',
-                                                backgroundColor: '#B3B3B3',
+                                                rendering: 'background',
                                                 start: moment($(this).attr('startDate')),
                                                 end: moment($(this).attr('endDate')),
-                                                dow: []
+                                                dow: [],
+                                                backgroundColor: "#FAAE39",
                                             };
                                             if ($(this).attr("weekly") === true) {
                                                 event.dow = [moment($(this).attr('startDate')).isoWeekday()];
                                                 event.start = moment($(this).attr('startDate')).format("HH:mm");
                                                 event.end = moment($(this).attr('endDate')).format("HH:mm");
+                                                event.backgroundColor = "#5BAAFF"
                                             }
                                             events.push(event);
                                         });

@@ -1,8 +1,16 @@
 @(user: UsersModel)
-@accountController = @{new AccountController()}
-@userController = @{new UserController()}
-@settingsController = @{new SettingsController()}
-@currentUser = @{userController.getCurrentUser}
+@accountController = @{
+    new AccountController()
+}
+@userController = @{
+    new UserController()
+}
+@settingsController = @{
+    new SettingsController()
+}
+@currentUser = @{
+    userController.getCurrentUser
+}
 @pageTitle = @{
     if(user.getUid.equals(currentUser.getUid)) {
         "Account"
@@ -16,7 +24,7 @@
             <a class="nav-link active" id="userInfoTab" data-toggle="pill" href="#userInfoContent" role="tab" aria-controls="userInfoContent" aria-selected="true">
                 User Information</a>
             @if(currentUser.getRole.equals("Admin") || currentUser.getUid.equals(user.getUid)) {
-                <a class="nav-link" id="userSetingsTab" data-toggle="pill" href="#userSetingsContent" role="tab" aria-controls="userSetingsContent" aria-selected="false">
+                <a class="nav-link" id="userSettingsTab" data-toggle="pill" href="#userSettingsContent" role="tab" aria-controls="userSettingsContent" aria-selected="false">
                     User Settings</a>
             }
             @if(!currentUser.getRole.equals("Student") && !user.getRole.equals("Student")) {
@@ -45,9 +53,10 @@
                 </div>
             </div>
             @if(currentUser.getRole.equals("Admin") || currentUser.getUid.equals(user.getUid)) {
-                <div class="tab-pane fade" id="userSetingsContent" role="tabpanel" aria-labelledby="userSetingsTab">
+                <div class="tab-pane fade" id="userSettingsContent" role="tabpanel" aria-labelledby="userSettingsTab">
                     <div class="mb-3 col-md-12">
                         <h1>User Settings</h1>
+                        <p>Coming soon</p>
                     </div>
                 </div>
             }
@@ -70,7 +79,7 @@
                                     <div class="card-block row">
                                         <div class="mb-3 col-md-4">
                                             <h4>Assigned Services</h4>
-                                            <ul class="list-group">
+                                            <ul class="list-group" id="serviceList">
                                                 <li class="list-group-item">
                                                     <div class="container-fluid">
                                                         <div class="row">
@@ -82,7 +91,7 @@
                                                             }
                                                             </select>
                                                             <div class="col-lg-5 mb-1">
-                                                                <button class="btn btn-primary btn-success" id="addService" onclick=createService()>
+                                                                <button class="btn btn-primary btn-success" id="addService" onclick=addService()>
                                                                     Add Service</button>
                                                             </div>
                                                         </div>
@@ -118,6 +127,7 @@
     @if(!user.getRole.equals("Student")) {
         <script type="text/javascript">
                 let availabilitySchedule = $('#availabilitySchedule');
+
                 function isCoachCheck() {
                     let checked = $("#isCoachCheck").is(':checked');
                     let userId = '@user.getUid';
@@ -158,7 +168,7 @@
                                         contentType: 'application/json',
                                         success: function () {
                                             createAlert("success", "Service Removed!");
-                                            location.reload();
+                                            $("li."+serviceId).remove();
                                         },
                                         error: function () {
                                             createAlert('danger', 'Removing service failed.');
@@ -173,7 +183,7 @@
                     });
                 }
 
-                function createService() {
+                function addService() {
                     let selectedService = $('#selectedService').find(':selected');
                     let selectedServiceText = selectedService.text();
                     let selectedServiceId = selectedService.val();
@@ -205,7 +215,11 @@
                                             contentType: 'application/json',
                                             success: function () {
                                                 createAlert("success", "Service Added!");
-                                                location.reload();
+                                                $("#serviceList").append(`
+                                                <li class="list-group-item d-flex justify-content-between align-items-center ${selectedServiceId}">
+                                                        <h6 class="mb-1">${selectedServiceText}</h6>
+                                                        <button class="btn btn-primary btn-danger" onclick="removeService('${selectedServiceId}')">Remove</button>
+                                                </li>`);
                                             },
                                             error: function () {
                                                 createAlert('danger', 'Adding service failed.');
@@ -266,16 +280,24 @@
                                             title: "One-Time",
                                             start: moment($(this).attr('startDate')),
                                             end: moment($(this).attr('endDate')),
-                                            dow: []
+                                            dow: [],
+                                            backgroundColor: "#FAAE39",
+                                            borderColor: "#FAAE39",
+                                            weekly: false
                                         };
-                                        if ( event.start < new Date() || $(this).attr('studentId') ) {
-                                            event.color = "#696969";
-                                        }
                                         if ($(this).attr("weekly") === true) {
                                             event.title = "Weekly";
+                                            event.weekly = true;
                                             event.dow = [moment($(this).attr('startDate')).isoWeekday()];
                                             event.start = moment($(this).attr('startDate')).format("HH:mm");
                                             event.end = moment($(this).attr('endDate')).format("HH:mm");
+                                            event.backgroundColor = "#5BAAFF";
+                                            event.borderColor = "#5BAAFF";
+                                        }
+                                        if (event.start < new Date() || $(this).attr('studentId')) {
+                                            event.backgroundColor = "#696969";
+                                            event.borderColor = "#696969";
+                                            event.taken = true;
                                         }
                                         events.push(event);
                                     });
@@ -287,8 +309,8 @@
                         selectOverlap: false,
                         disableDragging: true,
                         eventRender: function (event, eventElement) {
-                            if ( event.color != "#696969" ) {
-                                eventElement.find("div.fc-content").prepend("<button onclick='removeAvailability(\"" + event.id + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
+                            if (!event.taken) {
+                                eventElement.find("div.fc-content").prepend("<button onclick='removeAvailability(\"" + event.id + "\", \"" + event.weekly + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
                             }
                         },
                         weekends: false,
@@ -336,22 +358,49 @@
                     });
                 }
 
-                function removeAvailability(id) {
+                function removeAvailability(id, weekly) {
                     $.confirm({
+                        onOpenBefore: function () {
+                            if (!(weekly === "true")) {
+                                this.buttons.deleteAll.hide();
+                            }
+                        },
                         title: 'Remove Availability?',
-                        content: 'Do you want to remove this availability slot?',
+                        columnClass: 'col-md-8',
+                        content: 'Are you sure you want to remove this availability?',
                         theme: 'modern',
                         escapeKey: 'cancel',
                         buttons: {
-                            yes: {
-                                text: 'Remove',
+                            deleteOne: {
+                                text: 'Remove This Availability',
                                 btnClass: 'btn-primary',
-                                keys: ['enter'],
                                 action: function () {
                                     $.ajax({
                                         url: '/removeAppointment',
                                         type: 'POST',
-                                        data: JSON.stringify({appointmentId: id}),
+                                        data: JSON.stringify({appointmentId: id, removeAll: false}),
+                                        contentType: 'application/json',
+                                        success: function () {
+                                            setTimeout(function () {
+                                                availabilitySchedule.fullCalendar('rerenderEvents');
+                                                availabilitySchedule.fullCalendar('refetchEvents');
+                                                createAlert("success", "Availability Removed!");
+                                            }, 50);
+                                        },
+                                        error: function (err) {
+                                            console.log(err);
+                                        }
+                                    });
+                                }
+                            },
+                            deleteAll: {
+                                text: 'Remove All Availabilities in Series',
+                                btnClass: 'btn-primary',
+                                action: function() {
+                                    $.ajax({
+                                        url: '/removeAppointment',
+                                        type: 'POST',
+                                        data: JSON.stringify({appointmentId: id, removeAll: true}),
                                         contentType: 'application/json',
                                         success: function () {
                                             setTimeout(function () {
@@ -368,6 +417,7 @@
                             },
                             cancel: {
                                 text: 'Cancel',
+                                keys: ['escape'],
                                 action: function () {
                                 }
                             }

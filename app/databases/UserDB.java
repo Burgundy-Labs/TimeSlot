@@ -2,7 +2,9 @@ package databases;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
+import controllers.UserController;
 import models.ServiceModel;
+import models.UserAttributes;
 import models.UsersModel;
 
 import java.util.*;
@@ -145,7 +147,7 @@ public class UserDB implements DBInterface<UsersModel> {
 
 	public UsersModel getByAuth_ID(String ID) {
 		/* Return null user if none found */
-		UsersModel userFound = null;
+		UsersModel userFound;
 		/* Get the specific user reference from the DB*/
 		ApiFuture<QuerySnapshot> docRef = FirestoreHandler.get().collection("users").whereEqualTo("auth_id", ID).get();
 		List<QueryDocumentSnapshot> documents = null;
@@ -174,8 +176,12 @@ public class UserDB implements DBInterface<UsersModel> {
 		List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
 		/* Iterate users and add them to a list for return */
 		for (DocumentSnapshot document : documents) {
-			if (document.getString("role") != null && document.getString("role").equals(role)) {
-				userList.add(document.toObject(UsersModel.class));
+			UsersModel user = document.toObject(UsersModel.class);
+			if (role.equals("Coach") && new UserController().hasAttribute(user, UserAttributes.IS_COACH.getValue())){
+				userList.add(user);
+			}
+			else if (document.getString("role") != null && document.getString("role").equals(role)) {
+				userList.add(user);
 			}
 		}
 		return userList;

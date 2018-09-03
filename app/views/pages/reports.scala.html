@@ -18,12 +18,6 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <h3>View Data</h3>
-            <select id="propertySelect" title="Property Filter">
-                <option disabled value="">Select a Property</option>
-            </select>
-        </div>
         <div class="row row-eq-height dashCards center">
             <div class="mb-2 col-md-3 animated fadeInUp">
                 <div class="card">
@@ -84,27 +78,8 @@
             let reportStart = $('#reportStart');
             let reportEnd = $('#reportEnd');
             let appointmentList = [];
-            let properties = [
-                {
-                    name: "Weekly",
-                    property: "weekly"
-                },
-                {
-                    name: "Date",
-                    property: "startTime"
-                },
-                {
-                    name: "Appointment Type",
-                    property: "appointmentType"
-                }
-            ];
             /* Create Charts On Page Load*/
             $(document).ready(function () {
-                let $dropdown = $("#propertySelect");
-                properties.forEach(function(property) {
-                    $dropdown.append($("<option />").val(property.property).text(property.name));
-                });
-
                 reportStart.val(moment().subtract(7, "days").format("YYYY-MM-DD"));
                 reportEnd.val(moment().format("YYYY-MM-DD"));
                 createCharts();
@@ -120,6 +95,7 @@
             }
 
             function makePropertyChart(property, chartId) {
+                debugger;
                 let labels = appointmentList.map(a => a[property]).reduce(function(a,b) {
                     if(a.indexOf(b) < 0) a.push(b);
                     return a;

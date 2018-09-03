@@ -82,7 +82,7 @@
                                     let appTypeWeekly = appointmentType.find('option:selected').attr('data-weekly') === "true";
                                     $(response).each(function () {
                                         const event = {
-                                            id: $(this).attr('appointmentId'),
+                                            availabilityId: $(this).attr('availabilityId'),
                                             title: "One-Time",
                                             start: moment($(this).attr('startDate')),
                                             end: moment($(this).attr('endDate')),
@@ -94,6 +94,7 @@
                                             oneTimeUsers: $(this).attr("oneTimeUsers"),
                                             weeklyUsers: $(this).attr("weeklyUsers")
                                         };
+                                        console.log(event);
                                         if ($(this).attr("weekly") === true) {
                                             event.title = "Weekly";
                                             event.dow = [moment($(this).attr('startDate')).isoWeekday()];
@@ -203,7 +204,7 @@
                                     }
                                 })
                             } else {
-                                let canBes = (function () {
+                                let appointmentInfo = (function () {
                                     return $("#newAppointmentCalendar").fullCalendar('clientEvents', function (event) {
                                         if (event.rendering === "background" && (start.local().isAfter(event.start.local()) || start.local().isSame(event.start.local(), 'minute')) &&
                                                 (end.local().isBefore(event.end.local()) || end.local().isSame(event.end.local(), 'minute'))) {
@@ -211,7 +212,8 @@
                                                 canBeOneTime: event.canBeOneTime,
                                                 canBeWeekly: event.canBeWeekly,
                                                 weeklyUsers: event.weeklyUsers,
-                                                oneTimeUsers: event.oneTimeUsers
+                                                oneTimeUsers: event.oneTimeUsers,
+                                                availabilityId: event.availabilityId
                                             };
                                         }
                                     })
@@ -225,10 +227,11 @@
                                     end: moment(end).format(),
                                     startDate: moment(start).format(),
                                     endDate: moment(end).format(),
-                                    canBeOneTime: canBes[0].canBeOneTime,
-                                    canBeWeekly: canBes[0].canBeWeekly,
-                                    weeklyUsers: canBes[0].weeklyUsers,
-                                    oneTimeUsers: canBes[0].oneTimeUsers
+                                    canBeOneTime: appointmentInfo[0].canBeOneTime,
+                                    canBeWeekly: appointmentInfo[0].canBeWeekly,
+                                    weeklyUsers: appointmentInfo[0].weeklyUsers,
+                                    oneTimeUsers: appointmentInfo[0].oneTimeUsers,
+                                    availabilityId: appointmentInfo[0].availabilityId
                                 };
                                 appointmentCalendar.fullCalendar('renderEvent', newAppointment, true);
                                 selectedEvents.push(newAppointment);
@@ -304,7 +307,7 @@
                             endDate: appointment.endDate,
                             appointmentNotes: $('#appointmentNotes').val(),
                             present: false,
-                            appointmentId: appointment.id
+                            appointmentId: appointment.availabilityId
                         };
                         if (scheduleUser.userId !== null && scheduleUser.userRole === "Coach") {
                             form.coachId = scheduleUser.userId;

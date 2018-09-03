@@ -40,73 +40,62 @@ public class AppointmentsController extends Controller {
     @Authenticate
     public Result createAppointment() {
         JsonNode json = request().body().asJson();
-        AppointmentsModel availability = appointmentsDB.get(json.findPath("appointmentId").asText()).get();
+        AppointmentsModel availability = appointmentsDB.get(json.findPath("appointmentId").asText()).orElseThrow(NullPointerException::new);
         Date startDate = DatatypeConverter.parseDateTime(json.findPath("startDate").textValue()).getTime();
         Date endDate = DatatypeConverter.parseDateTime(json.findPath("endDate").textValue()).getTime();
         UsersModel student = userDB.get(json.findPath("studentId").asText()).get();
         AppointmentsModel appointment = availability.clone();
         appointment.setServiceType(json.findPath("serviceType").asText());
         appointment.setAppointmentType(json.findPath("appointmentType").asText());
-        appointment.setDescription(null);
         appointment.setPresent(false);
         appointment.setStartDate(startDate);
         appointment.setEndDate(endDate);
-        if ( !json.findPath("weekly").asBoolean() ) {
+
+        if (!json.findPath("weekly").asBoolean()) {
             appointment.setWeeklyId(null);
             appointment.setWeekly(false);
         }
-        // Send email
-        AppointmentsModel emailAppointment = appointment.clone();
-        emailAppointment.setStudentData(student.getUid(), student.getEmail(), student.getDisplayName(), student.getPhotoURL());
-        new Thread(() -> mailerService.sendAppointmentConfirmation(emailAppointment)).start();
 
-
-        if ( availability.isWeekly() ) {
+        if (availability.isWeekly()) {
             String UUID1 = UUID.randomUUID().toString();
             String UUID2 = UUID.randomUUID().toString();
             String UUID3 = UUID.randomUUID().toString();
-            Calendar startAppointment = DatatypeConverter.parseDateTime(json.findPath("startDate").textValue());
-            Calendar endAppointment = DatatypeConverter.parseDateTime(json.findPath("endDate").textValue());
             Calendar start = DatatypeConverter.parseDateTime(json.findPath("startDate").textValue());
             Calendar end = DatatypeConverter.parseDateTime(json.findPath("endDate").textValue());
 
             List<AppointmentsModel> weeklyAvailabilities = appointmentsDB.getByWeeklyId(availability.getWeeklyId());
             Calendar startWeekly = Calendar.getInstance();
             startWeekly.setTime(weeklyAvailabilities.get(0).getStartDate());
-            while ( startWeekly.get(Calendar.WEEK_OF_YEAR) != startAppointment.get(Calendar.WEEK_OF_YEAR) ) {
-                startAppointment.add(Calendar.DAY_OF_YEAR, -7);
-                endAppointment.add(Calendar.DAY_OF_YEAR, -7);
-            }
-            for ( AppointmentsModel weeklyAvailability : weeklyAvailabilities ) {
+            for (AppointmentsModel weeklyAvailability : weeklyAvailabilities) {
+                Calendar startAppointment = Calendar.getInstance();
+                startAppointment.setTime(weeklyAvailability.getStartDate());
+                Calendar endAppointment = Calendar.getInstance();
+                endAppointment.setTime(weeklyAvailability.getEndDate());
                 startAppointment.set(Calendar.HOUR_OF_DAY, start.get(Calendar.HOUR_OF_DAY));
                 startAppointment.set(Calendar.MINUTE, start.get(Calendar.MINUTE));
                 endAppointment.set(Calendar.HOUR_OF_DAY, end.get(Calendar.HOUR_OF_DAY));
                 endAppointment.set(Calendar.MINUTE, end.get(Calendar.MINUTE));
                 appointment.setStartDate(startAppointment.getTime());
                 appointment.setEndDate(endAppointment.getTime());
-                if ( appointment.isWeekly() ) {
-                    if ( appointment.getStartDate().after(startDate) || appointment.getStartDate().equals(startDate)) {
-                        split(weeklyAvailability, student, appointment.clone(), UUID1, UUID2, UUID3, true);
-                    } else {
-                        split(weeklyAvailability, student, appointment.clone(), UUID1, UUID2, UUID3, false);
-                    }
+                if ((appointment.getStartDate().after(startDate) && appointment.isWeekly()) || appointment.getStartDate().equals(startDate)) {
+                    split(weeklyAvailability, student, appointment.clone(), UUID1, UUID2, UUID3, true);
                 } else {
-                    if ( appointment.getStartDate().equals(startDate) ) {
-                        split(weeklyAvailability, student, appointment.clone(), UUID1, UUID2, UUID3, true);
-                    } else {
-                        split(weeklyAvailability, student, appointment.clone(), UUID1, UUID2, UUID3, false);
-                    }
+                    split(weeklyAvailability, student, appointment.clone(), UUID1, UUID2, UUID3, false);
                 }
-                startAppointment.add(Calendar.DAY_OF_YEAR, 7);
-                endAppointment.add(Calendar. DAY_OF_YEAR, 7);
             }
         } else {
             split(availability, student, appointment);
         }
+
+        // Send email
+        AppointmentsModel emailAppointment = appointment.clone();
+        emailAppointment.setStudentData(student.getUid(), student.getEmail(), student.getDisplayName(), student.getPhotoURL());
+        new Thread(() -> mailerService.sendAppointmentConfirmation(emailAppointment)).start();
+
         return ok();
     }
 
-    private AppointmentsModel split(AppointmentsModel availability, UsersModel student, AppointmentsModel appointment) {
+    private void split(AppointmentsModel availability, UsersModel student, AppointmentsModel appointment) {
         if (availability.getStartDate().before(appointment.getStartDate()) && availability.getEndDate().equals(appointment.getEndDate())) {
             availability.setEndDate(appointment.getStartDate());
             appointment.setAppointmentId(null);
@@ -127,25 +116,24 @@ public class AppointmentsController extends Controller {
         }
         appointment.setStudentData(student.getUid(), student.getEmail(), student.getDisplayName(), student.getPhotoURL());
         appointmentsDB.addOrUpdate(appointment);
-        return appointment;
     }
 
-    private AppointmentsModel split(AppointmentsModel availability, UsersModel student, AppointmentsModel appointment, String UUID1, String UUID2, String UUID3, boolean isAppointment) {
-        if (availability.getStartDate().before(appointment.getStartDate()) && availability.getEndDate().equals(appointment.getEndDate())) {
+    private void split(AppointmentsModel availability, UsersModel student, AppointmentsModel appointment, String UUID1, String UUID2, String UUID3, boolean isAppointment) {
+        if (availability.getStartDate().before(appointment.getStartDate()) && availability.getEndDate().equals(appointment.getEndDate())) { // Availability starts before appointment but ends at the same time
             availability.setEndDate(appointment.getStartDate());
             availability.setWeeklyId(UUID3);
             appointment.setAppointmentId(null);
             appointment.setWeeklyId(UUID1);
             availability.setWeekly(true);
             appointmentsDB.addOrUpdate(availability);
-        } else if (availability.getStartDate().equals(appointment.getStartDate()) && availability.getEndDate().after(appointment.getEndDate())) {
+        } else if (availability.getStartDate().equals(appointment.getStartDate()) && availability.getEndDate().after(appointment.getEndDate())) { // Avaiilability starts at the same time but ends after
             availability.setStartDate(appointment.getEndDate());
             availability.setWeeklyId(UUID3);
             appointment.setAppointmentId(null);
             availability.setWeekly(true);
             appointment.setWeeklyId(UUID1);
             appointmentsDB.addOrUpdate(availability);
-        } else if (availability.getStartDate().before(appointment.getStartDate()) && availability.getEndDate().after(appointment.getEndDate())) {
+        } else if (availability.getStartDate().before(appointment.getStartDate()) && availability.getEndDate().after(appointment.getEndDate())) { // Availability starts before and after the appoinment
             AppointmentsModel newAvailability = availability.clone();
             newAvailability.setStartDate(appointment.getEndDate());
             newAvailability.setAppointmentId(null);
@@ -158,12 +146,6 @@ public class AppointmentsController extends Controller {
             availability.setWeeklyId(UUID3);
             appointmentsDB.addOrUpdate(availability);
             appointmentsDB.addOrUpdate(newAvailability);
-        } else {
-            if (isAppointment) {
-                availability.setStudentData(student.getUid(), student.getEmail(), student.getDisplayName(), student.getPhotoURL());
-            }
-            appointmentsDB.addOrUpdate(availability);
-            return availability;
         }
         if (isAppointment) {
             appointment.setStudentData(student.getUid(), student.getEmail(), student.getDisplayName(), student.getPhotoURL());
@@ -171,7 +153,6 @@ public class AppointmentsController extends Controller {
             appointment.clearStudentData();
         }
         appointmentsDB.addOrUpdate(appointment);
-        return appointment;
     }
 
     @Authenticate
@@ -189,7 +170,7 @@ public class AppointmentsController extends Controller {
         appointment.setAppointmentNotes("");
         appointment.setPresent(false);
         appointment.setServiceType("");
-        Boolean weekly = json.findPath("weekly").asBoolean();
+        boolean weekly = json.findPath("weekly").asBoolean();
         appointment.setWeekly(weekly);
         if (appointment.isWeekly()) {
             appointment.setWeeklyId(uniqueId);
@@ -198,10 +179,6 @@ public class AppointmentsController extends Controller {
             appointment.setWeeklyId("");
         }
         appointmentsDB.addOrUpdate(appointment);
-        /* Check if user is in DB */
-
-        // new Thread(() -> mailerService.sendAppointmentConfirmation(appointment)).start();
-
         return ok();
     }
 
@@ -261,9 +238,7 @@ public class AppointmentsController extends Controller {
         List<AppointmentsModel> appointments = appointmentsDB.getByWeeklyId(appointment.getWeeklyId(), appointment.getStartDate(), appointment.getStudentId());
         AppointmentsModel emailAppointment = appointment.clone();
         new Thread(() -> mailerService.sendAppointmentCancellation(emailAppointment, json.findPath("cancelNotes").asText())).start();
-        appointment.clearStudentData();
-        appointmentsDB.addOrUpdate(appointment);
-        for ( AppointmentsModel ap : appointments  ) {
+        for (AppointmentsModel ap : appointments) {
             ap.clearStudentData();
             appointmentsDB.addOrUpdate(ap);
         }
@@ -273,12 +248,12 @@ public class AppointmentsController extends Controller {
     public Result removeAppointment() {
         JsonNode json = request().body().asJson();
         String appointmentId = json.findPath("appointmentId").textValue();
-        Boolean removeAll = json.findPath("removeAll").asBoolean();
+        boolean removeAll = json.findPath("removeAll").asBoolean();
         AppointmentsModel appointment = appointmentsDB.remove(appointmentId).orElseThrow(NullPointerException::new);
         if (appointment.isWeekly() && removeAll) {
             List<AppointmentsModel> appointments = appointmentsDB.getByWeeklyId(appointment.getWeeklyId());
             for (AppointmentsModel ap : appointments) {
-                if (ap.getStartDate().after(new Date()) && appointment.getStudentId() == null) {
+                if (ap.getStudentId() == null) {
                     appointmentsDB.remove(ap.getAppointmentId());
                 }
             }
@@ -313,21 +288,21 @@ public class AppointmentsController extends Controller {
         List<AppointmentsModel> appointments = new ArrayList<>();
         if (coachId.equals("any")) {
             List<UsersModel> coaches = userDB.getCoachesByService(service);
-            for ( UsersModel coach : coaches ) {
+            for (UsersModel coach : coaches) {
                 appointments.addAll(appointmentsDB.getOpenAppointmentsByUserAndDate(coach.getUid(), startDate, endDate));
             }
         } else {
             appointments = appointmentsDB.getOpenAppointmentsByUserAndDate(coachId, startDate, endDate);
         }
         List<AvailabilityModel> availabilities = new ArrayList<>();
-        for ( AppointmentsModel app : appointments ) {
+        for (AppointmentsModel app : appointments) {
             AvailabilityModel av = new AvailabilityModel(app.getAppointmentId(), app.getCoachId(), app.getStartDate(), app.getEndDate(), app.isWeekly());
             av.setCanBeWeekly(app.isWeekly());
             av.setCanBeOneTime(true);
-            if ( app.isWeekly() ) {
+            if (app.isWeekly()) {
                 List<AppointmentsModel> weeklyAppointments = appointmentsDB.getByWeeklyId(app.getWeeklyId(), app.getStartDate());
-                for (AppointmentsModel appointment : weeklyAppointments){
-                    if ( (appointment.getStudentId() != null) && appointment.getStartDate().after(app.getStartDate()) ) {
+                for (AppointmentsModel appointment : weeklyAppointments) {
+                    if ((appointment.getStudentId() != null) && appointment.getStartDate().after(app.getStartDate())) {
                         av.setCanBeWeekly(false);
                         break;
                     }
@@ -398,7 +373,7 @@ public class AppointmentsController extends Controller {
         endb.set(Calendar.HOUR_OF_DAY, 24);
         endDate = endb.getTime();
         List<AppointmentsModel> appointments;
-        if ( "Coach".equals(role) || "Admin".equals(role) ) {
+        if ("Coach".equals(role) || "Admin".equals(role)) {
             appointments = appointmentsDB.getAppointmentsAsCoach(userId, startDate, endDate);
             appointments.addAll(appointmentsDB.getAppointmentsAsStudent(userId, startDate, endDate));
         } else {
@@ -418,7 +393,7 @@ public class AppointmentsController extends Controller {
         return ok(Json.toJson(appointments));
     }
 
-    @Authenticate(role="Admin")
+    @Authenticate(role = "Admin")
     public Result appointmentsByDate(String role, String userId, String start, String end) {
         Date startDate = DatatypeConverter.parseDateTime(start).getTime();
         Date endDate = DatatypeConverter.parseDateTime(end).getTime();

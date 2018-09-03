@@ -344,7 +344,7 @@
 
 
             function oneTimeCheck(appointmentTypeId) {
-                let checked = $(".weekly-" + appointmentTypeId).is(':checked');
+                let checked = $(".oneTime-" + appointmentTypeId).is(':checked');
                 let data = {frequency: "oneTime", id: appointmentTypeId, checked: checked};
                 $.ajax({
                     url: '/appointmentTypeFrequency',

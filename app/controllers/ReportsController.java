@@ -21,7 +21,7 @@ public class ReportsController extends Controller {
     public Result getAppointmentDate(Long reportStart, Long reportEnd) {
         Date start = new Date(reportStart);
         Date end = new Date(reportEnd);
-        List<AppointmentsModel> appointments = appointmentsDB.getAppointmentsByDate(start, end);
+        List<AppointmentsModel> appointments = appointmentsDB.getAppointmentsReportByDate(start, end);
         return ok(Json.toJson(appointments));
     }
 }

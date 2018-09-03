@@ -1,17 +1,29 @@
 @import databases.UserDB
 @(userId: String, readAll: Boolean)
-@userDB = @{new UserDB()}
-@settingsController = @{new SettingsController()}
-@userController = @{new UserController()}
-@currentUser = @{userController.getCurrentUser()}
-@currentSettings = @{settingsController.getSettings}
+@userDB = @{
+    new UserDB()
+}
+@settingsController = @{
+    new SettingsController()
+}
+@userController = @{
+    new UserController()
+}
+@currentUser = @{
+    userController.getCurrentUser()
+}
+@currentSettings = @{
+    settingsController.getSettings
+}
 
 <div class="card dashCards">
     <div class="card-header">
         <div class="weekSelect row col-12 ">
-            <button onClick="prevWeek()" class="btn btn-primary col-md-2"><i class="material-icons md-18">navigate_before</i> Previous Week</button>
+            <button onClick="prevWeek()" class="btn btn-primary col-md-2"><i class="material-icons md-18">
+                navigate_before</i> Previous Week</button>
             <div class="weekText col-md-8"><h3><small><span class="weekSelected"></span></small></h3></div>
-            <button onClick="nextWeek()" class="btn btn-primary col-md-2">Next Week <i class="material-icons md-18">navigate_next</i></button>
+            <button onClick="nextWeek()" class="btn btn-primary col-md-2">Next Week <i class="material-icons md-18">
+                navigate_next</i></button>
         </div>    </div>
     <div class="card-body">
         <div class="table-responsive cardTable">
@@ -47,8 +59,9 @@ $(document).on('change', '.attendanceSelect', function () {
         appointmentId: $(this).data('id'),
         present: newPresence
     };
-    console.log(appointment);
-    if(appointment.appointmentId === null){ return }
+    if (appointment.appointmentId === null) {
+        return
+    }
     $.ajax({
         url: '/updatePresence',
         type: 'POST',
@@ -115,37 +128,54 @@ function updateDate() {
                     3: $(this).attr('appointmentType'),
                     4: $(this).attr('serviceType'),
                     5: moment(zonedDate($(this).attr('startDate'))).format("MM/DD/YYYY hh:mm") + " - " + moment(zonedDate($(this).attr('endDate'))).format("hh:mm A"),
-                    6: @if(!currentUser.getRole.equals("Student")) {
-                            `<select data-id="${$(this).attr("appointmentId")}" class="selectpicker attendanceSelect ${($(this).attr("present") ? "success" : "danger")}-border" title="Appointment Attendance">
-            <option value="${$(this).attr("present")}" selected>
-                ${($(this).attr("present") ? "&#10004;" : "&#x2716;")}
-                </option>
-            <option value="${!$(this).attr("present")}">
-                ${!$(this).attr("present") ? "&#10004;" : "&#x2716;"}
-            </option>
-        </select>` } else {` ${$(this).attr("present") ? "&#10004;" : "&#x2716;"}`
-                    },
+                    6: getAttendanceColumn($(this)),
                     7: `<span class="appointmentNotes">${$(this).attr('appointmentNotes')}</span>`,
-                    8: @if(currentUser.getRole.equals("Student")) {
-                    `<button class="no-button"><span class="action-primary"><a href="mailto:${$(this).attr("coachEmail")}" data-tooltip="Email Coach"  class="tooltip--bottom"><i class="material-icons md-32">email</i></a></span></button>`
-                            } else {
-                            `<button class="no-button"><span class="action-primary"><a href="mailto:${$(this).attr("studentEmail")}" data-tooltip="Email Student"  class="tooltip--bottom"><i class="material-icons md-32">email</i></a></span></button>`
-                    }
-                    @if(currentUser.getRole.equals("Coach") || userController.hasAttribute(currentUser, "isCoach")) {
-                    + `
-                            ${$(this).attr("coachNotes") === "" ?
-                            `<button id="notesFor-${$(this).attr("appointmentId")}" class="no-button" onclick="updateCoachNotes('${$(this).attr("appointmentId")}', '${$(this).attr("coachNotes")}')"><span class="action-black" id="appointmentNotes"><a href="javascript:void(0)" data-tooltip="Session Notes" class="tooltip--bottom"><i class="material-icons md-32">assignment</i></a> </span></button>`
-                            :
-                            `<button id="notesFor-${$(this).attr("appointmentId")}" class="no-button" onclick="updateCoachNotes('${$(this).attr("appointmentId")}', '${$(this).attr("coachNotes")}')"><span class="action-secondary" id="appointmentNotes"><a href="javascript:void(0)" data-tooltip="Session Notes" class="tooltip--bottom"><i class="material-icons md-32">assignment</i></a> </span></button>`
-                            }
-                            `} + `${!moment($(this).attr('startDate')).local().isBefore(moment()) ? `<button class="no-button" onclick="cancelAppointment('${$(this).attr("appointmentId")}','${$(this).attr("weekly")}','${$(this).attr("weeklyId")}')"><span class="action-delete"><a href="javascript:void(0)" data-tooltip="Cancel Appointment" class="tooltip--bottom"><i class="material-icons md-32">close</i></a></span></button>` : ``}
-                                `,
-                    9: `<a class="btn btn-primary" href="https://www.google.com/calendar/render?action=TEMPLATE&text=@currentSettings.getCenterName.replaceAll(" ", "+")+Appointment+With+${$(this).attr("studentName").replace(" ", "+")}&dates=${(!moment().isDST() && moment($(this).attr("startDate")).isDST()) ? moment($(this).attr('startDate')).subtract(1, 'hour').utc().format("YYYYMMDDTHHmmss[Z]") + "/" + moment($(this).attr('endDate')).subtract(1, 'hour').utc().format("YYYYMMDDTHHmmss[Z]") : (moment().isDST() && !moment($(this).attr("startDate")).isDST()) ? moment($(this).attr('startDate')).add(1, 'hour').utc().format("YYYYMMDDTHHmmss[Z]") + "/" + moment($(this).attr('endDate')).add(1, 'hour').utc().format("YYYYMMDDTHHmmss[Z]") : moment($(this).attr('startDate')).utc().format("YYYYMMDDTHHmmss[Z]") + "/" + moment($(this).attr('endDate')).utc().format("YYYYMMDDTHHmmss[Z]")}&details=${($(this).attr("description") || "").replace("<br/>", "%0A").replace(" ", "+")}&location=@currentSettings.getCenterName.replaceAll(" ", "+")&sf=true&output=xml"
-                                target="_blank" rel="nofollow">Add to calendar</a>`,
+                    8: getCoachNotesColumn($(this)),
+                    9: getAddToCalendarColumn($(this)),
                 }]).draw();
             });
         }
     });
+}
+
+function getAttendanceColumn(context) {
+    @if(!currentUser.getRole.equals("Student")) {
+    return `<select data-id="${context.attr("appointmentId")}" class="selectpicker attendanceSelect ${(context.attr("present") ? "success" : "danger")}-border" title="Appointment Attendance">
+            <option value="${context.attr("present")}" selected>
+                ${(context.attr("present") ? "&#10004;" : "&#x2716;")}
+                </option>
+            <option value="${!$(this).attr("present")}">
+                ${!context.attr("present") ? "&#10004;" : "&#x2716;"}
+            </option>
+        </select>`;
+    } else {
+    return `${context.attr("present") ? "&#10004;" : "&#x2716;"}`;
+    }
+}
+
+function getCoachNotesColumn(context) {
+    let coachNotes = ``;
+    @if(currentUser.getRole.equals("Student")) {
+    coachNotes += `<button class="no-button"><span class="action-primary"><a href="mailto:${context.attr("coachEmail")}" data-tooltip="Email Coach"  class="tooltip--bottom"><i class="material-icons md-32">email</i></a></span></button>`;
+    } else {
+    coachNotes += `<button class="no-button"><span class="action-primary"><a href="mailto:${context.attr("studentEmail")}" data-tooltip="Email Student"  class="tooltip--bottom"><i class="material-icons md-32">email</i></a></span></button>`;
+    }
+    @if(currentUser.getRole.equals("Coach") || userController.hasAttribute(currentUser, "isCoach")) {
+    coachNotes += `${(context.attr("coachNotes") == null || context.attr("coachNotes") === "") ?
+            `<button id="notesFor-${context.attr("appointmentId")}" class="no-button" onclick="updateCoachNotes('${context.attr("appointmentId")}', '')"><span class="action-black" id="appointmentNotes"><a href="javascript:void(0)" data-tooltip="Session Notes" class="tooltip--bottom"><i class="material-icons md-32">assignment</i></a> </span></button>`
+            :
+            `<button id="notesFor-${context.attr("appointmentId")}" class="no-button" onclick="updateCoachNotes('${context.attr("appointmentId")}', '${context.attr("coachNotes")}')"><span class="action-secondary" id="appointmentNotes"><a href="javascript:void(0)" data-tooltip="Session Notes" class="tooltip--bottom"><i class="material-icons md-32">assignment</i></a> </span></button>`
+            }`;
+    }
+    if (!moment(context.attr('startDate')).local().isBefore(moment())) {
+        coachNotes += `<button class="no-button" onclick="cancelAppointment('${context.attr("appointmentId")}','${context.attr("weekly")}','${context.attr("weeklyId")}')"><span class="action-delete"><a href="javascript:void(0)" data-tooltip="Cancel Appointment" class="tooltip--bottom"><i class="material-icons md-32">close</i></a></span></button>`
+    }
+    return coachNotes;
+}
+
+function getAddToCalendarColumn(context) {
+    return `<a class="btn btn-primary" href="https://www.google.com/calendar/render?action=TEMPLATE&text=@currentSettings.getCenterName.replaceAll(" ", "+")+Appointment+With+${context.attr("studentName").replace(" ", "+")}&dates=${(!moment().isDST() && moment(context.attr("startDate")).isDST()) ? moment(context.attr('startDate')).subtract(1, 'hour').utc().format("YYYYMMDDTHHmmss[Z]") + "/" + moment(context.attr('endDate')).subtract(1, 'hour').utc().format("YYYYMMDDTHHmmss[Z]") : (moment().isDST() && !moment(context.attr("startDate")).isDST()) ? moment(context.attr('startDate')).add(1, 'hour').utc().format("YYYYMMDDTHHmmss[Z]") + "/" + moment(context.attr('endDate')).add(1, 'hour').utc().format("YYYYMMDDTHHmmss[Z]") : moment(context.attr('startDate')).utc().format("YYYYMMDDTHHmmss[Z]") + "/" + moment(context.attr('endDate')).utc().format("YYYYMMDDTHHmmss[Z]")}&details=${(context.attr("description") || "").replace("<br/>", "%0A").replace(" ", "+")}&location=@currentSettings.getCenterName.replaceAll(" ", "+")&sf=true&output=xml"
+                                target="_blank" rel="nofollow">Add to calendar</a>`;
 }
 
 function prevWeek() {
@@ -164,12 +194,12 @@ function updateCoachNotes(appointmentId, coachNotes) {
         columnClass: "col-12",
         title: 'Session Notes',
         content: '' +
-        '<form action="" class="coachNoteForm">' +
-        '<div class="form-group">' +
-        '<label>Enter notes about the appointment here. </label>' +
-        '<textarea cols="50" rows="10" class="coachNotes form-control" required>' + coachNotes + '</textarea>' +
-        '</div>' +
-        '</form>',
+                '<form action="" class="coachNoteForm">' +
+                '<div class="form-group">' +
+                '<label>Enter notes about the appointment here. </label>' +
+                '<textarea cols="50" rows="10" class="coachNotes form-control" required>' + coachNotes + '</textarea>' +
+                '</div>' +
+                '</form>',
         escapeKey: true,
         buttons: {
             cancel: {
@@ -216,10 +246,11 @@ function cancelAppointment(appointmentId, isWeekly, weeklyId) {
         title: 'Cancel Appointment',
         content: 'Reason for Cancelling:<textarea class="form-control" rows="5" id="cancelNotes" placeholder="I can\'t come to the appointment anymore because..."></textarea>',
         escapeKey: 'cancel',
+        columnClass: 'col-md-8',
         buttons: {
             next: {
                 text: 'Next',
-                btnClass: 'btn-primary mb-3 col-md-12',
+                btnClass: 'btn-primary',
                 action: function () {
                     let cancelNotes = this.$content.find('#cancelNotes').val();
                     $.confirm({
@@ -231,10 +262,11 @@ function cancelAppointment(appointmentId, isWeekly, weeklyId) {
                         title: 'Cancel Appointment',
                         content: 'Are you sure you want to cancel this appointment?',
                         escapeKey: 'cancel',
+                        columnClass: 'col-md-8',
                         buttons: {
                             deleteOne: {
                                 text: 'Cancel This Appointment',
-                                btnClass: 'btn-primary mb-3 col-md-12',
+                                btnClass: 'btn-primary',
                                 action: function () {
                                     $.ajax({
                                         url: '/cancelAppointment',
@@ -257,10 +289,10 @@ function cancelAppointment(appointmentId, isWeekly, weeklyId) {
                             },
                             deleteAll: {
                                 text: 'Cancel All Appointments in Series',
-                                btnClass: 'btn-primary mb-3 col-md-12',
+                                btnClass: 'btn-primary',
                                 action: function () {
                                     $.ajax({
-                                        url: '/cancelAppointment',
+                                        url: '/cancelWeeklyAppointment',
                                         type: 'POST',
                                         data: JSON.stringify({
                                             appointmentId: appointmentId,
@@ -280,7 +312,7 @@ function cancelAppointment(appointmentId, isWeekly, weeklyId) {
                             },
                             cancel: {
                                 text: "Nevermind",
-                                btnClass: "mb-3 col-md-12"
+                                btnClass: "btn"
                             }
                         },
                     });
@@ -288,13 +320,10 @@ function cancelAppointment(appointmentId, isWeekly, weeklyId) {
             },
             cancel: {
                 text: 'Nevermind',
-                btnClass: 'mb-3 col-md-12',
+                btnClass: 'btn',
             }
         }
     });
-    setTimeout(function () {
-        $(".jconfirm-buttons").addClass("col-12");
-    }, 200);
 }
 
 </script>
