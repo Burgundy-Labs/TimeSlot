@@ -75,14 +75,14 @@
                                     <label for="startTime" class="mb-3 col-md-12 mb-3 col-md-form-label">
                                         Learning Center Open Time</label>
                                     <div class="mb-3 col-md-12">
-                                        <input id="startTime" class="form-control" type="time" name="startTime" value='@currentSettings.getStartTime.format("HH:mm")'>
+                                        <input id="startTime" class="form-control" type="time" name="startTime"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="endTime" class="mb-3 col-md-12 mb-3 col-md-form-label">
                                         Learning Center Close Time</label>
                                     <div class="mb-3 col-md-12">
-                                        <input id="endTime" class="form-control" type="time" name="endTime" value='@currentSettings.getEndTime.format("HH:mm")'>
+                                        <input id="endTime" class="form-control" type="time" name="endTime"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -268,6 +268,10 @@
     </div>
     <script type="text/javascript">
 
+            //Set up times as moment objects for timezones
+            $("#startTime").val(moment("@currentSettings.getStartTime").format("HH:mm"));
+            $("#endTime").val(moment("@currentSettings.getEndTime").format("HH:mm"));
+
             function weeklyCheck(appointmentTypeId) {
                 let checked = $(".weekly-" + appointmentTypeId).is(':checked');
                 let data = {frequency: "weekly", id: appointmentTypeId, checked: checked};
@@ -430,7 +434,6 @@
                 const appointmentServicesTab = $("#appointmentServicesTab");
                 let select = @currentSettings.getMaximumAppointments -1;
                 if (select === -1) {
-                    $('#universityName')
                     select = document.getElementById("maximumAppointments").length - 1;
                 }
                 document.getElementById("maximumAppointments").selectedIndex = select;
@@ -581,7 +584,7 @@
                                             createAlert('danger', 'Appointment type creation failed.');
                                         }
                                     });
-                                };
+                                }
                             }
                         },
                         cancel: {

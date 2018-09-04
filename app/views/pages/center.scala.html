@@ -67,16 +67,83 @@
                             let coachName = $(this).attr('coachName');
                             let isAppointment = ($(this).attr('studentId') !== null);
                             let weekly = $(this).attr('weekly');
-                            console.log(weekly);
                             let options = {
+                                url: "#",
                                 class: !isAppointment ? "availableAppointment" : weekly ? "weeklyAppointment" : "oneTimeAppointment",
+                                data: {
+                                    appointmentId: $(this).attr("appointmentId")
+                                },
+                                onClick: function (event, timetable, clickEvent) {
+                                    $.ajax({
+                                        type: "GET",
+                                        url: `/getAppointmentById/${event.options.data.appointmentId}`,
+                                        success: function (response) {
+                                            appointmentDetailPopup(response);
+                                        }
+                                    })
+                                }
                             };
                             if ($(this))
                                 timetable.addEvent(!isAppointment ? "Available" : $(this).attr('studentName'), coachName, moment($(this).attr('startDate')).toDate(), moment($(this).attr('endDate')).toDate(), options);
                         });
                         let renderer = new Timetable.Renderer(timetable);
-                        renderer.draw('.timetable'); // any css selector
+                        renderer.draw('.timetable');
                     }
+                });
+            }
+
+            function appointmentDetailPopup(appointment) {
+                $.dialog({
+                    theme: 'modern',
+                    type: "dark",
+                    escapeKey: true,
+                    backgroundDismiss: true,
+                    title: "Appointment Details",
+                    columnClass: "col-md-8",
+                    content: `<div class="row col-md-12">
+                              <div class="col-md-6"><img src="${appointment.coachPhoto}" class="userAvatar"/>
+                              <br/>
+                              <b>Coach</b>
+                              <br/>
+                              <a href="mailto:${appointment.coachEmail}">${appointment.coachName}</a>
+                              </div>
+                              ${appointment.studentId == null
+                                ? `<div class="col-md-6"><i class="material-icons md-64">face</i>
+                                   <br/>
+                                   <b>Student</b>
+                                   <br/>
+                                   No student yet!</div>`
+                                : `<div class="col-md-6"><img src="${appointment.studentPhoto}" class="userAvatar"/>
+                                   <br/>
+                                   <b>Student</b>
+                                   <br/>
+                                   <a href="maito:${appointment.studentEmail}">${appointment.studentName}</a>
+                                   </div>`
+                                }
+                              <div class="appointmentSummary col-12">
+                              ${moment(appointment.startDate).format("dddd MMMM Do, YYYY")}
+                              <br/>
+                              <b>${moment(appointment.startDate).format("hh:mm")} - ${moment(appointment.endDate).format("hh:mm A")}</b>
+                              <br/>
+                              ${appointment.studentId == null
+                                ? `                              Service: ${appointment.serviceType}
+                              <br/>
+                              Appointment Type: ${appointment.appointmentType}
+                              <br/>
+                              Weekly: ${appointment.weekly}`
+                                : `<div class="col-md-6"><img src="${appointment.studentPhoto}" class="userAvatar"/>
+                                   <br/>
+                                   <b>Student</b>
+                                   <br/>
+                                   <a href="maito:${appointment.studentEmail}">${appointment.studentName}</a>
+                                   </div>`
+                                }
+
+                              <div>
+                              </div>
+                              </div>`
+
+
                 });
             }
     </script>

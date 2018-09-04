@@ -280,6 +280,12 @@ public class AppointmentsController extends Controller {
         return ok(Json.toJson(appointments));
     }
 
+    @Authenticate(role = "Coach")
+    public Result getAppointmentById(String appointmentId) {
+        AppointmentsModel appointment = appointmentsDB.get(appointmentId).orElseThrow(NullPointerException::new);
+        return ok(Json.toJson(appointment));
+    }
+
     public Result availableSlotsForAppointments(String coachId, String start, String end, String service) {
         Date startDate = DatatypeConverter.parseDateTime(start).getTime();
         Date endDate = DatatypeConverter.parseDateTime(end).getTime();
