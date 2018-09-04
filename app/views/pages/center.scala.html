@@ -1,7 +1,79 @@
-@settingsController = @{new SettingsController()}
-@userController = @{new UserController()}
+    @settingsController = @{
+        new SettingsController()
+    }
+        @userController = @{
+        new UserController()
+    }
+    @currentUser = @{
+        userController.getCurrentUser
+    }
 @main("Center", settingsController.getSettings.getCenterName) {
-    <div class="col-12">
-        @partials.components._appointmentListForUser(userController.getCurrentUser.getUid, true)
+    @*<div class="col-12">*@
+    @*partials.components._appointmentListForUser(userController.getCurrentUser.getUid, true)*@
+    @*</div>*@
+    <div class="col-md-12">
+        <h1>Daily Viewer</h1>
+        <div class="weekSelect row col-12 ">
+            <button onClick="prevDay()" class="btn btn-primary col-md-2"><i class="material-icons md-18">
+                navigate_before</i> Previous Day</button>
+            <div class="weekText col-md-8"><h3><small><span class="daySelected"></span></small></h3></div>
+            <button onClick="nextDay()" class="btn btn-primary col-md-2">Next Day <i class="material-icons md-18">
+                navigate_next</i></button>
+        </div>
+        <div class="row">
+            <div class="col-8">
+                <div class="timetable"></div>
+            </div>
+        </div>
     </div>
+    <script>
+            let reportStart = new moment().startOf('day');
+            let reportEnd = new moment().endOf('day');
+            $(document).ready(function () {
+                updateViewer();
+            });
+
+            function prevDay() {
+                reportStart = moment(reportStart).subtract(1, 'day').startOf('day');
+                reportEnd = moment(reportStart).endOf('day');
+                updateViewer();
+            }
+
+            function nextDay() {
+                reportStart = moment(reportStart).add(1, 'day').startOf('day');
+                reportEnd = moment(reportStart).endOf('day');
+                updateViewer();
+            }
+
+            function updateViewer() {
+                $(".daySelected").html(reportStart.format("dddd MMMM Do "));
+                let timetable = new Timetable();
+                $.ajax({
+                    async: false,
+                    @if(currentUser.getRole.equals("Admin")){
+                    url: '/dailyViewerByDate/' + moment(reportStart).format("YYYY-MM-DD") + '/' + moment(reportEnd).format("YYYY-MM-DD"),
+                    } else {
+                    url: '/appointmentsForUser/' + moment(reportStart).format("YYYY-MM-DD") + '/' + moment(reportEnd).format("YYYY-MM-DD"),
+                    }
+                    type: 'GET',
+                    success: function (response) {
+                        let coachNames = Array.from(new Set(response.map(a => a.coachName)));
+                        timetable.addLocations(coachNames);
+                        $(response).each(function () {
+                            let coachName = $(this).attr('coachName');
+                            let isAppointment = ($(this).attr('studentId') !== null);
+                            let weekly = $(this).attr('weekly');
+                            console.log(weekly);
+                            let options = {
+                                class: !isAppointment ? "availableAppointment" : weekly ? "weeklyAppointment" : "oneTimeAppointment",
+                            };
+                            if($(this))
+                            timetable.addEvent(!isAppointment ? "Available" : $(this).attr('studentName'), coachName, moment($(this).attr('startDate')).toDate(), moment($(this).attr('endDate')).toDate(), options);
+                        });
+                        let renderer = new Timetable.Renderer(timetable);
+                        renderer.draw('.timetable'); // any css selector
+                    }
+                });
+            }
+    </script>
 }

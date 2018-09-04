@@ -403,7 +403,19 @@ public class AppointmentsController extends Controller {
         endc.setTime(endDate);
         endc.set(Calendar.HOUR_OF_DAY, 24);
         endDate = endc.getTime();
-        List<AppointmentsModel> appointments = appointmentsDB.getAppointmentsByDate(startDate, endDate);
+        List<AppointmentsModel> appointments = appointmentsDB.getAppointmentsByDate(startDate, endDate, false);
+        return ok(Json.toJson(appointments));
+    }
+
+    @Authenticate(role = "Admin")
+    public Result dailyViewerByDate(String start, String end) {
+        Date startDate = DatatypeConverter.parseDateTime(start).getTime();
+        Date endDate = DatatypeConverter.parseDateTime(end).getTime();
+        Calendar endc = Calendar.getInstance();
+        endc.setTime(endDate);
+        endc.set(Calendar.HOUR_OF_DAY, 24);
+        endDate = endc.getTime();
+        List<AppointmentsModel> appointments = appointmentsDB.getAppointmentsByDate(startDate, endDate, true);
         return ok(Json.toJson(appointments));
     }
 }

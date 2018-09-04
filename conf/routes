@@ -21,6 +21,7 @@ GET         /availableSlots/:userId/:start/:end                                 
 GET         /availableSlotsForAppointments/:userId/:start/:end/:serviceId        controllers.AppointmentsController.availableSlotsForAppointments(userId: String, start: String, end: String, serviceId: String)
 GET         /appointmentsForUser/:role/:userId/:start/:end                       controllers.AppointmentsController.appointmentsForUser(role: String, userId: String, start: String, end: String)
 GET         /appointmentsByDate/:role/:userId/:start/:end                        controllers.AppointmentsController.appointmentsByDate(role: String, userId: String, start: String, end: String)
+GET         /dailyViewerByDate/:start/:end                                       controllers.AppointmentsController.dailyViewerByDate(start: String, end: String)
 GET         /openAppointments/:coachId/:start/:end                               controllers.AppointmentsController.openAppointments(coachId: String, start: String, end: String)
 GET         /Reports                                                             controllers.ReportsController.index
 GET         /AppointmentStatistics/:reportStart/:reportEnd                       controllers.ReportsController.getAppointmentDate(reportStart: Long, reportEnd: Long)

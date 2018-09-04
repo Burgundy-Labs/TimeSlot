@@ -1,5 +1,18 @@
 @import "global_variables"
+
+
+
+// Partials
 @import "partials/_media-queries"
+@import "partials/_footer"
+@import "partials/_fullCalendar"
+@import "partials/_stepper"
+@import "partials/_bootstrapOverride"
+@import "outdatedbrowser"
+@import "partials/CueTip"
+@import "partials/timetablejs"
+
+
 *
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
@@ -365,10 +378,22 @@ button
   background-color: black
   border-radius: 4px
 
-// Partials
-@import "partials/_footer"
-@import "partials/_fullCalendar"
-@import "partials/_stepper"
-@import "partials/_bootstrapOverride"
-@import "outdatedbrowser"
-@import "partials/CueTip"
+// Set up colors for Daily Viewer types
+.time-entry.oneTimeAppointment
+  background-color: #FAAE39
+  border-color: darken(#FAAE39, 5%)
+  &:hover
+    background-color: darken(#FAAE39, 5%)
+
+.time-entry.weeklyAppointment
+  background-color: #5BAAFF
+  border-color: darken(#5BAAFF, 5%)
+  &:hover
+    background-color: darken(#5BAAFF, 5%)
+
+.time-entry.availableAppointment
+  background-color: #E4E4E4
+  border-color: darken(#E4E4E4, 5%)
+  color: black
+  &:hover
+    background-color: darken(#E4E4E4, 5%)

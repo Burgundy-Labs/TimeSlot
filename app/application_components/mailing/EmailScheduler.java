@@ -45,7 +45,7 @@ public class EmailScheduler {
             Calendar endDay = Calendar.getInstance();
             endDay.set(Calendar.HOUR_OF_DAY, 24);
             Logger.info("Checking for daily appointments.");
-            List<AppointmentsModel> appointments = appointmentsDB.getAppointmentsByDate(startDay.getTime(), endDay.getTime());
+            List<AppointmentsModel> appointments = appointmentsDB.getAppointmentsByDate(startDay.getTime(), endDay.getTime(), false);
             HashMap<String, ArrayList<AppointmentsModel>> coachAppointments = new HashMap<>();
             HashMap<String, ArrayList<AppointmentsModel>> studentAppointments = new HashMap<>();
             for(AppointmentsModel a : appointments){
