@@ -11,6 +11,9 @@
         @partials._head()
     </head>
     <body>
+        <script>
+            moment.tz.setDefault("America/Detroit");
+        </script>
         <div id="loader">
             <img src="@routes.Assets.at("images/loader.svg")" width="200px" alt="Loading">
         </div>
