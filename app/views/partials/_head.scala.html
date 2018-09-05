@@ -1,3 +1,4 @@
+@import application_components.Application
 @* Meta & PWA Declarations *@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="mobile-web-app-capable" content="yes">
@@ -91,4 +92,3 @@
   gtag('config', '@Application.getConfig.getString("googleAnalyticsUA")');
 </script>
 <script src="@routes.Assets.at("javascripts/firebaseAuth.js")" type="text/javascript"></script>
-@import application_components.Application
