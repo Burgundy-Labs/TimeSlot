@@ -51,44 +51,50 @@
 <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/assets/javascripts/service-worker.js')
-                    .then(function(registration) {
+                    .then(function (registration) {
                         console.log('Service Worker registration successful with scope: ',
                                 registration.scope);
                     })
-                    .catch(function(err) {
+                    .catch(function (err) {
                         console.log('Service Worker registration failed: ', err);
                     });
         }
 
-  let config = {
-      apiKey: "@Application.getConfig.getString("authConfig.apiKey")",
-      authDomain: "@Application.getConfig.getString("authConfig.authDomain")",
-      databaseURL: "@Application.getConfig.getString("authConfig.databaseURL")",
-      projectId: "@Application.getConfig.getString("authConfig.projectId")",
-      storageBucket: "@Application.getConfig.getString("authConfig.storageBucket")",
-      messagingSenderId: "@Application.getConfig.getString("authConfig.messagingSenderId")"
-  };
-  firebase.initializeApp(config);
-  $(document).ready(function() {
-      console.log('@Application.getConfig.getString("app.name")');
-      const csrfToken = $('input[name="csrfToken"]').attr('value');
-      $.ajaxSetup({
-          beforeSend: function (xhr) {
-              $('#loader').fadeIn();
-              xhr.setRequestHeader('Csrf-Token', csrfToken);
-          },
-          complete: function() {
-              $('#loader').fadeOut();
-          },
-          success: function() {
-              $('#loader').fadeOut();
-          }
-      });
-  });
+        let config = {
+            apiKey: "@Application.getConfig.getString("authConfig.apiKey")",
+            authDomain: "@Application.getConfig.getString("authConfig.authDomain")",
+            databaseURL: "@Application.getConfig.getString("authConfig.databaseURL")",
+            projectId: "@Application.getConfig.getString("authConfig.projectId")",
+            storageBucket: "@Application.getConfig.getString("authConfig.storageBucket")",
+            messagingSenderId: "@Application.getConfig.getString("authConfig.messagingSenderId")"
+        };
+        firebase.initializeApp(config);
+        $(document).ready(function () {
+            console.log('@Application.getConfig.getString("app.name")');
+            const csrfToken = $('input[name="csrfToken"]').attr('value');
+            $.ajaxSetup({
+                beforeSend: function (xhr) {
+                    $('#loader').fadeIn();
+                    xhr.setRequestHeader('Csrf-Token', csrfToken);
+                },
+                complete: function () {
+                    $('#loader').fadeOut();
+                },
+                success: function () {
+                    $('#loader').fadeOut();
+                }
+            });
+        });
 
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', '@Application.getConfig.getString("googleAnalyticsUA")');
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+        gtag('config', '@Application.getConfig.getString("googleAnalyticsUA")');
+
+        moment.tz.setDefault("America/Detroit");
 </script>
 <script src="@routes.Assets.at("javascripts/firebaseAuth.js")" type="text/javascript"></script>

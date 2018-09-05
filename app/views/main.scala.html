@@ -11,9 +11,6 @@
         @partials._head()
     </head>
     <body>
-        <script>
-            moment.tz.setDefault("America/Detroit");
-        </script>
         <div id="loader">
             <img src="@routes.Assets.at("images/loader.svg")" width="200px" alt="Loading">
         </div>
@@ -21,7 +18,7 @@
             @helper.CSRF.formField
         <div class="row page-title">
             <nav class="navbar navbar-expand-lg navbar-dark col-12">
-                <div class="co-sm-6 col-6">
+                <div class="col-6">
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                         <i class="material-icons">menu</i>
                     </button>
@@ -38,7 +35,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 col-6">
+                <div class="col-4 offset-2">
                     <a href="/Dashboard"> <img class="logo navbar-brand float-right" src="@routes.Assets.at("images/Logo.svg")" width="200px" alt="TimeSlot Logo"></a>
                 </div>
             </nav>

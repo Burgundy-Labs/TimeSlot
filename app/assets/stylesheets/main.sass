@@ -1,7 +1,5 @@
 @import "global_variables"
 
-
-
 // Partials
 @import "partials/_media-queries"
 @import "partials/_footer"
@@ -11,7 +9,6 @@
 @import "outdatedbrowser"
 @import "partials/CueTip"
 @import "partials/timetablejs"
-
 
 *
   -webkit-font-smoothing: antialiased
@@ -161,7 +158,7 @@ a
     border-radius: 4px
     max-width: 600px
     background-color: white
-    border-bottom: 10px solid $primary-color
+    border-bottom: 10px solid #445A94
     margin: 0 auto
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)
 
@@ -351,7 +348,7 @@ button
 
 .navbar-dark .navbar-toggler
   color: white
-  border-color: rgba(255,255,255, 0.2)
+  border: 0
   margin-right: 15px
 
 .navbar-nav
@@ -384,6 +381,11 @@ button
   background-color: #F1F1F2
   padding: 10px
   border-radius: 4px
+
+.loginLogo
+  background-color: #1D292E
+  border-radius: 50px
+  padding: 10px
 
 //Fix appointment list DataTable
 #appointmentList_wrapper .row:first-child,#appointmentList_wrapper .row:last-child
