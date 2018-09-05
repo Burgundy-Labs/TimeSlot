@@ -1,21 +1,16 @@
-@settingsController = @{
-    new SettingsController()
-}
-@userController = @{
-    new UserController()
-}
-@currentUser = @{
-    userController.getCurrentUser
-}
-@currentSettings = @{
-    settingsController.getSettings
-}
+@settingsController = @{new SettingsController()}
+@userController = @{new UserController()}
+@currentUser = @{userController.getCurrentUser}
+@currentSettings = @{settingsController.getSettings}
+
 @main("Center", settingsController.getSettings.getCenterName) {
     @*<div class="col-12">*@
     @*partials.components._appointmentListForUser(userController.getCurrentUser.getUid, true)*@
     @*</div>*@
     <div class="col-md-12">
-        <h1>Daily Viewer</h1>
+        <div class="text-center">
+            <h1>Daily Viewer</h1>
+        </div>
         <div class="weekSelect row col-12 ">
             <button onClick="prevDay()" class="btn btn-primary col-md-2"><i class="material-icons md-18">
                 navigate_before</i> Previous Day</button>
@@ -23,12 +18,9 @@
             <button onClick="nextDay()" class="btn btn-primary col-md-2">Next Day <i class="material-icons md-18">
                 navigate_next</i></button>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="timetable"></div>
-            </div>
-        </div>
     </div>
+    <div class="timetable"></div>
+
     <script>
             let reportStart = new moment().startOf('day');
             let reportEnd = new moment().endOf('day');
@@ -51,17 +43,14 @@
             function updateViewer() {
                 $(".daySelected").html(reportStart.format("dddd MMMM Do "));
                 let timetable = new Timetable();
+                timetable.useTwelveHour();
                 timetable.setScope(parseInt(moment("@currentSettings.getStartTime.toInstant").format("HH")), parseInt(moment("@currentSettings.getEndTime.toInstant").format("HH")));
                 $.ajax({
                     async: false,
-                    @if(currentUser.getRole.equals("Admin")){
                     url: '/dailyViewerByDate/' + moment(reportStart).format("YYYY-MM-DD") + '/' + moment(reportEnd).format("YYYY-MM-DD"),
-                    } else {
-                    url: '/appointmentsForUser/' + moment(reportStart).format("YYYY-MM-DD") + '/' + moment(reportEnd).format("YYYY-MM-DD"),
-                    }
                     type: 'GET',
                     success: function (response) {
-                        let coachNames = Array.from(new Set(response.map(a => a.coachName)));
+                        let coachNames = Array.from(new Set(response.map(a => a.coachName))); // Don't collect duplicate coach names
                         timetable.addLocations(coachNames);
                         $(response).each(function () {
                             let coachName = $(this).attr('coachName');
@@ -73,7 +62,7 @@
                                 data: {
                                     appointmentId: $(this).attr("appointmentId")
                                 },
-                                onClick: function (event, timetable, clickEvent) {
+                                onClick: function (event) {
                                     $.ajax({
                                         type: "GET",
                                         url: `/getAppointmentById/${event.options.data.appointmentId}`,
@@ -83,8 +72,7 @@
                                     })
                                 }
                             };
-                            if ($(this))
-                                timetable.addEvent(!isAppointment ? "Available" : $(this).attr('studentName'), coachName, moment($(this).attr('startDate')).toDate(), moment($(this).attr('endDate')).toDate(), options);
+                            timetable.addEvent(!isAppointment ? "Available" : $(this).attr('studentName'), coachName, moment($(this).attr('startDate')).toDate(), moment($(this).attr('endDate')).toDate(), options);
                         });
                         let renderer = new Timetable.Renderer(timetable);
                         renderer.draw('.timetable');
@@ -93,7 +81,7 @@
             }
 
             function appointmentDetailPopup(appointment) {
-                $.dialog({
+                $.alert({
                     theme: 'modern',
                     type: "dark",
                     escapeKey: true,
@@ -101,49 +89,51 @@
                     title: "Appointment Details",
                     columnClass: "col-md-8",
                     content: `<div class="row col-md-12">
-                              <div class="col-md-6"><img src="${appointment.coachPhoto}" class="userAvatar"/>
-                              <br/>
+                              <div class="col-md-4">
                               <b>Coach</b>
                               <br/>
-                              <a href="mailto:${appointment.coachEmail}">${appointment.coachName}</a>
+                              <img src="${appointment.coachPhoto}" class="userAvatar"/>
+                              <br/>
+                              <i class="material-icons text-primary md-18">email</i> <a href="mailto:${appointment.coachEmail}">${appointment.coachName}</a>
                               </div>
                               ${appointment.studentId == null
-                                ? `<div class="col-md-6"><i class="material-icons md-64">face</i>
+                                ? `<div class="col-md-4"><i class="material-icons md-64 text-warning">help</i>
                                    <br/>
+                                   <small>No appointment scheduled.</small>
+                                   </div>
+                                   <div class="col-md-4">
                                    <b>Student</b>
                                    <br/>
-                                   No student yet!</div>`
-                                : `<div class="col-md-6"><img src="${appointment.studentPhoto}" class="userAvatar"/>
+                                   <i class="material-icons md-64">face</i>
                                    <br/>
+                                   <i class="material-icons text-primary md-18">unsubscribe</i> No student yet
+                                   </div>`
+                                : `<div class="col-md-4"><i class="material-icons md-64 text-success">check_circle</i>
+                                   <br/>
+                                   <small>An appointment is scheduled.</small>
+                                   </div>
+                                   <div class="col-md-4">
                                    <b>Student</b>
                                    <br/>
-                                   <a href="maito:${appointment.studentEmail}">${appointment.studentName}</a>
+                                   <img src="${appointment.studentPhoto}" class="userAvatar"/>
+                                   <br/>
+                                   <i class="material-icons text-primary md-18">email</i> <a href="maito:${appointment.studentEmail}">${appointment.studentName}</a>
                                    </div>`
                                 }
-                              <div class="appointmentSummary col-12">
-                              ${moment(appointment.startDate).format("dddd MMMM Do, YYYY")}
-                              <br/>
-                              <b>${moment(appointment.startDate).format("hh:mm")} - ${moment(appointment.endDate).format("hh:mm A")}</b>
+                              <div class="col-md-12">&nbsp;</div>
+                              <div class="appointmentSummary col-md-12 text-left">
+                              ${moment(appointment.startDate).format("dddd, MMMM Do")}: <b>${moment(appointment.startDate).format("hh:mm")} - ${moment(appointment.endDate).format("hh:mm A")}</b>
                               <br/>
                               ${appointment.studentId == null
-                                ? `                              Service: ${appointment.serviceType}
-                              <br/>
-                              Appointment Type: ${appointment.appointmentType}
-                              <br/>
-                              Weekly: ${appointment.weekly}`
-                                : `<div class="col-md-6"><img src="${appointment.studentPhoto}" class="userAvatar"/>
+                                ? `This appointment has not yet been taken.`
+                                : `Service: ${appointment.serviceType}
                                    <br/>
-                                   <b>Student</b>
+                                   Appointment Type: ${appointment.appointmentType}
                                    <br/>
-                                   <a href="maito:${appointment.studentEmail}">${appointment.studentName}</a>
+                                   Weekly: ${appointment.weekly}
                                    </div>`
                                 }
-
-                              <div>
-                              </div>
                               </div>`
-
-
                 });
             }
     </script>
