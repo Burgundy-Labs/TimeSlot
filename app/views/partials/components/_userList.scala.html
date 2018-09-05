@@ -52,16 +52,6 @@
     </table>
 </div>
 <script type="text/javascript">
-            function createAppointmentPopup(role, studentId) {
-                scheduleUser.userId = studentId;
-                scheduleUser.userRole = role;
-                $.dialog({
-                    title: 'New Appointment',
-                    theme: 'modern',
-                    columnClass: 'col-md-12',
-                    content: `@partials.components._createNewAppointmentFlow()`,
-                });
-            }
         $(document).ready(function () {
             $('#@role-Table').DataTable({
                 dom: 'frtlip',

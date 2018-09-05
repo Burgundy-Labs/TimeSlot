@@ -60,5 +60,20 @@
                 </div>
         </main>
         @partials._footer()
+        <script>
+
+        function createAppointmentPopup(role, studentId) {
+            scheduleUser.userId = studentId;
+            scheduleUser.userRole = role;
+            $.dialog({
+                title: 'New Appointment',
+                theme: 'material',
+                type: "dark",
+                escapeKey: true,
+                columnClass: 'col-md-12',
+                content: `@partials.components._createNewAppointmentFlow()`,
+            });
+        }
+        </script>
     </body>
 </html>
