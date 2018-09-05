@@ -14,22 +14,19 @@ function createAlert(alertType, messageHTML) {
 }
 
 function appointmentDetailPopup(appointmentId) {
-    let appointment;
     $.ajax({
         type: "GET",
         url: `/getAppointmentById/${appointmentId}`,
         success: function (response) {
-            appointment = response;
-        }
-    });
-    $.alert({
-        theme: 'modern',
-        type: "dark",
-        escapeKey: true,
-        backgroundDismiss: true,
-        title: "Appointment Details",
-        columnClass: "col-md-8",
-        content: `<div class="row col-md-12">
+            let appointment = response;
+            $.alert({
+                theme: 'modern',
+                type: "dark",
+                escapeKey: true,
+                backgroundDismiss: true,
+                title: "Appointment Details",
+                columnClass: "col-md-8",
+                content: `<div class="row col-md-12">
                               <div class="col-md-4">
                               <b>Coach</b>
                               <br/>
@@ -38,7 +35,7 @@ function appointmentDetailPopup(appointmentId) {
                               <i class="material-icons text-primary md-18">email</i> <a href="mailto:${appointment.coachEmail}">${appointment.coachName}</a>
                               </div>
                               ${appointment.studentId == null
-            ? `<div class="col-md-4"><i class="material-icons md-64 text-warning">help</i>
+                    ? `<div class="col-md-4"><i class="material-icons md-64 text-warning">help</i>
                                    <br/>
                                    <small>No appointment scheduled.</small>
                                    </div>
@@ -49,7 +46,7 @@ function appointmentDetailPopup(appointmentId) {
                                    <br/>
                                    <i class="material-icons text-primary md-18">unsubscribe</i> No student yet
                                    </div>`
-            : `<div class="col-md-4"><i class="material-icons md-64 text-success">check_circle</i>
+                    : `<div class="col-md-4"><i class="material-icons md-64 text-success">check_circle</i>
                                    <br/>
                                    <small>An appointment is scheduled.</small>
                                    </div>
@@ -60,21 +57,24 @@ function appointmentDetailPopup(appointmentId) {
                                    <br/>
                                    <i class="material-icons text-primary md-18">email</i> <a href="maito:${appointment.studentEmail}">${appointment.studentName}</a>
                                    </div>`
-            }
+                    }
                               <div class="col-md-12">&nbsp;</div>
                               <div class="appointmentSummary col-md-12 text-left">
                               ${moment(appointment.startDate).format("dddd, MMMM Do")}: <b>${moment(appointment.startDate).format("hh:mm")} - ${moment(appointment.endDate).format("hh:mm A")}</b>
                               <br/>
                               ${appointment.studentId == null
-            ? `This appointment has not yet been taken.`
-            : `Service: ${appointment.serviceType}
+                    ? `This appointment has not yet been taken.`
+                    : `Service: ${appointment.serviceType}
                                    <br/>
                                    Appointment Type: ${appointment.appointmentType}
                                    <br/>
                                    Weekly: ${appointment.weekly}
                                    </div>`
-            }
+                    }
                               </div>`
+            });
+        }
     });
+
 }
 
