@@ -128,7 +128,7 @@ function updateDate() {
                     2: `<a href='/User/${$(this).attr('coachId')}'>${$(this).attr('coachName')}</a>`,
                     3: $(this).attr('appointmentType'),
                     4: $(this).attr('serviceType'),
-                    5: moment(zonedDate($(this).attr('startDate'))).format("MM/DD/YYYY hh:mm") + " - " + moment(zonedDate($(this).attr('endDate'))).format("hh:mm A"),
+                    5: moment($(this).attr('startDate')).format("MM/DD/YYYY hh:mm") + " - " + moment($(this).attr('endDate')).format("hh:mm A"),
                     6: getAttendanceColumn($(this)),
                     7: `<span class="appointmentNotes">${$(this).attr('appointmentNotes')}</span>`,
                     8: getCoachNotesColumn($(this)),

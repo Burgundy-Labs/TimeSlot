@@ -78,8 +78,8 @@
                     height: 'auto',
                     editable: false,
                     themeSystem: 'bootstrap4',
-                    eventClick: function (calEvent, jsEvent, view) {
-                        window.location = "/Appointments"
+                    eventClick: function(event, jsEvent, view) {
+                        appointmentDetailPopup(event.id);
                     },
                     weekends: false,
                     minTime: moment('@settingsController.getSettings.getStartTime.toInstant').format("HH:mm"),
@@ -110,12 +110,13 @@
                                                 title = $(this).attr("studentName")
                                             }
                                             const event = {
-                                                id: $(this).attr('availabilityId'),
+                                                id: $(this).attr('appointmentId'),
                                                 title: title,
                                                 start: moment($(this).attr('startDate')),
                                                 end: moment($(this).attr('endDate')),
                                                 dow: [],
                                             };
+                                            console.log(event);
                                             if (!event.start.local().isBefore(moment())) {
                                                 upcomingCount++;
                                             }

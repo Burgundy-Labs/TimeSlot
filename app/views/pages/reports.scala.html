@@ -95,7 +95,6 @@
             }
 
             function makePropertyChart(property, chartId) {
-                debugger;
                 let labels = appointmentList.map(a => a[property]).reduce(function(a,b) {
                     if(a.indexOf(b) < 0) a.push(b);
                     return a;
