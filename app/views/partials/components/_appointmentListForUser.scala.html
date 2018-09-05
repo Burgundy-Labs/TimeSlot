@@ -123,7 +123,7 @@ function updateDate() {
         success: function (response) {
             $(response).each(function () {
                 t.DataTable().rows.add([{
-                    0: `<img src="${$(this).attr('studentPhoto')}" class="userAvatar"/>`,
+                    0: `<img src="${$(this).attr('studentPhoto')}" class="user-avatar"/>`,
                     1: `<a href='/User/${$(this).attr('studentId')}'>${$(this).attr('studentName')}</a>`,
                     2: `<a href='/User/${$(this).attr('coachId')}'>${$(this).attr('coachName')}</a>`,
                     3: $(this).attr('appointmentType'),
@@ -134,6 +134,7 @@ function updateDate() {
                     8: getCoachNotesColumn($(this)),
                     9: getAddToCalendarColumn($(this)),
                 }]).draw();
+                t.DataTable().columns.adjust().draw();
             });
         }
     });
