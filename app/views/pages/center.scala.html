@@ -1,53 +1,101 @@
-@settingsController = @{new SettingsController()}
-@userController = @{new UserController()}
-@currentUser = @{userController.getCurrentUser}
-@currentSettings = @{settingsController.getSettings}
+@settingsController = @{
+    new SettingsController()
+}
+@userController = @{
+    new UserController()
+}
+@currentUser = @{
+    userController.getCurrentUser
+}
+@currentSettings = @{
+    settingsController.getSettings
+}
 
 @main("Center", settingsController.getSettings.getCenterName) {
-    @*<div class="col-12">*@
-    @*partials.components._appointmentListForUser(userController.getCurrentUser.getUid, true)*@
-    @*</div>*@
     <div class="col-md-12">
-        <div class="text-center">
-            <h1>Daily Viewer</h1>
-        </div>
-        <div class="weekSelect row col-12 ">
-            <button onClick="prevDay()" class="btn btn-primary col-md-2"><i class="material-icons md-18">
-                navigate_before</i> Previous Day</button>
-            <div class="weekText col-md-8"><h3><small><span class="daySelected"></span></small></h3></div>
-            <button onClick="nextDay()" class="btn btn-primary col-md-2">Next Day <i class="material-icons md-18">
-                navigate_next</i></button>
+        <ul class="nav nav-pills mb-3" id="center-tab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="dailyViewer-tab" data-toggle="pill" href="#dailyViewer" role="tab" aria-controls="dailyViewer" aria-expanded="true">
+                    Daily Viewer</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="appointment-list-tab" data-toggle="pill" href="#appointment-list" role="tab" aria-controls="appointment-list" aria-expanded="true">
+                    Appointment List</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="center-tabContent">
+            <div class="tab-pane fade show active" id="dailyViewer" role="tabpanel" aria-labelledby="dailyViewer-tab">
+                <div class="col-md-12">
+                    <div class="text-center">
+                        <h1>Daily Viewer</h1>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+                            <div class="row justify-content-center">
+                                <div class="col-md-auto">
+                                    <button onClick="prevDay()" class="btn btn-primary"><i class="material-icons md-18">
+                                        navigate_before</i></button>
+                                </div>
+                                <div class="col-md-auto">
+                                    <input id="selectedDay" class="form-control" type="date" name="selectedDay" value="" onchange="updateSelectedDate()" title="selectedDay">
+                                    <span class="daySelected"></span>
+                                </div>
+                                <div class="col-md-auto">
+                                    <button onClick="nextDay()" class="btn btn-primary"><i class="material-icons md-18">
+                                        navigate_next</i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-md-10">
+                            <div class="timetable"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="appointment-list" role="tabpanel" aria-labelledby="appointment-list-tab">
+                <div class="col-12">
+                @partials.components._appointmentListForUser(userController.getCurrentUser.getUid, true)
+                </div>
+            </div>
         </div>
     </div>
-    <div class="timetable"></div>
 
     <script>
-            let reportStart = new moment().startOf('day');
-            let reportEnd = new moment().endOf('day');
+            let datePicker = $("#selectedDay");
+            let dailyViewerDate = moment();
+
             $(document).ready(function () {
-                updateViewer();
+                datePicker.val(moment().format("YYYY-MM-DD"));
+                updateSelectedDate();
             });
 
-            function prevDay() {
-                reportStart = moment(reportStart).subtract(1, 'day').startOf('day');
-                reportEnd = moment(reportStart).endOf('day');
+            function updateSelectedDate() {
+                dailyViewerDate = moment(datePicker.val());
                 updateViewer();
+            }
+
+            function prevDay() {
+                dailyViewerDate = dailyViewerDate.subtract(1, 'day');
+                datePicker.val(dailyViewerDate.format("YYYY-MM-DD"));
+                updateSelectedDate();
             }
 
             function nextDay() {
-                reportStart = moment(reportStart).add(1, 'day').startOf('day');
-                reportEnd = moment(reportStart).endOf('day');
-                updateViewer();
+                dailyViewerDate = dailyViewerDate.add(1, 'day');
+                datePicker.val(dailyViewerDate.format("YYYY-MM-DD"));
+                updateSelectedDate();
             }
 
             function updateViewer() {
-                $(".daySelected").html(reportStart.format("dddd MMMM Do "));
+                $(".daySelected").html(dailyViewerDate.format("dddd MMMM Do "));
                 let timetable = new Timetable();
                 timetable.useTwelveHour();
                 timetable.setScope(parseInt(moment("@currentSettings.getStartTime.toInstant").format("HH")), parseInt(moment("@currentSettings.getEndTime.toInstant").format("HH")));
                 $.ajax({
                     async: false,
-                    url: '/dailyViewerByDate/' + moment(reportStart).format("YYYY-MM-DD") + '/' + moment(reportEnd).format("YYYY-MM-DD"),
+                    url: '/dailyViewerByDate/' + moment(dailyViewerDate).format("YYYY-MM-DD") + '/' + moment(dailyViewerDate).format("YYYY-MM-DD"),
                     type: 'GET',
                     success: function (response) {
                         let coachNames = Array.from(new Set(response.map(a => a.coachName))); // Don't collect duplicate coach names
@@ -63,7 +111,7 @@
                                     appointmentId: $(this).attr("appointmentId")
                                 },
                                 onClick: function (event) {
-                                    appointmentDetailPopup(event.options.data.appointmentId);
+                                    appointmentDetailPopup('@currentUser.getUid', event.options.data.appointmentId);
                                 }
                             };
                             timetable.addEvent(!isAppointment ? "Available" : $(this).attr('studentName'), coachName, moment($(this).attr('startDate')).toDate(), moment($(this).attr('endDate')).toDate(), options);

@@ -2,8 +2,10 @@ package databases;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
+import controllers.UserController;
 import models.AppointmentsModel;
 import models.ServiceModel;
+import models.UserAttributes;
 import models.UsersModel;
 
 import java.util.*;
@@ -377,6 +379,7 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
 
 
     public List<AppointmentsModel> getOpenAppointmentsByUserAndDate(String userId, Date start, Date end) {
+        UsersModel user = userDB.get(userId).orElseThrow(NullPointerException::new);
         List<AppointmentsModel> appointmentList = new ArrayList<>();
         /* Asynchronously retrieve all appointments */
         ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("appointments").whereEqualTo("coachId", userId).whereEqualTo("studentId", null).whereGreaterThanOrEqualTo("startDate", start).whereLessThanOrEqualTo("startDate", end).get();
@@ -392,7 +395,9 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
         /* Iterate appointments and add them to a list for return */
         for (DocumentSnapshot document : documents) {
             AppointmentsModel appointment = document.toObject(AppointmentsModel.class);
-            appointmentList.add(appointment);
+            if(user.getRole().equals("Coach") || new UserController().hasAttribute(user, UserAttributes.IS_COACH.getValue())) {
+                appointmentList.add(appointment);
+            }
         }
         return appointmentList;
     }
@@ -417,6 +422,11 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
         for (DocumentSnapshot document : documents) {
             AppointmentsModel appointment = document.toObject(AppointmentsModel.class);
             if(includeAvailabilities || appointment.getStudentId() != null){
+                if(appointment.getStudentId() == null){
+                    Optional<UsersModel> coach = userDB.get(appointment.getCoachId());
+                    if(!coach.isPresent()) continue;
+                    if(coach.get().getRole().equals("Admin") && !(new UserController().hasAttribute(coach.get(), UserAttributes.IS_COACH.getValue()))) continue;
+                }
                 appointmentList.add(appointment);
             }
         }

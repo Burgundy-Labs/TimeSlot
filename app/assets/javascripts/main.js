@@ -13,10 +13,10 @@ function createAlert(alertType, messageHTML) {
         ).fadeTo(2000, 500).slideUp(500);
 }
 
-function appointmentDetailPopup(appointmentId) {
+function appointmentDetailPopup(userId, appointmentId) {
     $.ajax({
         type: "GET",
-        url: `/getAppointmentById/${appointmentId}`,
+        url: `/getAppointmentById/${userId}/${appointmentId}`,
         success: function (response) {
             let appointment = response;
             $.alert({

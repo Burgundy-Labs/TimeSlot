@@ -222,6 +222,7 @@ public class AppointmentsController extends Controller {
         }
     }
 
+    @Authenticate
     public Result cancelAppointment() {
         JsonNode json = request().body().asJson();
         String appointmentId = json.findPath("appointmentId").textValue();
@@ -233,6 +234,7 @@ public class AppointmentsController extends Controller {
         return ok();
     }
 
+    @Authenticate
     public Result cancelWeeklyAppointment() {
         JsonNode json = request().body().asJson();
         String appointmentId = json.findPath("appointmentId").textValue();
@@ -247,6 +249,7 @@ public class AppointmentsController extends Controller {
         return ok();
     }
 
+    @Authenticate
     public Result removeAppointment() {
         JsonNode json = request().body().asJson();
         String appointmentId = json.findPath("appointmentId").textValue();
@@ -263,6 +266,7 @@ public class AppointmentsController extends Controller {
         return ok();
     }
 
+    @Authenticate(role = "Coach")
     public Result updateCoachNotes() {
         JsonNode json = request().body().asJson();
         String appointmentId = json.findPath("appointmentId").textValue();
@@ -273,6 +277,7 @@ public class AppointmentsController extends Controller {
         return ok();
     }
 
+    @Authenticate
     public Result openAppointments(String coachId, String start, String end) {
         Date startDate = DatatypeConverter.parseDateTime(start).getTime();
         Date endDate = DatatypeConverter.parseDateTime(end).getTime();
@@ -280,12 +285,17 @@ public class AppointmentsController extends Controller {
         return ok(Json.toJson(appointments));
     }
 
-    @Authenticate(role = "Coach")
-    public Result getAppointmentById(String appointmentId) {
-        AppointmentsModel appointment = appointmentsDB.get(appointmentId).orElseThrow(NullPointerException::new);
-        return ok(Json.toJson(appointment));
+    @Authenticate
+    public Result getAppointmentById(String userId, String appointmentId) {
+        Optional<UsersModel> user = userDB.get(userId);
+        Optional<AppointmentsModel> appointment = appointmentsDB.get(appointmentId);
+        if((!appointment.isPresent() || !user.isPresent()) || (user.get().getRole().equals("Student") && !appointment.get().getStudentId().equals(userId))) {
+                return notFound();
+        }
+        return ok(Json.toJson(appointment.get()));
     }
 
+    @Authenticate
     public Result availableSlotsForAppointments(String coachId, String start, String end, String service) {
         Date startDate = DatatypeConverter.parseDateTime(start).getTime();
         Date endDate = DatatypeConverter.parseDateTime(end).getTime();
@@ -339,8 +349,8 @@ public class AppointmentsController extends Controller {
         return ok(Json.toJson(availableSlotsForAny(availabilities)));
     }
 
+    @Authenticate
     private List<AvailabilityModel> availableSlotsForAny(List<AvailabilityModel> availabilities) {
-
         List<AvailabilityModel> newAvailabilities = new ArrayList<>();                                     // Creates a new list of availabilities
         for (int i = 0; i < availabilities.size(); i++) {
             AvailabilityModel newAv = new AvailabilityModel(availabilities.get(i).getavailabilityId(),
@@ -373,6 +383,7 @@ public class AppointmentsController extends Controller {
         return newAvailabilities;                                                                          // Return the list of new availabilities
     }
 
+    @Authenticate
     public Result appointmentsForUser(String role, String userId, String start, String end) {
         Date startDate = DatatypeConverter.parseDateTime(start).getTime();
         Date endDate = DatatypeConverter.parseDateTime(end).getTime();
@@ -390,6 +401,7 @@ public class AppointmentsController extends Controller {
         return ok(Json.toJson(appointments));
     }
 
+    @Authenticate
     public Result appointmentsAsCoach(String userId, String start, String end) {
         Date startDate = DatatypeConverter.parseDateTime(start).getTime();
         Date endDate = DatatypeConverter.parseDateTime(end).getTime();

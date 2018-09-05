@@ -79,7 +79,7 @@
                     editable: false,
                     themeSystem: 'bootstrap4',
                     eventClick: function(event, jsEvent, view) {
-                        appointmentDetailPopup(event.id);
+                        appointmentDetailPopup('@currentUser.getUid', event.id);
                     },
                     weekends: false,
                     minTime: moment('@settingsController.getSettings.getStartTime.toInstant').format("HH:mm"),
