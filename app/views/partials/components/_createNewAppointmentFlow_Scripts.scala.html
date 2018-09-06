@@ -312,8 +312,8 @@
                             present: false,
                             appointmentId: appointment.availabilityId
                         };
+                        // Check if we're scheduling for someone else
                         if(scheduleUser !== null && scheduleUser.userId !== null) {
-                            console.log("Student being scheduled for.");
                             form.studentId = scheduleUser.userId;
                         }
                         $.confirm({

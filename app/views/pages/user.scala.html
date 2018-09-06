@@ -11,14 +11,8 @@
 @currentUser = @{
     userController.getCurrentUser
 }
-@pageTitle = @{
-    if(user.getUid.equals(currentUser.getUid)) {
-        "Account"
-    } else {
-        user.getDisplayName
-    }
-}
-@main(pageTitle, user.getDisplayName) {
+
+@main(user.getDisplayName, user.getDisplayName) {
     <div class="mb-3 col-md-2">
         <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
             <a class="nav-link active" id="userInfoTab" data-toggle="pill" href="#userInfoContent" role="tab" aria-controls="userInfoContent" aria-selected="true">
