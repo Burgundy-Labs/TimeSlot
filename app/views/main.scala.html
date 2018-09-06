@@ -62,15 +62,18 @@
         @partials._footer()
         <script>
 
-        function createAppointmentPopup(role, studentId) {
+        function createAppointmentPopup(studentId) {
             scheduleUser.userId = studentId;
-            scheduleUser.userRole = role;
             $.dialog({
-                title: 'New Appointment',
+                title: 'Create New Appointment',
                 theme: 'material',
                 type: "dark",
                 escapeKey: true,
+                backgroundDismiss: false,
                 columnClass: 'col-md-12',
+                containerFluid: true,
+                offsetTop: 0,
+                offsetBottom: 0,
                 content: `@partials.components._createNewAppointmentFlow()`,
             });
         }

@@ -300,6 +300,7 @@
                         let service = $('#serviceType').find('option:selected').text();
                         let coachName = $('#coachId').find('option:selected').text();
                         let appointmentType = $('#appointmentType').find('option:selected').text();
+
                         const form = {
                             appointmentType: appointmentType,
                             serviceType: service,
@@ -311,9 +312,8 @@
                             present: false,
                             appointmentId: appointment.availabilityId
                         };
-                        if (scheduleUser.userId !== null && scheduleUser.userRole === "Coach") {
-                            form.coachId = scheduleUser.userId;
-                        } else if (scheduleUser.userId !== null && scheduleUser.userRole === "Student") {
+                        if(scheduleUser !== null && scheduleUser.userId !== null) {
+                            console.log("Student being scheduled for.");
                             form.studentId = scheduleUser.userId;
                         }
                         $.confirm({

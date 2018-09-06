@@ -56,7 +56,7 @@
             </div>
             <div class="tab-pane fade" id="appointment-list" role="tabpanel" aria-labelledby="appointment-list-tab">
                 <div class="col-12">
-                @partials.components._appointmentListForUser(userController.getCurrentUser.getUid, true)
+                    @partials.components._appointmentListForUser(currentUser.getUid, currentUser.getRole, true)
                 </div>
             </div>
         </div>

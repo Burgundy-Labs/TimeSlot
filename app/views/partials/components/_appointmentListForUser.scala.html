@@ -1,5 +1,5 @@
 @import databases.UserDB
-@(userId: String, readAll: Boolean)
+@(userId: String, userRole: String, readAll: Boolean)
 @userDB = @{
     new UserDB()
 }
@@ -10,7 +10,7 @@
     new UserController()
 }
 @currentUser = @{
-    userController.getCurrentUser()
+    userController.getCurrentUser
 }
 @currentSettings = @{
     settingsController.getSettings
@@ -115,9 +115,9 @@ function updateDate() {
     $.ajax({
         async: false,
         @if(currentUser.getRole.equals("Admin") && readAll){
-        url: '/appointmentsByDate/@currentUser.getRole/@currentUser.getUid/' + moment(selectedDate).format("YYYY-MM-DD") + '/' + moment(endDate).format("YYYY-MM-DD"),
+        url: '/appointmentsByDate/@userRole/@userId/' + moment(selectedDate).format("YYYY-MM-DD") + '/' + moment(endDate).format("YYYY-MM-DD"),
         } else {
-        url: '/appointmentsForUser/@currentUser.getRole/@currentUser.getUid/' + moment(selectedDate).format("YYYY-MM-DD") + '/' + moment(endDate).format("YYYY-MM-DD"),
+        url: '/appointmentsForUser/@userRole/@userId/' + moment(selectedDate).format("YYYY-MM-DD") + '/' + moment(endDate).format("YYYY-MM-DD"),
         }
         type: 'GET',
         success: function (response) {

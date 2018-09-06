@@ -18,7 +18,7 @@
         user.getDisplayName
     }
 }
-@main(pageTitle.toString, user.getDisplayName) {
+@main(pageTitle, user.getDisplayName) {
     <div class="mb-3 col-md-2">
         <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
             <a class="nav-link active" id="userInfoTab" data-toggle="pill" href="#userInfoContent" role="tab" aria-controls="userInfoContent" aria-selected="true">
@@ -47,7 +47,7 @@
                         </div>
                         <hr/>
                         @if(!currentUser.getRole.equals("Student") || currentUser.getUid.equals(user.getUid)) {
-                            @partials.components._appointmentListForUser(user.getUid, false)
+                            @partials.components._appointmentListForUser(user.getUid, user.getRole, false)
                         }
                     </div>
                 </div>
