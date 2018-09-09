@@ -85,7 +85,7 @@
                     minTime: moment('@settingsController.getSettings.getStartTime.toInstant').format("HH:mm"),
                     maxTime: moment('@settingsController.getSettings.getEndTime.toInstant').format("HH:mm"),
                     allDaySlot: false,
-                    selectable: true,
+                    selectable: false,
                     eventSources: [
                         {
                             events: function (start, end, timezone, callback) {
