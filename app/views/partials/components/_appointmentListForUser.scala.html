@@ -60,29 +60,29 @@ $(document).on('change', '.attendanceSelect', function () {
         appointmentId: $(this).data('id'),
         present: newPresence
     };
-    if (appointment.appointmentId === null) {
-        return
-    }
-    $.ajax({
-        url: '/updatePresence',
-        type: 'POST',
-        data: JSON.stringify(appointment),
-        contentType: 'application/json',
-        success: function () {
-            if (newPresence === 'true') {
-                d.removeClass('danger-border');
-                d.addClass('success-border');
-            } else {
-                d.removeClass('success-border');
-                d.addClass('danger-border');
+    if (appointment.appointmentId != null) {
+        $.ajax({
+            url: '/updatePresence',
+            async: false,
+            type: 'POST',
+            data: JSON.stringify(appointment),
+            contentType: 'application/json',
+            success: function () {
+                if (newPresence === 'true') {
+                    d.removeClass('danger-border');
+                    d.addClass('success-border');
+                } else {
+                    d.removeClass('success-border');
+                    d.addClass('danger-border');
+                }
+                createAlert('info', 'Attendance Changed');
+            },
+            error: function (err) {
+                createAlert('warning', 'Error changing attendance!');
+                console.log(err);
             }
-            createAlert('info', 'Attendance Changed');
-        },
-        error: function (err) {
-            createAlert('warning', 'Error changing attendance!');
-            console.log(err);
-        }
-    });
+        });
+    }
 });
 }
 
@@ -101,12 +101,13 @@ $(document).ready(function () {
 });
 
 function updateDate() {
-    $('.attendanceSelect').selectpicker();
     let endDate = moment(selectedDate);
     $(".weekSelected").html(selectedDate.format("dddd MMMM Do ") + " - " + endDate.isoWeekday(5).format("dddd MMMM Do "));
     let t = $('#appointmentList');
     t.DataTable({
         retrieve: true,
+        info: false,
+        length: false,
         dom: 'frtlip',
         order: [[5, 'asc']],
         responsive: true,
@@ -141,16 +142,16 @@ function updateDate() {
             });
         }
     });
+    $('.attendanceSelect').selectpicker();
 }
 
 function getAttendanceColumn(context) {
-    console.log('hey');
     @if(!currentUser.getRole.equals("Student")) {
     return `<select data-id="${context.attr("appointmentId")}" class="selectpicker attendanceSelect ${(context.attr("present") ? "success" : "danger")}-border" title="Appointment Attendance">
             <option value="${context.attr("present")}" selected>
                 ${(context.attr("present") ? "&#10004;" : "&#x2716;")}
                 </option>
-            <option value="${!$(this).attr("present")}">
+            <option value="${!context.attr("present")}">
                 ${!context.attr("present") ? "&#10004;" : "&#x2716;"}
             </option>
         </select>`;

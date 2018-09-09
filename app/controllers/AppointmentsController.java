@@ -34,7 +34,7 @@ public class AppointmentsController extends Controller {
         AppointmentsModel appointment = appointmentsDB.get(json.findPath("appointmentId").textValue()).orElseThrow(NullPointerException::new);
         appointment.setPresent(json.findPath("present").asBoolean());
         appointmentsDB.addOrUpdate(appointment);
-        return ok();
+        return ok(Json.toJson(appointment));
     }
 
     @Authenticate
