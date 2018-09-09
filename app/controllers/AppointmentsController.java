@@ -148,6 +148,17 @@ public class AppointmentsController extends Controller {
             availability.setWeeklyId(UUID3);
             appointmentsDB.addOrUpdate(availability);
             appointmentsDB.addOrUpdate(newAvailability);
+        } else {
+            if (isAppointment) {
+                availability.setStudentData(student.getUid(), student.getEmail(), student.getDisplayName(), student.getPhotoURL());
+                availability.setServiceType(appointment.getServiceType());
+                availability.setAppointmentType(appointment.getAppointmentType());
+                availability.setAppointmentNotes(appointment.getAppointmentNotes());
+            } else {
+                availability.clearStudentData();
+            }
+            appointmentsDB.addOrUpdate(availability);
+            return;
         }
         if (isAppointment) {
             appointment.setStudentData(student.getUid(), student.getEmail(), student.getDisplayName(), student.getPhotoURL());
@@ -239,7 +250,7 @@ public class AppointmentsController extends Controller {
         JsonNode json = request().body().asJson();
         String appointmentId = json.findPath("appointmentId").textValue();
         AppointmentsModel appointment = appointmentsDB.get(appointmentId).get();
-        List<AppointmentsModel> appointments = appointmentsDB.getByWeeklyId(appointment.getWeeklyId(), appointment.getStartDate(), appointment.getStudentId());
+        List<AppointmentsModel> appointments = appointmentsDB.getByWeeklyId(appointment.getWeeklyId(), new Date(), appointment.getStudentId());
         AppointmentsModel emailAppointment = appointment.clone();
         new Thread(() -> mailerService.sendAppointmentCancellation(emailAppointment, json.findPath("cancelNotes").asText())).start();
         for (AppointmentsModel ap : appointments) {

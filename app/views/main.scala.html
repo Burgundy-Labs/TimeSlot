@@ -63,6 +63,8 @@
         <script>
 
         function createAppointmentPopup(studentId) {
+            makeStepper();
+
             scheduleUser.userId = studentId;
             $.dialog({
                 title: 'Create New Appointment',

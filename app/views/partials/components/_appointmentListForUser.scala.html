@@ -101,17 +101,20 @@ $(document).ready(function () {
 });
 
 function updateDate() {
+    $('.attendanceSelect').selectpicker();
     let endDate = moment(selectedDate);
     $(".weekSelected").html(selectedDate.format("dddd MMMM Do ") + " - " + endDate.isoWeekday(5).format("dddd MMMM Do "));
     let t = $('#appointmentList');
-    t.DataTable().clear();
     t.DataTable({
         retrieve: true,
         dom: 'frtlip',
         order: [[5, 'asc']],
         responsive: true,
     });
-    t.DataTable().draw();
+
+    let table = t.DataTable();
+    table.clear();
+    table.draw();
     $.ajax({
         async: false,
         @if(currentUser.getRole.equals("Admin") && readAll){
@@ -122,7 +125,7 @@ function updateDate() {
         type: 'GET',
         success: function (response) {
             $(response).each(function () {
-                t.DataTable().rows.add([{
+                table.rows.add([{
                     0: `<img src="${$(this).attr('studentPhoto')}" class="user-avatar"/>`,
                     1: `<a href='/User/${$(this).attr('studentId')}'>${$(this).attr('studentName')}</a>`,
                     2: `<a href='/User/${$(this).attr('coachId')}'>${$(this).attr('coachName')}</a>`,
@@ -134,13 +137,14 @@ function updateDate() {
                     8: getCoachNotesColumn($(this)),
                     9: getAddToCalendarColumn($(this)),
                 }]).draw();
-                t.DataTable().columns.adjust().draw();
+                table.columns.adjust().draw();
             });
         }
     });
 }
 
 function getAttendanceColumn(context) {
+    console.log('hey');
     @if(!currentUser.getRole.equals("Student")) {
     return `<select data-id="${context.attr("appointmentId")}" class="selectpicker attendanceSelect ${(context.attr("present") ? "success" : "danger")}-border" title="Appointment Attendance">
             <option value="${context.attr("present")}" selected>
@@ -150,9 +154,7 @@ function getAttendanceColumn(context) {
                 ${!context.attr("present") ? "&#10004;" : "&#x2716;"}
             </option>
         </select>`;
-    } else {
-    return `${context.attr("present") ? "&#10004;" : "&#x2716;"}`;
-    }
+    }else {return `${context.attr("present") ? "&#10004;" : "&#x2716;"}`;}
 }
 
 function getCoachNotesColumn(context) {
