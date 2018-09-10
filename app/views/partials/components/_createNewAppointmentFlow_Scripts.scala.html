@@ -313,7 +313,7 @@
                             appointmentId: appointment.availabilityId
                         };
                         // Check if we're scheduling for someone else
-                        if(scheduleUser !== null && scheduleUser.userId !== null) {
+                        if(scheduleUser !== undefined && scheduleUser.userId !== undefined && scheduleUser !== null && scheduleUser.userId !== null) {
                             form.studentId = scheduleUser.userId;
                         }
                         $.confirm({
