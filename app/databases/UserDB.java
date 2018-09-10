@@ -2,6 +2,7 @@ package databases;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
+import controllers.SettingsController;
 import controllers.UserController;
 import models.ServiceModel;
 import models.UserAttributes;
@@ -115,6 +116,20 @@ public class UserDB implements DBInterface<UsersModel> {
 		result.isDone();
 	}
 
+	public boolean hasService(String userId, String serviceId) {
+		/* Asynchronously retrieve all users */
+		DocumentReference docRef = FirestoreHandler.get().collection("users").document(userId).collection("services").document(serviceId);
+		ApiFuture<DocumentSnapshot> future = docRef.get();
+		DocumentSnapshot document = null;
+		try {
+			document = future.get();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
+		assert document != null;
+		return document.exists();
+	}
+
 	public List<ServiceModel> getServicesForUser(String ID) {
 		List<ServiceModel> servicesList = new ArrayList<>();
 		/* Asynchronously retrieve all users */
@@ -164,7 +179,8 @@ public class UserDB implements DBInterface<UsersModel> {
 	public List<UsersModel> getAllByRole(String role) {
 		List<UsersModel> userList = new ArrayList<>();
 		/* Asynchronously retrieve all users */
-		ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("users").get();
+		if (role == null) { return null; }
+		ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("users").whereEqualTo("role", role).get();
 		QuerySnapshot querySnapshot = null;
 		try {
 			/* Attempt to get a list of all users - blocking */
@@ -176,12 +192,23 @@ public class UserDB implements DBInterface<UsersModel> {
 		List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
 		/* Iterate users and add them to a list for return */
 		for (DocumentSnapshot document : documents) {
-			UsersModel user = document.toObject(UsersModel.class);
-			if (role.equals("Coach") && new UserController().hasAttribute(user, UserAttributes.IS_COACH.getValue())){
-				userList.add(user);
+			userList.add(document.toObject(UsersModel.class));
+		}
+		if (role.equals("Coach")) {
+			ApiFuture<QuerySnapshot> adminQuery = FirestoreHandler.get().collection("users").whereEqualTo("role", "Admin").get();
+			QuerySnapshot adminQuerySnapshot = null;
+			try {
+				adminQuerySnapshot = adminQuery.get();
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
 			}
-			else if (document.getString("role") != null && document.getString("role").equals(role)) {
-				userList.add(user);
+			assert adminQuerySnapshot != null;
+			List<QueryDocumentSnapshot> adminDocuments = adminQuerySnapshot.getDocuments();
+			for (DocumentSnapshot adminDocument : adminDocuments) {
+				UsersModel admin = adminDocument.toObject(UsersModel.class);
+				if (new UserController().hasAttribute(admin, UserAttributes.IS_COACH.getValue())) {
+					userList.add(admin);
+				}
 			}
 		}
 		return userList;
@@ -191,12 +218,8 @@ public class UserDB implements DBInterface<UsersModel> {
 		List<UsersModel> coachesWithService = new ArrayList<>();
 		List<UsersModel> coaches = getAllByRole("Coach");
 		for (UsersModel c : coaches) {
-			List<ServiceModel> services = getServicesForUser(c.getUid());
-			for (ServiceModel s : services) {
-				if (s.getServiceId().equals(serviceId)) {
-					coachesWithService.add(c);
-					break;
-				}
+			if ( hasService(c.getUid(), serviceId) ) {
+				coachesWithService.add(c);
 			}
 		}
 		return coachesWithService;
