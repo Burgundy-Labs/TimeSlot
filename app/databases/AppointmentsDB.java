@@ -104,7 +104,7 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
     @Override
     public Optional<AppointmentsModel> remove(String ID) {
         AppointmentsModel appointment = get(ID).orElseThrow(NullPointerException::new);
-        if(appointment.getStartDate().after(new Date())){
+        if(appointment.getStudentId() == null){
             try {
                 FirestoreHandler.get().collection("appointments").document(ID).delete().get();
             } catch (InterruptedException | ExecutionException e) {
