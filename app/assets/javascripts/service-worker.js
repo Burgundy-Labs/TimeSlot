@@ -28,7 +28,6 @@ limitations under the License.
     const staticCacheName = 'pages-cache-v2';
 
     self.addEventListener('install', function(event) {
-        console.log('Attempting to install service worker and cache static assets');
         event.waitUntil(
             caches.open(staticCacheName)
                 .then(function(cache) {
@@ -38,7 +37,6 @@ limitations under the License.
     });
 
     self.addEventListener('fetch', function(event) {
-        console.log('Fetch event for ', event.request.url);
         event.respondWith(
             caches.match(event.request).then(function(response) {
                 if (response) {
@@ -61,7 +59,6 @@ limitations under the License.
     });
 
     self.addEventListener('activate', function(event) {
-        console.log('Activating new service worker...');
         const cacheWhitelist = [staticCacheName];
         event.waitUntil(
             caches.keys().then(function(cacheNames) {
