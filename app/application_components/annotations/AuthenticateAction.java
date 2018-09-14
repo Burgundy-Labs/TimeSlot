@@ -44,6 +44,7 @@ public class AuthenticateAction extends Action<Authenticate> {
         else if(ctx.session().get("currentRole") != null && !ctx.session().get("currentRole").equalsIgnoreCase(role)) {
             return delegate.call(ctx);
         }
+        /* If any are failed to return delegate call - redirect to forbidden */
         return CompletableFuture.supplyAsync(() -> forbidden(views.html.pages.error_pages.unauthorized.render()));
     }
 }
