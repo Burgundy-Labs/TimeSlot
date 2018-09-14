@@ -11,8 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 
 public class AccountController extends BaseController {
-    private UserDB userDB = new UserDB();
-    private UserController userController = new UserController();
     private SettingsController settingsController = new SettingsController();
 
     @Authenticate

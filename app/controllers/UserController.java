@@ -8,7 +8,6 @@ import models.UserAttributes;
 import models.UsersModel;
 import play.Logger;
 import play.libs.Json;
-import play.mvc.Controller;
 import play.mvc.Result;
 
 import java.util.Arrays;
@@ -19,7 +18,6 @@ import java.util.Optional;
 public class UserController extends BaseController {
     /* Roles used throughout TimeSlot */
     private String[] roles = { "Student" , "Coach", "Admin" };
-    private UserDB userDB = new UserDB();
 
     public Result index() {
         String currentRole = getCurrentRole();

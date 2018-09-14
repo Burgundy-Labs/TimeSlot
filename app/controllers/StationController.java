@@ -1,14 +1,11 @@
 package controllers;
 
-import databases.UserDB;
 import models.UsersModel;
 import play.libs.Json;
 import play.mvc.Result;
 
-import static play.mvc.Results.ok;
-
 public class StationController extends BaseController {
-    private UserDB userDB = new UserDB();
+
     public Result index() {
         return ok(views.html.pages.station.render());
     }

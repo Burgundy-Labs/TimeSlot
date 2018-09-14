@@ -1,7 +1,6 @@
 package controllers;
 
 import application_components.annotations.Authenticate;
-import play.mvc.Controller;
 import play.mvc.Result;
 
 public class CenterController extends BaseController {

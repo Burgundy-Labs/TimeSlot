@@ -18,10 +18,6 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class AppointmentsController extends BaseController {
-    private AppointmentsDB appointmentsDB = new AppointmentsDB();
-    private SettingsDB settingsDB = new SettingsDB();
-    private MailerService mailerService = new MailerService();
-    private UserDB userDB = new UserDB();
 
     @Authenticate
     public Result index() {

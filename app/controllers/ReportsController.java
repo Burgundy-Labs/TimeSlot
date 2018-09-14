@@ -10,7 +10,6 @@ import play.mvc.Result;
 import java.util.*;
 
 public class ReportsController extends BaseController {
-    private AppointmentsDB appointmentsDB = new AppointmentsDB();
 
     @Authenticate(role="Admin")
     public Result index() {
