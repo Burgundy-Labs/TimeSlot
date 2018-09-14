@@ -16,7 +16,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-public class UserController extends Controller {
+public class UserController extends BaseController {
     /* Roles used throughout TimeSlot */
     private String[] roles = { "Student" , "Coach", "Admin" };
     private UserDB userDB = new UserDB();

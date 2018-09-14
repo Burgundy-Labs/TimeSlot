@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class SettingsController extends Controller {
+public class SettingsController extends BaseController {
     private SettingsDB settingsDB = new SettingsDB();
 
     @Authenticate(role="Admin")

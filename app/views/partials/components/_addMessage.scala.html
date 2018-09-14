@@ -1,0 +1,40 @@
+@if(flash().containsKey("ERROR")){
+    <div class="alert alert-danger alert-dismissible fade show mr-1" role="alert">
+        <i class="material-icons md-18">cancel</i> @flash().get("ERROR")
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+@if(flash().containsKey("WARNING")){
+    <div class="alert alert-warning alert-dismissible fade show mr-1" role="alert">
+        <i class="material-icons md-18">cancel</i> @flash().get("ERROR")
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+@if(flash().containsKey("INFO")){
+    <div class="alert alert-info alert-dismissible fade show mr-1" role="alert">
+        <i class="material-icons md-18">info</i> @flash().get("INFO")
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+@if(flash().containsKey("SUCCESS")){
+    <div class="alert alert-success alert-dismissible fade show mr-1" role="alert">
+        <i class="material-icons md-18">check_circle</i> @flash().get("SUCCESS")
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+@if(flash().containsKey("SUCCESS") || flash().containsKey("INFO") || flash().containsKey("ERROR")) {
+    <script>
+            $('.alert').alert()
+    </script>
+}

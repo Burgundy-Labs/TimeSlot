@@ -3,7 +3,7 @@ package controllers;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-public class StaticController extends Controller {
+public class StaticController extends BaseController {
     public Result help() {
         return ok(views.html.pages.help.render());
     }

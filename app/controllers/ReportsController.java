@@ -9,7 +9,7 @@ import play.mvc.Result;
 
 import java.util.*;
 
-public class ReportsController extends Controller {
+public class ReportsController extends BaseController {
     private AppointmentsDB appointmentsDB = new AppointmentsDB();
 
     @Authenticate(role="Admin")
