@@ -7,8 +7,6 @@ import play.Environment;
 import java.util.Arrays;
 import java.util.List;
 
-
-
 /* TODO look into better use of DI to remove static methods */
 public class Application {
     private static Config config;

@@ -162,7 +162,7 @@
                                         contentType: 'application/json',
                                         success: function () {
                                             createAlert("success", "Service Removed!");
-                                            $("li."+serviceId).remove();
+                                            $("li." + serviceId).remove();
                                         },
                                         error: function () {
                                             createAlert('danger', 'Removing service failed.');
@@ -391,7 +391,7 @@
                             deleteAll: {
                                 text: 'Remove All Availabilities in Series',
                                 btnClass: 'btn-primary',
-                                action: function() {
+                                action: function () {
                                     $.ajax({
                                         url: '/removeAppointment',
                                         type: 'POST',
