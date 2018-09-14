@@ -4,7 +4,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 class DatabaseExporter<T> {
-
+    /*
+    *  Needs to be tested - should return a CSV formatted representation of the database
+    * */
     public String exportToCSV(DBInterface<T> db, Class dbClass) throws InvocationTargetException, IllegalAccessException {
         Iterable<T> objects = db.getAll();
         StringBuilder sb = new StringBuilder();

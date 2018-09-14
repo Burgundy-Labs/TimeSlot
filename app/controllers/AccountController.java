@@ -37,7 +37,6 @@ public class AccountController extends BaseController {
     }
 
     public List<ServiceModel> getServicesForUser(String userId) {
-        List<ServiceModel> coachServices = userDB.getServicesForUser(userId);
-        return coachServices;
+        return userDB.getServicesForUser(userId);
     }
 }
