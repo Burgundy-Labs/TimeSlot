@@ -2,7 +2,6 @@ package controllers;
 
 import application_components.annotations.Authenticate;
 import com.fasterxml.jackson.databind.JsonNode;
-import databases.UserDB;
 import models.ServiceModel;
 import models.UserAttributes;
 import models.UsersModel;
@@ -16,8 +15,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class UserController extends BaseController {
-    /* Roles used throughout TimeSlot */
-    private String[] roles = { "Student" , "Coach", "Admin" };
 
     public Result index() {
         String currentRole = getCurrentRole();
@@ -116,29 +113,19 @@ public class UserController extends BaseController {
         return ok(Json.toJson(coaches));
     }
 
-    public UsersModel getCurrentUser() {
-        String s = session("currentUser");
-        if (s == null || s.isEmpty()) {
-            UsersModel u = new UsersModel();
-            u.setRole("Student");
-            return u;
-        }
-        return new UserDB().get(s).orElseThrow(NullPointerException::new);
-    }
-
-    public void addAttributes(UsersModel user, String... attributes) {
+    public static void addAttributes(UsersModel user, String... attributes) {
         List<String> o = user.getAttributes();
         o.addAll(Arrays.asList(attributes));
         user.setAttributes(o);
     }
 
-    public void removeAttribute(UsersModel user, String attribute) {
+    public static void removeAttribute(UsersModel user, String attribute) {
         List<String> o = user.getAttributes();
         o.remove(attribute);
         user.setAttributes(o);
     }
 
-    public boolean hasAttribute(UsersModel user, String attribute) {
+    public static boolean hasAttribute(UsersModel user, String attribute) {
         List<String> attributes = user.getAttributes();
         return (attributes.contains(attribute));
     }

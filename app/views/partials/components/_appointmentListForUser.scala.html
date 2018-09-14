@@ -165,7 +165,7 @@ function getCoachNotesColumn(context) {
     } else {
     coachNotes += `<button class="no-button"><span class="action-primary"><a href="mailto:${context.attr("studentEmail")}" data-tooltip="Email Student"  class="tooltip--bottom"><i class="material-icons md-32">email</i></a></span></button>`;
     }
-    @if(currentUser.getRole.equals("Coach") || userController.hasAttribute(currentUser, "isCoach")) {
+    @if(currentUser.getRole.equals("Coach") || UserController.hasAttribute(currentUser, "isCoach")) {
     coachNotes += `${(context.attr("coachNotes") == null || context.attr("coachNotes") === "") ?
             `<button id="notesFor-${context.attr("appointmentId")}" class="no-button" onclick="updateCoachNotes('${context.attr("appointmentId")}', '')"><span class="action-black" id="appointmentNotes"><a href="javascript:void(0)" data-tooltip="Session Notes" class="tooltip--bottom"><i class="material-icons md-32">assignment</i></a> </span></button>`
             :

@@ -129,7 +129,7 @@
                                 })
                             }
                         },
-                        @if(currentUser.getRole.equals("Coach") || currentUser.getRole.equals("Admin") && userController.hasAttribute(currentUser, "isCoach")) {
+                        @if(currentUser.getRole.equals("Coach") || currentUser.getRole.equals("Admin") && UserController.hasAttribute(currentUser, "isCoach")) {
                         {
                             events: function (start, end, timezone, callback) {
                                 const events = [];

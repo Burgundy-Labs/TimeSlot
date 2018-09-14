@@ -1,2 +1,13 @@
-@import views.matcha.Container
-@(classes: String, containerType: Container )(innerContent: Html)
+@import views.matcha.{ContainerSize, ContainerType}
+@(classes: String, containerType: ContainerType, containerSize: ContainerSize )(innerContent: Html)
+@if(containerType == ContainerType.CONTAINER || containerType == ContainerType.CONTAINER_FLUID) {
+    <div class="@containerType.toString">
+        <div class="@ContainerType.ROW.toString">
+            @innerContent
+        </div>
+    </div>
+}else {
+    <div class="@containerType.toString @containerSize.toString @classes">
+        @innerContent
+    </div>
+}

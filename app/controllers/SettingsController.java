@@ -152,14 +152,6 @@ public class SettingsController extends BaseController {
         return ok();
     }
 
-    public List<ServiceModel> getServices() {
-        return settingsDB.getServices();
-    }
-
-    public SettingsModel getSettings() {
-        return settingsDB.get(null).orElseThrow(NullPointerException::new);
-    }
-
     public boolean getAppointmentTypeOneTime(String appointmentType) { return settingsDB.getAppointmentTypeByName(appointmentType).getOneTime(); }
 
     public boolean getAppointmentTypeWeekly(String appointmentType) { return settingsDB.getAppointmentTypeByName(appointmentType).getWeekly(); }

@@ -1,23 +1,21 @@
 package views.matcha;
 
-public enum Container {
+public enum ContainerType {
     // Define values for use of coach attributes
     CONTAINER("container"),
     CONTAINER_FLUID("container-fluid"),
-    ROW("row");
+    ROW("row"),
+    COL("");
 
     private String value;
 
-    Container(final String value) {
+    ContainerType(final String value) {
         this.value = value;
-    }
-
-    public String getValue() {
-        return value;
     }
 
     @Override
     public String toString() {
-        return this.getValue();
+        return this.value;
     }
+
 }

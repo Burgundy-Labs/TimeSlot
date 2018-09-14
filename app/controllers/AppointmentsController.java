@@ -18,6 +18,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class AppointmentsController extends BaseController {
+    private MailerService mailerService = new MailerService();
 
     @Authenticate
     public Result index() {

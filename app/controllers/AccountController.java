@@ -11,16 +11,15 @@ import java.util.Iterator;
 import java.util.List;
 
 public class AccountController extends BaseController {
-    private SettingsController settingsController = new SettingsController();
 
     @Authenticate
     public Result index() {
-        UsersModel currentUser = userController.getCurrentUser();
+        UsersModel currentUser = getCurrentUser();
         return ok(views.html.pages.user.render(currentUser));
     }
 
     public List<ServiceModel> getAvailableServices(String userId) {
-        List<ServiceModel> availableServices = settingsController.getServices();
+        List<ServiceModel> availableServices = getServices();
         List<ServiceModel> coachServices = userDB.getServicesForUser(userId);
 
         for (Iterator<ServiceModel> serviceIterator = availableServices.iterator(); serviceIterator.hasNext(); ) {
