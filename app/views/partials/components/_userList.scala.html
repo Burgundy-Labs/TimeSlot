@@ -17,7 +17,7 @@
             @for(user <- if(role.equals("Admin")) userDB.getAllByRole("Admin") else if (role.equals("Coach")) userDB.getAllByRole("Coach") else userDB.getAllByRole("Student")) {
                 <tr>
                     <td>
-                        <img class="userAvatar" src="@user.getPhotoURL" alt="Card image cap">
+                        <img class="user-avatar" src="@user.getPhotoURL" alt="Card image cap">
                     </td>
                     <td><a href="/User/@user.getUid">@user.getDisplayName</a></td>
                     <td>@user.getEmail</td>
