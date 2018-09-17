@@ -1,6 +1,6 @@
 package views.matcha;
 
-public enum ContainerSize {
+public enum ColumnSize {
     // Define values for use of coach attributes
     TWELVE("col-md-12"),
     FULL("col-md-12"),
@@ -21,7 +21,7 @@ public enum ContainerSize {
 
     private String value;
 
-    ContainerSize(final String value) {
+    ColumnSize(final String value) {
         this.value = value;
     }
 

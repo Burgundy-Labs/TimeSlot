@@ -1,0 +1,2 @@
+@(buttonText: String = "", classes: String = "", id : String = "", onClick: String = "javascript:void(0);")(innerContent: Html)(scriptContent: Html)
+    <button class="button btn btn-primary @classes" @if(id != ""){id="@id"} onclick="@onClick">@buttonText</button>

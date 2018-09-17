@@ -5,7 +5,8 @@ public enum ContainerType {
     CONTAINER("container"),
     CONTAINER_FLUID("container-fluid"),
     ROW("row"),
-    COL("");
+    COL("col"),
+    DIV("");
 
     private String value;
 

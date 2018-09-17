@@ -1,4 +1,0 @@
-@(componentType: ComponentType, buttonText: String = "", classes: String = "", id : String = "", onClick: String = "javascript:void(0);")(innerContent: Html)(scriptContent: Html)
-@if(componentType == ComponentType.BUTTON) {
-    <button class="button btn btn-primary @classes" @if(id != ""){id="@id"} onclick="@onClick">@buttonText</button>
-}
