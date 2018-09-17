@@ -16,12 +16,8 @@ import java.util.Optional;
 
 public class UserController extends BaseController {
 
+    @Authenticate
     public Result index() {
-        String currentRole = getCurrentRole();
-        /* Force redirect to Login is the user isn't signed in */
-        if (currentRole == null) {
-            return ok(views.html.pages.login.render());
-        }
         return ok(views.html.pages.users.render());
     }
 
