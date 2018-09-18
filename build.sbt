@@ -20,5 +20,4 @@ libraryDependencies ++= Seq(ehcache, guice,
 
 TwirlKeys.templateImports ++= Seq("views.matcha.ColumnSize", "views.matcha.ContainerType")
 
-
 pipelineStages := Seq(gzip)
