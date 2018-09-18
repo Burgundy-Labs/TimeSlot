@@ -448,15 +448,12 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
         List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
         /* Iterate appointments and add them to a list for return */
         for (DocumentSnapshot document : documents) {
-            if(document.getDate("endDate").before(end)){
                 AppointmentsModel appointment = document.toObject(AppointmentsModel.class);
-                if(appointment.getStudentId() != null){
+                //TODO check "end" & break so we don't have to continue creating .class objects for each file we don't use
+                if(appointment.getStudentId() != null && appointment.getEndDate().before(end)){
                     appointmentList.add(appointment);
                 }
-            } else {
-                break;
             }
-        }
         return appointmentList;
     }
 }
