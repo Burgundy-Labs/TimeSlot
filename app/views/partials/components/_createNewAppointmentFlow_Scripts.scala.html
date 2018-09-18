@@ -68,6 +68,7 @@
                         editable: false,
                         weekends: false,
                         selectable: true,
+                        selectLongPressDelay: 200,
                         minTime: moment('@currentSettings.getStartTime.toInstant').format("HH:mm"),
                         maxTime: moment('@currentSettings.getEndTime.toInstant').format("HH:mm"),
                         events: function (start, end, timezone, callback) {

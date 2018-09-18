@@ -27,11 +27,10 @@
                             @for(menuLink <- Application.menuLinks) {
                                 @if((!menuLink.adminLocked && !menuLink.coachLocked) || (menuLink.coachLocked && currentRole != null && currentRole.equals("Coach")) || (menuLink.adminLocked && currentRole != null && currentRole.equals("Admin"))) {
                                     <a href="@menuLink.href" class="nav-icon nav-item nav-link col-auto @if(title.equals(menuLink.menuText)) {currentPage}">
-                                        <i class="material-icons">@menuLink.mdlIcon</i><span class="icon-text">@menuLink.menuText</span></a>
+                                        <i class="fa fa-2x fa-@menuLink.faIcon"></i><span class="icon-text">@menuLink.menuText</span></a>
                                 }
                             }
-                        <a id="sign-out" href="javascript:void(0)" class="nav-icon nav-item nav-link col-auto"><i class="material-icons">
-                                            exit_to_app</i><span class="icon-text">Sign Out</span></a>
+                        <a id="sign-out" href="javascript:void(0)" class="nav-icon nav-item nav-link col-auto"><i class="fa fa-2x fa-sign-out-alt"></i><span class="icon-text">Sign Out</span></a>
                         </div>
                     </div>
                 </div>
