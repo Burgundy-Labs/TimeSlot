@@ -117,7 +117,6 @@ function updateDate() {
     table.clear();
     table.draw();
     $.ajax({
-        async: false,
         @if(currentUser.getRole.equals("Admin") && readAll){
         url: '/appointmentsByDate/@userRole/@userId/' + moment(selectedDate).format("YYYY-MM-DD") + '/' + moment(endDate).format("YYYY-MM-DD"),
         } else {
