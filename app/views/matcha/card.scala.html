@@ -1,7 +1,11 @@
-@(cardTitle: String = "", columnSize: ColumnSize = ColumnSize.FULL, classes: String = "", id : String = "")(innerContent: Html)
-<div class="card @classes @columnSize.toString">
-    <div class="card-body">
-        <h5 class="card-title">@cardTitle</h5>
-        <p class="card-text">@innerContent</p>
+@(cardTitle: String = "", columnSize: ColumnSize = ColumnSize.FULL, classes: String = "", id : String = "")(cardBody: Html)
+<div class="@columnSize">
+    <div class="card h-100 @classes">
+        <div class="card-header">
+            <h3>@cardTitle</h3>
+        </div>
+        <div class="card-block my-auto">
+            @cardBody
+        </div>
     </div>
 </div>

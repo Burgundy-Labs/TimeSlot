@@ -12,5 +12,30 @@
 }
 
 @main("Groups", "Groups") {
-    @views.matcha.c
+    @matcha.container(ContainerType.ROW, ColumnSize.FULL) {
+        <h1>Groups</h1>
+        @matcha.container(ContainerType.ROW, ColumnSize.FULL, "dashCards") {
+            @matcha.card("Group 1", ColumnSize.THREE, "group-card mb-1", "group-1") {
+                Group 1 Description.
+            }
+            @matcha.card("Group 2", ColumnSize.THREE, "group-card mb-1", "group-2") {
+                Group 2 Description.
+            }
+            @matcha.card("Group 3", ColumnSize.THREE, "group-card mb-1", "group-3") {
+                Group 3 Description.
+                @matcha.container(ContainerType.ROW, ColumnSize.FULL, "text-center") {
+                    @matcha.button("Join Group 3", ButtonType.PRIMARY, "", "group-3-button", "groupThree()") {
+                        <script>
+                                function groupThree() {
+                                    alert("Group 3 button pressed!");
+                                }
+                        </script>
+                    }
+                }
+            }
+            @matcha.card("Group 4", ColumnSize.THREE, "group-card mb-1", "group-4") {
+                Group 4 Description.
+            }
+        }
+    }
 }

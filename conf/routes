@@ -29,6 +29,7 @@ GET         /getUserByID/:ID                                                    
 GET         /User/:ID                                                            controllers.UserController.userPage(ID: String)
 GET         /Schedule                                                            controllers.ScheduleController.index
 GET         /getAppointmentById/:userId/:appointmentId                           controllers.AppointmentsController.getAppointmentById(userId: String, appointmentId: String)
+GET         /Groups                                                              controllers.GroupsController.index
 
 # POST requests
 POST        /signedIn                                                            controllers.LoginController.signedIn()

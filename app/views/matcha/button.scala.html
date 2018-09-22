@@ -1,2 +1,3 @@
-@(buttonText: String = "", classes: String = "", id : String = "", onClick: String = "javascript:void(0);")(innerContent: Html)(scriptContent: Html)
+@(buttonText: String = "", buttonType: ButtonType = ButtonType.PRIMARY, classes: String = "", id: String = "", onClick: String = "javascript:void(0);")(scriptContent: Html)
     <button class="button btn btn-primary @classes" @if(id != ""){id="@id"} onclick="@onClick">@buttonText</button>
+    @scriptContent
