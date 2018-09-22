@@ -1,0 +1,16 @@
+@settingsController = @{
+    new SettingsController()
+}
+@userController = @{
+    new UserController()
+}
+@currentUser = @{
+    userController.getCurrentUser
+}
+@currentSettings = @{
+    settingsController.getSettings
+}
+
+@main("Groups", "Groups") {
+    @views.matcha.c
+}

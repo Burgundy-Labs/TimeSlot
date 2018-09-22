@@ -1,4 +1,3 @@
-@import views.matcha.ColumnSize
 @(containerType: ContainerType = ContainerType.CONTAINER, containerSize : ColumnSize = ColumnSize.FULL, classes: String = "", id : String = "")(innerContent: Html)
     <div class="@containerType.toString @containerSize.toString @classes" @if(id != ""){id="@id"}>
         @innerContent
