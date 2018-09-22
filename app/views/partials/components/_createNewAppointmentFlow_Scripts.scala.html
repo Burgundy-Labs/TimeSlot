@@ -68,7 +68,7 @@
                         editable: false,
                         weekends: false,
                         selectable: true,
-                        selectLongPressDelay: 200,
+                        selectLongPressDelay: 0,
                         minTime: moment('@currentSettings.getStartTime.toInstant').format("HH:mm"),
                         maxTime: moment('@currentSettings.getEndTime.toInstant').format("HH:mm"),
                         events: function (start, end, timezone, callback) {
@@ -318,7 +318,7 @@
                             form.studentId = scheduleUser.userId;
                         }
                         $.confirm({
-                            columnClass: "col-12",
+                            columnClass: "col-md-12",
                             title: 'Appointment Details',
                             content: "<div class='container-fluid'>" +
                             "<div class='row row-eq-height col-12'>" +

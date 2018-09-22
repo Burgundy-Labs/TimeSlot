@@ -94,7 +94,6 @@
                 timetable.useTwelveHour();
                 timetable.setScope(parseInt(moment("@currentSettings.getStartTime.toInstant").format("HH")), parseInt(moment("@currentSettings.getEndTime.toInstant").format("HH")));
                 $.ajax({
-                    async: false,
                     url: '/dailyViewerByDate/' + moment(dailyViewerDate).format("YYYY-MM-DD") + '/' + moment(dailyViewerDate).format("YYYY-MM-DD"),
                     type: 'GET',
                     success: function (response) {
