@@ -9,6 +9,7 @@
     <head>
         <title>@pageHead</title>
         @partials._head()
+        @scripts
     </head>
     <body>
         <div id="loader">
@@ -60,7 +61,6 @@
                 </div>
         </main>
         @partials._footer()
-        @scripts
         <script>
         function createAppointmentPopup(studentId) {
             makeStepper();

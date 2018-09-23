@@ -1,4 +1,8 @@
-@main("Reports", "Reports") {
+@scripts = {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+    <script src="@routes.Assets.at("third_party/palette/palette.js")"></script>
+}
+@main("Reports", "Reports", scripts) {
     <div class="col-md-12" id="report-container">
         <div class="row">
             <div class="form-group mb-3 col-md-6">
@@ -87,11 +91,6 @@
 
             function createCharts() {
                 getData();
-                makePropertyChart("appointmentType", "Type");
-                makePropertyChart("serviceType", "Service");
-                makePropertyChart("weekly", "Weekly");
-                makePropertyChart("present", "Present");
-                makeDateChart();
             }
 
             function makePropertyChart(property, chartId) {
@@ -193,14 +192,18 @@
 
             function getData() {
                 $.ajax({
-                    async: false,
                     url: '/AppointmentStatistics/' + moment(reportStart.val()).valueOf() + "/" + moment(reportEnd.val()).valueOf(),
                     type: 'GET',
                     success: function (response) {
                         appointmentList = [];
                         $(response).each(function () {
                             appointmentList.push(this);
-                        })
+                        });
+                        makePropertyChart("appointmentType", "Type");
+                        makePropertyChart("serviceType", "Service");
+                        makePropertyChart("weekly", "Weekly");
+                        makePropertyChart("present", "Present");
+                        makeDateChart();
                     }
                 });
             }
