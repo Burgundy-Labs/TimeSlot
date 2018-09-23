@@ -415,3 +415,22 @@ button
 
 .jconfirm
   z-index: 99
+
+.expandable-title[aria-expanded="true"]::before
+    content: "❮"
+
+.expandable-title[aria-expanded="false"]::before
+    content: "❯"
+
+.expandable-title
+  background-color: $secondary-color
+  color: white
+  border-radius: 4px
+  padding: 15px
+  &:hover
+    text-decoration: none
+    font-weight: bold
+    color: white
+
+.expandable-body
+  background-color: #F5F5F5

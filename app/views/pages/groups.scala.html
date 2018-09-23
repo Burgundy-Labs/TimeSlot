@@ -14,28 +14,38 @@
 @main("Groups", "Groups") {
     @matcha.container(ContainerType.ROW, ColumnSize.FULL) {
         <h1>Groups</h1>
-        @matcha.container(ContainerType.ROW, ColumnSize.FULL, "dashCards") {
-            @matcha.card("Group 1", ColumnSize.THREE, "group-card mb-1", "group-1") {
-                Group 1 Description.
-            }
-            @matcha.card("Group 2", ColumnSize.THREE, "group-card mb-1", "group-2") {
-                Group 2 Description.
-            }
-            @matcha.card("Group 3", ColumnSize.THREE, "group-card mb-1", "group-3") {
-                Group 3 Description.
-                @matcha.container(ContainerType.ROW, ColumnSize.FULL) {
-                    @matcha.button("Join Group 3", ButtonType.PRIMARY, "", "group-3-button", "groupThree()") {
-                        <script>
-                                function groupThree() {
-                                    alert("Group 3 button pressed!");
-                                }
-                        </script>
-                    }
+
+        @matcha.container(ContainerType.ROW, ColumnSize.FULL, "mb-2") {
+            @matcha.expandable("Group 1", "A group of people studying things.", ColumnSize.FULL, "group-1") {
+                @matcha.container(ContainerType.ROW, ColumnSize.FULL, "mb-2") {
+                    Group 1 description
+                }
+                @matcha.container(ContainerType.ROW, ColumnSize.FULL, "mb-2") {
+                    @matcha.button("Leave Group", ColumnSize.THREE, ButtonType.DANGER, "leave-group mr-2", "leave-1", "leaveGroup(1)")
+                    @matcha.button("Join Group", ColumnSize.THREE, ButtonType.PRIMARY, "join-group", "join-1", "joinGroup(1)")
                 }
             }
-            @matcha.card("Group 4", ColumnSize.THREE, "group-card mb-1", "group-4") {
-                Group 4 Description.
+        }
+
+        @matcha.container(ContainerType.ROW, ColumnSize.FULL, "mb-2") {
+            @matcha.expandable("Group 2", "", ColumnSize.FULL, "group-2") {
+                @matcha.container(ContainerType.ROW, ColumnSize.FULL, "mb-2") {
+                    Group 2 description
+                }
+                @matcha.container(ContainerType.ROW, ColumnSize.FULL, "mb-2") {
+                    @matcha.button("Leave Group", ColumnSize.THREE, ButtonType.DANGER, "leave-group mr-2", "leave-2", "leaveGroup(2)")
+                    @matcha.button("Join Group", ColumnSize.THREE, ButtonType.PRIMARY, "join-group", "join-2", "joinGroup(2)")
+                }
             }
         }
     }
+    <script>
+            function joinGroup(group) {
+                alert("Joining group " + group);
+            }
+
+            function leaveGroup(group) {
+                alert("Leaving group " + group);
+            }
+    </script>
 }
