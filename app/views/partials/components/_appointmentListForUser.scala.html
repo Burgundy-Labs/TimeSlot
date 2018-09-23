@@ -28,7 +28,7 @@
     </div>
     <div class="card-body p-0">
         <div class="table-responsive cardTable">
-            <table class="table table-striped appointmentList col-md-12 animated fadeInUp p-0" cellspacing="0" width="100%" id="appointmentList" style="width: 100%">
+            <table class="table table-striped appointmentList col-md-12 p-0" cellspacing="0" width="100%" id="appointmentList" style="width: 100%">
                 <thead>
                     <tr>
                         <th></th>
@@ -63,7 +63,6 @@ $(document).on('change', '.attendanceSelect', function () {
     if (appointment.appointmentId != null) {
         $.ajax({
             url: '/updatePresence',
-            async: false,
             type: 'POST',
             data: JSON.stringify(appointment),
             contentType: 'application/json',
@@ -124,6 +123,7 @@ function updateDate() {
         }
         type: 'GET',
         success: function (response) {
+            table.clear().draw();
             $(response).each(function () {
                 table.rows.add([{
                     0: `<img src="${$(this).attr('studentPhoto')}" class="user-avatar"/>`,
@@ -136,9 +136,9 @@ function updateDate() {
                     7: `<span class="appointmentNotes">${$(this).attr('appointmentNotes')}</span>`,
                     8: getCoachNotesColumn($(this)),
                     9: getAddToCalendarColumn($(this)),
-                }]).draw();
-                table.columns.adjust().draw();
+                }]);
             });
+            table.columns.adjust().draw();
         }
     });
     $('.attendanceSelect').selectpicker();
