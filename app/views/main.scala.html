@@ -1,5 +1,5 @@
 @import application_components.Application
-@(title: String, pageHead: String)(content: Html)
+@(title: String, pageHead: String, scripts: Html = Html(""))(content: Html)
 @settingsController = @{ new SettingsController() }
 @userController = @{ new UserController() }
 @currentSettings = @{ settingsController.getSettings }
@@ -60,8 +60,8 @@
                 </div>
         </main>
         @partials._footer()
+        @scripts
         <script>
-
         function createAppointmentPopup(studentId) {
             makeStepper();
             scheduleUser.userId = studentId;
