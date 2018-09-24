@@ -6,7 +6,7 @@ $cuetip-default-position: "top" !default;
 
 $cuetip-has-tail: true !default;
 $cuetip-cursor: inherit !default;
-$cuetip-z-index: 9999 !default;
+$cuetip-z-index: 99999 !default;
 
 $cuetip-color-foreground: #fff !default;
 $cuetip-color-background: #333 !default;
@@ -29,6 +29,7 @@ $cuetip-offset: .5em !default;
 
 @mixin __cuetip-common-hover__ {
   display: inline-block;
+  z-index: $cuetip-z-index;
 }
 
 @mixin __cuetip-reset__ {
