@@ -35,7 +35,6 @@ public class CompressorFilter extends HTMLCompressorFilter {
         if (environment.mode() == Mode.DEV) {
             compressor.setPreserveLineBreaks(true);
         }
-
         compressor.setRemoveComments(true);
         compressor.setRemoveIntertagSpaces(true);
         compressor.setRemoveHttpProtocol(true);
