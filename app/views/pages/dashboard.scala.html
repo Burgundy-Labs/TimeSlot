@@ -3,8 +3,7 @@
 @currentUser = @{userController.getCurrentUser}
 @centerInformation = @{settingsController.getSettings.getCenterInformation}
 @scripts = {
-    <script src="@routes.Assets.at("third_party/steps/jquery-steps.min.js")"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
+    <script src="@routes.Assets.at("third_party/jquery-wizard/js/jquery.smartWizard.js")"></script>
 }
 @main("Dashboard", "Dashboard", scripts) {
     <div class="mb-3 col-md-12 dashCards">

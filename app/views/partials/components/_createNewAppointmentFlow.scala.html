@@ -1,47 +1,79 @@
-@settingsController = @{new SettingsController()}
+@settingsController = @{
+    new SettingsController()
+}
 <div class="col-md-12">
-    <div id="createNewAppointmentForm">
-        <div class="step-app">
-            <ul class="step-steps">
-                <li><a href="#step1">Appointment Info</a></li>
-                <li><a href="#step2">Appointment Notes</a></li>
-                <li><a href="#step3">Appointment Time</a></li>
-            </ul>
-            <div class="step-content">
-                <div class="step-tab-panel" id="step1">
-                    <div>
-                        <form id="appointmentInfo">
-                            <span class="errorInfo"></span>
-                            <label for="appointmentType">Type of appointment</label>
-                            <br/>
-                            <select id="appointmentType" name="appointmentType" required>
-                                <option selected disabled hidden> Select an appointment type </option>
-                                @for(appointment <- settingsController.getAvailableAppointmentTypes) {
-                                    <option data-weekly="@appointment.getWeekly" data-oneTime="@appointment.getOneTime" value="@appointment.getAppointmentTypeId">@appointment.getAppointmentType</option>
-                                }
-                                </select>
-                            <br/>
-                            <br/>
-                            <label for="serviceType">Service desired</label>
-                            <br/>
-                            <select id="serviceType" name="serviceType" required>
-                                <option selected disabled hidden> Select service</option>
-                                @for(service <- settingsController.getServices) {
-                                    <option value="@service.getServiceId">@service.getService</option>
-                                }
-                            </select>
-                        </form>
+    <div id="scheduleWizard">
+        <ul>
+            <li><a href="#step-1">Let's start<br />
+                <small>Appointment Details</small></a>
+            </li>
+            <li><a href="#step-2">Pick a day<br />
+                <small>Appointment Time</small></a>
+            </li>
+            <li><a href="#step-3">That's it<br />
+                <small>Choose & confirm</small></a>
+            </li>
+        </ul>
+        <div>
+            <div id="step-1" class="">
+                <div class="row justify-content-center">
+                    <div class="col-md-2 text-center">
+                        <img src="@routes.Assets.at("images/illustrations/questions.png")"/>
+                        <h4>Hi there!</h4>
+                        <p>Let's schedule an appointment. <br/> What type and service are you looking for?</p>
                     </div>
                 </div>
-                <div class="step-tab-panel" id="step2">
-                    <div>
-                        <div class="form-group">
-                            <label for="appointmentNotes">What will the appointment be about?</label>
-                            <textarea class="form-control" rows="5" id="appointmentNotes"></textarea>
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div id="form-step-0" role="form" data-toggle="validator">
+                            <div class="form-group">
+                                <label for="appointmentType">Type of appointment</label>
+                                <select id="appointmentType" class="form-control" name="appointmentType" data-error="Please select an appointment type." required>
+                                    <option selected disabled hidden> Select an appointment type </option>
+                                    @for(appointment <- settingsController.getAvailableAppointmentTypes) {
+                                        <option data-weekly="@appointment.getWeekly" data-oneTime="@appointment.getOneTime" value="@appointment.getAppointmentTypeId">@appointment.getAppointmentType</option>
+                                    }
+                                </select>
+                                <br/>
+                                <br/>
+                                <label for="serviceType">Service desired</label>
+                                <select id="serviceType" class="form-control" name="serviceType" data-error="Please select a service." required>
+                                    <option selected disabled hidden> Select service</option>
+                                    @for(service <- settingsController.getServices) {
+                                        <option value="@service.getServiceId">@service.getService</option>
+                                    }
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="step-tab-panel" id="step3">
+            </div>
+            <div id="step-2" class="">
+                <div class="row justify-content-center">
+                    <div class="col-md-2 text-center">
+                        <img src="@routes.Assets.at("images/illustrations/events.png")"/>
+                        <h4>Let's pick a day.</h4>
+                        <p>Choose the day you want for your appointment.</p>
+                        <small>Don't worry, you can change this later.</small>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-md-3">
+                        <div id="form-step-1" role="form" data-toggle="validator">
+                            <div class="input-group">
+                                <input type="text" class="form-control" data-error="Please select a day." name="date" placeholder="Pick a date" id="appointmentDay" required>
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-outline-secondary" disabled="">
+                                        <i class="fa fa-calendar" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="step-3" class="">
+                <div id="form-step-2" role="form" data-toggle="validator">
                     <div class="row mb-3">
                         <div class="center mb-3 col-12">
                             <span class="badge oneTime col-md-12 col-lg-3" >
@@ -67,10 +99,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="step-footer">
-                <button class="btn" data-direction="prev">Previous</button>
-                <button class="btn btn-primary" data-direction="next">Next</button>
             </div>
         </div>
     </div>
