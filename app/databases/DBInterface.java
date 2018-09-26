@@ -5,8 +5,10 @@ import java.util.Optional;
 
 /* Contract for required DB interactions */
 public interface DBInterface<T> {
+
     /* Return T*/
     Optional<T> get(String ID);
+
     /* Return all T's in DB*/
     Iterable<T> getAll();
 
@@ -15,6 +17,7 @@ public interface DBInterface<T> {
 
     /* Return T being deleted */
     Optional<T> remove(String ID);
+
     /* Delete all data*/
     boolean removeAll();
 

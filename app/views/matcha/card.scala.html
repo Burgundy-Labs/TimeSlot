@@ -1,0 +1,11 @@
+@(cardTitle: String = "", columnSize: Matcha.ColumnSize = Matcha.ColumnSize.FULL, classes: String = "", id : String = "")(cardBody: Html)
+<div class="@columnSize.toString">
+    <div class="card h-100 @classes" @if(id != ""){id="@id"}>
+        <div class="card-header">
+            <h3>@cardTitle</h3>
+        </div>
+        <div class="card-block my-auto">
+            @cardBody
+        </div>
+    </div>
+</div>

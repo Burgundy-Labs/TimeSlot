@@ -1,0 +1,9 @@
+@(title: String = "", subTitle: String = "", containerSize: Matcha.ColumnSize = Matcha.ColumnSize.FULL, id: String, classes: String = "")(innerContent: Html = new Html(""))
+<a class="expandable-title @containerSize.toString @classes.toString" data-toggle="collapse" href="#@id-content" role="button" aria-expanded="false" aria-controls="@id-content" id="@id">
+    @title @if(!subTitle.equals("")) { - <small>@subTitle</small>} else {}
+</a>
+<div class="collapse @containerSize.toString" id="@id-content">
+    <div class="card card-body expandable-body">
+    @innerContent
+    </div>
+</div>

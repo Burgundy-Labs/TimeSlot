@@ -15,8 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class SettingsController extends Controller {
-    private SettingsDB settingsDB = new SettingsDB();
+public class SettingsController extends BaseController {
 
     @Authenticate(role="Admin")
     public Result index() {
@@ -151,14 +150,6 @@ public class SettingsController extends Controller {
         String serviceId = json.findPath("serviceId").asText();
         settingsDB.removeService(serviceId);
         return ok();
-    }
-
-    public List<ServiceModel> getServices() {
-        return settingsDB.getServices();
-    }
-
-    public SettingsModel getSettings() {
-        return settingsDB.get(null).orElseThrow(NullPointerException::new);
     }
 
     public boolean getAppointmentTypeOneTime(String appointmentType) { return settingsDB.getAppointmentTypeByName(appointmentType).getOneTime(); }

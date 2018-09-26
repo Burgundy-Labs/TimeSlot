@@ -2,7 +2,11 @@
 @settingsController = @{new SettingsController()}
 @currentUser = @{userController.getCurrentUser}
 @centerInformation = @{settingsController.getSettings.getCenterInformation}
-@main("Dashboard", "Dashboard") {
+@scripts = {
+    <script src="@routes.Assets.at("third_party/steps/jquery-steps.min.js")"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.min.js"></script>
+}
+@main("Dashboard", "Dashboard", scripts) {
     <div class="mb-3 col-md-12 dashCards">
         <div class="row row-eq-height">
             <div class="mb-2 col-md-4 animated fadeInUp">
@@ -129,7 +133,7 @@
                                 })
                             }
                         },
-                        @if(currentUser.getRole.equals("Coach") || currentUser.getRole.equals("Admin") && userController.hasAttribute(currentUser, "isCoach")) {
+                        @if(currentUser.getRole.equals("Coach") || currentUser.getRole.equals("Admin") && UserController.hasAttribute(currentUser, "isCoach")) {
                         {
                             events: function (start, end, timezone, callback) {
                                 const events = [];

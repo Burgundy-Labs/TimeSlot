@@ -2,6 +2,7 @@
 
 $cuetip-namespace: "tooltip" !default;
 $cuetip-class-prefix: "#{$cuetip-namespace}--" !default;
+$cuetip-no-tail: "no-tail" !default;
 $cuetip-default-position: "top" !default;
 
 $cuetip-has-tail: true !default;
@@ -10,11 +11,11 @@ $cuetip-z-index: 9999 !default;
 
 $cuetip-color-foreground: #fff !default;
 $cuetip-color-background: #333 !default;
-$cuetip-padding: .25em !default;
-$cuetip-border-radius: .3em !default;
+$cuetip-padding: .5em !default;
+$cuetip-border-radius: .7em !default;
 
 $cuetip-tail-size: .25em !default;
-$cuetip-offset: .5em !default;
+$cuetip-offset: .2em !default;
 
 
 // Internally used variables, mixins, and functions
@@ -25,6 +26,7 @@ $cuetip-offset: .5em !default;
   position: absolute;
   transform: translate#{__cuetip-position__($cuetip-default-position, 3)}(unquote('(-50%)'));
   #{__cuetip-position__($cuetip-default-position, 2)}: 50%;
+  z-index: $cuetip-z-index
 }
 
 @mixin __cuetip-common-hover__ {
@@ -60,7 +62,7 @@ $__cuetip-map__: (
 
   @if ($cuetip-has-tail) {
     // Tooltip tail
-    &::before {
+    &:not(.#{$cuetip-class-prefix}#{$cuetip-no-tail})::before {
       @include __cuetip-common__;
       content: "";
       // Offset the tail from the element
@@ -72,7 +74,7 @@ $__cuetip-map__: (
 
     // Create variations for each position
     @each $position in $__cuetip-positions__ {
-      &.#{$cuetip-class-prefix}#{$position}::before {
+      &.#{$cuetip-class-prefix}#{$position}:not(.#{$cuetip-class-prefix}#{$cuetip-no-tail})::before {
         @include __cuetip-reset__;
         #{__cuetip-position__($position, 1)}: calc(100% - #{$cuetip-tail-size} + #{$cuetip-offset});
         border-color: #{__cuetip-position__($position, 4)};
@@ -106,7 +108,7 @@ $__cuetip-map__: (
   }
 
   @if ($cuetip-has-tail) {
-    &:hover::before {
+    &:not(.#{$cuetip-class-prefix}#{$cuetip-no-tail}):hover::before {
       @include __cuetip-common-hover__;
     }
   }

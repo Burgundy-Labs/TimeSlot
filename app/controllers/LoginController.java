@@ -8,8 +8,7 @@ import play.mvc.Result;
 
 import java.util.Optional;
 
-public class LoginController extends Controller {
-    private UserDB userDB = new UserDB();
+public class LoginController extends BaseController {
 
     public Result index() {
         return ok(views.html.pages.login.render());

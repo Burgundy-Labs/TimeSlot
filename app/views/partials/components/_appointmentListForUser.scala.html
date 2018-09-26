@@ -28,7 +28,7 @@
     </div>
     <div class="card-body p-0">
         <div class="table-responsive cardTable">
-            <table class="table table-striped appointmentList col-md-12 animated fadeInUp p-0" cellspacing="0" width="100%" id="appointmentList" style="width: 100%">
+            <table class="table table-striped appointmentList col-md-12 p-0" cellspacing="0" width="100%" id="appointmentList" style="width: 100%">
                 <thead>
                     <tr>
                         <th></th>
@@ -63,7 +63,6 @@ $(document).on('change', '.attendanceSelect', function () {
     if (appointment.appointmentId != null) {
         $.ajax({
             url: '/updatePresence',
-            async: false,
             type: 'POST',
             data: JSON.stringify(appointment),
             contentType: 'application/json',
@@ -117,7 +116,6 @@ function updateDate() {
     table.clear();
     table.draw();
     $.ajax({
-        async: false,
         @if(currentUser.getRole.equals("Admin") && readAll){
         url: '/appointmentsByDate/@userRole/@userId/' + moment(selectedDate).format("YYYY-MM-DD") + '/' + moment(endDate).format("YYYY-MM-DD"),
         } else {
@@ -125,6 +123,7 @@ function updateDate() {
         }
         type: 'GET',
         success: function (response) {
+            table.clear().draw();
             $(response).each(function () {
                 table.rows.add([{
                     0: `<img src="${$(this).attr('studentPhoto')}" class="user-avatar"/>`,
@@ -137,9 +136,9 @@ function updateDate() {
                     7: `<span class="appointmentNotes">${$(this).attr('appointmentNotes')}</span>`,
                     8: getCoachNotesColumn($(this)),
                     9: getAddToCalendarColumn($(this)),
-                }]).draw();
-                table.columns.adjust().draw();
+                }]);
             });
+            table.columns.adjust().draw();
         }
     });
     $('.attendanceSelect').selectpicker();
@@ -165,7 +164,7 @@ function getCoachNotesColumn(context) {
     } else {
     coachNotes += `<button class="no-button"><span class="action-primary"><a href="mailto:${context.attr("studentEmail")}" data-tooltip="Email Student"  class="tooltip--bottom"><i class="material-icons md-32">email</i></a></span></button>`;
     }
-    @if(currentUser.getRole.equals("Coach") || userController.hasAttribute(currentUser, "isCoach")) {
+    @if(currentUser.getRole.equals("Coach") || UserController.hasAttribute(currentUser, "isCoach")) {
     coachNotes += `${(context.attr("coachNotes") == null || context.attr("coachNotes") === "") ?
             `<button id="notesFor-${context.attr("appointmentId")}" class="no-button" onclick="updateCoachNotes('${context.attr("appointmentId")}', '')"><span class="action-black" id="appointmentNotes"><a href="javascript:void(0)" data-tooltip="Session Notes" class="tooltip--bottom"><i class="material-icons md-32">assignment</i></a> </span></button>`
             :

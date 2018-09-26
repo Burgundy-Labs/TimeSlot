@@ -21,10 +21,9 @@ public class AuthenticateAction extends Action<Authenticate> {
         switch(role) {
             case "Admin":
             case "Coach":
-                return authenticateRole(role, ctx);
             case "Student":
                 /* If Student (or blank Authenticate annotation) allow access - ensures logged in user only */
-                return delegate.call(ctx);
+                return authenticateRole(role, ctx);
             default:
                 /* If unknown role entered - default to forbidden */
                 return CompletableFuture.supplyAsync(() -> forbidden(views.html.pages.error_pages.unauthorized.render()));
@@ -33,13 +32,19 @@ public class AuthenticateAction extends Action<Authenticate> {
 
     /* Checks session role against annotation target and allows execution if matched up */
     private CompletionStage<Result> authenticateRole(String role, Http.Context ctx) {
-        /* Admin is assumed to have all permissions as Coach */
-        if(role.equals("Coach") && ctx.session().get("currentRole") != null && ctx.session().get("currentRole").equals("Admin")){
+        /* Admin as access to all authenticate checks */
+        if(ctx.session().get("currentRole") != null && ctx.session().get("currentRole").equals("Admin")){
             return delegate.call(ctx);
         }
-        else if(ctx.session().get("currentRole") == null || !ctx.session().get("currentRole").equalsIgnoreCase(role)) {
-            return CompletableFuture.supplyAsync(() -> forbidden(views.html.pages.error_pages.unauthorized.render()));
+        /* Student role is accepted as long as a currentRole exists in the session */
+        else if(role.equals("Student") && ctx.session().get("currentRole") != null){
+            return delegate.call(ctx);
         }
-        return delegate.call(ctx);
+        /* Finally, if the role isn't matched - check that the provided authenticate matches the session role */
+        else if(ctx.session().get("currentRole") != null && !ctx.session().get("currentRole").equalsIgnoreCase(role)) {
+            return delegate.call(ctx);
+        }
+        /* If any are failed to return delegate call - redirect to forbidden */
+        return CompletableFuture.supplyAsync(() -> forbidden(views.html.pages.error_pages.unauthorized.render()));
     }
 }

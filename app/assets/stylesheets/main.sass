@@ -139,6 +139,8 @@ a
 .nav-link
   color: black
   background-color: #F2F2F2
+  @include mobile-only
+    display: flex
 
 .well
   text-align: justify
@@ -373,7 +375,8 @@ button
 
 .currentPage
   background-color: black
-  border-radius: 4px
+  i,.icon-text
+    color: #FAAE38
 
 .appointmentSummary
   background-color: #F1F1F2
@@ -412,3 +415,26 @@ button
 
 .jconfirm
   z-index: 99
+
+.expandable-title[aria-expanded="true"]::before
+    content: "▼"
+
+.expandable-title[aria-expanded="false"]::before
+    content: "▶"
+
+.expandable-title
+  background-color: $secondary-color
+  color: white
+  border-radius: 4px
+  padding: 15px
+  &:hover
+    text-decoration: none
+    font-weight: bold
+    color: white
+
+.expandable-body
+  background-color: #F5F5F5
+
+.tooltip-icon
+  opacity: 0.8
+  z-index: 9999

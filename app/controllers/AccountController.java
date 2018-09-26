@@ -10,19 +10,16 @@ import play.mvc.Result;
 import java.util.Iterator;
 import java.util.List;
 
-public class AccountController extends Controller {
-    private UserDB userDB = new UserDB();
-    private UserController userController = new UserController();
-    private SettingsController settingsController = new SettingsController();
+public class AccountController extends BaseController {
 
     @Authenticate
     public Result index() {
-        UsersModel currentUser = userController.getCurrentUser();
+        UsersModel currentUser = getCurrentUser();
         return ok(views.html.pages.user.render(currentUser));
     }
 
     public List<ServiceModel> getAvailableServices(String userId) {
-        List<ServiceModel> availableServices = settingsController.getServices();
+        List<ServiceModel> availableServices = getServices();
         List<ServiceModel> coachServices = userDB.getServicesForUser(userId);
 
         for (Iterator<ServiceModel> serviceIterator = availableServices.iterator(); serviceIterator.hasNext(); ) {
@@ -37,7 +34,6 @@ public class AccountController extends Controller {
     }
 
     public List<ServiceModel> getServicesForUser(String userId) {
-        List<ServiceModel> coachServices = userDB.getServicesForUser(userId);
-        return coachServices;
+        return userDB.getServicesForUser(userId);
     }
 }

@@ -68,6 +68,7 @@
                         editable: false,
                         weekends: false,
                         selectable: true,
+                        selectLongPressDelay: 0,
                         minTime: moment('@currentSettings.getStartTime.toInstant').format("HH:mm"),
                         maxTime: moment('@currentSettings.getEndTime.toInstant').format("HH:mm"),
                         events: function (start, end, timezone, callback) {
@@ -151,7 +152,7 @@
                             if (moment(event.start).isBefore(moment().subtract(10, "minutes"))) {
                                 return false;
                             }
-                            eventElement.find("div.fc-content").prepend("<button onclick='removeAppointment(\"" + event.id + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
+                            eventElement.find("div.fc-content").prepend("<button onclick='removeAppointment(\"" + event.id + "\")' class='no-button eventDelete'>X</button>");
                         },
                         select: function (start, end, jsEvent, view) {
                             /* Allow scheduling appointments in the past for up to 10 minutes (walk-ins, etc) */
@@ -317,7 +318,7 @@
                             form.studentId = scheduleUser.userId;
                         }
                         $.confirm({
-                            columnClass: "col-12",
+                            columnClass: "col-md-12",
                             title: 'Appointment Details',
                             content: "<div class='container-fluid'>" +
                             "<div class='row row-eq-height col-12'>" +

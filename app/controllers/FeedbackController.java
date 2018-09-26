@@ -5,7 +5,7 @@ import application_components.mailing.MailerService;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-public class FeedbackController extends Controller {
+public class FeedbackController extends BaseController {
     private MailerService mailerService = new MailerService();
 
     public Result feedback() {

@@ -17,11 +17,8 @@ import javax.xml.bind.DatatypeConverter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class AppointmentsController extends Controller {
-    private AppointmentsDB appointmentsDB = new AppointmentsDB();
-    private SettingsDB settingsDB = new SettingsDB();
+public class AppointmentsController extends BaseController {
     private MailerService mailerService = new MailerService();
-    private UserDB userDB = new UserDB();
 
     @Authenticate
     public Result index() {

@@ -45,49 +45,49 @@
                             <form>
                                 <div class="form-group">
                                     <label for="universityName" class="mb-3 col-md-12 mb-3 col-md-form-label">
-                                        University Name</label>
+                                        University Name @matcha.tooltipIcon(Matcha.Icon.QUESTION_MARK, Matcha.Position.BOTTOM, "The name of the university, shown in the footer.")</label>
                                     <div class="mb-3 col-md-12">
                                         <input type="text" class="form-control" id="universityName" value="@currentSettings.getUniversityName">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="centerName" class="mb-3 col-md-12 mb-3 col-md-form-label">
-                                        Center Name</label>
+                                        Center Name @matcha.tooltipIcon(Matcha.Icon.QUESTION_MARK, Matcha.Position.BOTTOM, "The name students see when logging in, and shown in the footer.")</label>
                                     <div class="mb-3 col-md-12">
                                         <input type="text" class="form-control" id="centerName" value="@currentSettings.getCenterName">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="semesterDates" class="mb-3 col-md-12 mb-3 col-md-form-label">
-                                        Semester Start Date</label>
+                                    <label for="semesterStart" class="mb-3 col-md-12 mb-3 col-md-form-label">
+                                        Semester Start Date @matcha.tooltipIcon(Matcha.Icon.QUESTION_MARK, Matcha.Position.BOTTOM, "The start date of the current semester.")</label>
                                     <div class="mb-3 col-md-12">
                                         <input id="semesterStart" class="form-control" type="date" name="semesterStart" value="@currentSettings.getSemesterStart.format("yyyy-MM-dd")">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="semesterDates" class="mb-3 col-md-12 mb-3 col-md-form-label">
-                                        Semester End Date</label>
+                                    <label for="semesterEnd" class="mb-3 col-md-12 mb-3 col-md-form-label">
+                                        Semester End Date @matcha.tooltipIcon(Matcha.Icon.QUESTION_MARK, Matcha.Position.BOTTOM, "The end date of the current semester.")</label>
                                     <div class="mb-3 col-md-12">
                                         <input id="semesterEnd" class="form-control" type="date" name="semesterEnd" value="@currentSettings.getSemesterEnd.format("yyyy-MM-dd")">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="startTime" class="mb-3 col-md-12 mb-3 col-md-form-label">
-                                        Learning Center Open Time</label>
+                                        Learning Center Open Time @matcha.tooltipIcon(Matcha.Icon.QUESTION_MARK, Matcha.Position.BOTTOM, "The earliest time the center is open from.")</label>
                                     <div class="mb-3 col-md-12">
                                         <input id="startTime" class="form-control" type="time" name="startTime"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="endTime" class="mb-3 col-md-12 mb-3 col-md-form-label">
-                                        Learning Center Close Time</label>
+                                        Learning Center Close Time @matcha.tooltipIcon(Matcha.Icon.QUESTION_MARK, Matcha.Position.BOTTOM, "The latest time the center is open until.")</label>
                                     <div class="mb-3 col-md-12">
                                         <input id="endTime" class="form-control" type="time" name="endTime"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="maximumAppointments" class="mb-3 col-md-12 mb-3 col-md-form-label">
-                                        Student Appointment Limit Per Week</label>
+                                        Student Appointment Limit Per Week @matcha.tooltipIcon(Matcha.Icon.QUESTION_MARK, Matcha.Position.BOTTOM, "The maximum number of appointments a student can schedule per week.")</label>
                                     <div class="mb-3 col-md-12">
                                         <select id="maximumAppointments" class="form-control col-md-12" type="dropdown" name="maximumAppointments">
                                             <option value="1" selected>1</option>
@@ -142,7 +142,7 @@
                         <div class="mb-3 col-md-4">
                             <div class="dashCards mb-3 card">
                                 <div class="card-header">
-                                    <h4>Site Alert</h4>
+                                    <h4>Site Alert @matcha.tooltipIcon(Matcha.Icon.QUESTION_MARK, Matcha.Position.BOTTOM, "Enter a custom alert here, will be displayed prominently in red on every page.")</h4>
                                 </div>
                                 <div class="card-block">
                                     <textarea type="text" class="form-control" id="siteAlert" placeholder="Enter a site alert." aria-label="@currentSettings.getSiteAlert">@if(!currentSettings.getSiteAlert.equals("")) {@currentSettings.getSiteAlert}</textarea>

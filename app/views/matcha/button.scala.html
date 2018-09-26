@@ -1,0 +1,3 @@
+@(buttonText: String = "", columnSize: Matcha.ColumnSize = Matcha.ColumnSize.FULL, buttonType: Matcha.ButtonType = Matcha.ButtonType.PRIMARY, classes: String = "", id: String = "", onClick: String = "javascript:void(0);", scriptContent: Html = new Html(""))
+<button class="button btn @buttonType.toString @columnSize.toString @classes.toString" @if(!id.equals("")) {id="@id"} onclick="@onClick.toString">@buttonText.toString</button>
+    @scriptContent
