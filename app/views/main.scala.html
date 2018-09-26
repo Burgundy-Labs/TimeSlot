@@ -79,12 +79,13 @@
                     $('#appointmentDay').datepicker();
                     wizard.smartWizard({
                         selected: 0,
+                        theme: "dots",
                         transitionEffect:'fade',
                     });
                     wizard.on("leaveStep", function(e, anchorObject, stepNumber, stepDirection) {
                         let form = $("#form-step-" + stepNumber);
                         if(stepDirection === 'forward' && form){
-                            form.validator();
+                            form.validator('validate');
                             let err = form.children('.has-error');
                             if(err && err.length > 0){
                                 return false;
