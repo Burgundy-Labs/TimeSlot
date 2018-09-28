@@ -1,5 +1,5 @@
 @import application_components.Application
-@(title: String, pageHead: String, scripts: Html = Html(""))(content: Html)
+@(title: String, pageHead: String)(content: Html)
 @settingsController = @{ new SettingsController() }
 @userController = @{ new UserController() }
 @currentSettings = @{ settingsController.getSettings }
@@ -9,7 +9,6 @@
     <head>
         <title>@pageHead</title>
         @partials._head()
-        @scripts
     </head>
     <body>
         <div id="loader">
