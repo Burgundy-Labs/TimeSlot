@@ -10,7 +10,7 @@ public class StartupModule extends AbstractModule {
     protected void configure() {
      /* Start required handlers and services */
      bind(ErrorHandler.class).asEagerSingleton();
-     bind(CompressorFilter.class).asEagerSingleton();
+//     bind(CompressorFilter.class).asEagerSingleton();
      bind(FirestoreHandler.class).asEagerSingleton();
      bind(Application.class).asEagerSingleton();
      bind(MailerService.class).asEagerSingleton();
