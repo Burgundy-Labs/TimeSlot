@@ -18,6 +18,6 @@ libraryDependencies ++= Seq(ehcache, guice,
   "com.mohiva" %% "play-html-compressor" % "0.7.1",
 )
 
-TwirlKeys.templateImports ++= Seq("views.matcha.Matcha")
+//TwirlKeys.templateImports ++= Seq("views.matcha.Matcha")
 
 pipelineStages := Seq(gzip)
