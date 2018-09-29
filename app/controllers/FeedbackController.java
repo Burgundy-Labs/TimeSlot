@@ -2,12 +2,14 @@ package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import application_components.mailing.MailerService;
+import play.cache.Cached;
 import play.mvc.Controller;
 import play.mvc.Result;
 
 public class FeedbackController extends BaseController {
     private MailerService mailerService = new MailerService();
 
+    @Cached(key = "feedback")
     public Result feedback() {
         return ok(views.html.pages.feedback.render());
     }
