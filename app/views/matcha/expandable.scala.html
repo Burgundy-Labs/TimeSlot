@@ -1,4 +1,3 @@
-@import views.matcha.Matcha
 @(title: String = "", subTitle: String = "", containerSize: Matcha.ColumnSize = Matcha.ColumnSize.FULL, id: String, classes: String = "")(innerContent: Html = new Html(""))
 <a class="expandable-title @containerSize.toString @classes.toString" data-toggle="collapse" href="#@id-content" role="button" aria-expanded="false" aria-controls="@id-content" id="@id">
     @title @if(!subTitle.equals("")) { - <small>@subTitle</small>} else {}
