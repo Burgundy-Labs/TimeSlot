@@ -7,7 +7,6 @@ import play.mvc.Result;
 
 public class StationController extends BaseController {
 
-    @Cached(key="station")
     public Result index() {
         return ok(views.html.pages.station.render());
     }

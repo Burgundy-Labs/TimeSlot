@@ -18,7 +18,6 @@ import java.util.List;
 
 public class SettingsController extends BaseController {
 
-    @Cached(key="settings")
     @Authenticate(role="Admin")
     public Result index() {
         return ok(views.html.pages.settings.render());
