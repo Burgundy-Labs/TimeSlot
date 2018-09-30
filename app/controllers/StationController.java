@@ -1,6 +1,7 @@
 package controllers;
 
 import models.UsersModel;
+import play.cache.Cached;
 import play.libs.Json;
 import play.mvc.Result;
 

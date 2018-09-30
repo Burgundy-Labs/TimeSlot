@@ -1,6 +1,5 @@
 package controllers;
 
-import application_components.mailing.MailerService;
 import databases.AppointmentsDB;
 import databases.SettingsDB;
 import databases.UserDB;

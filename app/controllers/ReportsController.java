@@ -3,6 +3,7 @@ package controllers;
 import application_components.annotations.Authenticate;
 import databases.AppointmentsDB;
 import models.AppointmentsModel;
+import play.cache.Cached;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;

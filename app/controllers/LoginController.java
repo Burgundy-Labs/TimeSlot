@@ -3,6 +3,7 @@ package controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import databases.UserDB;
 import models.UsersModel;
+import play.cache.Cached;
 import play.mvc.Controller;
 import play.mvc.Result;
 

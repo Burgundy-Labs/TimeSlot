@@ -6,6 +6,7 @@ import models.ServiceModel;
 import models.UserAttributes;
 import models.UsersModel;
 import play.Logger;
+import play.cache.Cached;
 import play.libs.Json;
 import play.mvc.Result;
 

@@ -6,6 +6,7 @@ import databases.SettingsDB;
 import models.AppointmentTypeModel;
 import models.ServiceModel;
 import models.SettingsModel;
+import play.cache.Cached;
 import play.mvc.Controller;
 import play.mvc.Result;
 

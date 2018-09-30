@@ -2,13 +2,11 @@
 @settingsController = @{new SettingsController()}
 @currentUser = @{userController.getCurrentUser}
 @centerInformation = @{settingsController.getSettings.getCenterInformation}
-@scripts = {
-    <script src="@routes.Assets.at("third_party/jquery-wizard/js/jquery.smartWizard.js")"></script>
-}
-@main("Dashboard", "Dashboard", scripts) {
+
+@main("Dashboard", "Dashboard") {
     <div class="mb-3 col-md-12 dashCards">
         <div class="row row-eq-height">
-            <div class="mb-2 col-md-4 animated fadeInUp">
+            <div class="mb-2 col-md-4">
                 <div class="card h-100">
                     <div class="card-header">
                         <h3>Hello, @{
@@ -23,7 +21,7 @@
                     </div>
                 </div>
             </div>
-            <div class="mb-2 col-md-4 animated fadeInUp">
+            <div class="mb-2 col-md-4">
                 <div class="card h-100 text-center">
                     <div class="card-header">
                         <h3>Quick-Schedule</h3>
@@ -35,7 +33,7 @@
                     </div>
                 </div>
             </div>
-            <div class="mb-2 col-md-4 animated fadeInUp">
+            <div class="mb-2 col-md-4">
                 <div class="card h-100">
                     <div class="card-header">
                         <h3>Center Information</h3>
@@ -52,7 +50,7 @@
         </div>
         <br/>
         <div class="row row-eq-height">
-            <div class="mb-2 col-md-6 animated fadeInUp">
+            <div class="mb-2 col-md-6">
                 <div class="card">
                     <div class="card-header">
                         <h3>Appointment Calendar</h3>
@@ -62,7 +60,7 @@
                     </div>
                 </div>
             </div>
-            <div class="mb-2 col-md-6 animated fadeInUp">
+            <div class="mb-2 col-md-6">
                 <div class="card nextFiveAppointments">
                     <div class="card-header">
                         <h3>Next Five Appointments</h3>
