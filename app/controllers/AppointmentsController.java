@@ -9,6 +9,7 @@ import databases.UserDB;
 import models.*;
 import org.apache.commons.lang3.time.DateUtils;
 import org.joda.time.DateTime;
+import play.cache.Cached;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -20,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class AppointmentsController extends BaseController {
     private MailerService mailerService = new MailerService();
 
+    @Cached(key="appointments")
     @Authenticate
     public Result index() {
         return ok(views.html.pages.appointments.render());

@@ -4,6 +4,7 @@ import application_components.annotations.Authenticate;
 import databases.UserDB;
 import models.ServiceModel;
 import models.UsersModel;
+import play.cache.Cached;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -12,6 +13,7 @@ import java.util.List;
 
 public class AccountController extends BaseController {
 
+    @Cached(key="account")
     @Authenticate
     public Result index() {
         UsersModel currentUser = getCurrentUser();

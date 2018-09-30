@@ -3,6 +3,7 @@ package controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import databases.UserDB;
 import models.UsersModel;
+import play.cache.Cached;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -10,6 +11,7 @@ import java.util.Optional;
 
 public class LoginController extends BaseController {
 
+    @Cached(key="login")
     public Result index() {
         return ok(views.html.pages.login.render());
     }

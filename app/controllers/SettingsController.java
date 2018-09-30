@@ -6,6 +6,7 @@ import databases.SettingsDB;
 import models.AppointmentTypeModel;
 import models.ServiceModel;
 import models.SettingsModel;
+import play.cache.Cached;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -17,6 +18,7 @@ import java.util.List;
 
 public class SettingsController extends BaseController {
 
+    @Cached(key="settings")
     @Authenticate(role="Admin")
     public Result index() {
         return ok(views.html.pages.settings.render());
