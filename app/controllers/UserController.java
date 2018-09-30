@@ -17,13 +17,11 @@ import java.util.Optional;
 
 public class UserController extends BaseController {
 
-    @Cached(key="users")
     @Authenticate
     public Result index() {
         return ok(views.html.pages.users.render());
     }
 
-    @Cached(key="user")
     public Result userPage(String userId) {
         if (userId == null) return notFound();
         Optional<UsersModel> user = userDB.get(userId);

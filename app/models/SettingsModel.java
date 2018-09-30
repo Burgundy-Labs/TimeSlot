@@ -26,6 +26,7 @@ public class SettingsModel {
         if(settings.getSiteAlert() == null) settings.setSiteAlert("");
         if(settings.getCenterInformation() == null) settings.setCenterInformation("");
         if(settings.getMaximumAppointments() == null) settings.setMaximumAppointments(5);
+        if(settings.getDaysOpenWeekly() == null) settings.setDaysOpenWeekly(new boolean[]{true,true,true,true,true,true,true});
         return settings;
     }
 

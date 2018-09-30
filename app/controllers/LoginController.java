@@ -11,7 +11,6 @@ import java.util.Optional;
 
 public class LoginController extends BaseController {
 
-    @Cached(key="login")
     public Result index() {
         return ok(views.html.pages.login.render());
     }

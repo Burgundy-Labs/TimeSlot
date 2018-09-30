@@ -13,7 +13,6 @@ import java.util.List;
 
 public class AccountController extends BaseController {
 
-    @Cached(key="account")
     @Authenticate
     public Result index() {
         UsersModel currentUser = getCurrentUser();

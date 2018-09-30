@@ -12,7 +12,6 @@ import java.util.*;
 
 public class ReportsController extends BaseController {
 
-    @Cached(key="reports")
     @Authenticate(role="Admin")
     public Result index() {
         return ok(views.html.pages.reports.render());
