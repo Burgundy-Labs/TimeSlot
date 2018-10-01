@@ -58,13 +58,13 @@
                     }
                     appointmentCalendar.fullCalendar({
                         validRange: {
-                            start: moment('@settingsController.getSettings.getSemesterStart.toInstant').format("YYYY-MM-DD"),
-                            end: moment('@settingsController.getSettings.getSemesterEnd.toInstant').format("YYYY-MM-DD")
+                            start: moment($("#appointmentDay").val()).format("YYYY-MM-DD"),
+                            end: moment($("#appointmentDay").val()).format("YYYY-MM-DD")
                         },
                         height: 'auto',
                         themeSystem: 'bootstrap4',
                         allDaySlot: false,
-                        defaultView: 'agendaWeek',
+                        defaultView: 'agendaDay',
                         editable: false,
                         weekends: false,
                         selectable: true,
