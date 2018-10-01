@@ -93,6 +93,9 @@
                         return true;
                     });
                 },
+                onClose: function() {
+                    $('#scheduleWizard').smartWizard("reset");
+                },
                 content: `@partials.components._createNewAppointmentFlow()`,
             });
         }

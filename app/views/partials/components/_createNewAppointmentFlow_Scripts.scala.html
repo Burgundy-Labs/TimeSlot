@@ -58,8 +58,8 @@
                     }
                     appointmentCalendar.fullCalendar({
                         validRange: {
-                            start: moment($("#appointmentDay").val()).format("YYYY-MM-DD"),
-                            end: moment($("#appointmentDay").val()).format("YYYY-MM-DD")
+                            start: moment('@settingsController.getSettings.getSemesterStart.toInstant').format("YYYY-MM-DD"),
+                            end: moment('@settingsController.getSettings.getSemesterEnd.toInstant').format("YYYY-MM-DD")
                         },
                         height: 'auto',
                         themeSystem: 'bootstrap4',
@@ -71,6 +71,8 @@
                         selectLongPressDelay: 0,
                         minTime: moment('@currentSettings.getStartTime.toInstant').format("HH:mm"),
                         maxTime: moment('@currentSettings.getEndTime.toInstant').format("HH:mm"),
+                        start: moment($("#appointmentDay").val()),
+                        end: moment($("#appointmentDay").val()),
                         events: function (start, end, timezone, callback) {
                             startDateTime = moment(start).toISOString();
                             endDateTime = moment(end).toISOString();
