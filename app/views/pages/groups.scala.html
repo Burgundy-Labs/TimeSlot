@@ -16,34 +16,47 @@
         <h1>Groups</h1>
 
         @matcha.container(Matcha.ContainerType.ROW, Matcha.ColumnSize.FULL, "mb-2") {
-            @matcha.expandable("Group 1", "A group of people studying things.", Matcha.ColumnSize.FULL, "group-1") {
-                @matcha.container(Matcha.ContainerType.ROW, Matcha.ColumnSize.FULL, "mb-2") {
-                    Group 1 description
+            @matcha.expandable("Group 1 Name", "", Matcha.ColumnSize.FULL, "group-1") {
+                @matcha.container(Matcha.ContainerType.ROW, Matcha.ColumnSize.FULL, "mb-2"){
+                    @matcha.card("Group 1 Description", Matcha.ColumnSize.FULL, "card-1"){
+                        Probably a list of people in the group
+                    }
                 }
                 @matcha.container(Matcha.ContainerType.ROW, Matcha.ColumnSize.FULL, "mb-2") {
                     @matcha.button("Leave Group", Matcha.ColumnSize.THREE, Matcha.ButtonType.DANGER, "leave-group mr-2", "leave-1", "leaveGroup(1)")
-                    @matcha.button("Join Group", Matcha.ColumnSize.THREE, Matcha.ButtonType.PRIMARY, "join-group", "join-1", "joinGroup(1)")
                 }
             }
         }
 
         @matcha.container(Matcha.ContainerType.ROW, Matcha.ColumnSize.FULL, "mb-2") {
-            @matcha.expandable("Group 2", "",Matcha. ColumnSize.FULL, "group-2") {
-                @matcha.container(Matcha.ContainerType.ROW, Matcha.ColumnSize.FULL, "mb-2") {
-                    Group 2 description
+            @matcha.expandable("Group 2 Name", "",Matcha. ColumnSize.FULL, "group-2") {
+                @matcha.container(Matcha.ContainerType.ROW, Matcha.ColumnSize.FULL, "mb-2"){
+                    @matcha.card("Group 2 Description", Matcha.ColumnSize.FULL, "card-1"){
+                        Probably a list of people in the group
+                    }
                 }
                 @matcha.container(Matcha.ContainerType.ROW, Matcha.ColumnSize.FULL, "mb-2") {
                     @matcha.button("Leave Group", Matcha.ColumnSize.THREE, Matcha.ButtonType.DANGER, "leave-group mr-2", "leave-2", "leaveGroup(2)")
-                    @matcha.button("Join Group", Matcha.ColumnSize.THREE, Matcha.ButtonType.PRIMARY, "join-group", "join-2", "joinGroup(2)")
                 }
             }
         }
+
+    }
+
+    @matcha.container(Matcha.ContainerType.ROW, Matcha.ColumnSize.FULL, "mb-2"){
+        <h1>Group Invites</h1>
+        @*if(GroupInvitations != EMPTY)*@
         @matcha.container(Matcha.ContainerType.ROW, Matcha.ColumnSize.FULL, "mb-2"){
-            @matcha.card("Kevin's first card", Matcha.ColumnSize.HALF, "card-1"){
-                Card 1
-            }
-            @matcha.card("Kevin's SECOND MUHFUCKIN CARD", Matcha.ColumnSize.HALF, "card-2"){
-                Card 2
+            @matcha.expandable("Group Invite 1 Name", "", Matcha.ColumnSize.FULL, "group-invite-1"){
+                @matcha.container(Matcha.ContainerType.ROW, Matcha.ColumnSize.FULL, "mb-2") {
+                    @matcha.card("Group 1 Description", Matcha.ColumnSize.FULL, "card-1") {
+                        Probably a list of people in the group
+                    }
+                }
+                @matcha.container(Matcha.ContainerType.ROW, Matcha.ColumnSize.FULL, "mb-2") {
+                    @matcha.button("Join Group", Matcha.ColumnSize.THREE, Matcha.ButtonType.PRIMARY, "join-group mr-1", "join-1", "joinGroup(1)")
+                }
+
             }
         }
     }
