@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 public class AppointmentsController extends BaseController {
     private MailerService mailerService = new MailerService();
 
-    @Cached(key="appointments")
     @Authenticate
     public Result index() {
         return ok(views.html.pages.appointments.render());

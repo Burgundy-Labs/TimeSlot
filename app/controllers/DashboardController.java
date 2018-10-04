@@ -7,7 +7,6 @@ import play.mvc.Result;
 
 public class DashboardController extends BaseController {
 
-    @Cached(key = "dashboard")
     @Authenticate
     public Result index() {
         return ok(views.html.pages.dashboard.render());

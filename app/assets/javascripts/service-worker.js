@@ -22,7 +22,8 @@ limitations under the License.
         '/assets/stylesheets/main.css',
         '/assets/lib/bootstrap/css/bootstrap.min.css',
         '/assets/lib/bootstrap/js/bootstrap.min.js',
-        '/assets/images/TimeSlot.svg',
+        '/assets/images/Logo.svg',
+        '/assets/images/TimeSlot_Dark.svg',
     ];
 
     const staticCacheName = 'pages-cache-v2';
