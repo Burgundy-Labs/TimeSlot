@@ -206,7 +206,7 @@ public class UserDB implements DBInterface<UsersModel> {
 			List<QueryDocumentSnapshot> adminDocuments = adminQuerySnapshot.getDocuments();
 			for (DocumentSnapshot adminDocument : adminDocuments) {
 				UsersModel admin = adminDocument.toObject(UsersModel.class);
-				if (new UserController().hasAttribute(admin, UserAttributes.IS_COACH.getValue())) {
+				if (UserController.hasAttribute(admin, UserAttributes.IS_COACH.getValue())) {
 					userList.add(admin);
 				}
 			}
@@ -218,7 +218,7 @@ public class UserDB implements DBInterface<UsersModel> {
 		List<UsersModel> coachesWithService = new ArrayList<>();
 		List<UsersModel> coaches = getAllByRole("Coach");
 		for (UsersModel c : coaches) {
-			if ( hasService(c.getUid(), serviceId) ) {
+			if (hasService(c.getUid(), serviceId) ) {
 				coachesWithService.add(c);
 			}
 		}

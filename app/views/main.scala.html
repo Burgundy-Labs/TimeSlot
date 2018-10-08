@@ -62,18 +62,40 @@
         @partials._footer()
         <script type="text/javascript">
         function createAppointmentPopup(studentId) {
-            makeStepper();
             scheduleUser.userId = studentId;
             $.dialog({
-                title: 'Create New Appointment',
+                title: '',
                 theme: 'material',
                 type: "dark",
-                escapeKey: true,
+                escapeKey: ["esc"],
                 backgroundDismiss: false,
                 columnClass: 'col-md-12',
                 containerFluid: true,
                 offsetTop: 0,
                 offsetBottom: 0,
+                onOpenBefore: function() {
+                    let wizard = $('#scheduleWizard');
+                    $('#appointmentDay').datepicker();
+                    wizard.smartWizard({
+                        selected: 0,
+                        theme: "dots",
+                        transitionEffect:'fade',
+                    });
+                    wizard.on("leaveStep", function(e, anchorObject, stepNumber, stepDirection) {
+                        let form = $("#form-step-" + stepNumber);
+                        if(stepDirection === 'forward' && form){
+                            form.validator('validate');
+                            let err = form.children('.has-error');
+                            if(err && err.length > 0){
+                                return false;
+                            }
+                        }
+                        return true;
+                    });
+                },
+                onClose: function() {
+                    $('#scheduleWizard').smartWizard("reset");
+                },
                 content: `@partials.components._createNewAppointmentFlow()`,
             });
         }
