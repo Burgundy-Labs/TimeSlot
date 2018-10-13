@@ -114,6 +114,11 @@ public class UserDB implements DBInterface<UsersModel> {
 		/* Asynchronously write user into DB */
 		ApiFuture<WriteResult> result = docRef.set(data);
 		result.isDone();
+
+		DocumentReference coachRef = FirestoreHandler.get().collection("settings").document("settings").collection("services").document(service.getServiceId()).collection("coaches").document(ID);
+		Map<String, Object> coachData = new HashMap<>();
+		ApiFuture<WriteResult> coachResult = coachRef.set(coachData);
+		coachResult.isDone();
 	}
 
 	public boolean hasService(String userId, String serviceId) {
@@ -156,8 +161,11 @@ public class UserDB implements DBInterface<UsersModel> {
 
 	public boolean removeServiceFromUser(String ID, String serviceId) {
 		/* Asynchronously remove user from DB */
+//		DocumentReference coachRef = FirestoreHandler.get().collection("settings").document("settings").collection("services").document(service.getServiceId()).collection("coaches").document();
+
 		ApiFuture<WriteResult> writeResult = FirestoreHandler.get().collection("users").document(ID).collection("services").document(serviceId).delete();
-		return writeResult.isDone();
+		ApiFuture<WriteResult> coachResult = FirestoreHandler.get().collection("settings").document("settings").collection("services").document(serviceId).collection("coaches").document(ID).delete();
+		return writeResult.isDone() && coachResult.isDone();
 	}
 
 	public UsersModel getByAuth_ID(String ID) {
@@ -215,13 +223,23 @@ public class UserDB implements DBInterface<UsersModel> {
 	}
 
 	public List<UsersModel> getCoachesByService(String serviceId) {
-		List<UsersModel> coachesWithService = new ArrayList<>();
-		List<UsersModel> coaches = getAllByRole("Coach");
-		for (UsersModel c : coaches) {
-			if (hasService(c.getUid(), serviceId) ) {
-				coachesWithService.add(c);
-			}
+		List<UsersModel> coachList = new ArrayList<>();
+		/* Asynchronously retrieve all users */
+		ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("settings").document("settings").collection("services").document(serviceId).collection("coaches").get();
+		QuerySnapshot querySnapshot = null;
+		try {
+			/* Attempt to get a list of all users - blocking */
+			querySnapshot = query.get();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
 		}
-		return coachesWithService;
+		assert querySnapshot != null;
+		List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
+		/* Iterate users and add them to a list for return */
+		for (DocumentSnapshot document : documents) {
+			UsersModel coach = document.toObject(UsersModel.class);
+			coachList.add(coach);
+		}
+		return coachList;
 	}
 }
