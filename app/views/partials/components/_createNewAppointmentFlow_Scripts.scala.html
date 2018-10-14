@@ -271,15 +271,11 @@
                     let displayText;
                     let weeksAppointments = 0;
                     let usId;
-                    if (scheduleUser.userRole) {
+                    if (scheduleUser !== undefined && scheduleUser.userId !== undefined && scheduleUser !== null && scheduleUser.userId !== null) {
                         displayText = "This user has reached the maximum appointments allowed per week.";
-                    } else {
-                        displayText = "You've reached the maximum appointments allowed per week.";
-                    }
-                    if (scheduleUser.userId) {
                         usId = scheduleUser.userId;
                     } else {
-                        usId = '@currentUser.getUid';
+                        displayText = "You've reached the maximum appointments allowed per week.";
                     }
                     $.ajax({
                         url: '/appointmentsForUser/Student/' + usId + '/' + startDateTime + '/' + endDateTime,

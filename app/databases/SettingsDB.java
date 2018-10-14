@@ -1,6 +1,7 @@
 package databases;
 
 import com.google.api.core.ApiFuture;
+import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.*;
 import models.AppointmentTypeModel;
 import models.ServiceModel;

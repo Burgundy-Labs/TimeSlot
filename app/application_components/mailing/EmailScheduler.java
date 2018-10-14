@@ -25,7 +25,7 @@ public class EmailScheduler {
         LocalDateTime executionDate = LocalDateTime.of(currentTime.getYear(),
                 currentTime.getMonth(),
                 currentTime.getDayOfMonth(),
-                8,0);
+                18,25);
         Logger.info("Email Reminder Service Started for - " + executionDate.getHour() + " : " + executionDate.getMinute());
         long initialDelay;
         if(currentTime.isAfter(executionDate)){
