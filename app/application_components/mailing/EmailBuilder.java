@@ -50,7 +50,7 @@ public class EmailBuilder implements IconInterface{
         }
 
         model.setEmailButtons(emailButtons);
-
+        model.setEmailFooter(new EmailModel.EmailFooter("TimeSlot is a Burgundy Labs product."));
         /* Generates HTML from template with passed model */
         return general.render(model).toString();
     }
