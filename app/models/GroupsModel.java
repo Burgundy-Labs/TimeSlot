@@ -89,6 +89,20 @@ public class GroupsModel {
         this.isPublic = isPublic;
     }
 
+    public void addStudent(String studentID){
+        student.add(studentID);
+    }
+
+    public void leaveGroup(String ID){
+        if(student.contains(ID)){
+            student.remove(ID);
+        } else if(coaches.contains(ID)){
+            coaches.remove(ID);
+        }
+    }
+
+
+
     public List<String> getCoaches() {
         return coaches;
     }
