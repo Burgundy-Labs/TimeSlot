@@ -4,6 +4,7 @@ import application_components.Application;
 import com.google.inject.Inject;
 import controllers.SettingsController;
 import models.AppointmentsModel;
+import models.GroupsModel;
 import models.SettingsModel;
 import play.libs.mailer.Email;
 import play.libs.mailer.MailerClient;
@@ -152,6 +153,12 @@ public class MailerService {
                         "<br/>" +
                         "<a style=\"background-color:#0067F4; color: white; border-radius: 4px; padding: 10px; margin:0 auto; display:block; width: 90%; text-align: center; font-size: 18px; text-decoration:none; \" " +
                         "href=\"http://" + Application.getConfig().getString("siteUrl") + "\">Schedule a new appointment</a> <br/>");
+        mailerClient.send(email);
+    }
+
+    public void sendGroupAppointmentEmail(GroupsModel appointment){
+        SettingsModel settings = settingsController.getSettings();
+        Email email = new Email().setSubject("").setFrom("").addTo("").setBodyHtml("");
         mailerClient.send(email);
     }
 }
