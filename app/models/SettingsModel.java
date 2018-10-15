@@ -1,6 +1,8 @@
 package models;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Arrays;
 
 public class SettingsModel {
     private String universityName;
@@ -12,7 +14,7 @@ public class SettingsModel {
     private String siteAlert;
     private String centerInformation;
     private Integer maximumAppointments;
-    private boolean[] daysOpenWeekly;
+    private List<Boolean> daysOpenWeekly;
 
     public static SettingsModel replaceNull(SettingsModel settings) {
         if(settings == null) settings = new SettingsModel();
@@ -26,7 +28,7 @@ public class SettingsModel {
         if(settings.getSiteAlert() == null) settings.setSiteAlert("");
         if(settings.getCenterInformation() == null) settings.setCenterInformation("");
         if(settings.getMaximumAppointments() == null) settings.setMaximumAppointments(5);
-        if(settings.getDaysOpenWeekly() == null) settings.setDaysOpenWeekly(new boolean[]{true,true,true,true,true,true,true});
+        if(settings.getDaysOpenWeekly() == null) settings.setDaysOpenWeekly(Arrays.asList(new Boolean[]{true,true,true,true,true,true,true}));
         return settings;
     }
 
@@ -78,14 +80,14 @@ public class SettingsModel {
 
     public void setCenterInformation(String centerInformation) { this.centerInformation = centerInformation; }
 
-    public boolean[] getDaysOpenWeekly() {
+    public List<Boolean> getDaysOpenWeekly() {
         if ( daysOpenWeekly == null ) {
-            boolean[] days = {false, true, true, true, true, true, false};
-            daysOpenWeekly = days;
+            Boolean[] days = {false, true, true, true, true, true, false};
+            daysOpenWeekly = Arrays.asList(days);
         }
         return daysOpenWeekly;
     }
 
-    public void setDaysOpenWeekly(boolean[] days) { daysOpenWeekly = days; }
+    public void setDaysOpenWeekly(List<Boolean> days) { daysOpenWeekly = days; }
 
 }
