@@ -61,7 +61,7 @@ public class EmailModel {
 
     public static class EmailFooter {
         private String footerText;
-        private String footerStyle = "";
+        private String footerStyle = "border-radius:4px; padding: 10px;";
 
         public EmailFooter(String footerText) {
             this.footerText = footerText;
