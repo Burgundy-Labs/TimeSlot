@@ -35,6 +35,12 @@ public class EmailScheduler {
         }
         long delay = TimeUnit.HOURS.toMillis(24); // repeat after 24 hours
         scheduler.scheduleWithFixedDelay(command, initialDelay, delay, TimeUnit.MILLISECONDS);
+
+        AppointmentsModel appointmentsModel = new AppointmentsDB().get("FPalrUSwLAbEOGBQbQtk").get();
+        HashMap<String, ArrayList<AppointmentsModel>> list = new HashMap<>();
+        list.computeIfAbsent(appointmentsModel.getStudentId(), k-> new ArrayList<>()).add(appointmentsModel);
+
+        mailerService.sendAppointmentReminder(list, "Student");
     }
     
     private class AppointmentEmailTask implements Runnable {

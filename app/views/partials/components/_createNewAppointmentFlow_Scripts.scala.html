@@ -11,9 +11,9 @@
             let endDateTime;
             let coachAvailable;
             let studentId = null;
-            $(document).ready(function () {
 
-                makeStepper();
+
+            $(document).ready(function () {
                 /* Refetch events if appointment type changes */
                 $("#appointmentType").change(function () {
                     appointmentCalendar.fullCalendar('refetchEvents');
@@ -64,13 +64,15 @@
                         height: 'auto',
                         themeSystem: 'bootstrap4',
                         allDaySlot: false,
-                        defaultView: 'agendaWeek',
+                        defaultView: 'agendaDay',
                         editable: false,
                         weekends: false,
                         selectable: true,
                         selectLongPressDelay: 0,
                         minTime: moment('@currentSettings.getStartTime.toInstant').format("HH:mm"),
                         maxTime: moment('@currentSettings.getEndTime.toInstant').format("HH:mm"),
+                        start: moment($("#appointmentDay").val()),
+                        end: moment($("#appointmentDay").val()),
                         events: function (start, end, timezone, callback) {
                             startDateTime = moment(start).toISOString();
                             endDateTime = moment(end).toISOString();
@@ -411,42 +413,6 @@
                             },
                         });
                     }
-                }
-            }
-
-            function makeStepper() {
-                const createNewAppointmentForm = $('#createNewAppointmentForm');
-                if (createNewAppointmentForm.length) {
-                    createNewAppointmentForm.steps({
-                        onChange: function (currentIndex, newIndex, stepDirection) {
-                            /* Appointment Info */
-                            if (currentIndex === 0) {
-                                if (stepDirection === 'forward') {
-                                    let appointmentTypeForm = $('#appointmentInfo');
-                                    appointmentTypeForm.validate();
-                                    if (!coachAvailable) {
-                                        $(".errorInfo").html("<p style='color:red'> No coaches available for this service</p>");
-                                        return false;
-                                    }
-                                    return appointmentTypeForm.valid();
-                                }
-                            }
-                            /* Session Notes*/
-                            if (currentIndex === 1) {
-                                if (stepDirection === 'forward') {
-                                    return true;
-                                }
-                            }
-                            /* Event Time */
-                            if (currentIndex === 2) {
-                                if (stepDirection === 'forward') {
-                                    return true;
-                                }
-                            }
-                        }
-                    });
-                } else {
-                    setTimeout(makeStepper, 50);
                 }
             }
     </script>

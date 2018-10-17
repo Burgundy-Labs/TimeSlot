@@ -370,6 +370,7 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
         List<AppointmentsModel> appointmentList = new ArrayList<>();
         for (DocumentSnapshot document : documents) {
             AppointmentsModel appointment = document.toObject(AppointmentsModel.class);
+            assert appointment != null;
             if ( appointment.getStudentId() != null ) {
                 appointmentList.add(appointment);
             }
@@ -379,7 +380,6 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
 
 
     public List<AppointmentsModel> getOpenAppointmentsByUserAndDate(String userId, Date start, Date end) {
-        UsersModel user = userDB.get(userId).orElseThrow(NullPointerException::new);
         List<AppointmentsModel> appointmentList = new ArrayList<>();
         /* Asynchronously retrieve all appointments */
         ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("appointments").whereEqualTo("coachId", userId).whereEqualTo("studentId", null).whereGreaterThanOrEqualTo("startDate", start).whereLessThanOrEqualTo("startDate", end).get();
@@ -395,7 +395,8 @@ public class AppointmentsDB implements DBInterface<AppointmentsModel> {
         /* Iterate appointments and add them to a list for return */
         for (DocumentSnapshot document : documents) {
             AppointmentsModel appointment = document.toObject(AppointmentsModel.class);
-            if(user.getRole().equals("Coach") || new UserController().hasAttribute(user, UserAttributes.IS_COACH.getValue())) {
+            assert appointment != null;
+            if(appointment.getStudentId() == null) {
                 appointmentList.add(appointment);
             }
         }
