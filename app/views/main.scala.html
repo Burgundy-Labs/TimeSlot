@@ -75,11 +75,13 @@
                 offsetBottom: 0,
                 onOpenBefore: function() {
                     let wizard = $('#scheduleWizard');
-                    $('#appointmentDay').datepicker();
+                    $('#datePicker').val(new moment().format("YYYY-MM-DD"));
                     wizard.smartWizard({
                         selected: 0,
                         theme: "dots",
                         transitionEffect:'fade',
+                        useURLhash: false,
+                        showStepURLhash: false
                     });
                     wizard.on("leaveStep", function(e, anchorObject, stepNumber, stepDirection) {
                         stepNumber++;
