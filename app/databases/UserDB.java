@@ -243,7 +243,6 @@ public class UserDB implements DBInterface<UsersModel> {
 				coachList.add(coach);
 			}
 		}
-		System.out.println(coachList.size());
 		return coachList;
 	}
 
