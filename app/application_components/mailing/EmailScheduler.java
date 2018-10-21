@@ -25,7 +25,7 @@ public class EmailScheduler {
         LocalDateTime executionDate = LocalDateTime.of(currentTime.getYear(),
                 currentTime.getMonth(),
                 currentTime.getDayOfMonth(),
-                8,0);
+                18,25);
         Logger.info("Email Reminder Service Started for - " + executionDate.getHour() + " : " + executionDate.getMinute());
         long initialDelay;
         if(currentTime.isAfter(executionDate)){
@@ -35,6 +35,12 @@ public class EmailScheduler {
         }
         long delay = TimeUnit.HOURS.toMillis(24); // repeat after 24 hours
         scheduler.scheduleWithFixedDelay(command, initialDelay, delay, TimeUnit.MILLISECONDS);
+
+        AppointmentsModel appointmentsModel = new AppointmentsDB().get("FPalrUSwLAbEOGBQbQtk").get();
+        HashMap<String, ArrayList<AppointmentsModel>> list = new HashMap<>();
+        list.computeIfAbsent(appointmentsModel.getStudentId(), k-> new ArrayList<>()).add(appointmentsModel);
+
+        mailerService.sendAppointmentReminder(list, "Student");
     }
     
     private class AppointmentEmailTask implements Runnable {
