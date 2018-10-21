@@ -2,6 +2,8 @@ package application_components.mailing;
 
 import application_components.mailing.templates.html.general;
 import models.AppointmentsModel;
+import models.SettingsModel;
+import application_components.Application;
 import models.GroupsModel;
 
 import java.util.ArrayList;
