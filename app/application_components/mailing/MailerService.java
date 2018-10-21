@@ -4,6 +4,7 @@ import application_components.Application;
 import com.google.inject.Inject;
 import controllers.SettingsController;
 import models.AppointmentsModel;
+import models.GroupsModel;
 import models.SettingsModel;
 import play.libs.mailer.Email;
 import play.libs.mailer.MailerClient;
@@ -96,6 +97,12 @@ public class MailerService {
                 .setFrom("TimeSlot <" + Application.getConfig().getString("play.mailer.user") + ">")
                 .addTo(appointment.getStudentName() + "<" + appointment.getStudentEmail() + ">")
                 .setBodyHtml(new EmailBuilder().appointmentCancellation(appointment, cancellationNotes));
+        mailerClient.send(email);
+    }
+
+    public void sendGroupAppointmentEmail(GroupsModel appointment){
+        SettingsModel settings = settingsController.getSettings();
+        Email email = new Email().setSubject("").setFrom("").addTo("").setBodyHtml("");
         mailerClient.send(email);
     }
 }
