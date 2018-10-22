@@ -1,0 +1,19 @@
+FROM foamcactus:time
+# Pull latest TimeSlot code from Master branch
+RUN git clone https://github.com/Burgundy-Labs/TimeSlot.git
+RUN cd TimeSlot && git checkout 1.5
+# Pull in this apps credentials + application files (from local storage)
+COPY ["application.conf", "TimeSlot/conf/application.conf"]
+COPY ["credentials.json", "TimeSlot/conf/credentials.json"]
+
+RUN \
+    cd TimeSlot && \
+    sbt update && \
+    sbt compile && \
+    sbt dist
+
+EXPOSE 9000 5005 9443 
+
+RUN unzip TimeSlot/target/universal/$APP_NAME-$APP_VERSION.zip
+RUN chmod +x $APP_NAME-$APP_VERSION/bin/$APP_NAME
+ENTRYPOINT $APP_NAME-$APP_VERSION/bin/$APP_NAME -Dhttps.port=9443 -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005

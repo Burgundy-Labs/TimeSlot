@@ -1,0 +1,10 @@
+#! /bin/bash
+if [[ "$(docker images -q burgundy/time:latest 2> /dev/null)" == "" ]]; then
+	./nginx/build
+fi
+
+if [[ "$(docker images -q burgundy/mynginx:latest 2> /dev/null)" == "" ]]; then
+	docker build -f nginx/Dockerfile --no-cache -t burgundy/mynginx nginx/
+fi
+docker build -f DockerfileStageTwo --no-cache -t burgundy/timeslot .
+
