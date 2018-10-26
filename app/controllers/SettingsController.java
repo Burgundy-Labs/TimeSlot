@@ -13,6 +13,8 @@ import play.mvc.Result;
 import javax.xml.bind.DatatypeConverter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -94,14 +96,6 @@ public class SettingsController extends BaseController {
             settings.setStartTime(startTime);
             settings.setEndTime(endTime);
             settings.setMaximumAppointments(json.findPath("maxAppointments").asInt());
-            boolean[] daysOfWeek = {json.findPath("sunday").asBoolean(),
-                    json.findPath("monday").asBoolean(),
-                    json.findPath("tuesday").asBoolean(),
-                    json.findPath("wednesday").asBoolean(),
-                    json.findPath("thursday").asBoolean(),
-                    json.findPath("friday").asBoolean(),
-                    json.findPath("saturday").asBoolean()};
-            settings.setDaysOpenWeekly(daysOfWeek);
             /* Check if user is in DB */
             settingsDB.addOrUpdate(settings);
             return ok();
@@ -156,5 +150,7 @@ public class SettingsController extends BaseController {
     public boolean getAppointmentTypeOneTime(String appointmentType) { return settingsDB.getAppointmentTypeByName(appointmentType).getOneTime(); }
 
     public boolean getAppointmentTypeWeekly(String appointmentType) { return settingsDB.getAppointmentTypeByName(appointmentType).getWeekly(); }
+
+
 
 }

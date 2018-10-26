@@ -3,6 +3,7 @@ package databases;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import models.AppointmentTypeModel;
+import models.DateTimeModel;
 import models.ServiceModel;
 import models.SettingsModel;
 
@@ -44,7 +45,6 @@ public class SettingsDB implements DBInterface<SettingsModel> {
         data.put("siteAlert", settings.getSiteAlert());
         data.put("centerInformation", settings.getCenterInformation());
         data.put("maximumAppointments", settings.getMaximumAppointments());
-        data.put("daysOpenWeekly", settings.getDaysOpenWeekly());
         /* Write settings to DB */
         ApiFuture<WriteResult> result = docRef.set(data);
         return result.isDone();
@@ -219,5 +219,57 @@ public class SettingsDB implements DBInterface<SettingsModel> {
             serviceModel.add(service);
         }
         return serviceModel;
+    }
+
+    public synchronized void addOpenDay(DateTimeModel day) {
+        DocumentReference docRef = FirestoreHandler.get().collection("settings").document("settings").collection("openDays").document();
+        Map<String, Object> data = new HashMap<>();
+        data.put("dow", day.getDOW());
+        data.put("start", day.getStart());
+        data.put("end", day.getEnd());
+        ApiFuture<WriteResult> result = docRef.set(data);
+        result.isDone();
+    }
+
+    public synchronized boolean removeOpenDay(DateTimeModel day) {
+        ApiFuture<WriteResult> writeResult = FirestoreHandler.get()
+                .collection("settings")
+                .document("settings")
+                .collection("openDays")
+                .document(day.getId()).delete();
+        try {
+            /* Verify that action is complete */
+            writeResult.get();
+            return writeResult.isDone();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public synchronized void addClosedDay(DateTimeModel day) {
+        DocumentReference docRef = FirestoreHandler.get().collection("settings").document("settings").collection("closedDays").document();
+        Map<String, Object> data = new HashMap<>();
+        data.put("dow", day.getDOW());
+        data.put("start", day.getStart());
+        data.put("end", day.getEnd());
+        ApiFuture<WriteResult> result = docRef.set(data);
+        result.isDone();
+    }
+
+    public synchronized boolean removeClosedDay(DateTimeModel day) {
+        ApiFuture<WriteResult> writeResult = FirestoreHandler.get()
+                .collection("settings")
+                .document("settings")
+                .collection("closedDays")
+                .document(day.getId()).delete();
+        try {
+            /* Verify that action is complete */
+            writeResult.get();
+            return writeResult.isDone();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

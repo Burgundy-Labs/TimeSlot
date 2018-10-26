@@ -260,8 +260,8 @@
                             start: moment('@settingsController.getSettings.getSemesterStart.toInstant').format("YYYY-MM-DD"),
                             end: moment('@settingsController.getSettings.getSemesterEnd.toInstant').format("YYYY-MM-DD")
                         },
-                        minTime: moment('@settingsController.getSettings.getStartTime.toInstant').format("HH:mm"),
-                        maxTime: moment('@settingsController.getSettings.getEndTime.toInstant').format("HH:mm"),
+                        minTime: "8:00",
+                        maxTime: "18:00",
                         events: function (start, end, timezone, callback) {
                             $.ajax({
                                 url: '/availableSlots/' + '@user.getUid' + '/' + moment(start).toISOString() + '/' + moment(end).toISOString(),
@@ -307,10 +307,29 @@
                                 eventElement.find("div.fc-content").prepend("<button onclick='removeAvailability(\"" + event.id + "\", \"" + event.weekly + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
                             }
                         },
-                        weekends: false,
+                        weekends: true,
                         selectable: true,
                         defaultView: 'agendaWeek',
                         navLinks: false,
+                        businessHours: [
+                            {
+                                dow: [ 1, 2, 3, 4, 5],
+                                start: "8:00",
+                                end: "17:00"
+                            },
+                            {
+                                dow: [0],
+                                start: "9:00",
+                                end: "15:00"
+                            },
+                            {
+                                dow: [0],
+                                start: "16:00",
+                                end: "18:00"
+                            }
+                        ],
+                        selectConstraint: "businessHours",
+                        eventOverlap: false,
                         eventLimit: false,
                         select: function (start, end, jsEvent, view) {
                             const newAvailability = {
