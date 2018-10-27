@@ -29,6 +29,7 @@ GET         /getUserByID/:ID                                                    
 GET         /User/:ID                                                            controllers.UserController.userPage(ID: String)
 GET         /getAppointmentById/:userId/:appointmentId                           controllers.AppointmentsController.getAppointmentById(userId: String, appointmentId: String)
 GET         /Groups                                                              controllers.GroupsController.index
+GET         /getOpenDays                                                         controllers.SettingsController.getOpenDays()
 
 # POST requests
 POST        /signedIn                                                            controllers.LoginController.signedIn()
@@ -54,5 +55,8 @@ POST        /changeSiteAlert                                                    
 POST        /changeCenterInformation                                             controllers.SettingsController.changeCenterInformation()
 POST        /isCoachChecked                                                      controllers.UserController.isCoach()
 POST        /cancelWeeklyAppointment                                             controllers.AppointmentsController.cancelWeeklyAppointment()
+POST        /createOpenDay                                                       controllers.SettingsController.createOpenDay()
+POST        /removeOpenDay                                                       controllers.SettingsController.removeOpenDay()
+
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                                        controllers.Assets.at(path="/public", file)

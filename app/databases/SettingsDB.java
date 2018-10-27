@@ -6,6 +6,7 @@ import models.AppointmentTypeModel;
 import models.DateTimeModel;
 import models.ServiceModel;
 import models.SettingsModel;
+import org.joda.time.DateTime;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -221,22 +222,46 @@ public class SettingsDB implements DBInterface<SettingsModel> {
         return serviceModel;
     }
 
+    public synchronized List<DateTimeModel> getOpenDays() {
+        List<DateTimeModel> dateModels = new ArrayList<>();
+        ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("settings").document("settings").collection("openDays").get();
+        QuerySnapshot querySnapshot = null;
+        try {
+            querySnapshot = query.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        assert querySnapshot != null;
+        List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
+        for (DocumentSnapshot document : documents) {
+            DateTimeModel model = new DateTimeModel(
+                    Integer.parseInt(document.get("dow").toString()),
+                    document.getDate("start"),
+                    document.getDate("end"),
+                    document.getId()
+            );
+            dateModels.add(model);
+        }
+        return dateModels;
+    }
+
     public synchronized void addOpenDay(DateTimeModel day) {
         DocumentReference docRef = FirestoreHandler.get().collection("settings").document("settings").collection("openDays").document();
         Map<String, Object> data = new HashMap<>();
         data.put("dow", day.getDOW());
         data.put("start", day.getStart());
         data.put("end", day.getEnd());
+        data.put("id", docRef.getId());
         ApiFuture<WriteResult> result = docRef.set(data);
         result.isDone();
     }
 
-    public synchronized boolean removeOpenDay(DateTimeModel day) {
+    public synchronized boolean removeOpenDay(String id) {
         ApiFuture<WriteResult> writeResult = FirestoreHandler.get()
                 .collection("settings")
                 .document("settings")
                 .collection("openDays")
-                .document(day.getId()).delete();
+                .document(id).delete();
         try {
             /* Verify that action is complete */
             writeResult.get();
@@ -253,6 +278,7 @@ public class SettingsDB implements DBInterface<SettingsModel> {
         data.put("dow", day.getDOW());
         data.put("start", day.getStart());
         data.put("end", day.getEnd());
+        data.put("id", docRef.getId());
         ApiFuture<WriteResult> result = docRef.set(data);
         result.isDone();
     }

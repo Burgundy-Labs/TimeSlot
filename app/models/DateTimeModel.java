@@ -9,10 +9,17 @@ public class DateTimeModel {
     private String id;
     private boolean allDay;
 
+    public DateTimeModel(int dow, Date start, Date end) {
+        this.dow = dow;
+        this.start = start;
+        this.end = end;
+    }
+
     public DateTimeModel(int dow, Date start, Date end, String id) {
         this.dow = dow;
         this.start = start;
         this.end = end;
+        this.id = id;
     }
 
     public DateTimeModel(int dow, Date start, Date end, String id, boolean allDay) {

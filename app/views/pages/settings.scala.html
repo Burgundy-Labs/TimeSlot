@@ -240,18 +240,23 @@
                 Coming soon! Check back in a future update to change email related settings.
             </div>
             <div class="tab-pane fade" id="daysContent" role="tabpanel" aria-labelledby="daysTab">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>Semester Dates and Times</h4>
-                        </div>
-                        <div class="card-body row">
-                            <p>Current Semester:</p>
-                            <select> </select>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>Semester Dates and Times</h4>
+                            </div>
+                            <div class="card-body row">
+                                <label for="currentSemester">Current Semester:</label>
+                                <select id="currentSemester" name="currentSemester">
+                                    <option>Fall 2018</option>
+                                    <option>Spring 2019</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="row col-md-12">
+                <div class="row">
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-header">
@@ -658,7 +663,46 @@
                     allDaySlot: false,
                     columnFormat: 'dddd',
                     selectable: true,
-                    editable: false
+                    editable: false,
+                    eventSources: [{
+                        events: function(start, end, timezone, callback) {
+                            const events = [];
+                            $.ajax({
+                                url: '/getOpenDays',
+                                type: 'GET',
+                                success: function (response) {
+                                    $(response).each(function () {
+                                        const event = {
+                                            id: $(this).attr('id'),
+                                            start: moment($(this).attr('startDate')),
+                                            end: moment($(this).attr('endDate')),
+                                            dow: [$(this).attr('dow')]
+                                        }
+                                        events.push(event);
+                                    });
+                                    callback(events);
+                                }
+                            });
+                        }
+                    }],
+                    select: function (start, end, jsEvent, view) {
+                        const newOpenDay = {
+                            start: start,
+                            end: end
+                        };
+                        $.ajax({
+                            url: '/createOpenDay',
+                            type: 'POST',
+                            data: JSON.stringify(newOpenDay),
+                            contentType: 'application/json',
+                            success: function () {
+                                createAlert("success", "Open Times Created")
+                            },
+                            error: function () {
+                                createAlert("danger", "Open Times Creation Failed")
+                            }
+                        });
+                    }
                 });
             }
     </script>

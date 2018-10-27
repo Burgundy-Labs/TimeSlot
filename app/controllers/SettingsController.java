@@ -4,14 +4,17 @@ import application_components.annotations.Authenticate;
 import com.fasterxml.jackson.databind.JsonNode;
 import databases.SettingsDB;
 import models.AppointmentTypeModel;
+import models.DateTimeModel;
 import models.ServiceModel;
 import models.SettingsModel;
 import play.cache.Cached;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
 import javax.xml.bind.DatatypeConverter;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -144,6 +147,33 @@ public class SettingsController extends BaseController {
         JsonNode json = request().body().asJson();
         String serviceId = json.findPath("serviceId").asText();
         settingsDB.removeService(serviceId);
+        return ok();
+    }
+
+    public Result getOpenDays() { return ok(Json.toJson(settingsDB.getOpenDays())); }
+
+    @Authenticate(role="Admin")
+    public Result createOpenDay() {
+        DateFormat format = new SimpleDateFormat("HH:mm");
+        JsonNode json = request().body().asJson();
+        int dow = json.findPath("dow").asInt();
+        try {
+            Date start = SimpleDateFormat. json.findPath("start").asText();
+            Date start = format.parse(json.findPath("start").asText());
+            Date end = format.parse(json.findPath("end").asText());
+            DateTimeModel openDay = new DateTimeModel(dow, start, end);
+            settingsDB.addOpenDay(openDay);
+            return ok();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return notAcceptable();
+        }
+    }
+
+    @Authenticate(role="Admin")
+    public Result removeOpenDay() {
+        JsonNode json = request().body().asJson();
+        settingsDB.removeOpenDay(json.findPath("id").asText());
         return ok();
     }
 
