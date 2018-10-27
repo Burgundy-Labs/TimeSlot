@@ -313,6 +313,11 @@
                         navLinks: false,
                         eventLimit: false,
                         select: function (start, end, jsEvent, view) {
+                            // Prevent past selection
+                            if(start.isBefore(moment())) {
+                                availabilitySchedule.fullCalendar('unselect');
+                                return false;
+                            }
                             const newAvailability = {
                                 userId: '@user.getUid',
                                 startDate: moment(start).format(),

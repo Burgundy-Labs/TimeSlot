@@ -74,7 +74,11 @@
                 offsetTop: 0,
                 offsetBottom: 0,
                 onOpenBefore: function() {
-                    TinyDatePicker('#appointmentDay');
+                    let appointmentDatePicker = TinyDatePicker('#appointmentDay');
+                    appointmentDatePicker.on('statechange', (_, picker) => {
+                        createMakeAppointmentCalendar();
+                    });
+
                     let wizard = $('#scheduleWizard');
                     wizard.smartWizard({
                         selected: 0,
