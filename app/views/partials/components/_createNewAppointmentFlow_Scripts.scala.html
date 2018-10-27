@@ -1,7 +1,15 @@
-@userController = @{new UserController()}
-@settingsController = @{new SettingsController()}
-@currentUser = @{userController.getCurrentUser}
-@currentSettings = @{settingsController.getSettings}
+    @userController = @{
+        new UserController()
+    }
+        @settingsController = @{
+        new SettingsController()
+    }
+        @currentUser = @{
+        userController.getCurrentUser
+    }
+        @currentSettings = @{
+        settingsController.getSettings
+    }
 
     <script type="text/javascript">
             let appointmentCalendar = $('#newAppointmentCalendar');
@@ -44,7 +52,7 @@
 
             /* Setup listener to detect changes */
             $(document).on("change", "#coachId", function (e) {
-                createMakeAppointmentCalendar();
+                appointmentCalendar.fullCalendar('refetchEvents');
             });
 
             function createMakeAppointmentCalendar() {
@@ -93,16 +101,8 @@
                                             isWeekly: $(this).attr("weekly")
 
                                         };
-                                        if ( event.isWeekly && appTypeWeekly ) {
-                                            event.canBeWeekly = true;
-                                        } else {
-                                            event.canBeWeekly = false;
-                                        }
-                                        if ( appTypeOneTime ) {
-                                            event.canBeOneTime = true;
-                                        } else {
-                                            event.canBeOneTime = false;
-                                        }
+                                        event.canBeWeekly = event.isWeekly && appTypeWeekly;
+                                        event.canBeOneTime = appTypeOneTime;
                                         if ($(this).attr("isWeekly") === true) {
                                             event.title = "Weekly";
                                             event.dow = [moment($(this).attr('startDate')).isoWeekday()];
@@ -246,6 +246,7 @@
                             }
                         },
                         selectOverlap: function (event) {
+                            console.log(event);
                             return event.rendering === 'background';
                         }
                     });
@@ -313,38 +314,38 @@
                             appointmentId: appointment.availabilityId
                         };
                         // Check if we're scheduling for someone else
-                        if(scheduleUser !== undefined && scheduleUser.userId !== undefined && scheduleUser !== null && scheduleUser.userId !== null) {
+                        if (scheduleUser !== undefined && scheduleUser.userId !== undefined && scheduleUser !== null && scheduleUser.userId !== null) {
                             form.studentId = scheduleUser.userId;
                         }
                         $.confirm({
                             columnClass: "col-md-12",
                             title: 'Appointment Details',
                             content: "<div class='container-fluid'>" +
-                            "<div class='row row-eq-height col-12'>" +
-                            "<div class='appointmentCard mb-2 col-md-5'><div class='top'><h3>Type</h3></div><div class='bottom'><h4>" + appointmentType + "</h4></div></div><br/>" +
-                            "<div class='appointmentCard mb-2 col-md-5'><div class='top'><h3>Service</h3></div><div class='bottom'><h4>" + service + "</h4></div></div><br/>" +
-                            "</div>" +
-                            "<hr/>" +
-                            "<div class='row row-eq-height col-12'>" +
-                            "<div class='appointmentCard mb-2 col-md-5'><div class='top'><h3>Coach</h3></div><div class='bottom'><h4>" + coachName + "</h4></div></div><br/>" +
-                            "<div class='appointmentCard mb-2 col-md-5'>" +
-                            "<div class='top'>" +
-                            "<h3>" +
-                            moment(appointment.startDate).format('dddd MMMM Do') +
-                            "</h3>" +
-                            "</div>" +
-                            "<div class='bottom'>" +
-                            "<div class='row'>" +
-                            "<h4 class='col-md-12'>" +
-                            moment(appointment.startDate).format('h:mm A') +
-                            " - " +
-                            moment(appointment.endDate).format('h:mm A') +
-                            "</h4>" +
-                            "</div>" +
-                            "</div>" +
-                            "</div>" +
-                            "</div>" +
-                            "</div>",
+                                    "<div class='row row-eq-height col-12'>" +
+                                    "<div class='appointmentCard mb-2 col-md-5'><div class='top'><h3>Type</h3></div><div class='bottom'><h4>" + appointmentType + "</h4></div></div><br/>" +
+                                    "<div class='appointmentCard mb-2 col-md-5'><div class='top'><h3>Service</h3></div><div class='bottom'><h4>" + service + "</h4></div></div><br/>" +
+                                    "</div>" +
+                                    "<hr/>" +
+                                    "<div class='row row-eq-height col-12'>" +
+                                    "<div class='appointmentCard mb-2 col-md-5'><div class='top'><h3>Coach</h3></div><div class='bottom'><h4>" + coachName + "</h4></div></div><br/>" +
+                                    "<div class='appointmentCard mb-2 col-md-5'>" +
+                                    "<div class='top'>" +
+                                    "<h3>" +
+                                    moment(appointment.startDate).format('dddd MMMM Do') +
+                                    "</h3>" +
+                                    "</div>" +
+                                    "<div class='bottom'>" +
+                                    "<div class='row'>" +
+                                    "<h4 class='col-md-12'>" +
+                                    moment(appointment.startDate).format('h:mm A') +
+                                    " - " +
+                                    moment(appointment.endDate).format('h:mm A') +
+                                    "</h4>" +
+                                    "</div>" +
+                                    "</div>" +
+                                    "</div>" +
+                                    "</div>" +
+                                    "</div>",
                             theme: 'modern',
                             escapeKey: 'no',
                             buttons: {
