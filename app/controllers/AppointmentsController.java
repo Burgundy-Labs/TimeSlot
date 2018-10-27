@@ -15,6 +15,8 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 import javax.xml.bind.DatatypeConverter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -305,9 +307,9 @@ public class AppointmentsController extends BaseController {
     }
 
     @Authenticate
-    public Result availableSlotsForAppointments(String coachId, String start, String end, String service) {
-        Date startDate = DatatypeConverter.parseDateTime(start).getTime();
-        Date endDate = DatatypeConverter.parseDateTime(end).getTime();
+    public Result availableSlotsForAppointments(String coachId, String start, String end, String service) throws ParseException {
+        Date startDate = new SimpleDateFormat("MM-dd-yyyy").parse(start);
+        Date endDate = new SimpleDateFormat("MM-dd-yyyy").parse(end);
         Calendar calEnd = Calendar.getInstance();
         calEnd.setTime(endDate);
         calEnd.set(Calendar.HOUR_OF_DAY, 24);
@@ -326,9 +328,9 @@ public class AppointmentsController extends BaseController {
 
 
     @Authenticate
-    public Result appointmentsForUser(String role, String userId, String start, String end) {
-        Date startDate = DatatypeConverter.parseDateTime(start).getTime();
-        Date endDate = DatatypeConverter.parseDateTime(end).getTime();
+    public Result appointmentsForUser(String role, String userId, String start, String end) throws ParseException {
+        Date startDate = new SimpleDateFormat("MM-dd-yyyy").parse(start);
+        Date endDate = new SimpleDateFormat("MM-dd-yyyy").parse(end);
         Calendar endb = Calendar.getInstance();
         endb.setTime(endDate);
         endb.set(Calendar.HOUR_OF_DAY, 24);

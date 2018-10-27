@@ -51,8 +51,7 @@
                 if ($("#calendarContainer").is(':visible')) { //if the container is visible on the page
                     /* if calendar exists - refresh events */
                     appointmentCalendar = $('#newAppointmentCalendar');
-                    let appointmentDay = moment($("#appointmentDay").val(), "MM/DD/YYY");
-
+                    let appointmentDay = $("#appointmentDay").val().replace(/\//g, "-");
                     if ($('#newAppointmentCalendar>*').length !== 0) {
                         appointmentCalendar.fullCalendar('refetchEvents');
                         return;
@@ -67,20 +66,19 @@
                         allDaySlot: false,
                         defaultView: 'agendaDay',
                         editable: false,
-                        weekends: false,
+                        weekends: true,
                         selectable: true,
                         selectLongPressDelay: 0,
                         minTime: moment('@currentSettings.getStartTime.toInstant').format("HH:mm"),
                         maxTime: moment('@currentSettings.getEndTime.toInstant').format("HH:mm"),
-                        start: moment(appointmentDay).startOf("day"),
-                        end: moment(appointmentDay).endOf("day"),
+                        defaultDate: moment(appointmentDay, "MM-DD-YYY"),
                         events: function (start, end, timezone, callback) {
-                            startDateTime = appointmentDay.startOf('week').toISOString();
-                            endDateTime = appointmentDay.endOf('week').toISOString();
+                            startDateTime = moment(appointmentDay, "MM-DD-YYY").startOf('week').format("MM-DD-YYY");
+                            endDateTime = moment(appointmentDay, "MM-DD-YYY").endOf('week').format("MM-DD-YYY");
                             const coachId = $("#coachId").find(":selected").val();
                             const service = $("#serviceType").find(":selected").val();
                             $.ajax({
-                                url: '/availableSlotsForAppointments/' + coachId + '/' + appointmentDay.startOf('day').toISOString() + '/' + appointmentDay.endOf('day').toISOString() + '/' + service,
+                                url: '/availableSlotsForAppointments/' + coachId + '/' + start.format("MM-DD-YYYY") + '/' + start.format("MM-DD-YYYY") + '/' + service,
                                 type: 'GET',
                                 success: function (response) {
                                     const events = [];
@@ -254,10 +252,7 @@
                         selectOverlap: function (event) {
                             return event.rendering === 'background';
                         }
-                    });
-                    if ((new Date()).getDay() === 6) {
-                        appointmentCalendar.fullCalendar('next');
-                    }
+                    })
                 } else {
                     setTimeout(createMakeAppointmentCalendar, 500); //wait 50 ms, then try again
                 }
