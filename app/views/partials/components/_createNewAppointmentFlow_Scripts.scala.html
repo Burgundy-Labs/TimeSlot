@@ -68,6 +68,7 @@
                         minTime: moment('@currentSettings.getStartTime.toInstant').format("HH:mm"),
                         maxTime: moment('@currentSettings.getEndTime.toInstant').format("HH:mm"),
                         events: function (start, end, timezone, callback) {
+                            $("#appointmentDay").val(start.format("MM/DD/YYYY"));
                             startDateTime = moment(appointmentDay, "MM-DD-YYYY").startOf('week').format("MM-DD-YYYY");
                             endDateTime = moment(appointmentDay, "MM-DD-YYYY").endOf('week').format("MM-DD-YYYY");
                             const coachId = $("#coachId").find(":selected").val();
