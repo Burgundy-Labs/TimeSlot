@@ -71,10 +71,9 @@
                         selectLongPressDelay: 0,
                         minTime: moment('@currentSettings.getStartTime.toInstant').format("HH:mm"),
                         maxTime: moment('@currentSettings.getEndTime.toInstant').format("HH:mm"),
-                        defaultDate: moment(appointmentDay, "MM-DD-YYY"),
                         events: function (start, end, timezone, callback) {
-                            startDateTime = moment(appointmentDay, "MM-DD-YYY").startOf('week').format("MM-DD-YYY");
-                            endDateTime = moment(appointmentDay, "MM-DD-YYY").endOf('week').format("MM-DD-YYY");
+                            startDateTime = moment(appointmentDay, "MM-DD-YYYY").startOf('week').format("MM-DD-YYYY");
+                            endDateTime = moment(appointmentDay, "MM-DD-YYYY").endOf('week').format("MM-DD-YYYY");
                             const coachId = $("#coachId").find(":selected").val();
                             const service = $("#serviceType").find(":selected").val();
                             $.ajax({
@@ -252,7 +251,8 @@
                         selectOverlap: function (event) {
                             return event.rendering === 'background';
                         }
-                    })
+                    });
+                    appointmentCalendar.fullCalendar('gotoDate', moment($("#appointmentDay").val().replace(/\//g, "-"), "MM-DD-YYYY"));
                 } else {
                     setTimeout(createMakeAppointmentCalendar, 500); //wait 50 ms, then try again
                 }
