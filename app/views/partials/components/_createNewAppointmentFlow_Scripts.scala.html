@@ -72,8 +72,8 @@
                         selectLongPressDelay: 0,
                         minTime: moment('@currentSettings.getStartTime.toInstant').format("HH:mm"),
                         maxTime: moment('@currentSettings.getEndTime.toInstant').format("HH:mm"),
-                        start: moment(appointmentDay),
-                        end: moment(appointmentDay),
+                        start: moment(appointmentDay).startOf("day"),
+                        end: moment(appointmentDay).endOf("day"),
                         events: function (start, end, timezone, callback) {
                             startDateTime = moment(start).toISOString();
                             endDateTime = moment(end).toISOString();
