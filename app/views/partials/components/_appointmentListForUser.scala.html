@@ -117,9 +117,9 @@ function updateDate() {
     table.draw();
     $.ajax({
         @if(currentUser.getRole.equals("Admin") && readAll){
-        url: '/appointmentsByDate/@userRole/@userId/' + moment(selectedDate).format("MMM-DD-YYYY") + '/' + moment(endDate).format("MMM-DD-YYYY"),
+        url: '/appointmentsByDate/@userRole/@userId/' + moment(selectedDate).format("MM-DD-YYYY") + '/' + moment(endDate).format("MM-DD-YYYY"),
         } else {
-        url: '/appointmentsForUser/@userRole/@userId/' + moment(selectedDate).format("MMM-DD-YYYY") + '/' + moment(endDate).format("MMM-DD-YYYY"),
+        url: '/appointmentsForUser/@userRole/@userId/' + moment(selectedDate).format("MM-DD-YYYY") + '/' + moment(endDate).format("MM-DD-YYYY"),
         }
         type: 'GET',
         success: function (response) {
