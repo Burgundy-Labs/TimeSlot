@@ -356,7 +356,6 @@
                                         if (form.coachId === "any") {
                                             form.appointmentId = appointment.oneTimeUsers[Math.floor(Math.random() * appointment.oneTimeUsers.length)];
                                         }
-                                        /!* Create appointment Here*!/
                                         $.ajax({
                                             url: '/createAppointment',
                                             type: 'POST',
@@ -380,7 +379,6 @@
                                         if (form.coachId === "any") {
                                             form.appointmentId = appointment.weeklyUsers[Math.floor(Math.random() * appointment.weeklyUsers.length)];
                                         }
-                                        /!* Create appointment Here*!/
                                         $.ajax({
                                             url: '/createAppointment',
                                             type: 'POST',
