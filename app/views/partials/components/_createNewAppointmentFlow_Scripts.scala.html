@@ -19,6 +19,7 @@
             let endDateTime;
             let coachAvailable;
             let studentId = null;
+            let splitEvents = [];
 
 
             $(document).ready(function () {
@@ -76,6 +77,7 @@
                         minTime: moment('@currentSettings.getStartTime.toInstant').format("HH:mm"),
                         maxTime: moment('@currentSettings.getEndTime.toInstant').format("HH:mm"),
                         events: function (start, end, timezone, callback) {
+                            splitEvents = []; // clear split events until they're all created
                             $("#appointmentDay").val(start.format("MM/DD/YYYY"));
                             startDateTime = moment(appointmentDay, "MM-DD-YYYY").startOf('week').format("MM-DD-YYYY");
                             endDateTime = moment(appointmentDay, "MM-DD-YYYY").endOf('week').format("MM-DD-YYYY");
@@ -92,22 +94,18 @@
                                     $(response).each(function () {
                                         const event = {
                                             availabilityId: $(this).attr('appointmentId'),
+                                            coachId: $(this).attr("coachId"),
                                             title: "One-Time",
                                             start: moment($(this).attr('startDate')),
                                             end: moment($(this).attr('endDate')),
-                                            dow: [moment($(this).attr('startDate')).isoWeekday()],
                                             rendering: 'background',
                                             backgroundColor: "#FFDE5C",
                                             isWeekly: $(this).attr("weekly")
-
                                         };
                                         event.canBeWeekly = event.isWeekly && appTypeWeekly;
                                         event.canBeOneTime = appTypeOneTime;
                                         if ($(this).attr("isWeekly") === true) {
                                             event.title = "Weekly";
-                                            event.dow = [moment($(this).attr('startDate')).isoWeekday()];
-                                            event.start = moment($(this).attr('startDate')).format("HH:mm");
-                                            event.end = moment($(this).attr('endDate')).format("HH:mm");
                                             if (event.canBeWeekly) {
                                                 event.backgroundColor = "#007AFF";
                                             }
@@ -130,16 +128,52 @@
                                                 event.canBeOneTime = false;
                                             }
                                         }
-                                        if (!appTypeWeekly && !appTypeOneTime) {
-                                            event.backgroundColor = "#000000";
-                                        }
-                                        if (event.backgroundColor !== "#000000") {
-                                            events.push(event);
-                                        }
+
+                                        const eventSpan = moment.range(event.start, event.end); // Get range of event start + end
+                                        const split_starts = Array.from(eventSpan.by('minutes', {step: 30})); // Split into 30-min increments
+                                        split_starts.splice(-1,1); // Remove last 30min split
+                                        console.log(split_starts.toString());
+
+                                        split_starts.forEach(function(element) {
+                                            let found = false;
+                                            for(let i = 0; i < splitEvents.length; i++) {
+                                                if (splitEvents[i].start == element ) {
+                                                    let thisEvent = splitEvents[i];
+                                                    if(thisEvent.weeklyCoaches.length !== 0 && thisEvent.oneTimeCoaches.length !== 0) {
+                                                        thisEvent.backgroundColor = "#1DC570";
+                                                    } else if(thisEvent.weeklyCoaches.length !== 0) {
+                                                        thisEvent.backgroundColor = "#007AFF";
+                                                    } else if (thisEvent.oneTimeCoaches.length !== 0) {
+                                                        thisEvent.backgroundColor = "#007AFF";
+                                                    } else {
+                                                        break;
+                                                    }
+                                                    if(event.canBeOneTime){
+                                                        thisEvent.oneTimeCoaches.push(event.coachId);
+                                                    }
+                                                    if(event.canBeWeekly) {
+                                                        thisEvent.weeklyCoaches.push(event.coachId);
+                                                    }
+                                                    found = true;
+                                                    break;
+                                                }
+                                            }
+                                            if(!found) {
+                                                let new_event = jQuery.extend(true, {}, event);
+                                                new_event.start = element;
+                                                new_event.end = element.add(30, 'minutes');
+                                                new_event.weeklyCoaches = [];
+                                                new_event.oneTimeCoaches = [];
+                                                if(event.canBeOneTime) new_event.oneTimeCoaches.push(event.coachId);
+                                                if(event.canBeWeekly) new_event.weeklyCoaches.push(event.coachId);
+                                                splitEvents.push(new_event);
+                                            }
+                                        });
                                     });
-                                    callback(events);
+                                    callback(splitEvents);
                                 }
-                            })
+                            });
+
                         },
                         viewRender: function (currentView) {
                             let minDate = moment();
