@@ -87,7 +87,7 @@
                                 url: '/availableSlotsForAppointments/' + coachId + '/' + start.format("MM-DD-YYYY") + '/' + start.format("MM-DD-YYYY") + '/' + service,
                                 type: 'GET',
                                 success: function (response) {
-                                    const events = [];
+                                    splitEvents = [];
                                     let appointmentType = $('#appointmentType');
                                     let appTypeOneTime = appointmentType.find('option:selected').attr('data-oneTime') === "true";
                                     let appTypeWeekly = appointmentType.find('option:selected').attr('data-weekly') === "true";
@@ -129,16 +129,15 @@
                                             }
                                         }
 
-                                        const eventSpan = moment.range(event.start, event.end); // Get range of event start + end
-                                        const split_starts = Array.from(eventSpan.by('minutes', {step: 30})); // Split into 30-min increments
+                                        let eventSpan = moment.range(event.start, event.end); // Get range of event start + end
+                                        let split_starts = Array.from(eventSpan.by('minutes', {step: 30})); // Split into 30-min increments
                                         split_starts.splice(-1,1); // Remove last 30min split
-                                        console.log(split_starts.toString());
 
-                                        split_starts.forEach(function(element) {
+                                        split_starts.forEach(function(startTime) {
                                             let found = false;
                                             for(let i = 0; i < splitEvents.length; i++) {
-                                                if (splitEvents[i].start == element ) {
-                                                    let thisEvent = splitEvents[i];
+                                                let thisEvent = splitEvents[i];
+                                                if (moment(thisEvent.start).isSame(startTime)) {
                                                     if(thisEvent.weeklyCoaches.length !== 0 && thisEvent.oneTimeCoaches.length !== 0) {
                                                         thisEvent.backgroundColor = "#1DC570";
                                                     } else if(thisEvent.weeklyCoaches.length !== 0) {
@@ -160,8 +159,8 @@
                                             }
                                             if(!found) {
                                                 let new_event = jQuery.extend(true, {}, event);
-                                                new_event.start = element;
-                                                new_event.end = element.add(30, 'minutes');
+                                                new_event.start = startTime;
+                                                new_event.end = startTime.add(30, 'minutes');
                                                 new_event.weeklyCoaches = [];
                                                 new_event.oneTimeCoaches = [];
                                                 if(event.canBeOneTime) new_event.oneTimeCoaches.push(event.coachId);
@@ -280,7 +279,6 @@
                             }
                         },
                         selectOverlap: function (event) {
-                            console.log(event);
                             return event.rendering === 'background';
                         }
                     });
