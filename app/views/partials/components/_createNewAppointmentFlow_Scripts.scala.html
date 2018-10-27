@@ -51,6 +51,7 @@
                 if ($("#calendarContainer").is(':visible')) { //if the container is visible on the page
                     /* if calendar exists - refresh events */
                     appointmentCalendar = $('#newAppointmentCalendar');
+                    let appointmentDay = $("#appointmentDay").val();
 
                     if ($('#newAppointmentCalendar>*').length !== 0) {
                         appointmentCalendar.fullCalendar('refetchEvents');
@@ -71,15 +72,15 @@
                         selectLongPressDelay: 0,
                         minTime: moment('@currentSettings.getStartTime.toInstant').format("HH:mm"),
                         maxTime: moment('@currentSettings.getEndTime.toInstant').format("HH:mm"),
-                        start: moment($("#appointmentDay").val()),
-                        end: moment($("#appointmentDay").val()),
+                        start: moment(appointmentDay),
+                        end: moment(appointmentDay),
                         events: function (start, end, timezone, callback) {
                             startDateTime = moment(start).toISOString();
                             endDateTime = moment(end).toISOString();
                             const coachId = $("#coachId").find(":selected").val();
                             const service = $("#serviceType").find(":selected").val();
                             $.ajax({
-                                url: '/availableSlotsForAppointments/' + coachId + '/' + moment(start).toISOString() + '/' + moment(end).toISOString() + '/' + service,
+                                url: '/availableSlotsForAppointments/' + coachId + '/' + moment(appointmentDay).toISOString() + '/' + moment(appointmentDay).toISOString() + '/' + service,
                                 type: 'GET',
                                 success: function (response) {
                                     const events = [];
