@@ -74,8 +74,8 @@
                 offsetTop: 0,
                 offsetBottom: 0,
                 onOpenBefore: function() {
+                    TinyDatePicker('#appointmentDay');
                     let wizard = $('#scheduleWizard');
-                    $('#datePicker').val(new moment().format("YYYY-MM-DD"));
                     wizard.smartWizard({
                         selected: 0,
                         theme: "dots",
