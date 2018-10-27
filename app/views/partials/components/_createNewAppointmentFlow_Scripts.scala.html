@@ -89,19 +89,27 @@
                                     let appTypeWeekly = appointmentType.find('option:selected').attr('data-weekly') === "true";
                                     $(response).each(function () {
                                         const event = {
-                                            availabilityId: $(this).attr('availabilityId'),
+                                            availabilityId: $(this).attr('appointmentId'),
                                             title: "One-Time",
                                             start: moment($(this).attr('startDate')),
                                             end: moment($(this).attr('endDate')),
                                             dow: [moment($(this).attr('startDate')).isoWeekday()],
                                             rendering: 'background',
                                             backgroundColor: "#FFDE5C",
-                                            canBeWeekly: $(this).attr("canBeWeekly"),
-                                            canBeOneTime: $(this).attr("canBeOneTime"),
-                                            oneTimeUsers: $(this).attr("oneTimeUsers"),
-                                            weeklyUsers: $(this).attr("weeklyUsers")
+                                            isWeekly: $(this).attr("weekly")
+
                                         };
-                                        if ($(this).attr("weekly") === true) {
+                                        if ( event.isWeekly && appTypeWeekly ) {
+                                            event.canBeWeekly = true;
+                                        } else {
+                                            event.canBeWeekly = false;
+                                        }
+                                        if ( appTypeOneTime ) {
+                                            event.canBeOneTime = true;
+                                        } else {
+                                            event.canBeOneTime = false;
+                                        }
+                                        if ($(this).attr("isWeekly") === true) {
                                             event.title = "Weekly";
                                             event.dow = [moment($(this).attr('startDate')).isoWeekday()];
                                             event.start = moment($(this).attr('startDate')).format("HH:mm");
