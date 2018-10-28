@@ -1,4 +1,4 @@
-version: '3'
+version: '3.2'
 
 services:
   web:
@@ -13,13 +13,11 @@ services:
 
   nginx:
     restart: always
-    image: nginx
-    hostname: localhost
+    image: nginx:stable-alpine
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /nginx:/etc/nginx:ro
-      - ./letsencrypt/conf:/etc/letsencrypt
-      - ./letsencrypt/html:/tmp/letsencrypt
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /usr/share/nginx/html:/usr/share/nginx/html
+      - ${PWD}/nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - 80:80
       - 443:443
@@ -30,24 +28,6 @@ services:
           cpus: "0.5"
     networks:
       - webnet
-  letsencrypt:
-    restart: always
-    image: kvaps/letsencrypt-webroot
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./letsencrypt/conf:/etc/letsencrypt
-      - ./letsencrypt/html:/tmp/letsencrypt
-    environment:
-      - DOMAINS=127.0.0.1
-      - EMAIL=cahill@mtu.edu
-      - WEBROOT_PATH=/tmp/letsencrypt
-      - EXP_LIMIT=30
-      - CHECK_FREQ=30
-
-
-
-
 
 networks:
   webnet:
