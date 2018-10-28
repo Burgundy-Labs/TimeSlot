@@ -387,7 +387,7 @@
                                     action: function () {
                                         form.weekly = false;
                                         if (form.coachId === "any") {
-                                            form.appointmentId = appointment.oneTimeCoaches[Math.floor(Math.random() * appointment.oneTimeCoaches.length)];
+                                            form.coachId = appointment.oneTimeCoaches[Math.floor(Math.random() * appointment.oneTimeCoaches.length)];
                                         }
                                         $.ajax({
                                             url: '/createAppointment',
@@ -410,7 +410,7 @@
                                     action: function () {
                                         form.weekly = true;
                                         if (form.coachId === "any") {
-                                            form.appointmentId = appointment.weeklyCoaches[Math.floor(Math.random() * appointment.weeklyCoaches.length)];
+                                            form.coachId = appointment.weeklyCoaches[Math.floor(Math.random() * appointment.weeklyCoaches.length)];
                                         }
                                         $.ajax({
                                             url: '/createAppointment',
