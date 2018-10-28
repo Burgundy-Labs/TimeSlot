@@ -84,7 +84,7 @@
                 </div>
             </div>
         </div>
-        </div>
+    </div>
 
     <script type="text/javascript">
             let reportStart = $('#reportStart');
@@ -100,16 +100,16 @@
             });
 
             function makePropertyChart(property, chartId) {
-                let labels = appointmentList.map(a => a[property]).reduce(function(a,b) {
-                    if(a.indexOf(b) < 0) a.push(b);
+                let labels = appointmentList.map(a => a[property]).reduce(function (a, b) {
+                    if (a.indexOf(b) < 0) a.push(b);
                     return a;
                 }, []);
                 let data = [];
                 let appointmentData = appointmentList.map(a => a[property]);
-                for(let i = 0; i < appointmentData.length; i++ ) {
+                for (let i = 0; i < appointmentData.length; i++) {
                     for (let j = 0; j < labels.length; j++) {
-                        if(appointmentData[i] === labels[j]){
-                            if(data[j] === undefined) {
+                        if (appointmentData[i] === labels[j]) {
+                            if (data[j] === undefined) {
                                 data[j] = 0;
                             } else {
                                 data[j]++;
@@ -135,16 +135,16 @@
             }
 
             function makeDateChart() {
-                let labels = appointmentList.map(a => moment(a["startDate"]).format('MM/DD/YYYY')).reduce(function(a,b) {
-                    if(a.indexOf(b) < 0) a.push(b);
+                let labels = appointmentList.map(a => moment(a["startDate"]).format('MM/DD/YYYY')).reduce(function (a, b) {
+                    if (a.indexOf(b) < 0) a.push(b);
                     return a;
                 }, []);
                 let data = [];
                 let appointmentData = appointmentList.map(a => moment(a["startDate"]).format('MM/DD/YYYY'));
-                for(let i = 0; i < appointmentData.length; i++ ) {
+                for (let i = 0; i < appointmentData.length; i++) {
                     for (let j = 0; j < labels.length; j++) {
-                        if(appointmentData[i] === labels[j]){
-                            if(data[j] === undefined) {
+                        if (appointmentData[i] === labels[j]) {
+                            if (data[j] === undefined) {
                                 data[j] = 0;
                             } else {
                                 data[j]++;
@@ -204,7 +204,7 @@
                         appointmentList = [];
                         studentEmails = [];
                         $(response).each(function () {
-                            if(studentEmails.indexOf(this.studentEmail) === -1) {
+                            if (studentEmails.indexOf(this.studentEmail) === -1) {
                                 studentEmails.push(this.studentEmail);
                             }
                             appointmentList.push(this);
