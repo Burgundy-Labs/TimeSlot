@@ -201,7 +201,11 @@
                 for(let i = 0; i < studentEmails.length; i++){
                     emailString = emailString + " " + studentEmails[i];
                 }
+                var el = document.createElement('textarea');
+                el.value = emailString;
+                el.select();
                 document.execCommand("copy");
+                document.body.removeChild(el);
             }
 
             function getData() {
