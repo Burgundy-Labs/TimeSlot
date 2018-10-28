@@ -12,7 +12,14 @@ services:
       - webnet
 
   nginx:
-    image: burgundy/mynginx:latest
+    restart: always
+    image: nginx
+    hostname: localhost
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /nginx:/etc/nginx:ro
+      - ./letsencrypt/conf:/etc/letsencrypt
+      - ./letsencrypt/html:/tmp/letsencrypt
     ports:
       - 80:80
       - 443:443
@@ -23,7 +30,20 @@ services:
           cpus: "0.5"
     networks:
       - webnet
-
+  letsencrypt:
+    restart: always
+    image: kvaps/letsencrypt-webroot
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./letsencrypt/conf:/etc/letsencrypt
+      - ./letsencrypt/html:/tmp/letsencrypt
+    environment:
+      - DOMAINS=127.0.0.1
+      - EMAIL=cahill@mtu.edu
+      - WEBROOT_PATH=/tmp/letsencrypt
+      - EXP_LIMIT=30
+      - CHECK_FREQ=30
 
 
 

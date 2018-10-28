@@ -1,0 +1,16 @@
+version: "3"
+services:
+  web:
+    image: burgundy/timeslot:latest
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "0.9"
+    ports:
+      - "80:9000"
+      - "443:9443"
+    networks:
+      - webnet
+networks:
+  webnet:
