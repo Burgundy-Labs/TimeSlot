@@ -58,7 +58,7 @@ public class EmailBuilder implements IconInterface{
     public String appointmentConfirmation(AppointmentsModel appointment, SettingsModel settings, String type) {
         /* Define basic email model properties */
         EmailModel model = new EmailModel();
-        model.setIcon(IconInterface.ALARM_CLOCK);
+        model.setIcon(IconInterface.CHECK_MARK);
         model.setTitle("Appointment Confirmation");
 
         /* Compose the sections of an email (section title, content) */
@@ -95,7 +95,7 @@ public class EmailBuilder implements IconInterface{
     public String appointmentCancellation(AppointmentsModel appointment, String cancellationNotes) {
         /* Define basic email model properties */
         EmailModel model = new EmailModel();
-        model.setIcon(IconInterface.ALARM_CLOCK);
+        model.setIcon(IconInterface.CROSS_MARK);
         model.setTitle("Appointment Cancellation");
 
         /* Compose the sections of an email (section title, content) */
