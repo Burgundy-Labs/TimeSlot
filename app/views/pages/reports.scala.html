@@ -196,6 +196,14 @@
                 }
             }
 
+            function copyStudentEmails(){
+                let emailString = "";
+                for(let i = 0; i < studentEmails.length; i++){
+                    emailString = emailString + " " + studentEmails[i];
+                }
+                document.execCommand("copy");
+            }
+
             function getData() {
                 $.ajax({
                     url: '/AppointmentStatistics/' + moment(reportStart.val()).valueOf() + "/" + moment(reportEnd.val()).valueOf(),
