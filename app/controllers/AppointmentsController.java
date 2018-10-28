@@ -346,9 +346,9 @@ public class AppointmentsController extends BaseController {
     }
 
     @Authenticate
-    public Result appointmentsAsCoach(String userId, String start, String end) {
-        Date startDate = DatatypeConverter.parseDateTime(start).getTime();
-        Date endDate = DatatypeConverter.parseDateTime(end).getTime();
+    public Result appointmentsAsCoach(String userId, String start, String end) throws ParseException {
+        Date startDate = new SimpleDateFormat("MM-dd-yyyy").parse(start);
+        Date endDate = new SimpleDateFormat("MM-dd-yyyy").parse(end);
         Calendar endc = Calendar.getInstance();
         endc.setTime(endDate);
         endc.set(Calendar.HOUR_OF_DAY, 24);
@@ -358,9 +358,9 @@ public class AppointmentsController extends BaseController {
     }
 
     @Authenticate(role = "Admin")
-    public Result appointmentsByDate(String role, String userId, String start, String end) {
-        Date startDate = DatatypeConverter.parseDateTime(start).getTime();
-        Date endDate = DatatypeConverter.parseDateTime(end).getTime();
+    public Result appointmentsByDate(String role, String userId, String start, String end) throws ParseException {
+        Date startDate = new SimpleDateFormat("MM-dd-yyyy").parse(start);
+        Date endDate = new SimpleDateFormat("MM-dd-yyyy").parse(end);
         Calendar endc = Calendar.getInstance();
         endc.setTime(endDate);
         endc.set(Calendar.HOUR_OF_DAY, 24);
@@ -370,9 +370,9 @@ public class AppointmentsController extends BaseController {
     }
 
     @Authenticate(role = "Admin")
-    public Result dailyViewerByDate(String start, String end) {
-        Date startDate = DatatypeConverter.parseDateTime(start).getTime();
-        Date endDate = DatatypeConverter.parseDateTime(end).getTime();
+    public Result dailyViewerByDate(String start, String end) throws ParseException {
+        Date startDate = new SimpleDateFormat("MM-dd-yyyy").parse(start);
+        Date endDate = new SimpleDateFormat("MM-dd-yyyy").parse(end);
         Calendar endc = Calendar.getInstance();
         endc.setTime(endDate);
         endc.set(Calendar.HOUR_OF_DAY, 24);
