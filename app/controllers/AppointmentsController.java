@@ -323,6 +323,17 @@ public class AppointmentsController extends BaseController {
         } else {
             appointments = appointmentsDB.getOpenAppointmentsByUserAndDate(coachId, startDate, endDate);
         }
+        for (AppointmentsModel appointment : appointments) {
+            if ( appointment.isWeekly() ) {
+                List<AppointmentsModel> weeklyAppointments = appointmentsDB.getByWeeklyId(appointment.getWeeklyId(), appointment.getStartDate());
+                for (AppointmentsModel weekly : weeklyAppointments) {
+                    if ( weekly.getStudentId() != null ) {
+                        appointment.setWeekly(false);
+                        break;
+                    }
+                }
+            }
+        }
         return ok(Json.toJson(appointments));
     }
 
