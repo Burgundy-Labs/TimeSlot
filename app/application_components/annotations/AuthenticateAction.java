@@ -37,11 +37,11 @@ public class AuthenticateAction extends Action<Authenticate> {
             return delegate.call(ctx);
         }
         /* Student role is accepted as long as a currentRole exists in the session */
-        else if(role.equals("Student") && ctx.session().get("currentRole") != null){
+        else if( ctx.session().get("currentRole") != null && role.equals("Student")){
             return delegate.call(ctx);
         }
         /* Finally, if the role isn't matched - check that the provided authenticate matches the session role */
-        else if(ctx.session().get("currentRole") != null && !ctx.session().get("currentRole").equalsIgnoreCase(role)) {
+        else if(ctx.session().get("currentRole") != null && ctx.session().get("currentRole").equalsIgnoreCase(role)) {
             return delegate.call(ctx);
         }
         /* If any are failed to return delegate call - redirect to forbidden */

@@ -50,7 +50,7 @@ public class EmailBuilder implements IconInterface{
         }
 
         model.setEmailButtons(emailButtons);
-        model.setEmailFooter(new EmailModel.EmailFooter("TimeSlot is a Burgundy Labs product."));
+        model.setEmailFooter(new EmailModel.EmailFooter(""));
         /* Generates HTML from template with passed model */
         return general.render(model).toString();
     }
@@ -86,6 +86,7 @@ public class EmailBuilder implements IconInterface{
                     "&output=xml\""));
         }
         model.setEmailButtons(emailButtons);
+        model.setEmailFooter(new EmailModel.EmailFooter(""));
 
         /* Generates HTML from template with passed model */
         return general.render(model).toString();
@@ -109,6 +110,7 @@ public class EmailBuilder implements IconInterface{
         List<EmailModel.EmailButton> emailButtons = new ArrayList<>();
         emailButtons.add(new EmailModel.EmailButton("Schedule a new appointment", "http://" + Application.getConfig().getString("siteUrl")));
         model.setEmailButtons(emailButtons);
+        model.setEmailFooter(new EmailModel.EmailFooter(""));
 
         /* Generates HTML from template with passed model */
         return general.render(model).toString();

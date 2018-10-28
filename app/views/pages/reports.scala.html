@@ -5,7 +5,7 @@
                 <div class="row">
                     <label for="reportStart" class="mb-3 col-md-12 mb-3 col-md-form-label">Start Date</label>
                     <div class="mb-3 col-md-12">
-                        <input id="reportStart" class="form-control" type="date" name="reportStart" value="" onchange="createCharts()">
+                        <input id="reportStart" class="form-control" type="date" name="reportStart" value="" onchange="getData()">
                     </div>
                 </div>
             </div>
@@ -13,7 +13,7 @@
                 <div class="row">
                     <label for="reportEnd" class="mb-3 col-md-12 mb-3 col-md-form-label">End Date</label>
                     <div class="mb-3 col-md-12">
-                        <input id="reportEnd" class="form-control" type="date" name="reportEnd" value="" onchange="createCharts()">
+                        <input id="reportEnd" class="form-control" type="date" name="reportEnd" value="" onchange="getData()">
                     </div>
                 </div>
             </div>
@@ -73,7 +73,7 @@
             </div>
         </div>
         <div class="row row-eq-height dashCards center">
-            <div class="mb-2 col-md-12 animated fadeInUp">
+            <div class="mb-2 col-md-3 animated fadeInUp">
                 <div class="card">
                     <div class="card-header">
                         <h3>Appointments by Coach</h3>
@@ -90,16 +90,14 @@
             let reportStart = $('#reportStart');
             let reportEnd = $('#reportEnd');
             let appointmentList = [];
+            let studentEmails = [];
+
             /* Create Charts On Page Load*/
             $(document).ready(function () {
                 reportStart.val(moment().subtract(7, "days").format("YYYY-MM-DD"));
                 reportEnd.val(moment().format("YYYY-MM-DD"));
-                createCharts();
-            });
-
-            function createCharts() {
                 getData();
-            }
+            });
 
             function makePropertyChart(property, chartId) {
                 let labels = appointmentList.map(a => a[property]).reduce(function(a,b) {
@@ -204,7 +202,11 @@
                     type: 'GET',
                     success: function (response) {
                         appointmentList = [];
+                        studentEmails = [];
                         $(response).each(function () {
+                            if(studentEmails.indexOf(this.studentEmail) === -1) {
+                                studentEmails.push(this.studentEmail);
+                            }
                             appointmentList.push(this);
                         });
                         makePropertyChart("appointmentType", "Type");

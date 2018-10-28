@@ -1,7 +1,15 @@
-@userController = @{new UserController()}
-@settingsController = @{new SettingsController()}
-@currentUser = @{userController.getCurrentUser}
-@currentSettings = @{settingsController.getSettings}
+    @userController = @{
+        new UserController()
+    }
+        @settingsController = @{
+        new SettingsController()
+    }
+        @currentUser = @{
+        userController.getCurrentUser
+    }
+        @currentSettings = @{
+        settingsController.getSettings
+    }
 
     <script type="text/javascript">
             let appointmentCalendar = $('#newAppointmentCalendar');
@@ -11,6 +19,7 @@
             let endDateTime;
             let coachAvailable;
             let studentId = null;
+            let splitEvents = [];
 
 
             $(document).ready(function () {
@@ -34,7 +43,7 @@
                                 coachAvailable = false;
                             } else {
                                 coachAvailable = true;
-                                coachDropdown.prepend("<option selected default value='any'>Any Coach</option>");
+                                coachDropdown.prepend("<option selected value='any'>Any Coach</option>");
                                 createMakeAppointmentCalendar();
                             }
                         }
@@ -44,18 +53,14 @@
 
             /* Setup listener to detect changes */
             $(document).on("change", "#coachId", function (e) {
-                createMakeAppointmentCalendar();
+                appointmentCalendar.fullCalendar('refetchEvents');
             });
 
             function createMakeAppointmentCalendar() {
                 if ($("#calendarContainer").is(':visible')) { //if the container is visible on the page
                     /* if calendar exists - refresh events */
                     appointmentCalendar = $('#newAppointmentCalendar');
-
-                    if ($('#newAppointmentCalendar>*').length !== 0) {
-                        appointmentCalendar.fullCalendar('refetchEvents');
-                        return;
-                    }
+                    let appointmentDay = $("#appointmentDay").val().replace(/\//g, "-");
                     appointmentCalendar.fullCalendar({
                         validRange: {
                             start: moment('@settingsController.getSettings.getSemesterStart.toInstant').format("YYYY-MM-DD"),
@@ -66,45 +71,41 @@
                         allDaySlot: false,
                         defaultView: 'agendaDay',
                         editable: false,
-                        weekends: false,
+                        weekends: true,
                         selectable: true,
                         selectLongPressDelay: 0,
                         minTime: moment('@currentSettings.getStartTime.toInstant').format("HH:mm"),
                         maxTime: moment('@currentSettings.getEndTime.toInstant').format("HH:mm"),
-                        start: moment($("#appointmentDay").val()),
-                        end: moment($("#appointmentDay").val()),
                         events: function (start, end, timezone, callback) {
-                            startDateTime = moment(start).toISOString();
-                            endDateTime = moment(end).toISOString();
+                            splitEvents = []; // clear split events until they're all created
+                            $("#appointmentDay").val(start.format("MM/DD/YYYY"));
+                            startDateTime = moment(appointmentDay, "MM-DD-YYYY").startOf('week').format("MM-DD-YYYY");
+                            endDateTime = moment(appointmentDay, "MM-DD-YYYY").endOf('week').format("MM-DD-YYYY");
                             const coachId = $("#coachId").find(":selected").val();
                             const service = $("#serviceType").find(":selected").val();
                             $.ajax({
-                                url: '/availableSlotsForAppointments/' + coachId + '/' + moment(start).toISOString() + '/' + moment(end).toISOString() + '/' + service,
+                                url: '/availableSlotsForAppointments/' + coachId + '/' + start.format("MM-DD-YYYY") + '/' + start.format("MM-DD-YYYY") + '/' + service,
                                 type: 'GET',
                                 success: function (response) {
-                                    const events = [];
+                                    splitEvents = [];
                                     let appointmentType = $('#appointmentType');
                                     let appTypeOneTime = appointmentType.find('option:selected').attr('data-oneTime') === "true";
                                     let appTypeWeekly = appointmentType.find('option:selected').attr('data-weekly') === "true";
                                     $(response).each(function () {
                                         const event = {
-                                            availabilityId: $(this).attr('availabilityId'),
+                                            availabilityId: $(this).attr('appointmentId'),
+                                            coachId: $(this).attr("coachId"),
                                             title: "One-Time",
                                             start: moment($(this).attr('startDate')),
                                             end: moment($(this).attr('endDate')),
-                                            dow: [moment($(this).attr('startDate')).isoWeekday()],
                                             rendering: 'background',
                                             backgroundColor: "#FFDE5C",
-                                            canBeWeekly: $(this).attr("canBeWeekly"),
-                                            canBeOneTime: $(this).attr("canBeOneTime"),
-                                            oneTimeUsers: $(this).attr("oneTimeUsers"),
-                                            weeklyUsers: $(this).attr("weeklyUsers")
+                                            isWeekly: $(this).attr("weekly")
                                         };
-                                        if ($(this).attr("weekly") === true) {
+                                        event.canBeWeekly = event.isWeekly && appTypeWeekly;
+                                        event.canBeOneTime = appTypeOneTime;
+                                        if ($(this).attr("isWeekly") === true) {
                                             event.title = "Weekly";
-                                            event.dow = [moment($(this).attr('startDate')).isoWeekday()];
-                                            event.start = moment($(this).attr('startDate')).format("HH:mm");
-                                            event.end = moment($(this).attr('endDate')).format("HH:mm");
                                             if (event.canBeWeekly) {
                                                 event.backgroundColor = "#007AFF";
                                             }
@@ -127,16 +128,51 @@
                                                 event.canBeOneTime = false;
                                             }
                                         }
-                                        if (!appTypeWeekly && !appTypeOneTime) {
-                                            event.backgroundColor = "#000000";
-                                        }
-                                        if (event.backgroundColor !== "#000000") {
-                                            events.push(event);
-                                        }
+
+                                        let eventSpan = moment.range(event.start, event.end); // Get range of event start + end
+                                        let split_starts = Array.from(eventSpan.by('minutes', {step: 30})); // Split into 30-min increments
+                                        split_starts.splice(-1,1); // Remove last 30min split
+
+                                        split_starts.forEach(function(startTime) {
+                                            let found = false;
+                                            for(let i = 0; i < splitEvents.length; i++) {
+                                                let thisEvent = splitEvents[i];
+                                                if (moment(thisEvent.start).isSame(startTime)) {
+                                                    if(thisEvent.weeklyCoaches.length !== 0 && thisEvent.oneTimeCoaches.length !== 0) {
+                                                        thisEvent.backgroundColor = "#1DC570";
+                                                    } else if(thisEvent.weeklyCoaches.length !== 0) {
+                                                        thisEvent.backgroundColor = "#007AFF";
+                                                    } else if (thisEvent.oneTimeCoaches.length !== 0) {
+                                                        thisEvent.backgroundColor = "#007AFF";
+                                                    } else {
+                                                        break;
+                                                    }
+                                                    if(event.canBeOneTime){
+                                                        thisEvent.oneTimeCoaches.push(event.coachId);
+                                                    }
+                                                    if(event.canBeWeekly) {
+                                                        thisEvent.weeklyCoaches.push(event.coachId);
+                                                    }
+                                                    found = true;
+                                                    break;
+                                                }
+                                            }
+                                            if(!found) {
+                                                let new_event = jQuery.extend(true, {}, event);
+                                                new_event.start = startTime;
+                                                new_event.end = moment(startTime).add(30, 'minutes');
+                                                new_event.weeklyCoaches = [];
+                                                new_event.oneTimeCoaches = [];
+                                                if(event.canBeOneTime) new_event.oneTimeCoaches.push(event.coachId);
+                                                if(event.canBeWeekly) new_event.weeklyCoaches.push(event.coachId);
+                                                splitEvents.push(new_event);
+                                            }
+                                        });
                                     });
-                                    callback(events);
+                                    callback(splitEvents);
                                 }
-                            })
+                            });
+
                         },
                         viewRender: function (currentView) {
                             let minDate = moment();
@@ -216,8 +252,8 @@
                                             return {
                                                 canBeOneTime: event.canBeOneTime,
                                                 canBeWeekly: event.canBeWeekly,
-                                                weeklyUsers: event.weeklyUsers,
-                                                oneTimeUsers: event.oneTimeUsers,
+                                                weeklyCoaches: event.weeklyCoaches,
+                                                oneTimeCoaches: event.oneTimeCoaches,
                                                 availabilityId: event.availabilityId
                                             };
                                         }
@@ -234,8 +270,8 @@
                                     endDate: moment(end).format(),
                                     canBeOneTime: appointmentInfo[0].canBeOneTime,
                                     canBeWeekly: appointmentInfo[0].canBeWeekly,
-                                    weeklyUsers: appointmentInfo[0].weeklyUsers,
-                                    oneTimeUsers: appointmentInfo[0].oneTimeUsers,
+                                    weeklyCoaches: appointmentInfo[0].weeklyCoaches,
+                                    oneTimeCoaches: appointmentInfo[0].oneTimeCoaches,
                                     availabilityId: appointmentInfo[0].availabilityId
                                 };
                                 appointmentCalendar.fullCalendar('renderEvent', newAppointment, true);
@@ -246,9 +282,7 @@
                             return event.rendering === 'background';
                         }
                     });
-                    if ((new Date()).getDay() === 6) {
-                        appointmentCalendar.fullCalendar('next');
-                    }
+                    appointmentCalendar.fullCalendar('gotoDate', moment(appointmentDay, "MM-DD-YYYY"));
                 } else {
                     setTimeout(createMakeAppointmentCalendar, 500); //wait 50 ms, then try again
                 }
@@ -312,38 +346,38 @@
                             appointmentId: appointment.availabilityId
                         };
                         // Check if we're scheduling for someone else
-                        if(scheduleUser !== undefined && scheduleUser.userId !== undefined && scheduleUser !== null && scheduleUser.userId !== null) {
+                        if (scheduleUser !== undefined && scheduleUser.userId !== undefined && scheduleUser !== null && scheduleUser.userId !== null) {
                             form.studentId = scheduleUser.userId;
                         }
                         $.confirm({
                             columnClass: "col-md-12",
                             title: 'Appointment Details',
                             content: "<div class='container-fluid'>" +
-                            "<div class='row row-eq-height col-12'>" +
-                            "<div class='appointmentCard mb-2 col-md-5'><div class='top'><h3>Type</h3></div><div class='bottom'><h4>" + appointmentType + "</h4></div></div><br/>" +
-                            "<div class='appointmentCard mb-2 col-md-5'><div class='top'><h3>Service</h3></div><div class='bottom'><h4>" + service + "</h4></div></div><br/>" +
-                            "</div>" +
-                            "<hr/>" +
-                            "<div class='row row-eq-height col-12'>" +
-                            "<div class='appointmentCard mb-2 col-md-5'><div class='top'><h3>Coach</h3></div><div class='bottom'><h4>" + coachName + "</h4></div></div><br/>" +
-                            "<div class='appointmentCard mb-2 col-md-5'>" +
-                            "<div class='top'>" +
-                            "<h3>" +
-                            moment(appointment.startDate).format('dddd MMMM Do') +
-                            "</h3>" +
-                            "</div>" +
-                            "<div class='bottom'>" +
-                            "<div class='row'>" +
-                            "<h4 class='col-md-12'>" +
-                            moment(appointment.startDate).format('h:mm A') +
-                            " - " +
-                            moment(appointment.endDate).format('h:mm A') +
-                            "</h4>" +
-                            "</div>" +
-                            "</div>" +
-                            "</div>" +
-                            "</div>" +
-                            "</div>",
+                                    "<div class='row row-eq-height col-12'>" +
+                                    "<div class='appointmentCard mb-2 col-md-5'><div class='top'><h3>Type</h3></div><div class='bottom'><h4>" + appointmentType + "</h4></div></div><br/>" +
+                                    "<div class='appointmentCard mb-2 col-md-5'><div class='top'><h3>Service</h3></div><div class='bottom'><h4>" + service + "</h4></div></div><br/>" +
+                                    "</div>" +
+                                    "<hr/>" +
+                                    "<div class='row row-eq-height col-12'>" +
+                                    "<div class='appointmentCard mb-2 col-md-5'><div class='top'><h3>Coach</h3></div><div class='bottom'><h4>" + coachName + "</h4></div></div><br/>" +
+                                    "<div class='appointmentCard mb-2 col-md-5'>" +
+                                    "<div class='top'>" +
+                                    "<h3>" +
+                                    moment(appointment.startDate).format('dddd MMMM Do') +
+                                    "</h3>" +
+                                    "</div>" +
+                                    "<div class='bottom'>" +
+                                    "<div class='row'>" +
+                                    "<h4 class='col-md-12'>" +
+                                    moment(appointment.startDate).format('h:mm A') +
+                                    " - " +
+                                    moment(appointment.endDate).format('h:mm A') +
+                                    "</h4>" +
+                                    "</div>" +
+                                    "</div>" +
+                                    "</div>" +
+                                    "</div>" +
+                                    "</div>",
                             theme: 'modern',
                             escapeKey: 'no',
                             buttons: {
@@ -353,9 +387,8 @@
                                     action: function () {
                                         form.weekly = false;
                                         if (form.coachId === "any") {
-                                            form.appointmentId = appointment.oneTimeUsers[Math.floor(Math.random() * appointment.oneTimeUsers.length)];
+                                            form.appointmentId = appointment.oneTimeCoaches[Math.floor(Math.random() * appointment.oneTimeCoaches.length)];
                                         }
-                                        /!* Create appointment Here*!/
                                         $.ajax({
                                             url: '/createAppointment',
                                             type: 'POST',
@@ -377,9 +410,8 @@
                                     action: function () {
                                         form.weekly = true;
                                         if (form.coachId === "any") {
-                                            form.appointmentId = appointment.weeklyUsers[Math.floor(Math.random() * appointment.weeklyUsers.length)];
+                                            form.appointmentId = appointment.weeklyCoaches[Math.floor(Math.random() * appointment.weeklyCoaches.length)];
                                         }
-                                        /!* Create appointment Here*!/
                                         $.ajax({
                                             url: '/createAppointment',
                                             type: 'POST',

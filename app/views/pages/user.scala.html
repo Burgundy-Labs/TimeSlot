@@ -307,12 +307,17 @@
                                 eventElement.find("div.fc-content").prepend("<button onclick='removeAvailability(\"" + event.id + "\", \"" + event.weekly + "\")' class='no-button eventDelete'><i class=\"material-icons md-18\">close</i></button>");
                             }
                         },
-                        weekends: false,
+                        weekends: true,
                         selectable: true,
                         defaultView: 'agendaWeek',
                         navLinks: false,
                         eventLimit: false,
                         select: function (start, end, jsEvent, view) {
+                            // Prevent past selection
+                            if(start.isBefore(moment())) {
+                                availabilitySchedule.fullCalendar('unselect');
+                                return false;
+                            }
                             const newAvailability = {
                                 userId: '@user.getUid',
                                 startDate: moment(start).format(),
