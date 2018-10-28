@@ -137,6 +137,7 @@
                                             let found = false;
                                             for(let i = 0; i < splitEvents.length; i++) {
                                                 let thisEvent = splitEvents[i];
+                                                console.log(thisEvent.start.toString());
                                                 if (moment(thisEvent.start).isSame(startTime)) {
                                                     if(thisEvent.weeklyCoaches.length !== 0 && thisEvent.oneTimeCoaches.length !== 0) {
                                                         thisEvent.backgroundColor = "#1DC570";
@@ -153,6 +154,7 @@
                                                     if(event.canBeWeekly) {
                                                         thisEvent.weeklyCoaches.push(event.coachId);
                                                     }
+
                                                     found = true;
                                                     break;
                                                 }
@@ -160,7 +162,7 @@
                                             if(!found) {
                                                 let new_event = jQuery.extend(true, {}, event);
                                                 new_event.start = startTime;
-                                                new_event.end = startTime.add(30, 'minutes');
+                                                new_event.end = moment(startTime).add(30, 'minutes');
                                                 new_event.weeklyCoaches = [];
                                                 new_event.oneTimeCoaches = [];
                                                 if(event.canBeOneTime) new_event.oneTimeCoaches.push(event.coachId);
