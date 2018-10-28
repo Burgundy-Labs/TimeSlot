@@ -137,7 +137,6 @@
                                             let found = false;
                                             for(let i = 0; i < splitEvents.length; i++) {
                                                 let thisEvent = splitEvents[i];
-                                                console.log(thisEvent.start.toString());
                                                 if (moment(thisEvent.start).isSame(startTime)) {
                                                     if(thisEvent.weeklyCoaches.length !== 0 && thisEvent.oneTimeCoaches.length !== 0) {
                                                         thisEvent.backgroundColor = "#1DC570";
@@ -154,7 +153,6 @@
                                                     if(event.canBeWeekly) {
                                                         thisEvent.weeklyCoaches.push(event.coachId);
                                                     }
-
                                                     found = true;
                                                     break;
                                                 }
@@ -254,8 +252,8 @@
                                             return {
                                                 canBeOneTime: event.canBeOneTime,
                                                 canBeWeekly: event.canBeWeekly,
-                                                weeklyUsers: event.weeklyUsers,
-                                                oneTimeUsers: event.oneTimeUsers,
+                                                weeklyCoaches: event.weeklyCoaches,
+                                                oneTimeCoaches: event.oneTimeCoaches,
                                                 availabilityId: event.availabilityId
                                             };
                                         }
@@ -272,8 +270,8 @@
                                     endDate: moment(end).format(),
                                     canBeOneTime: appointmentInfo[0].canBeOneTime,
                                     canBeWeekly: appointmentInfo[0].canBeWeekly,
-                                    weeklyUsers: appointmentInfo[0].weeklyUsers,
-                                    oneTimeUsers: appointmentInfo[0].oneTimeUsers,
+                                    weeklyCoaches: appointmentInfo[0].weeklyCoaches,
+                                    oneTimeCoaches: appointmentInfo[0].oneTimeCoaches,
                                     availabilityId: appointmentInfo[0].availabilityId
                                 };
                                 appointmentCalendar.fullCalendar('renderEvent', newAppointment, true);
@@ -389,7 +387,7 @@
                                     action: function () {
                                         form.weekly = false;
                                         if (form.coachId === "any") {
-                                            form.appointmentId = appointment.oneTimeUsers[Math.floor(Math.random() * appointment.oneTimeUsers.length)];
+                                            form.appointmentId = appointment.oneTimeCoaches[Math.floor(Math.random() * appointment.oneTimeCoaches.length)];
                                         }
                                         $.ajax({
                                             url: '/createAppointment',
@@ -412,7 +410,7 @@
                                     action: function () {
                                         form.weekly = true;
                                         if (form.coachId === "any") {
-                                            form.appointmentId = appointment.weeklyUsers[Math.floor(Math.random() * appointment.weeklyUsers.length)];
+                                            form.appointmentId = appointment.weeklyCoaches[Math.floor(Math.random() * appointment.weeklyCoaches.length)];
                                         }
                                         $.ajax({
                                             url: '/createAppointment',
