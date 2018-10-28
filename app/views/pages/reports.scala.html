@@ -84,6 +84,13 @@
                 </div>
             </div>
         </div>
+        <div class="row row-eq-height dashCards center">
+            <div class="mb-2 col-md-3 animated fadeInUp">
+                <button onclick="copyStudentEmails()" class="btn btn-primary mb-3 p-3 col-12">
+                    Copy Student Emails to Clipboard
+                </button>
+            </div>
+        </div>
     </div>
 
     <script type="text/javascript">
@@ -198,11 +205,15 @@
 
             function copyStudentEmails(){
                 let emailString = "";
-                for(let i = 0; i < studentEmails.length; i++){
+                if(studentEmails.length > 0){
+                    emailString = studentEmails[0];
+                }
+                for(let i = 1; i < studentEmails.length; i++){
                     emailString = emailString + " " + studentEmails[i];
                 }
                 var el = document.createElement('textarea');
                 el.value = emailString;
+                document.body.appendChild(el);
                 el.select();
                 document.execCommand("copy");
                 document.body.removeChild(el);
