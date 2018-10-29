@@ -341,7 +341,6 @@
                             studentId: firebase.auth().currentUser.uid,
                             startDate: appointment.startDate,
                             endDate: appointment.endDate,
-                            appointmentNotes: $('#appointmentNotes').val(),
                             present: false,
                             appointmentId: appointment.availabilityId
                         };
@@ -376,6 +375,9 @@
                                     "</div>" +
                                     "</div>" +
                                     "</div>" +
+                                    "<hr/>" +
+                                    "<h4 class='col-md-12 text-center'>Appointment Notes</h4>" +
+                                    "<textarea id='appointmentNotes' class='form-control col-md-12' placeHolder='What is this appointment about?'></textarea>'" +
                                     "</div>" +
                                     "</div>",
                             theme: 'modern',
@@ -385,6 +387,7 @@
                                     text: 'Create One-Time Appointment',
                                     btnClass: 'btn-primary mb-3 col-md-12',
                                     action: function () {
+                                        form.appointmentNotes = $('#appointmentNotes').val();
                                         form.weekly = false;
                                         if (form.coachId === "any") {
                                             form.coachId = appointment.oneTimeCoaches[Math.floor(Math.random() * appointment.oneTimeCoaches.length)];
@@ -408,6 +411,7 @@
                                     text: 'Create Weekly Appointment',
                                     btnClass: 'btn-primary mb-3 col-md-12',
                                     action: function () {
+                                        form.appointmentNotes = $('#appointmentNotes').val();
                                         form.weekly = true;
                                         if (form.coachId === "any") {
                                             form.coachId = appointment.weeklyCoaches[Math.floor(Math.random() * appointment.weeklyCoaches.length)];

@@ -48,6 +48,7 @@ public class AppointmentsController extends BaseController {
         AppointmentsModel appointment = availability.clone();
         appointment.setServiceType(json.findPath("serviceType").asText());
         appointment.setAppointmentType(json.findPath("appointmentType").asText());
+        appointment.setAppointmentNotes(json.findPath("appointmentNotes").asText());
         appointment.setPresent(false);
         appointment.setStartDate(startDate);
         appointment.setEndDate(endDate);
