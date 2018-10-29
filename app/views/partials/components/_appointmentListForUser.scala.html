@@ -146,7 +146,7 @@ function updateDate() {
 
 function getAttendanceColumn(context) {
     @if(!currentUser.getRole.equals("Student")) {
-    return `<select data-id="${context.attr("appointmentId")}" class="selectpicker attendanceSelect ${(context.attr("present") ? "success" : "danger")}-border" title="Appointment Attendance">
+    return `<select data-id="${context.attr("appointmentId")}" class=" attendanceSelect ${(context.attr("present") ? "success" : "danger")}-border" title="Appointment Attendance">
             <option value="${context.attr("present")}" selected>
                 ${(context.attr("present") ? "&#10004;" : "&#x2716;")}
                 </option>
