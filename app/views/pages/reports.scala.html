@@ -42,7 +42,7 @@
             <div class="mb-2 col-md-3 animated fadeInUp">
                 <div class="card">
                     <div class="card-header">
-                        <h3>Weekly / One-Time</h3>
+                        <h3>Weekly</h3>
                     </div>
                     <div>
                         <canvas id="Weekly"></canvas>
@@ -73,7 +73,7 @@
             </div>
         </div>
         <div class="row row-eq-height dashCards center">
-            <div class="mb-2 col-md-3 animated fadeInUp">
+            <div class="mb-2 col-md-12 animated fadeInUp">
                 <div class="card">
                     <div class="card-header">
                         <h3>Appointments by Coach</h3>
@@ -131,7 +131,7 @@
                         data: {
                             datasets: [{
                                 data: data,
-                                backgroundColor: palette('cb-RdYlBu', data.length).map(function (hex) {
+                                backgroundColor: palette('tol-dv', data.length).map(function (hex) {
                                     return '#' + hex;
                                 })
                             }],
@@ -203,6 +203,68 @@
                 }
             }
 
+            function makeCoachChart() {
+                let labels = appointmentList.map(a => a["coachName"]).reduce(function (a, b) {
+                    if (a.indexOf(b) < 0) a.push(b);
+                    return a;
+                }, []);
+                let data = [];
+                let appointmentData = appointmentList.map(a => a["coachName"]);
+                for (let i = 0; i < appointmentData.length; i++) {
+                    for (let j = 0; j < labels.length; j++) {
+                        if (appointmentData[i] === labels[j]) {
+                            if (data[j] === undefined) {
+                                data[j] = 0;
+                            } else {
+                                data[j]++;
+                            }
+                        }
+                    }
+                }
+                const appointmentTypeChart = document.getElementById("Coach").getContext('2d');
+                if (appointmentTypeChart !== null) {
+                    new Chart(appointmentTypeChart, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: "Coach Appointments",
+                                data: data,
+                                backgroundColor: "#FAAD3C",
+                            }],
+                        },
+                        options: {
+                            maintainAspectRatio: false,
+                            responsive: true,
+                            tooltips: {
+                                mode: 'index',
+                                intersect: false,
+                            },
+                            hover: {
+                                mode: 'nearest',
+                                intersect: true
+                            },
+                            scales: {
+                                xAxes: [{
+                                    display: true,
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Coach'
+                                    }
+                                }],
+                                yAxes: [{
+                                    display: true,
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Appointments'
+                                    }
+                                }]
+                            }
+                        }
+                    })
+                }
+            }
+
             function copyStudentEmails(){
                 let emailString = "";
                 if(studentEmails.length > 0){
@@ -236,8 +298,8 @@
                         makePropertyChart("serviceType", "Service");
                         makePropertyChart("weekly", "Weekly");
                         makePropertyChart("present", "Present");
-                        makePropertyChart("coachName", "Coach");
                         makeDateChart();
+                        makeCoachChart();
                     }
                 });
             }
