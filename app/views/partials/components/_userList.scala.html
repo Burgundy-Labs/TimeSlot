@@ -20,7 +20,7 @@
                         <img class="user-avatar" src="@user.getPhotoURL" alt="Card image cap">
                     </td>
                     <td><a href="/User/@user.getUid">@user.getDisplayName</a></td>
-                    <td>@user.getEmail</td>
+                    <td><a href="mailto:@user.getEmail">@user.getEmail</a></td>
                     <td>
                         <label>
                         @if(currentUser.getRole.equals("Admin")) {
@@ -39,7 +39,6 @@
                     </td>
                     <td>
                         <span class="mdl-list__item-secondary-content">
-                            <span class="action-primary">@partials.components._tooltipIconLink("mailto:" + user.getEmail, "email", "bottom", "Email User", 32)</span>
                             <span class="action-secondary" onclick="createAppointmentPopup('@user.getUid')">@partials.components._tooltipIconLink("javascript:void(0)", "insert_invitation", "bottom", "Schedule Appointment", 32)</span>
                             @if(currentUser.getRole.equals("Admin")) {
                                 <span class="action-delete"><span id="@user.getUid" onclick="deleteUser(this)">@partials.components._tooltipIconLink("javascript:void(0)", "close", "bottom", "Remove User", 32)</span></span>
