@@ -1,5 +1,6 @@
 package databases;
 
+import com.google.api.Service;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import controllers.SettingsController;
@@ -114,6 +115,11 @@ public class UserDB implements DBInterface<UsersModel> {
 		/* Asynchronously write user into DB */
 		ApiFuture<WriteResult> result = docRef.set(data);
 		result.isDone();
+
+		DocumentReference coachRef = FirestoreHandler.get().collection("settings").document("settings").collection("services").document(service.getServiceId()).collection("coaches").document(ID);
+		Map<String, Object> coachData = new HashMap<>();
+		ApiFuture<WriteResult> coachResult = coachRef.set(coachData);
+		coachResult.isDone();
 	}
 
 	public boolean hasService(String userId, String serviceId) {
@@ -157,7 +163,8 @@ public class UserDB implements DBInterface<UsersModel> {
 	public boolean removeServiceFromUser(String ID, String serviceId) {
 		/* Asynchronously remove user from DB */
 		ApiFuture<WriteResult> writeResult = FirestoreHandler.get().collection("users").document(ID).collection("services").document(serviceId).delete();
-		return writeResult.isDone();
+		ApiFuture<WriteResult> coachResult = FirestoreHandler.get().collection("settings").document("settings").collection("services").document(serviceId).collection("coaches").document(ID).delete();
+		return writeResult.isDone() && coachResult.isDone();
 	}
 
 	public UsersModel getByAuth_ID(String ID) {
@@ -215,13 +222,40 @@ public class UserDB implements DBInterface<UsersModel> {
 	}
 
 	public List<UsersModel> getCoachesByService(String serviceId) {
-		List<UsersModel> coachesWithService = new ArrayList<>();
-		List<UsersModel> coaches = getAllByRole("Coach");
-		for (UsersModel c : coaches) {
-			if (hasService(c.getUid(), serviceId) ) {
-				coachesWithService.add(c);
+//		If DB needs to be updated with new service setup:
+//		updateCoachesWithServices();
+		List<UsersModel> coachList = new ArrayList<>();
+		/* Asynchronously retrieve all users */
+		ApiFuture<QuerySnapshot> query = FirestoreHandler.get().collection("settings").document("settings").collection("services").document(serviceId).collection("coaches").get();
+		QuerySnapshot querySnapshot = null;
+		try {
+			/* Attempt to get a list of all users - blocking */
+			querySnapshot = query.get();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
+		assert querySnapshot != null;
+		List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
+		/* Iterate users and add them to a list for return */
+		for (DocumentSnapshot document : documents) {
+			UsersModel coach = get(document.getId()).get();
+			if ("Coach".equals(coach.getRole()) || ("Admin".equals(coach.getRole()) && UserController.hasAttribute(coach, UserAttributes.IS_COACH.getValue()))) {
+				coachList.add(coach);
 			}
 		}
-		return coachesWithService;
+		return coachList;
+	}
+
+	public void updateCoachesWithServices() {
+		List<UsersModel> coaches = getAllByRole("Coach");
+		for (UsersModel c : coaches) {
+			List<ServiceModel> services = getServicesForUser(c.getUid());
+			for (ServiceModel s : services) {
+				DocumentReference coachRef = FirestoreHandler.get().collection("settings").document("settings").collection("services").document(s.getServiceId()).collection("coaches").document(c.getUid());
+				Map<String, Object> coachData = new HashMap<>();
+				ApiFuture<WriteResult> coachResult = coachRef.set(coachData);
+				coachResult.isDone();
+			}
+		}
 	}
 }

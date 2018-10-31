@@ -1,6 +1,7 @@
 package databases;
 
 import com.google.api.core.ApiFuture;
+import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.*;
 import models.AppointmentTypeModel;
 import models.ServiceModel;
@@ -34,19 +35,14 @@ public class SettingsDB implements DBInterface<SettingsModel> {
     @Override
     public boolean addOrUpdate(SettingsModel settings) {
         DocumentReference docRef = FirestoreHandler.get().collection("settings").document("settings");
-        Map<String, Object> data = new HashMap<>();
-        data.put("universityName", settings.getUniversityName());
-        data.put("centerName", settings.getCenterName());
-        data.put("semesterStart", settings.getSemesterStart());
-        data.put("semesterEnd", settings.getSemesterEnd());
-        data.put("startTime", settings.getStartTime());
-        data.put("endTime", settings.getEndTime());
-        data.put("siteAlert", settings.getSiteAlert());
-        data.put("centerInformation", settings.getCenterInformation());
-        data.put("maximumAppointments", settings.getMaximumAppointments());
-        data.put("daysOpenWeekly", settings.getDaysOpenWeekly());
+        /* Asynchronously write user into DB */
+        ApiFuture<WriteResult> result = docRef.set(settings);
+        try {
+            result.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
         /* Write settings to DB */
-        ApiFuture<WriteResult> result = docRef.set(data);
         return result.isDone();
     }
 

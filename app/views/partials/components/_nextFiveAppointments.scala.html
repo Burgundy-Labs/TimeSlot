@@ -23,7 +23,8 @@
             @if(currentUser.getRole.equals("Student")){
                 <a href="/User/@appointment.getCoachId">@appointment.getCoachName</a>
             }else {
-                <a href="/User/@appointment.getStudentId">@appointment.getStudentName</a>}
+                <a href="/User/@appointment.getStudentId">@appointment.getStudentName</a>
+            }
             </td>
             <td>@appointment.getAppointmentType</td>
             <td>@appointment.getServiceType</td>

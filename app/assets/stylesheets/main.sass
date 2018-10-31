@@ -333,7 +333,7 @@ button
     display: inline-flex
     vertical-align: middle
   .top
-    background: #1A1A1A
+    background: $secondary-color
     color: white
   .bottom
     padding: 5px
@@ -441,3 +441,26 @@ button
 
 .wizardImage
   clip-path: circle(90px at center)
+
+.dp-modal
+  z-index: 99999
+
+.sw-btn-prev, .sw-btn-next
+  background-color: $primary-color
+  border-color: darken($primary-color, 10%)
+
+.attendanceSelect
+  display: block
+  padding: 4px
+  border-radius: 4px
+  cursor: pointer
+
+.attendanceSelect.success-border
+  background-color: $application-secondary
+  color: white
+  border-color: $application-secondary
+
+.attendanceSelect.danger-border
+  background-color: $application-tertiary
+  color: white
+  border-color: $application-tertiary
