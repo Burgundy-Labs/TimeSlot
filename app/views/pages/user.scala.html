@@ -282,9 +282,8 @@
                                         if ($(this).attr("weekly") === true) {
                                             event.title = "Weekly";
                                             event.weekly = true;
-                                            event.dow = [moment($(this).attr('startDate')).isoWeekday()];
-                                            event.start = moment($(this).attr('startDate')).format("HH:mm");
-                                            event.end = moment($(this).attr('endDate')).format("HH:mm");
+                                            event.start = moment($(this).attr('startDate'));
+                                            event.end = moment($(this).attr('endDate'));
                                             event.backgroundColor = "#5BAAFF";
                                             event.borderColor = "#5BAAFF";
                                         }
@@ -295,6 +294,7 @@
                                         }
                                         events.push(event);
                                     });
+                                    console.log(events);
                                     callback(events);
                                 }
                             })
