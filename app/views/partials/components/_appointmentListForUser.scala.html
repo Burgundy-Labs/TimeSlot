@@ -54,7 +54,7 @@
 
 $(document).on('change', '.attendanceSelect', function () {
     let e = $(this);
-    let d = e.closest("div");
+    let d = e.closest("select");
     let newPresence = $(this).val();
     let appointment = {
         appointmentId: $(this).data('id'),

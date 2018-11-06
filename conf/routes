@@ -8,7 +8,7 @@ GET         /Dashboard                                                          
 GET         /Account                                                             controllers.AccountController.index
 GET         /Settings                                                            controllers.SettingsController.index
 GET         /Appointments                                                        controllers.AppointmentsController.index
-GET         /Coaches                                                             controllers.UserController.index
+GET         /Users                                                               controllers.UserController.index
 GET         /getCoachesByService/:serviceId                                      controllers.UserController.getCoachesByService(serviceId: String)
 GET         /Center                                                              controllers.CenterController.index
 GET         /Login                                                               controllers.LoginController.index
