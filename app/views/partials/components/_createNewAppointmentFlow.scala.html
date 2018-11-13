@@ -25,11 +25,12 @@
                 </div>
                 <div class="row justify-content-center">
                     <div class="col-md-4">
-                        <div id="form-step-0" role="form" data-toggle="validator">
+                        <div id="form-step-1" role="form" data-toggle="validator">
+                            <div class="help-block with-errors"></div>
                             <div class="form-group">
                                 <label for="appointmentType">Type of appointment</label>
                                 <select id="appointmentType" class="form-control" name="appointmentType" data-error="Please select an appointment type." required>
-                                    <option selected disabled hidden> Select an appointment type </option>
+                                    <option selected disabled hidden value=""> Select an appointment type </option>
                                     @for(appointment <- settingsController.getAvailableAppointmentTypes) {
                                         <option data-weekly="@appointment.getWeekly" data-oneTime="@appointment.getOneTime" value="@appointment.getAppointmentTypeId">@appointment.getAppointmentType</option>
                                     }
@@ -38,7 +39,7 @@
                                 <br/>
                                 <label for="serviceType">Service desired</label>
                                 <select id="serviceType" class="form-control" name="serviceType" data-error="Please select a service." required>
-                                    <option selected disabled hidden> Select service</option>
+                                    <option selected disabled hidden value=""> Select service</option>
                                     @for(service <- settingsController.getServices) {
                                         <option value="@service.getServiceId">@service.getService</option>
                                     }
@@ -59,29 +60,24 @@
                 </div>
                 <div class="row justify-content-center">
                     <div class="col-md-3">
-                        <div id="form-step-1" role="form" data-toggle="validator">
+                        <div id="form-step-2" role="form" data-toggle="validator">
+                            <div class="help-block with-errors"></div>
                             <div class="input-group">
-                                <input type="text" class="form-control" data-error="Please select a day." name="date" placeholder="Pick a date" id="appointmentDay" required>
-                                <div class="input-group-append">
-                                    <button type="button" class="btn btn-outline-secondary" disabled="">
-                                        <i class="fa fa-calendar" aria-hidden="true"></i>
-                                    </button>
-                                </div>
+                                <input class="form-control" data-error="Please select a day." name="date" placeholder="Pick a date" id="appointmentDay" required>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div id="step-3" class="">
-                <div id="form-step-2" role="form" data-toggle="validator">
+                <div id="form-step-3" role="form" data-toggle="validator">
+                    <div class="help-block with-errors"></div>
                     <div class="row mb-3">
                         <div class="center mb-3 col-12">
                             <span class="badge oneTime col-md-12 col-lg-3" >
                                 One-Time Availability</span>
-
                             <span class="badge weekly col-md-12 col-lg-3">
                                 Weekly Availability</span>
-
                             <span class="badge both col-md-12 col-lg-3">
                                 Both One-Time and Weekly Availability</span>
                         </div>
@@ -90,11 +86,11 @@
                             <br/>
                             <select id="coachId" name="coachId" required></select>
                         </div>
-                        <div class="mb-3 col-md-12" id="calendarContainer">
-                            <div id="newAppointmentCalendar"></div>
+                        <div class="row justify-content-center col-md-12" id="calendarContainer">
+                            <div id="newAppointmentCalendar" class="col-md-8"></div>
                         </div>
                         <div class="col-md-12 center">
-                            <button class="btn btn-primary col-3 center" onclick="createAppointment()">
+                            <button class="btn btn-primary col-3 center mt-2" onclick="createAppointment()">
                                 Create Appointment</button>
                         </div>
                     </div>

@@ -264,7 +264,7 @@
                         maxTime: "18:00",
                         events: function (start, end, timezone, callback) {
                             $.ajax({
-                                url: '/availableSlots/' + '@user.getUid' + '/' + moment(start).toISOString() + '/' + moment(end).toISOString(),
+                                url: '/availableSlots/' + '@user.getUid' + '/' + moment(start).format("MM-DD-YYYY") + '/' + moment(end).format("MM-DD-YYYY"),
                                 type: 'GET',
                                 success: function (response) {
                                     let events = [];
@@ -332,6 +332,11 @@
                         eventOverlap: false,
                         eventLimit: false,
                         select: function (start, end, jsEvent, view) {
+                            // Prevent past selection
+                            if(start.isBefore(moment())) {
+                                availabilitySchedule.fullCalendar('unselect');
+                                return false;
+                            }
                             const newAvailability = {
                                 userId: '@user.getUid',
                                 startDate: moment(start).format(),

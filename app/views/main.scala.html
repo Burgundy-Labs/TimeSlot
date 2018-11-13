@@ -74,16 +74,24 @@
                 offsetTop: 0,
                 offsetBottom: 0,
                 onOpenBefore: function() {
+                    let appointmentDatePicker = TinyDatePicker('#appointmentDay');
+                    appointmentDatePicker.on('statechange', (_, picker) => {
+                        createMakeAppointmentCalendar();
+                    });
+
                     let wizard = $('#scheduleWizard');
-                    $('#appointmentDay').datepicker();
                     wizard.smartWizard({
                         selected: 0,
                         theme: "dots",
                         transitionEffect:'fade',
+                        useURLhash: false,
+                        showStepURLhash: false
                     });
                     wizard.on("leaveStep", function(e, anchorObject, stepNumber, stepDirection) {
+                        stepNumber++;
                         let form = $("#form-step-" + stepNumber);
                         if(stepDirection === 'forward' && form){
+                            form.validator('update');
                             form.validator('validate');
                             let err = form.children('.has-error');
                             if(err && err.length > 0){

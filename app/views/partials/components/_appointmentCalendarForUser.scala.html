@@ -25,7 +25,7 @@
       selectable: false,
       events: function (start, end, timezone, callback) {
           $.ajax({
-              url: '/appointmentsForUser/@currentUser.getRole/@currentUser.getUid/' + moment(start).format("YYYY-MM-DD") + '/' + moment(end).format("YYYY-MM-DD"),
+              url: '/appointmentsForUser/@currentUser.getRole/@currentUser.getUid/' + moment(start).format("MM-DD-YYYY") + '/' + moment(end).format("MM-DD-YYYY"),
               type: 'GET',
               success: function (response) {
                   const events = [];

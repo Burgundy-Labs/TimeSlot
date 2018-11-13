@@ -81,7 +81,7 @@
                     eventClick: function(event, jsEvent, view) {
                         appointmentDetailPopup('@currentUser.getUid', event.id);
                     },
-                    weekends: false,
+                    weekends: true,
                     minTime: moment('@settingsController.getSettings.getStartTime.toInstant').format("HH:mm"),
                     maxTime: moment('@settingsController.getSettings.getEndTime.toInstant').format("HH:mm"),
                     allDaySlot: false,
@@ -91,7 +91,7 @@
                             events: function (start, end, timezone, callback) {
                                 const events = [];
                                 $.ajax({
-                                    url: '/appointmentsForUser/' + '@currentUser.getRole' + '/' + '@currentUser.getUid' + '/' + moment(start).toISOString() + '/' + moment(end).toISOString(),
+                                    url: '/appointmentsForUser/' + '@currentUser.getRole' + '/' + '@currentUser.getUid' + '/' + start.format("MM-DD-YYYY") + '/' + end.format("MM-DD-YYYY"),
                                     type: 'GET',
                                     success: function (response) {
                                         let upcomingCount = 0;
