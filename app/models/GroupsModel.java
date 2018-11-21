@@ -1,5 +1,6 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.time.*;
@@ -9,13 +10,13 @@ public class GroupsModel {
     private List<String> student; //Student names
     private List<String> requestJoin; //People wanting to join
     private String groupID; //Group ID
-    private List<DayOfWeek> recur; //Each day the appointment recurs
+    private List<Integer> recur; //Each day the appointment recurs
     private String groupDesc; //Group appointment description
     private int capacity; //Number of students that can join the appointment
-    private LocalDate startDate; //Day that recurring appointments start
-    private LocalDate endDate; //Day that recurring appointments end
-    private LocalTime startTime; //Time during the day that the appointment occurs
-    private LocalTime endTime; //Time during the day that the appointment ends
+    private Date startDate; //Day that recurring appointments start
+    private Date endDate; //Day that recurring appointments end
+    private Date startTime; //Time during the day that the appointment occurs
+    private Date endTime; //Time during the day that the appointment ends
     private String groupCategory; //Group appointment type
     private String location; //Location of appointment
     public boolean isPublic; //Whether the appointment is open to public
@@ -24,13 +25,13 @@ public class GroupsModel {
         String coachNotes;  //The coach's notes for the meeting
         String instanceID;  //The id of the instance
         String groupID;
-        LocalDateTime dateStamp;
-        LocalDateTime dateStampEnd;
+        Date dateStamp;
+        Date dateStampEnd;
         List<String> presentIDs;    //The list of ids of those who are present
 
         public GroupInstanceModel(String coachNotes, String instanceID,
                                   List<String> presentIDs, String groupID,
-                                  LocalDateTime dateStamp, LocalDateTime dateStampEnd) {
+                                  Date dateStamp, Date dateStampEnd) {
             this.coachNotes = coachNotes;
             this.instanceID = instanceID;
             this.presentIDs = presentIDs;
@@ -45,15 +46,15 @@ public class GroupsModel {
             this.groupID = groupID;
         }
 
-        public LocalDateTime getDateStamp() { return dateStamp;}
+        public Date getDateStamp() { return dateStamp;}
 
-        public void setDateStamp(LocalDateTime dateStamp) {
+        public void setDateStamp(Date dateStamp) {
             this.dateStamp = dateStamp;
         }
 
-        public LocalDateTime getDateStampEnd() { return dateStampEnd; }
+        public Date getDateStampEnd() { return dateStampEnd; }
 
-        public void setDateStampEnd(LocalDateTime dateStampEnd) {
+        public void setDateStampEnd(Date dateStampEnd) {
             this.dateStampEnd = dateStampEnd;
         }
 
@@ -90,13 +91,13 @@ public class GroupsModel {
                        List<String> student,
                        List<String> requestJoin,
                        String groupID,
-                       List<DayOfWeek> recur,
+                       List<Integer> recur,
                        String groupDesc,
                        int capacity,
-                       LocalDate startDate,
-                       LocalDate endDate,
-                       LocalTime startTime,
-                       LocalTime endTime,
+                       Date startDate,
+                       Date endDate,
+                       Date startTime,
+                       Date endTime,
                        String groupCategory,
                        String location,
                        boolean isPublic) {
@@ -162,11 +163,11 @@ public class GroupsModel {
         this.groupID = groupID;
     }
 
-    public List<DayOfWeek> getRecur() {
+    public List<Integer> getRecur() {
         return recur;
     }
 
-    public void setRecur(List<DayOfWeek> recur) {
+    public void setRecur(List<Integer> recur) {
         this.recur = recur;
     }
 
@@ -186,35 +187,35 @@ public class GroupsModel {
         this.capacity = capacity;
     }
 
-    public LocalDate getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDate getEndDate() {
+    public Date getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
 
-    public LocalTime getStartTime() {
+    public Date getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalTime startTime) {
+    public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
 
-    public LocalTime getEndTime() {
+    public Date getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(LocalTime endTime) {
+    public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
 
@@ -241,4 +242,6 @@ public class GroupsModel {
     public void setPublic(boolean aPublic) {
         isPublic = aPublic;
     }
+
+
 }
