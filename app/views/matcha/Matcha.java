@@ -37,8 +37,12 @@ public class Matcha {
         DANGER("btn-danger"),
         SUCCESS("btn-success"),
         WARNING("btn-warning"),
-        INFO("btn-info");
-
+        INFO("btn-info"),
+        PRIMARY_OUTLINE("btn-outline-primary"),
+        DANGER_OUTLINE("btn-outline-danger"),
+        SUCCESS_OUTLINE("btn-outline-success"),
+        WARNING_OUTLINE("btn-outline-warning"),
+        INFO_OUTLINE("btn-outline-info");
         private String value;
 
         ButtonType(final String value) {

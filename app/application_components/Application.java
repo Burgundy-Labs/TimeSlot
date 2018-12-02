@@ -2,10 +2,11 @@ package application_components;
 
 import com.google.inject.Inject;
 import com.typesafe.config.Config;
+import databases.GroupsDB;
+import models.GroupsModel;
 import play.Environment;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /* TODO look into better use of DI to remove static methods */
 public class Application {
@@ -26,6 +27,32 @@ public class Application {
     public Application(Config config, Environment environment) {
         Application.config = config;
         Application.environment = environment;
+        this.RunStartupCode();
+    }
+
+    /// Test any start-up code here.
+    private void RunStartupCode() {
+        System.out.println("Running startup code.");
+        List<String> coaches = new ArrayList<>();
+        coaches.add("cnPylOXnLpSANT2v943wbnfXIsU2");
+
+        List<String> students = new ArrayList<>();
+        students.add("QDig3Ue5lgdnTNpQMa3fj9ArBCF2");
+
+        List<String> request = new ArrayList<>();
+
+        List<Integer> recur = new ArrayList<>();
+        recur.add(4);
+
+        Date startDate = new GregorianCalendar(2018, Calendar.NOVEMBER, 25, 0, 0).getTime();
+        Date endDate = new GregorianCalendar(2018, Calendar.DECEMBER, 25, 0, 0).getTime();
+        Date startTime = new GregorianCalendar(0, 0, 0, 11, 20).getTime();
+        Date endTime = new GregorianCalendar(0, 0, 0, 12, 20).getTime();
+        GroupsModel group = new GroupsModel(coaches, students, request, null, recur,
+                "this is a group", 10, startDate, endDate, startTime, endTime, "group", "rekhi",
+                true);
+        GroupsDB db = new GroupsDB();
+        db.addOrUpdate(group);
     }
 
     public Application() {

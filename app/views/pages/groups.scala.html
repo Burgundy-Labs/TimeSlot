@@ -14,30 +14,26 @@
 @main("Groups", "Groups") {
     @matcha.container(Matcha.ContainerType.ROW, Matcha.ColumnSize.FULL) {
         <h1>Groups</h1>
-        @matcha.container(Matcha.ContainerType.ROW, Matcha.ColumnSize.FULL, "mb-2") {
-            @matcha.expandable("Group 1", "A group of people studying things.", Matcha.ColumnSize.FULL, "group-1") {
-                @matcha.container(Matcha.ContainerType.ROW, Matcha.ColumnSize.FULL, "mb-2") {
-                    Group 1 description
-                }
-                @matcha.container(Matcha.ContainerType.ROW, Matcha.ColumnSize.FULL, "mb-2") {
-                    @matcha.button("Leave Group", Matcha.ColumnSize.THREE, Matcha.ButtonType.DANGER, "leave-group mr-2", "leave-1", "leaveGroup(1)")
-                    @matcha.button("Join Group", Matcha.ColumnSize.THREE, Matcha.ButtonType.PRIMARY, "join-group", "join-1", "joinGroup(1)")
-                }
-            }
-        }
-
-        @matcha.container(Matcha.ContainerType.ROW, Matcha.ColumnSize.FULL, "mb-2") {
-            @matcha.expandable("Group 2", "",Matcha. ColumnSize.FULL, "group-2") {
-                @matcha.container(Matcha.ContainerType.ROW, Matcha.ColumnSize.FULL, "mb-2") {
-                    Group 2 description
-                }
-                @matcha.container(Matcha.ContainerType.ROW, Matcha.ColumnSize.FULL, "mb-2") {
-                    @matcha.button("Leave Group", Matcha.ColumnSize.THREE, Matcha.ButtonType.DANGER, "leave-group mr-2", "leave-2", "leaveGroup(2)")
-                    @matcha.button("Join Group", Matcha.ColumnSize.THREE, Matcha.ButtonType.PRIMARY, "join-group", "join-2", "joinGroup(2)")
-                }
-            }
+        @if(!currentUser.getRole.equals("student")) {
+            @matcha.button("Create new group", Matcha.ColumnSize.TWO,Matcha.ButtonType.PRIMARY_OUTLINE, "ml-5", "create-group")
         }
     }
+
+    @matcha.container(Matcha.ContainerType.ROW, Matcha.ColumnSize.FULL, "mb-2 mt-2") {
+        @matcha.card("Group Name", Matcha.ColumnSize.FOUR, "row-equal-height mb-2", "group-name"){
+           <p>Group description</p>
+        }
+        @matcha.card("Group Name", Matcha.ColumnSize.FOUR, "row-equal-height mb-2", "group-name"){
+            <p>Group description</p>
+        }
+        @matcha.card("Group Name", Matcha.ColumnSize.FOUR, "row-equal-height mb-2", "group-name"){
+            <p>Group description</p>
+        }
+        @matcha.card("Group Name", Matcha.ColumnSize.FOUR, "row-equal-height mb-2", "group-name"){
+            <p>Group description</p>
+        }
+    }
+
     <script>
             function joinGroup(group) {
                 alert("Joining group " + group);

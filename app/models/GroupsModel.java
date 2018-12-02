@@ -1,9 +1,7 @@
 package models;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.time.*;
 
 public class GroupsModel {
     private List<String> coaches; //Coach names
@@ -116,20 +114,6 @@ public class GroupsModel {
         this.location = location;
         this.isPublic = isPublic;
     }
-
-    public void addStudent(String studentID){
-        student.add(studentID);
-    }
-
-    public void leaveGroup(String ID){
-        if(student.contains(ID)){
-            student.remove(ID);
-        } else if(coaches.contains(ID)){
-            coaches.remove(ID);
-        }
-    }
-
-
 
     public List<String> getCoaches() {
         return coaches;

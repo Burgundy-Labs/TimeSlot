@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutionException;
 
 /* DB classes contain the methods necessary to manage their corresponding models.
  * UserDB works with UsersModel to retrieve and remove users in the Firestore DB.*/
-public class GroupsDB implements DBInterface<GroupsModel>{
+public class GroupsDB implements DBInterface<GroupsModel> {
 
     public Optional<GroupsModel> get(String ID) {
         /* Return null group if none found */
@@ -112,25 +112,25 @@ public class GroupsDB implements DBInterface<GroupsModel>{
         cal.setTime(group.getEndTime());
         int hour = cal.get(Calendar.HOUR_OF_DAY);
         int minute = cal.get(Calendar.MINUTE);
-        if(group.getGroupID() == null) {
+        if (group.getGroupID() == null) {
             docRef = FirestoreHandler.get().collection("groups").document();
-            List<Date> dates = getDateStampStart(group.getStartDate(), group.getEndDate(),
-                                        group.getStartTime(), group.getRecur());
-            for (Date stamp: dates) {
-                cal.setTime(stamp);
-                cal.set(Calendar.HOUR_OF_DAY, hour);
-                cal.set(Calendar.MINUTE, minute);
-                Date endStamp = cal.getTime();
-                addInstance(group, stamp, endStamp);
-            }
         } else {
             docRef = FirestoreHandler.get().collection("groups").document(group.getGroupID());
         }
+        List<Date> dates = getDateStampStart(group.getStartDate(), group.getEndDate(),
+                group.getStartTime(), group.getRecur());
 
         group.setGroupID(docRef.getId());
-
         /* Asynchronously write group into DB */
         ApiFuture<WriteResult> result = docRef.set(group);
+        result.isDone();
+        for (Date stamp : dates) {
+            cal.setTime(stamp);
+            cal.set(Calendar.HOUR_OF_DAY, hour);
+            cal.set(Calendar.MINUTE, minute);
+            Date endStamp = cal.getTime();
+            addInstance(group, stamp, endStamp);
+        }
         return result.isDone();
     }
 
@@ -149,7 +149,7 @@ public class GroupsDB implements DBInterface<GroupsModel>{
     @Override
     public Optional<GroupsModel> remove(String ID) {
         GroupsModel group = get(ID).orElseThrow(NullPointerException::new);
-        if(group.getGroupID() == null){
+        if (group.getGroupID() == null) {
             try {
                 FirestoreHandler.get().collection("groups").document(ID).delete().get();
             } catch (InterruptedException | ExecutionException e) {
@@ -192,7 +192,7 @@ public class GroupsDB implements DBInterface<GroupsModel>{
         cal.setTime(start);
         while (cal.getTime().before(end) || cal.getTime().equals(end)) {
             int current = cal.get(Calendar.DAY_OF_WEEK);
-            for (int recurDay: recur) {
+            for (int recurDay : recur) {
                 if (current == recurDay) {
                     Calendar stamp = Calendar.getInstance();
                     stamp.setTime(cal.getTime());
@@ -207,28 +207,5 @@ public class GroupsDB implements DBInterface<GroupsModel>{
         }
 
         return dates;
-    }
-
-    public static void main(String[] args) {
-        List<String> coaches = new ArrayList<>();
-        coaches.add("cnPylOXnLpSANT2v943wbnfXIsU2");
-
-        List<String> students = new ArrayList<>();
-        students.add("QDig3Ue5lgdnTNpQMa3fj9ArBCF2");
-
-        List<String> request = new ArrayList<>();
-
-        List<Integer> recur = new ArrayList<>();
-        recur.add(4);
-
-        Date startDate = new GregorianCalendar(2018, Calendar.NOVEMBER, 25, 0, 0).getTime();
-        Date endDate = new GregorianCalendar(2018, Calendar.DECEMBER, 25, 0, 0).getTime();
-        Date startTime = new GregorianCalendar(0, 0, 0, 11, 20).getTime();
-        Date endTime = new GregorianCalendar(0, 0, 0, 12, 20).getTime();
-        GroupsModel group = new GroupsModel(coaches, students, request, null, recur,
-                    "this is a group", 10, startDate, endDate, startTime, endTime, "group", "rekhi",
-                true);
-        GroupsDB db = new GroupsDB();
-        db.addOrUpdate(group);
     }
 }

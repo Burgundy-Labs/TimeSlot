@@ -12,8 +12,8 @@ public class StartupModule extends AbstractModule {
      bind(ErrorHandler.class).asEagerSingleton();
      bind(CompressorFilter.class).asEagerSingleton();
      bind(FirestoreHandler.class).asEagerSingleton();
-     bind(Application.class).asEagerSingleton();
      bind(MailerService.class).asEagerSingleton();
      bind(EmailScheduler.class).asEagerSingleton();
+     bind(Application.class).asEagerSingleton(); // Keep last for RunStartupCode to have access to all DI modules
     }
 }
