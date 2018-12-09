@@ -27,6 +27,19 @@ function appointmentDetailPopup(userId, appointmentId) {
                 backgroundDismiss: true,
                 title: "Appointment Details",
                 columnClass: "col-md-8",
+                buttons: {
+                    cancelAppointment: {
+                        text: "Cancel Appointment",
+                        btnClass: "btn-danger",
+                        action: function() {
+                            alert("Cancel appointment");
+                        }
+                    },
+                    ok: {
+                        text: "Go Back",
+                        btnClass: "btn-primary"
+                    }
+                },
                 content: `<div class="row col-md-12">
                               <div class="col-md-4">
                               <b>Coach</b>
