@@ -18,8 +18,8 @@
             <a class="nav-link active" id="userInfoTab" data-toggle="pill" href="#userInfoContent" role="tab" aria-controls="userInfoContent" aria-selected="true">
                 User Information</a>
             @if(currentUser.getRole.equals("Admin") || currentUser.getUid.equals(user.getUid)) {
-                <a class="nav-link" id="userSettingsTab" data-toggle="pill" href="#userSettingsContent" role="tab" aria-controls="userSettingsContent" aria-selected="false">
-                    User Settings</a>
+                @*<a class="nav-link" id="userSettingsTab" data-toggle="pill" href="#userSettingsContent" role="tab" aria-controls="userSettingsContent" aria-selected="false">*@
+                    @*User Settings</a>*@
             }
             @if(!currentUser.getRole.equals("Student") && !user.getRole.equals("Student")) {
                 <a class="nav-link" id="coachSettingsTab" data-toggle="pill" href="#coachSettingsContent" role="tab" aria-controls="coachSettingsContent" aria-selected="false">
@@ -47,12 +47,12 @@
                 </div>
             </div>
             @if(currentUser.getRole.equals("Admin") || currentUser.getUid.equals(user.getUid)) {
-                <div class="tab-pane fade" id="userSettingsContent" role="tabpanel" aria-labelledby="userSettingsTab">
-                    <div class="mb-3 col-md-12">
-                        <h1>User Settings</h1>
-                        <p>Coming soon</p>
-                    </div>
-                </div>
+                @*<div class="tab-pane fade" id="userSettingsContent" role="tabpanel" aria-labelledby="userSettingsTab">*@
+                    @*<div class="mb-3 col-md-12">*@
+                        @*<h1>User Settings</h1>*@
+                        @*<p>Coming soon</p>*@
+                    @*</div>*@
+                @*</div>*@
             }
             @if(!user.getRole.equals("Student") || !currentUser.getRole.equals("Student")) {
                 <div class="tab-pane fade" id="coachSettingsContent" role="tabpanel" aria-labelledby="coachSettingsTab">
