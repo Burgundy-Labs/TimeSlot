@@ -32,12 +32,75 @@ function appointmentDetailPopup(userId, appointmentId) {
                         text: "Cancel Appointment",
                         btnClass: "btn-danger",
                         action: function() {
-                            alert("Cancel appointment");
+                            $.alert({
+                                theme: 'modern',
+                                type: 'dark',
+                                escapeKey: true,
+                                backgroundDismiss: true,
+                                title: "Cancel Notes",
+                                columnClass: "col-md-8",
+                                content: 'Reason for Cancelling:<textarea class="form-control" rows="5" id="cancelNotes" placeholder="I can\'t come to the appointment anymore because..."></textarea>',
+                                buttons: {
+                                    confirm: {
+                                        text: "Cancel Appointment",
+                                        btnClass: "btn-primary",
+                                        action: function() {
+                                            $.ajax({
+                                                url: '/cancelAppointment',
+                                                type: 'POST',
+                                                data: JSON.stringify({appointmentId: appointment.appointmentId, cancelNotes: $(cancelNotes).val()}),
+                                                contentType: 'application/json',
+                                                success: function () {
+                                                    setTimeout(function () {
+                                                        createAlert("success", "Appointment Canceled!");
+                                                    }, 50);
+                                                    location.reload();
+                                                },
+                                                error: function (err) {
+                                                    createAlert("danger", "Appointment Cancelling Failed!");
+                                                }
+                                            });
+                                        }
+                                    },
+                                    cancel: {
+                                        text: "Go Back",
+                                        btnClass: "btn-primary"
+                                    }
+                                }
+                            });
+                        }
+                    },
+                    removeAvailability: {
+                        text: "Remove Availability",
+                        btnClass: "btn-danger",
+                        action: function() {
+                            $.ajax({
+                                url: '/removeAppointment',
+                                type: 'POST',
+                                data: JSON.stringify({appointmentId: appointment.appointmentId, removeAll: false}),
+                                contentType: 'application/json',
+                                success: function () {
+                                    setTimeout(function () {
+                                        createAlert("success", "Availability Removed!");
+                                        location.reload();
+                                    }, 50);
+                                },
+                                error: function (err) {
+                                    createAlert("danger", "Availability Removing Failed!");
+                                }
+                            });
                         }
                     },
                     ok: {
                         text: "Go Back",
                         btnClass: "btn-primary"
+                    }
+                },
+                onOpenBefore: function() {
+                    if (appointment.studentId == null) {
+                        this.buttons.cancelAppointment.hide();
+                    } else {
+                        this.buttons.removeAvailability.hide();
                     }
                 },
                 content: `<div class="row col-md-12">

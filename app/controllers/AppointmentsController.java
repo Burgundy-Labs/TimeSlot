@@ -261,7 +261,7 @@ public class AppointmentsController extends BaseController {
         return ok();
     }
 
-    @Authenticate
+    @Authenticate(role = "Coach")
     public Result removeAppointment() {
         JsonNode json = request().body().asJson();
         String appointmentId = json.findPath("appointmentId").textValue();
