@@ -250,7 +250,7 @@
                                                     </td>
                                                     <td>
                                                         <button class="btn btn-danger" onclick="removeService('@service.getServiceId')">Remove</button>
-                                                        <button class="btn btn-primary @service.getServiceId" onclick="editPrompt('@service.getServiceId', '@service.getPrompt')">Edit Prompt</button>
+                                                        <button class="btn btn-primary @service.getServiceId" onclick="editPrompt('@service.getServiceId', `@service.getPrompt`)">Edit Prompt</button>
                                                     </td>
                                                 </tr>
                                             }
@@ -680,7 +680,7 @@
                                     data: JSON.stringify({serviceId: serviceId, servicePrompt: servicePrompt}),
                                     contentType: 'application/json',
                                     success: function () {
-                                        $('button.' + serviceId).attr("onclick", "editPrompt('"+serviceId + "', '" + servicePrompt + "')");
+                                        $('button.' + serviceId).attr("onclick", "editPrompt('"+serviceId + "', ` + servicePrompt + `)");
                                         $().val(servicePrompt);
                                         createAlert("success", "Service prompt updated.");
                                     },
