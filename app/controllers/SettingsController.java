@@ -16,10 +16,7 @@ import javax.xml.bind.DatatypeConverter;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class SettingsController extends BaseController {
 
@@ -154,17 +151,15 @@ public class SettingsController extends BaseController {
 
     @Authenticate(role="Admin")
     public Result createOpenDay() {
-        DateFormat format = new SimpleDateFormat("HH:mm");
         JsonNode json = request().body().asJson();
         int dow = json.findPath("dow").asInt();
         try {
-            Date start = SimpleDateFormat. json.findPath("start").asText();
-            Date start = format.parse(json.findPath("start").asText());
-            Date end = format.parse(json.findPath("end").asText());
+            Date start = DatatypeConverter.parseDateTime(json.findPath("start").textValue()).getTime();
+            Date end = DatatypeConverter.parseDateTime(json.findPath("end").textValue()).getTime();
             DateTimeModel openDay = new DateTimeModel(dow, start, end);
             settingsDB.addOpenDay(openDay);
             return ok();
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return notAcceptable();
         }

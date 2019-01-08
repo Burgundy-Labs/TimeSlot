@@ -50,7 +50,7 @@ public class DateTimeModel {
     }
 
     public Date getEnd() {
-        return start;
+        return end;
     }
 
     public void setId(String id) {

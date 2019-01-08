@@ -252,6 +252,7 @@
                                     <option>Fall 2018</option>
                                     <option>Spring 2019</option>
                                 </select>
+                                <input type="button" value="Create A New Semester" onclick="createSemester()"/>
                             </div>
                         </div>
                     </div>
@@ -323,6 +324,13 @@
                     error: function () {
                         createAlert('danger', 'Failed to change Site Alert.');
                     }
+                });
+            }
+
+            function createSemester() {
+                $.confirm({
+                    title: "Create a New Semester",
+                    content: "test"
                 });
             }
 
@@ -651,11 +659,13 @@
                 });
             }
 
+
+
             function createOpenCalendar() {
                 $('#openCalendar').fullCalendar({
                     themeSystem: 'bootstrap4',
                     weekends: true,
-                    defaultView: 'agendaWeek',
+                    defaultView: 'agenda',
                     minTime: "5:00",
                     maxTime: "24:00",
                     height: 'auto',
@@ -664,6 +674,11 @@
                     columnFormat: 'dddd',
                     selectable: true,
                     editable: false,
+                    selectOverlap: false,
+                    visibleRange: {
+                        start: '1970-01-04',
+                        end: '1970-01-10'
+                    },
                     eventSources: [{
                         events: function(start, end, timezone, callback) {
                             const events = [];
@@ -674,8 +689,8 @@
                                     $(response).each(function () {
                                         const event = {
                                             id: $(this).attr('id'),
-                                            start: moment($(this).attr('startDate')),
-                                            end: moment($(this).attr('endDate')),
+                                            start: moment($(this).attr('start')),
+                                            end: moment($(this).attr('end')),
                                             dow: [$(this).attr('dow')]
                                         }
                                         events.push(event);
@@ -687,8 +702,9 @@
                     }],
                     select: function (start, end, jsEvent, view) {
                         const newOpenDay = {
-                            start: start,
-                            end: end
+                            dow: moment(start).day(),
+                            start: moment(start),
+                            end: moment(end)
                         };
                         $.ajax({
                             url: '/createOpenDay',
@@ -696,10 +712,14 @@
                             data: JSON.stringify(newOpenDay),
                             contentType: 'application/json',
                             success: function () {
-                                createAlert("success", "Open Times Created")
+                                createAlert("success", "Open Times Created");
+                                setTimeout(function () {
+                                    $('#openCalendar').fullCalendar('rerenderEvents');
+                                    $('#openCalendar').fullCalendar('refetchEvents');
+                                }, 250);
                             },
                             error: function () {
-                                createAlert("danger", "Open Times Creation Failed")
+                                createAlert("danger", "Open Times Creation Failed");
                             }
                         });
                     }
