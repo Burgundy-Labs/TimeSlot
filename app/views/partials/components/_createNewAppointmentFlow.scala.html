@@ -41,9 +41,10 @@
                                 <select id="serviceType" class="form-control" name="serviceType" data-error="Please select a service." required>
                                     <option selected disabled hidden value=""> Select service</option>
                                     @for(service <- settingsController.getServices) {
-                                        <option value="@service.getServiceId">@service.getService</option>
+                                        <option value="@service.getServiceId" data-prompt="@service.getPrompt">@service.getService</option>
                                     }
                                 </select>
+                                <p class="servicePrompt"></p>
                             </div>
                         </div>
                     </div>

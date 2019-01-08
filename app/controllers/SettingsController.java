@@ -4,6 +4,7 @@ import application_components.annotations.Authenticate;
 import com.fasterxml.jackson.databind.JsonNode;
 import databases.SettingsDB;
 import models.AppointmentTypeModel;
+import models.AppointmentsModel;
 import models.ServiceModel;
 import models.SettingsModel;
 import play.cache.Cached;
@@ -135,10 +136,24 @@ public class SettingsController extends BaseController {
     public Result createService() {
         JsonNode json = request().body().asJson();
         String serviceName = json.findPath("serviceName").asText();
-        ServiceModel service = new ServiceModel(null, serviceName);
+        String prompt = json.findPath("prompt").asText();
+        ServiceModel service = new ServiceModel(null, serviceName, prompt);
         settingsDB.addService(service);
         return ok();
     }
+    @Authenticate(role = "Admin")
+    public Result editServicePrompt() {
+        JsonNode json = request().body().asJson();
+        String serviceId = json.findPath("serviceId").textValue();
+        String servicePrompt = json.findPath("servicePrompt").textValue();
+        List<ServiceModel> serviceList = settingsDB.getServices();
+        ServiceModel service = serviceList.stream().filter(findService -> serviceId.equals(findService.getServiceId())).findFirst().orElse(null);
+        assert service != null;
+        service.setPrompt(servicePrompt);
+        settingsDB.addService(service);
+        return ok();
+    }
+
 
     @Authenticate(role="Admin")
     public Result removeAppointmentType() {

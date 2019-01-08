@@ -173,6 +173,7 @@ public class SettingsDB implements DBInterface<SettingsModel> {
         }
         Map<String, Object> data = new HashMap<>();
         data.put("service", service.getService());
+        data.put("prompt", service.getPrompt());
         ApiFuture<WriteResult> result = docRef.set(data);
         result.isDone();
     }
@@ -210,7 +211,8 @@ public class SettingsDB implements DBInterface<SettingsModel> {
         for (DocumentSnapshot document : documents) {
             ServiceModel service = new ServiceModel(
                     document.getId(),
-                    document.getString("service")
+                    document.getString("service"),
+                    document.getString("prompt")
             );
             serviceModel.add(service);
         }

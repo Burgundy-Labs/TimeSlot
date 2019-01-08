@@ -54,5 +54,7 @@ POST        /changeSiteAlert                                                    
 POST        /changeCenterInformation                                             controllers.SettingsController.changeCenterInformation()
 POST        /isCoachChecked                                                      controllers.UserController.isCoach()
 POST        /cancelWeeklyAppointment                                             controllers.AppointmentsController.cancelWeeklyAppointment()
+POST        /updateServicePrompt                                                  controllers.SettingsController.editServicePrompt()
+
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                                        controllers.Assets.at(path="/public", file)

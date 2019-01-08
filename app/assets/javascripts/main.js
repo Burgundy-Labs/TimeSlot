@@ -1,6 +1,16 @@
 $(function () {
     $("[data-toggle='tooltip']").tooltip();
     $("[data-toggle='popover']").popover({html: true});
+    $(function() {
+        $('a[role="tab"]').on('click', function(e) {
+            window.localStorage.setItem('activeTab', $(e.target).attr('href'));
+        });
+        let activeTab = window.localStorage.getItem('activeTab');
+        if (activeTab) {
+            $('a[href="' + activeTab + '"]').tab('show');
+            window.localStorage.removeItem("activeTab");
+        }
+    });
 });
 
 function createAlert(alertType, messageHTML) {
@@ -91,4 +101,6 @@ function appointmentDetailPopup(userId, appointmentId) {
     });
 
 }
+
+
 

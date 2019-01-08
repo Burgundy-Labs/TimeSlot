@@ -30,6 +30,8 @@
 
                 $(document).on("change", '#serviceType', function (e) {
                     const service = $(this).val();
+                    $(".servicePrompt").html($('#serviceType').find(":selected").data("prompt"));
+                    console.log($(this));
                     $.ajax({
                         url: '/getCoachesByService/' + service,
                         type: 'GET',

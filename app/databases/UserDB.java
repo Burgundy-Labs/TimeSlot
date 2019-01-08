@@ -153,7 +153,8 @@ public class UserDB implements DBInterface<UsersModel> {
 		for (DocumentSnapshot document : documents) {
 			ServiceModel service = new ServiceModel(
 					document.getId(),
-					document.getString("service")
+					document.getString("service"),
+					document.getString("prompt")
 			);
 			servicesList.add(service);
 		}
