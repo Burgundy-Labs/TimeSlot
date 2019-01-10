@@ -60,8 +60,7 @@ public class UserController extends BaseController {
         String userId = json.get("userId").asText();
         String serviceText = json.get("serviceName").asText();
         String serviceId = json.get("serviceId").asText();
-        String servicePrompt = json.get("servicePrompt").asText();
-        ServiceModel service = new ServiceModel(serviceId, serviceText, servicePrompt);
+        ServiceModel service = new ServiceModel(serviceId, serviceText, "");
         userDB.addServiceToUser(userId, service);
         return ok();
     }
