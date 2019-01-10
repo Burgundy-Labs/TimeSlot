@@ -171,6 +171,7 @@ public class AppointmentsController extends BaseController {
 
     @Authenticate
     public Result createAvailability() {
+
         /* Get user object from request */
         JsonNode json = request().body().asJson();
         /* Get user from json request */

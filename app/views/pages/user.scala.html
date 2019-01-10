@@ -313,7 +313,8 @@
                         eventLimit: false,
                         select: function (start, end, jsEvent, view) {
                             // Prevent past selection
-                            if(start.local().isBefore(moment())) {
+                            let temp = start.clone();
+                            if(temp.local().isBefore(moment())) {
                                 availabilitySchedule.fullCalendar('unselect');
                                 return false;
                             }
