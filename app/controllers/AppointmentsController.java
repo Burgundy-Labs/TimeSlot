@@ -53,14 +53,13 @@ public class AppointmentsController extends BaseController {
         appointment.setStartDate(startDate);
         appointment.setEndDate(endDate);
 
-        AppointmentsModel emailAppointment = appointment.clone();
-        emailAppointment.setStudentData(student.getUid(), student.getEmail(), student.getDisplayName(), student.getPhotoURL());
-
-
         if (!json.findPath("weekly").asBoolean()) {
             appointment.setWeeklyId(null);
             appointment.setWeekly(false);
         }
+
+        AppointmentsModel emailAppointment = appointment.clone();
+        emailAppointment.setStudentData(student.getUid(), student.getEmail(), student.getDisplayName(), student.getPhotoURL());
 
         if (availability.isWeekly()) {
             String UUID1 = UUID.randomUUID().toString();
