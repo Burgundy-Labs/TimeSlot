@@ -239,10 +239,13 @@ public class UserDB implements DBInterface<UsersModel> {
 		List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
 		/* Iterate users and add them to a list for return */
 		for (DocumentSnapshot document : documents) {
-			UsersModel coach = get(document.getId()).get();
-			if ("Coach".equals(coach.getRole()) || ("Admin".equals(coach.getRole()) && UserController.hasAttribute(coach, UserAttributes.IS_COACH.getValue()))) {
-				coachList.add(coach);
-			}
+			boolean coachExists = get(document.getId()).isPresent();
+			if(coachExists){
+                UsersModel coach = get(document.getId()).get();
+                if ("Coach".equals(coach.getRole()) || ("Admin".equals(coach.getRole()) && UserController.hasAttribute(coach, UserAttributes.IS_COACH.getValue()))) {
+                    coachList.add(coach);
+                }
+            }
 		}
 		return coachList;
 	}

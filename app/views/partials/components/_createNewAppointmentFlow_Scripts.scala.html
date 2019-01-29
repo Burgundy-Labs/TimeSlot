@@ -43,6 +43,7 @@
                             });
                             if (coachDropdown.has('option').length === 0) {
                                 coachAvailable = false;
+                                coachDropdown.prepend("<option selected value='any'>Any No Coaches Available</option>");
                             } else {
                                 coachAvailable = true;
                                 coachDropdown.prepend("<option selected value='any'>Any Coach</option>");
