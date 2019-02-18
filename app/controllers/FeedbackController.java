@@ -24,8 +24,8 @@ public class FeedbackController extends BaseController {
                 "New Feedback From " + name,
                 name,
                 email,
-                "Project Burgundy",
-                "contact.project.burgundy@gmail.com",
+                "Burgundy Labs [TimeSlot]",
+                "caden@burgundylabs.com",
                 "<p style='font-size:48px;color:#17C671;text-align:center;'>&#9997;</p><h1 style='text-align:center;'>New feedback from " + name + "!</h1> " +
                         "<h3>Name:</h3>" +
                         "<div style=\"background-color:#EFF0F1; border-radius:4px; padding: 10px;\">"
