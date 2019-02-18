@@ -61,7 +61,7 @@ public class AppointmentsController extends BaseController {
         AppointmentsModel emailAppointment = appointment.clone();
         emailAppointment.setStudentData(student.getUid(), student.getEmail(), student.getDisplayName(), student.getPhotoURL());
 
-        if (availability.isWeekly()) {
+        if (appointment.isWeekly()) {
             String UUID1 = UUID.randomUUID().toString();
             String UUID2 = UUID.randomUUID().toString();
             String UUID3 = UUID.randomUUID().toString();
