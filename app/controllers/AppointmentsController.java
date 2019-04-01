@@ -38,9 +38,10 @@ public class AppointmentsController extends BaseController {
     }
 
     @Authenticate
-    public Result createAppointment() {
+    public Result createAppointment() throws Exception {
         JsonNode json = request().body().asJson();
         AppointmentsModel availability = appointmentsDB.get(json.findPath("appointmentId").asText()).orElseThrow(NullPointerException::new);
+        if(availability.getStudentId() != null) throw new Exception("Appointment is taken");
         Date startDate = DatatypeConverter.parseDateTime(json.findPath("startDate").textValue()).getTime();
         Date endDate = DatatypeConverter.parseDateTime(json.findPath("endDate").textValue()).getTime();
         UsersModel student = userDB.get(json.findPath("studentId").asText()).get();
